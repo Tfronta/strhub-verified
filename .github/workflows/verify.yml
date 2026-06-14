@@ -30,11 +30,11 @@ jobs:
     env:
       TOOL: ${{ github.event.inputs.tool || 'strait-razor-PowerSeqv2.31' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: true   # fixtures may be stored with Git LFS
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - run: pip install pyyaml jsonschema
@@ -109,7 +109,7 @@ jobs:
 
       - name: Upload attestation
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: attestation-${{ env.TOOL }}
           path: reports/
