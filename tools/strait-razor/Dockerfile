@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-ARG STRAITRAZOR_REF=REPLACE_WITH_PINNED_COMMIT_SHA   # passed from the manifest's source.ref
+ARG STRAITRAZOR_REF=b618e9345ab40f348b504083ae8de2b39abb60fa
 
 WORKDIR /opt
 RUN git clone https://github.com/Ahhgust/STRaitRazor.git strait-razor \
