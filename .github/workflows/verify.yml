@@ -22,7 +22,7 @@ on:
     - cron: "0 6 1 * *"   # monthly re-verification so badges never go stale
 
 permissions:
-  contents: read
+  contents: write   # deploy step pushes reports to the gh-pages branch
 
 jobs:
   verify:
@@ -129,6 +129,37 @@ jobs:
         with:
           name: attestation-${{ env.TOOL }}
           path: reports/
+
+      # Publish a navigable web page (index + per-tool HTML) to the gh-pages
+      # branch. Reports accumulate across runs: we clone the existing branch,
+      # drop in this run's files, regenerate the index, and push.
+      - name: Deploy reports to GitHub Pages
+        if: always() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          tmp="$(mktemp -d)"
+          if git ls-remote --exit-code --heads "$remote" gh-pages >/dev/null 2>&1; then
+            git clone --depth 1 --branch gh-pages "$remote" "$tmp"
+          else
+            git clone --depth 1 "$remote" "$tmp"
+            git -C "$tmp" checkout --orphan gh-pages
+            git -C "$tmp" rm -rfq . || true
+          fi
+          cp -f reports/* "$tmp/" 2>/dev/null || true
+          touch "$tmp/.nojekyll"
+          python harness/build_index.py "$tmp" --out "$tmp/index.html"
+          cd "$tmp"
+          git add -A
+          if git diff --cached --quiet; then echo "no changes to publish"; exit 0; fi
+          git commit -m "deploy ${TOOL} @ run ${{ github.run_id }}"
+          for i in 1 2 3; do
+            git push "$remote" gh-pages && break || { git pull --rebase "$remote" gh-pages || true; sleep 3; }
+          done
 
       # To publish badges, commit reports/ to a gh-pages branch (or use
       # actions/deploy-pages). strhub.app then fetches reports/<tool>.badge.json

@@ -111,6 +111,99 @@ def _summary_md(report: dict, slug: str) -> str:
     return "\n".join(l for l in lines if l is not None) + "\n"
 
 
+def _summary_html(report: dict, slug: str) -> str:
+    """A standalone, styled HTML page for one tool — navigable as a web page."""
+    import html as _html
+
+    tool = report["tool"]
+    level = report["level"]
+    gates = report["gates"]
+    badge = {"content": "#16a34a", "io": "#22a722", "runs": "#22a722",
+             "installs": "#d4a017", "available": "#d4a017"}.get(level, "#c33")
+
+    def esc(s):
+        return _html.escape(str(s))
+
+    rows = []
+    for g in LADDER:
+        ok = gates.get(g, False)
+        chip = ('<span class="ok">PASS</span>' if ok
+                else '<span class="no">—</span>')
+        rows.append(f"<tr><td>{esc(LABELS[g])}</td><td>{chip}</td>"
+                    f"<td>{esc(MEANING.get(g, ''))}</td></tr>")
+
+    content_block = ""
+    outs = report.get("content_detail", {}).get("outputs", [])
+    stats = outs[0].get("stats") if outs and isinstance(outs[0], dict) else None
+    if stats:
+        loci = stats.get("loci", [])
+        sample = ", ".join(loci[:18]) + (" …" if len(loci) > 18 else "")
+        top = ", ".join(f"{l} ({d})" for l, d in stats.get("top_loci_by_depth", [])[:6])
+        content_block = f"""
+    <h2>Output content (plausibility evidence)</h2>
+    <ul class="stats">
+      <li>Sequence records: <b>{esc(stats.get('rows', 0))}</b> (malformed: {esc(stats.get('malformed_rows', 0))})</li>
+      <li>Distinct forensic loci detected: <b>{esc(stats.get('distinct_loci', 0))}</b></li>
+      <li>Total reads across calls: <b>{esc(stats.get('total_reads', 0))}</b> (deepest single sequence: {esc(stats.get('max_sequence_depth', 0))})</li>
+      {'<li>Loci: ' + esc(sample) + '</li>' if loci else ''}
+      {'<li>Top loci by read depth: ' + esc(top) + '</li>' if top else ''}
+    </ul>"""
+
+    ci = (f'<a href="{esc(report["ci_run"])}">CI run</a>'
+          if report.get("ci_run") else "")
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STRhub Verified — {esc(tool['name'])} ({esc(slug)})</title>
+<style>
+  body {{ font: 16px/1.6 system-ui, sans-serif; max-width: 820px; margin: 2rem auto;
+          padding: 0 1rem; background:#ffffff; color:#1a1a1a; }}
+  a {{ color: #2563eb; }}
+  .badge {{ display:inline-block; padding:.25rem .7rem; border-radius:999px; color:#fff; font-weight:600; background:{badge}; }}
+  table {{ border-collapse: collapse; width: 100%; margin: 1rem 0; }}
+  th, td {{ text-align: left; padding: .5rem .6rem; border-bottom: 1px solid #ddd; }}
+  .ok {{ color:#16a34a; font-weight:700; }}
+  .no {{ color:#999; }}
+  .meta li, .stats li {{ margin:.15rem 0; }}
+  .scope {{ background:#f3f4f6; border-left:4px solid {badge}; padding:.8rem 1rem; border-radius:6px; }}
+  code {{ background:#eef0f2; padding:.1rem .3rem; border-radius:4px; }}
+  nav {{ margin-bottom:1rem; }}
+  @media (prefers-color-scheme: dark) {{
+    body {{ background:#0d1117; color:#e6edf3; }}
+    a {{ color:#58a6ff; }}
+    th, td {{ border-bottom:1px solid #30363d; }}
+    .scope {{ background:#161b22; }}
+    code {{ background:#21262d; }}
+  }}
+</style></head><body>
+<nav><a href="index.html">← All tools</a></nav>
+<h1>STRhub Verified — {esc(tool['name'])}</h1>
+<p><span class="badge">{esc(LABELS.get(level, 'not run'))}</span></p>
+<p>{esc(MEANING.get(level, ''))}.</p>
+<ul class="meta">
+  <li>Variant: <code>{esc(slug)}</code></li>
+  <li>Source: <code>{esc(report['source']['repo'])}</code> @ <code>{esc(report['source']['ref_resolved'])}</code></li>
+  <li>Environment: {esc(', '.join(report['environment'].get('os', [])))} (<code>{esc(report['environment']['dockerfile'])}</code>)</li>
+  <li>Generated: {esc(report['generated'])}</li>
+  {f'<li>{ci}</li>' if ci else ''}
+</ul>
+<h2>Gates</h2>
+<table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
+<tbody>{''.join(rows)}</tbody></table>
+{content_block}
+<h2>Scope</h2>
+<p class="scope">{esc(report['scope'])}<br><br>
+This is <b>not</b> a claim that the genotypes are correct, nor that the tool is
+fit for casework or meets any regulatory standard. Concordance against known
+truth is out of scope.</p>
+<p style="color:#888;font-size:.85rem">Machine-readable:
+<a href="{esc(slug)}.json">{esc(slug)}.json</a> ·
+<a href="{esc(slug)}.badge.json">badge</a> ·
+<a href="{esc(slug)}.summary.md">summary.md</a></p>
+</body></html>
+"""
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", required=True)
@@ -187,6 +280,7 @@ def main() -> int:
     (reports / f"{slug}.badge.json").write_text(json.dumps(badge, indent=2))
 
     (reports / f"{slug}.summary.md").write_text(_summary_md(report, slug))
+    (reports / f"{slug}.html").write_text(_summary_html(report, slug))
 
     print(json.dumps(report, indent=2))
     return 0
