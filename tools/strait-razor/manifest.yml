@@ -28,7 +28,7 @@ run:
   timeout_minutes: 15
 
 inputs:
-  fixture: "fixtures/nist-mds2-2157"   # consent-clean MPS reads; see that dir's README.
+  fixture: "tools/strait-razor/fixtures/nist-mds2-2157"
                                        # Match run.cmd's config to the assay you pick
                                        # (PowerSeq reads -> PowerSeqv2.31.config, as below).
 
