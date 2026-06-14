@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-14T19:05:04+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27508969341
+- Generated: 2026-06-14T20:54:10+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27511715087
 
 ## Gates
 
@@ -20,10 +20,10 @@
 ## Output content (plausibility evidence)
 
 - Sequence records: **816** (malformed: 0)
-- Distinct forensic loci detected: **220**
+- STR loci detected: **63**  ·  identity SNPs (rsNNNN): **157**  (total panel markers: 220)
 - Total reads across calls: **3967** (deepest single sequence: 132)
-- Loci: Amelogenin, CSF1PO, D10S1248, D12S391, D13S317, D16S539, D17S1301, D18S51, D19S433, D1S1656, D20S482, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D4S2408, D5S818 …
-- Top loci by read depth: DYS392 (170), DYS438 (117), D6S1043 (111), TH01 (106), DYS389I (97), DYS576 (95)
+- STR loci: Amelogenin, CSF1PO, D10S1248, D12S391, D13S317, D16S539, D17S1301, D18S51, D19S433, D1S1656, D20S482, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D4S2408, D5S818 …
+- Top markers by read depth: DYS392 (170), DYS438 (117), D6S1043 (111), TH01 (106), DYS389I (97), DYS576 (95)
 
 ## Scope (read this)
 
