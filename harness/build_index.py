@@ -45,7 +45,12 @@ def _card(slug: str, r: dict) -> str:
         stats = outs[0].get("stats")
     extra = ""
     if stats:
-        extra = (f'<p class="stat">{stats.get("distinct_loci", 0)} loci · '
+        n_str = stats.get("distinct_str_loci", stats.get("distinct_loci", 0))
+        n_snp = stats.get("distinct_snp_markers", 0)
+        markers = f"{n_str} STR loci"
+        if n_snp:
+            markers += f" + {n_snp} SNPs"
+        extra = (f'<p class="stat">{markers} · '
                  f'{stats.get("total_reads", 0)} reads</p>')
     return f"""
   <a class="card" href="{html.escape(slug)}.html">

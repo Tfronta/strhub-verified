@@ -81,20 +81,26 @@ def _summary_md(report: dict, slug: str) -> str:
     outs = report.get("content_detail", {}).get("outputs", [])
     stats = outs[0].get("stats") if outs and isinstance(outs[0], dict) else None
     if stats:
-        loci = stats.get("loci", [])
-        sample = ", ".join(loci[:18]) + (" …" if len(loci) > 18 else "")
+        str_loci = stats.get("str_loci", stats.get("loci", []))
+        n_str = stats.get("distinct_str_loci", len(str_loci))
+        n_snp = stats.get("distinct_snp_markers", 0)
+        sample = ", ".join(str_loci[:18]) + (" …" if len(str_loci) > 18 else "")
         top = ", ".join(f"{l} ({d})" for l, d in stats.get("top_loci_by_depth", [])[:6])
+        markers_line = f"- STR loci detected: **{n_str}**"
+        if n_snp:
+            markers_line += (f"  ·  identity SNPs (rsNNNN): **{n_snp}**  "
+                             f"(total panel markers: {stats.get('distinct_loci', 0)})")
         lines += [
             "",
             "## Output content (plausibility evidence)",
             "",
             f"- Sequence records: **{stats.get('rows', 0)}** "
             f"(malformed: {stats.get('malformed_rows', 0)})",
-            f"- Distinct forensic loci detected: **{stats.get('distinct_loci', 0)}**",
+            markers_line,
             f"- Total reads across calls: **{stats.get('total_reads', 0)}** "
             f"(deepest single sequence: {stats.get('max_sequence_depth', 0)})",
-            f"- Loci: {sample}" if loci else "",
-            f"- Top loci by read depth: {top}" if top else "",
+            f"- STR loci: {sample}" if str_loci else "",
+            f"- Top markers by read depth: {top}" if top else "",
         ]
 
     lines += [
@@ -136,17 +142,24 @@ def _summary_html(report: dict, slug: str) -> str:
     outs = report.get("content_detail", {}).get("outputs", [])
     stats = outs[0].get("stats") if outs and isinstance(outs[0], dict) else None
     if stats:
-        loci = stats.get("loci", [])
-        sample = ", ".join(loci[:18]) + (" …" if len(loci) > 18 else "")
+        str_loci = stats.get("str_loci", stats.get("loci", []))
+        n_str = stats.get("distinct_str_loci", len(str_loci))
+        n_snp = stats.get("distinct_snp_markers", 0)
+        sample = ", ".join(str_loci[:18]) + (" …" if len(str_loci) > 18 else "")
         top = ", ".join(f"{l} ({d})" for l, d in stats.get("top_loci_by_depth", [])[:6])
+        markers_li = f"<li>STR loci detected: <b>{esc(n_str)}</b>"
+        if n_snp:
+            markers_li += (f" &middot; identity SNPs (rsNNNN): <b>{esc(n_snp)}</b> "
+                           f"(total panel markers: {esc(stats.get('distinct_loci', 0))})")
+        markers_li += "</li>"
         content_block = f"""
     <h2>Output content (plausibility evidence)</h2>
     <ul class="stats">
       <li>Sequence records: <b>{esc(stats.get('rows', 0))}</b> (malformed: {esc(stats.get('malformed_rows', 0))})</li>
-      <li>Distinct forensic loci detected: <b>{esc(stats.get('distinct_loci', 0))}</b></li>
+      {markers_li}
       <li>Total reads across calls: <b>{esc(stats.get('total_reads', 0))}</b> (deepest single sequence: {esc(stats.get('max_sequence_depth', 0))})</li>
-      {'<li>Loci: ' + esc(sample) + '</li>' if loci else ''}
-      {'<li>Top loci by read depth: ' + esc(top) + '</li>' if top else ''}
+      {'<li>STR loci: ' + esc(sample) + '</li>' if str_loci else ''}
+      {'<li>Top markers by read depth: ' + esc(top) + '</li>' if top else ''}
     </ul>"""
 
     ci = (f'<a href="{esc(report["ci_run"])}">CI run</a>'

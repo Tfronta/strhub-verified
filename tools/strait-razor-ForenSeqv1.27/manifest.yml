@@ -45,7 +45,9 @@ outputs:
       count_columns: [3, 4]
       locus_column: 0
       locus_sep: ":"
-      min_distinct_loci: 50        # ForenSeq observed ~220 loci (STR + X/Y-STR + iSNPs)
+      min_distinct_loci: 50        # total panel markers; ForenSeq config has 226
+                                   # (~62 STR/X/Y-STR + 164 iSNPs). The report breaks
+                                   # these out as STR loci vs identity SNPs separately.
       min_total_reads: 500
       expect_loci: ["Amelogenin", "CSF1PO", "TH01", "TPOX", "vWA",
                     "D3S1358", "D8S1179", "D18S51", "D21S11", "FGA"]
