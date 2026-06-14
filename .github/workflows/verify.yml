@@ -6,9 +6,14 @@ on:
   workflow_dispatch:
     inputs:
       tool:
-        description: "Tool directory under tools/"
-        default: "strait-razor"
+        description: "Tool variant to verify (directory under tools/)"
+        type: choice
+        default: "strait-razor-PowerSeqv2.31"
         required: true
+        options:
+          - strait-razor-PowerSeqv2.31   # StraitRazor v3 · Promega PowerSeq 46GY
+          - strait-razor-ForenSeqv1.27   # StraitRazor v3 · Verogen ForenSeq
+          - strspy
   pull_request:
     paths:
       - "tools/**"
@@ -23,7 +28,7 @@ jobs:
   verify:
     runs-on: ubuntu-22.04   # free, unlimited on public repos
     env:
-      TOOL: ${{ github.event.inputs.tool || 'strait-razor' }}
+      TOOL: ${{ github.event.inputs.tool || 'strait-razor-PowerSeqv2.31' }}
     steps:
       - uses: actions/checkout@v4
         with:

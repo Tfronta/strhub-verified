@@ -22,8 +22,8 @@ both from donor **NTD01** so the assays are directly comparable:
 
 | Tool dir | Assay (Illumina) | Fixture | Config |
 |---|---|---|---|
-| `tools/strait-razor`          | Promega PowerSeq 46GY | `tools/strait-razor/fixtures/nist-mds2-2157/sample.fastq`          | `PowerSeqv2.31.config` |
-| `tools/strait-razor-forenseq` | Verogen ForenSeq      | `tools/strait-razor-forenseq/fixtures/nist-mds2-2157/sample.fastq` | `ForenSeqv1.27.config` |
+| `tools/strait-razor-PowerSeqv2.31` | Promega PowerSeq 46GY | `tools/strait-razor-PowerSeqv2.31/fixtures/nist-mds2-2157/sample.fastq` | `PowerSeqv2.31.config` |
+| `tools/strait-razor-ForenSeqv1.27` | Verogen ForenSeq      | `tools/strait-razor-ForenSeqv1.27/fixtures/nist-mds2-2157/sample.fastq` | `ForenSeqv1.27.config` |
 
 Each fixture dir has a `SOURCE.txt` with exact provenance and the rebuild snippet.
 
@@ -48,7 +48,7 @@ with RemoteZip(url) as z, z.open(name) as fh, open("sample.fastq","wb") as w:
         w.writelines(rec)
 PY
 ```
-(For ForenSeq use the zip/member in `tools/strait-razor-forenseq/fixtures/nist-mds2-2157/SOURCE.txt`.)
+(For ForenSeq use the zip/member in `tools/strait-razor-ForenSeqv1.27/fixtures/nist-mds2-2157/SOURCE.txt`.)
 
 The classic route still works too — `curl` the whole zip, `unzip`, then
 `seqkit sample -n 5000 <single_source>.fastq -o sample.fastq` — it just downloads
@@ -59,5 +59,5 @@ STRait Razor needs the config that matches the kit:
 - ForenSeq reads  -> `ForenSeqv1.27.config`
 - PowerSeq reads  -> `PowerSeqv2.31.config`  (what the example manifest uses)
 
-If you switch assays, update `run.cmd` in `tools/strait-razor/manifest.yml`
+If you switch assays, update `run.cmd` in the variant's `manifest.yml`
 accordingly (and make sure the Dockerfile installs that config file).

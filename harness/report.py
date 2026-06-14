@@ -6,7 +6,7 @@ flags). The io gate detail is read from io_result.json. Output:
   reports/<tool>.badge.json  - shields.io endpoint badge
 
 Usage:
-  python harness/report.py --manifest tools/strait-razor/manifest.yml \
+  python harness/report.py --manifest tools/strait-razor-PowerSeqv2.31/manifest.yml \
       --available pass --installs pass --runs pass --io io_result.json \
       --ref <sha> --run-url <ci_run_url>
 """
