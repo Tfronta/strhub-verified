@@ -25,6 +25,10 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
 
 _DNA_RE = re.compile(r"^[ACGTN]+$", re.IGNORECASE)
+# ForenSeq-style panels mix STR loci with identity SNPs (named rsNNNN). We count
+# both but report them separately so "distinct loci" is never conflated with the
+# much larger SNP marker count.
+_SNP_RE = re.compile(r"^rs\d+$", re.IGNORECASE)
 
 
 def _analyze(path: pathlib.Path, spec: dict) -> dict:
@@ -73,13 +77,20 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
         total_reads += depth
         max_depth = max(max_depth, depth)
 
+    snp_markers = sorted(l for l in locus_rows if _SNP_RE.match(l))
+    str_loci = sorted(l for l in locus_rows if not _SNP_RE.match(l))
+
     return {
         "rows": len(rows),
         "malformed_rows": malformed,
         "dna_invalid_rows": dna_bad,
         "count_invalid_rows": counts_bad,
-        "distinct_loci": len(locus_rows),
-        "loci": sorted(locus_rows),
+        "distinct_loci": len(locus_rows),        # all panel markers (STR + SNP)
+        "distinct_str_loci": len(str_loci),      # STR loci only (e.g. CODIS/ForenSeq STRs)
+        "distinct_snp_markers": len(snp_markers),  # identity SNPs (rsNNNN)
+        "loci": str_loci + snp_markers,
+        "str_loci": str_loci,
+        "snp_markers": snp_markers,
         "total_reads": total_reads,
         "max_sequence_depth": max_depth,
         "top_loci_by_depth": locus_reads.most_common(8),
