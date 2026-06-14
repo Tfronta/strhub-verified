@@ -94,6 +94,12 @@ jobs:
         continue-on-error: true
         run: python harness/check_io.py "${{ steps.m.outputs.manifest }}" work/out --json io_result.json
 
+      # --- Gate: Content (plausible genotype-bearing output) ------------------
+      - id: content
+        name: "Gate · Content"
+        continue-on-error: true
+        run: python harness/check_content.py "${{ steps.m.outputs.manifest }}" work/out --json content_result.json
+
       # --- Assemble attestation (always runs) --------------------------------
       - name: Build attestation + badge
         if: always()
@@ -104,6 +110,7 @@ jobs:
             --installs ${{ steps.installs.outcome }} \
             --runs ${{ steps.runs.outcome }} \
             --io io_result.json \
+            --content content_result.json \
             --ref ${{ steps.m.outputs.ref }} \
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 

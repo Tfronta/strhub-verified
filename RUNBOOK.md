@@ -168,5 +168,21 @@ Qué esperar en este primer run real:
 - **Runs**: primer contacto del binario con reads reales; si algún flag o ruta de
   config necesita ajuste, el log lo muestra (el manifest marca esos puntos).
 - **Expected IO**: confirma que `*.allsequences.txt` salió no vacío (atrapa el
-  exit-0-pero-vacío). Si querés exigir loci concretos, descomentá `must_contain`
-  en el manifest.
+  exit-0-pero-vacío).
+- **Content**: el peldaño más alto. Confirma que el output *parece genotipos*:
+  5 columnas, columna de secuencia solo ADN, conteos enteros, y suficientes loci
+  forenses reconocibles (loci core obligatorios + mínimo de loci distintos). Lo
+  declarás en el bloque `outputs[].content` del manifest. NO afirma que los
+  genotipos sean correctos (eso es concordancia, fuera de alcance).
+
+## La escalera de niveles (qué dice el badge)
+
+| Nivel | Badge | Significa |
+|---|---|---|
+| `available` / `installs` | amarillo | el repo existe / la imagen compila |
+| `runs` | verde | ejecuta sin romperse |
+| `io` | verde | produjo un archivo no vacío del formato declarado |
+| `content` | **brightgreen** | el output parece datos de genotipos plausibles |
+
+Cada run genera también `reports/<slug>.summary.md`: un resumen legible para
+humanos (qué pasó, qué loci salieron, profundidad, y qué NO se afirma).
