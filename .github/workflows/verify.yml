@@ -114,6 +114,15 @@ jobs:
             --ref ${{ steps.m.outputs.ref }} \
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
+      # Render the human-readable summary on the run's "Summary" page (no download
+      # needed). $GITHUB_STEP_SUMMARY accepts Markdown.
+      - name: Publish summary to run page
+        if: always()
+        run: |
+          for f in reports/*.summary.md; do
+            [ -f "$f" ] && cat "$f" >> "$GITHUB_STEP_SUMMARY"
+          done
+
       - name: Upload attestation
         if: always()
         uses: actions/upload-artifact@v7
