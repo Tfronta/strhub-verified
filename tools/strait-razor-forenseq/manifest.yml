@@ -13,6 +13,9 @@ source:
   repo: "https://github.com/Ahhgust/STRaitRazor"
   ref: "b618e9345ab40f348b504083ae8de2b39abb60fa"
 
+report:
+  slug: "strait-razor-ForenSeqv1.27"   # distinct badge per assay/config variant
+
 environment:
   dockerfile: "Dockerfile"
   os:

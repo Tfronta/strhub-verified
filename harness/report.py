@@ -84,7 +84,12 @@ def main() -> int:
         "scope": SCOPE,
     }
 
-    slug = re.sub(r"[^a-z0-9]+", "-", m["tool"]["name"].lower()).strip("-")
+    # Prefer an explicit per-variant slug from the manifest (e.g. so the PowerSeq
+    # and ForenSeq variants of the same tool get distinct badges); otherwise fall
+    # back to a slug derived from the tool name.
+    slug = m.get("report", {}).get("slug")
+    if not slug:
+        slug = re.sub(r"[^a-z0-9]+", "-", m["tool"]["name"].lower()).strip("-")
     reports = ROOT / "reports"
     reports.mkdir(exist_ok=True)
     (reports / f"{slug}.json").write_text(json.dumps(report, indent=2))

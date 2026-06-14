@@ -79,6 +79,14 @@
         }
       }
     },
+    "report": {
+      "type": "object",
+      "description": "Optional reporting overrides. Use 'slug' to give a tool variant its own attestation/badge filenames (reports/<slug>.json and <slug>.badge.json).",
+      "additionalProperties": false,
+      "properties": {
+        "slug": { "type": "string", "description": "Filename stem for this variant's report + badge, e.g. 'strait-razor-PowerSeqv2.31'." }
+      }
+    },
     "reproduces_own_example": {
       "type": "object",
       "description": "OPTIONAL gate 5. Compares output to the tool's OWN published example result for the fixture. Verifies documented behaviour, NOT biological correctness.",
