@@ -33,7 +33,8 @@ LABELS = {"available": "Available", "installs": "Installs",
 
 
 def _status(flag: str) -> bool:
-    return str(flag).lower() in ("pass", "true", "ok", "1")
+    # Accept GitHub Actions step outcomes ("success") alongside our own words.
+    return str(flag).lower() in ("pass", "true", "ok", "1", "success")
 
 
 def main() -> int:
