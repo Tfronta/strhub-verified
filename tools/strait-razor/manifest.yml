@@ -11,7 +11,7 @@ tool:
 
 source:
   repo: "https://github.com/Ahhgust/STRaitRazor"
-  ref: "REPLACE_WITH_PINNED_COMMIT_SHA"   # VERIFY: pin to an immutable commit, not a branch
+  ref: "b618e9345ab40f348b504083ae8de2b39abb60fa"
 
 environment:
   dockerfile: "Dockerfile"
