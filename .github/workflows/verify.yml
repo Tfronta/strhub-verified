@@ -1,0 +1,115 @@
+name: STRhub Verified
+
+# The engine. Each gate is a CI step; failures are captured (continue-on-error)
+# so the report is always produced and reflects the furthest gate cleared.
+on:
+  workflow_dispatch:
+    inputs:
+      tool:
+        description: "Tool directory under tools/"
+        default: "strait-razor"
+        required: true
+  pull_request:
+    paths:
+      - "tools/**"
+      - "harness/**"
+  schedule:
+    - cron: "0 6 1 * *"   # monthly re-verification so badges never go stale
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-22.04   # free, unlimited on public repos
+    env:
+      TOOL: ${{ github.event.inputs.tool || 'strait-razor' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true   # fixtures may be stored with Git LFS
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pyyaml jsonschema
+
+      # --- Parse the manifest into step outputs -------------------------------
+      - id: m
+        name: Read manifest
+        run: |
+          python - "$TOOL" <<'PY' >> "$GITHUB_OUTPUT"
+          import sys, yaml, pathlib
+          tool = sys.argv[1]
+          mf = pathlib.Path("tools")/tool/"manifest.yml"
+          m = yaml.safe_load(mf.read_text())
+          ref = m["source"]["ref"]
+          print(f"ref={ref}")
+          print(f"cmd={' '.join(m['run']['cmd'].split())}")
+          print(f"fixture={m.get('inputs',{}).get('fixture','fixtures/example')}")
+          print(f"dockerdir=tools/{tool}")
+          print(f"dockerfile={m['environment']['dockerfile']}")
+          print(f"timeout={m['run'].get('timeout_minutes',30)}")
+          print(f"manifest={mf}")
+          PY
+
+      # --- Gate: Available ----------------------------------------------------
+      - id: available
+        name: "Gate · Available"
+        continue-on-error: true
+        run: git ls-remote "$(python -c "import yaml;print(yaml.safe_load(open('tools/'+__import__('os').environ['TOOL']+'/manifest.yml'))['source']['repo'])")" >/dev/null
+
+      # --- Gate: Installs (docker build) -------------------------------------
+      - id: installs
+        name: "Gate · Installs"
+        continue-on-error: true
+        run: |
+          docker build \
+            --build-arg STRAITRAZOR_REF=${{ steps.m.outputs.ref }} \
+            -f ${{ steps.m.outputs.dockerdir }}/${{ steps.m.outputs.dockerfile }} \
+            -t toolimg:ci \
+            ${{ steps.m.outputs.dockerdir }}
+
+      # --- Gate: Runs (docker run on the fixture) ----------------------------
+      - id: runs
+        name: "Gate · Runs"
+        continue-on-error: true
+        timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
+        run: |
+          mkdir -p work/out
+          docker run --rm \
+            -v "$PWD/${{ steps.m.outputs.fixture }}:/data/in:ro" \
+            -v "$PWD/work/out:/data/out" \
+            toolimg:ci \
+            "${{ steps.m.outputs.cmd }}"
+
+      # --- Gate: Expected IO --------------------------------------------------
+      - id: io
+        name: "Gate · Expected IO"
+        continue-on-error: true
+        run: python harness/check_io.py "${{ steps.m.outputs.manifest }}" work/out --json io_result.json
+
+      # --- Assemble attestation (always runs) --------------------------------
+      - name: Build attestation + badge
+        if: always()
+        run: |
+          python harness/report.py \
+            --manifest "${{ steps.m.outputs.manifest }}" \
+            --available ${{ steps.available.outcome }} \
+            --installs ${{ steps.installs.outcome }} \
+            --runs ${{ steps.runs.outcome }} \
+            --io io_result.json \
+            --ref ${{ steps.m.outputs.ref }} \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Upload attestation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: attestation-${{ env.TOOL }}
+          path: reports/
+
+      # To publish badges, commit reports/ to a gh-pages branch (or use
+      # actions/deploy-pages). strhub.app then fetches reports/<tool>.badge.json
+      # as a shields.io endpoint:
+      #   https://img.shields.io/endpoint?url=<raw-url-to>/<tool>.badge.json

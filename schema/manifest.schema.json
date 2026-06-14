@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://strhub.app/verified/manifest.schema.json",
+  "title": "STRhub Verified tool manifest",
+  "description": "Author-declared contract for a reproducible-execution attestation. The harness runs ONLY what this file declares. It makes no claim about accuracy, casework fitness, or regulatory validation.",
+  "type": "object",
+  "required": ["tool", "source", "environment", "run", "outputs"],
+  "additionalProperties": false,
+  "properties": {
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string", "description": "Human-readable version, e.g. v3.0" },
+        "maintainer": { "type": "string" },
+        "contact": { "type": "string", "description": "Issue tracker or email for failure reports" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["repo", "ref"],
+      "additionalProperties": false,
+      "properties": {
+        "repo": { "type": "string", "format": "uri", "description": "Public source URL" },
+        "ref": { "type": "string", "description": "Pinned commit SHA or release tag. MUST be immutable." }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "required": ["dockerfile"],
+      "additionalProperties": false,
+      "properties": {
+        "dockerfile": { "type": "string", "description": "Path to the Dockerfile, relative to this manifest" },
+        "os": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "OS targets the attestation is scoped to, e.g. ['ubuntu-22.04']. Honesty matters: only claim what you test."
+        }
+      }
+    },
+    "run": {
+      "type": "object",
+      "required": ["cmd"],
+      "additionalProperties": false,
+      "properties": {
+        "cmd": {
+          "type": "string",
+          "description": "Command executed INSIDE the container. /data/in is the read-only fixture mount, /data/out is the writable output mount."
+        },
+        "timeout_minutes": { "type": "integer", "default": 30, "minimum": 1 }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fixture": { "type": "string", "description": "Path to the test fixture dir, relative to repo root", "default": "fixtures/example" }
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Expected output artifacts. The IO gate checks each one.",
+      "items": {
+        "type": "object",
+        "required": ["path", "format"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string", "description": "Glob, relative to /data/out, e.g. '*.allsequences.txt'" },
+          "format": { "type": "string", "enum": ["vcf", "csv", "tsv", "json", "text"] },
+          "min_records": { "type": "integer", "default": 1, "description": "Minimum non-header data rows/records required (guards against silent empty output)." },
+          "must_contain": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Optional substrings/loci that must appear (e.g. ['D3S1358','vWA'])."
+          }
+        }
+      }
+    },
+    "reproduces_own_example": {
+      "type": "object",
+      "description": "OPTIONAL gate 5. Compares output to the tool's OWN published example result for the fixture. Verifies documented behaviour, NOT biological correctness.",
+      "required": ["expected", "produced"],
+      "additionalProperties": false,
+      "properties": {
+        "expected": { "type": "string", "description": "Path to the golden file shipped by the author, relative to manifest" },
+        "produced": { "type": "string", "description": "Glob of the produced file to compare, relative to /data/out" }
+      }
+    }
+  }
+}

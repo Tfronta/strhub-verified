@@ -1,0 +1,44 @@
+# STRhub Verified manifest — STRait Razor v3
+# Worked example. Lines marked  # VERIFY  must be confirmed against the tool's
+# own README / manual before the first real run; the harness runs ONLY what is
+# declared here, so this file is the single source of truth for the attestation.
+
+tool:
+  name: STRait Razor
+  version: "v3"
+  maintainer: "Woerner AE, King JL (UNT Center for Human Identification)"
+  contact: "https://github.com/Ahhgust/STRaitRazor/issues"   # failure reports go here
+
+source:
+  repo: "https://github.com/Ahhgust/STRaitRazor"
+  ref: "REPLACE_WITH_PINNED_COMMIT_SHA"   # VERIFY: pin to an immutable commit, not a branch
+
+environment:
+  dockerfile: "Dockerfile"
+  os:
+    - "ubuntu-22.04"   # only claim what we actually test
+
+run:
+  # Executed inside the container. /data/in = read-only fixture, /data/out = writable.
+  # VERIFY exact flags/config against the STRait Razor manual:
+  #   https://www.unthsc.edu/.../STRait-Razor-Analysis-Manual.pdf
+  cmd: >
+    str8rzr -c /opt/strait-razor/PowerSeqv2.31.config
+    /data/in/sample.fastq > /data/out/sample.allsequences.txt
+  timeout_minutes: 15
+
+inputs:
+  fixture: "fixtures/nist-mds2-2157"   # consent-clean MPS reads; see that dir's README.
+                                       # Match run.cmd's config to the assay you pick
+                                       # (PowerSeq reads -> PowerSeqv2.31.config, as below).
+
+outputs:
+  - path: "*.allsequences.txt"
+    format: "tsv"
+    min_records: 1              # guard against exit-0-but-empty silent failure
+    # must_contain: ["D3S1358", "vWA"]   # optional: loci you expect on this fixture
+
+# OPTIONAL gate 5 — uncomment to require the tool to reproduce its OWN example output.
+# reproduces_own_example:
+#   expected: "golden/sample.allsequences.txt"
+#   produced: "sample.allsequences.txt"

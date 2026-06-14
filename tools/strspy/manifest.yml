@@ -1,0 +1,43 @@
+# STRhub Verified manifest — STRspy 2.0
+# Built from the REAL repo at https://github.com/unique379r/strspy/tree/STRspy2.0
+# Smoke test uses BAM input on purpose: FASTQ input requires a multi-GB hg38/hg19
+# genome that the repo does NOT ship, so a fresh-clone FASTQ run cannot complete.
+
+tool:
+  name: STRspy
+  version: "2.0"
+  maintainer: "Kesharwani RK; Zascavage RR et al."
+  contact: "https://github.com/unique379r/strspy/issues"   # failure reports go here
+
+source:
+  repo: "https://github.com/unique379r/strspy"
+  ref: "dafdee7e7e5672c8dc732e8577dbe153f53a12f5"   # frozen commit of branch STRspy2.0
+
+environment:
+  dockerfile: "Dockerfile"
+  os:
+    - "ubuntu-22.04"
+
+run:
+  # Call the Normal core script directly. We deliberately AVOID:
+  #   - the wrapper (interactive logo + ambiguous positional/flag usage), and
+  #   - the Parallel path (README documents it "exits without mapping" — known broken).
+  # DB fasta/bed + region bed are baked into the image from the repo's db-v2.
+  # Only the tiny pre-aligned BAM comes from the /data/in fixture.
+  cmd: >
+    bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh
+    -s /data/in -r yes -t ont
+    -f /opt/strspy/db/STRspy2.0-DB -b /opt/strspy/db/STRspy2.0-DB
+    -l /opt/strspy/db-v2/STRspy_v2.DB.sort.bed
+    -k 0.4 -o /data/out -c /opt/strspy/config/ToolsConfig.txt -d 1
+  timeout_minutes: 20
+
+inputs:
+  fixture: "fixtures/strspy-bam"   # a tiny hg38-aligned ONT BAM over a few DB loci (e.g. D3S1358)
+
+outputs:
+  # VERIFY exact output filenames against one real run; STRspy writes per-sample
+  # result folders. Conservative check: at least one non-empty table appears.
+  - path: "**/*.txt"
+    format: "tsv"
+    min_records: 1
