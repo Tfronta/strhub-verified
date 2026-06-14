@@ -138,8 +138,8 @@ adentro está `reports/strspy.json` (la atestación) y `reports/strspy.badge.jso
 ## Atajo para validar el motor primero (opcional)
 
 Si querés ver el pipeline entero en verde ANTES de pelear con el env real de
-STRspy, corré el workflow con `tool = strait-razor`. Te confirma que Actions, las
-compuertas y el reporte funcionan; después vas por el caso difícil.
+STRspy, corré el workflow con `tool = strait-razor-PowerSeqv2.31`. Te confirma
+que Actions, las compuertas y el reporte funcionan; después vas por el caso difícil.
 
 ---
 
@@ -149,14 +149,15 @@ StraitRazor es MPS/Illumina, así que se valida con los datos del NIST
 `mds2-2157` (no con los BAM ONT de STRspy). Ya hay **dos variantes** listas, con
 fixtures reales chiquitos (5.000 reads, mismo donante NTD01) commiteados:
 
-| `tool` en Actions | Kit (Illumina) | Config |
+| `tool` en Actions (directorio) | Kit (Illumina) | Config |
 |---|---|---|
-| `strait-razor`          | Promega PowerSeq 46GY | `PowerSeqv2.31.config` |
-| `strait-razor-forenseq` | Verogen ForenSeq      | `ForenSeqv1.27.config` |
+| `strait-razor-PowerSeqv2.31` | Promega PowerSeq 46GY | `PowerSeqv2.31.config` |
+| `strait-razor-ForenSeqv1.27` | Verogen ForenSeq      | `ForenSeqv1.27.config` |
 
 Disparalas igual que STRspy: pestaña **Actions** → workflow **STRhub Verified** →
-**Run workflow** → en `tool` escribí `strait-razor` (o `strait-razor-forenseq`).
-Cada corrida produce su atestación en `reports/` y su badge.
+**Run workflow** → en `tool` elegí la variante en el desplegable (el nombre ya
+incluye el kit y la versión del config). Cada corrida produce su atestación en
+`reports/<slug>.json` y su badge `reports/<slug>.badge.json`.
 
 La procedencia exacta de cada fixture (archivo dentro del zip + cómo se regenera
 con `remotezip`, sin bajar los 5-8 GB) está en el `SOURCE.txt` de cada carpeta

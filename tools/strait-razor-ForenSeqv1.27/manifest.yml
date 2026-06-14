@@ -1,5 +1,5 @@
 # STRhub Verified manifest — STRait Razor v3 (Verogen ForenSeq variant)
-# Same tool/commit as tools/strait-razor; this directory exists so the harness
+# Same tool/commit as tools/strait-razor-PowerSeqv2.31; this directory exists so the harness
 # can verify the ForenSeq assay path (ForenSeqv1.27.config) against real
 # Illumina MiSeq reads, alongside the PowerSeq path.
 
@@ -31,7 +31,7 @@ run:
   timeout_minutes: 15
 
 inputs:
-  fixture: "tools/strait-razor-forenseq/fixtures/nist-mds2-2157"
+  fixture: "tools/strait-razor-ForenSeqv1.27/fixtures/nist-mds2-2157"
                                        # Real NIST mds2-2157 ForenSeq reads (NTD01).
 
 outputs:

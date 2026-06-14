@@ -53,12 +53,12 @@ reports/                       generated attestations + shields.io badges
 
 ## Run locally
 ```bash
-docker build --build-arg STRAITRAZOR_REF=<sha> -f tools/strait-razor/Dockerfile -t toolimg tools/strait-razor
+docker build --build-arg STRAITRAZOR_REF=<sha> -f tools/strait-razor-PowerSeqv2.31/Dockerfile -t toolimg tools/strait-razor-PowerSeqv2.31
 mkdir -p work/out
 docker run --rm -v "$PWD/fixtures/example:/data/in:ro" -v "$PWD/work/out:/data/out" toolimg \
   "str8rzr -c /opt/strait-razor/PowerSeqv2.31.config /data/in/sample.fastq > /data/out/sample.allsequences.txt"
-python harness/check_io.py tools/strait-razor/manifest.yml work/out
-python harness/report.py --manifest tools/strait-razor/manifest.yml --installs pass --runs pass
+python harness/check_io.py tools/strait-razor-PowerSeqv2.31/manifest.yml work/out
+python harness/report.py --manifest tools/strait-razor-PowerSeqv2.31/manifest.yml --installs pass --runs pass
 ```
 
 ## Status
