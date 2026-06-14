@@ -16,28 +16,43 @@ amplicon-based. There is **NO Oxford Nanopore / long-read data** here.
 - Do NOT use it for ONT tools (e.g. STRspy) — wrong read type. Those use the
   `fixtures/strspy-bam` (1KGP-ONT) fixture instead.
 
-## Download (sequencing reads live in NGS_Assays)
-```bash
-BASE=https://data.nist.gov/od/ds/ark:/88434/mds2-2157
-curl -sL "$BASE/README_Forensic_DNA_Open_Dataset.txt" -o NIST_README.txt
+## Real fixtures already built (two assays)
+Two tiny, real fixtures are committed in-tree (5,000 reads each, ~2-4 MB),
+both from donor **NTD01** so the assays are directly comparable:
 
-# Pick ONE assay that matches your tool's config:
-#   ForenSeq (Illumina MiSeq):
-curl -L "$BASE/NGS_Assays/Verogen_ForenSeq_DNA_Signature_Prep_Kit.zip" -o forenseq.zip
-#   PowerSeq 46GY (Illumina):
-curl -L "$BASE/NGS_Assays/Promega_PowerSeq_46GY.zip" -o powerseq46gy.zip
-#   (checksums available by appending .sha256 to any URL)
-```
+| Tool dir | Assay (Illumina) | Fixture | Config |
+|---|---|---|---|
+| `tools/strait-razor`          | Promega PowerSeq 46GY | `tools/strait-razor/fixtures/nist-mds2-2157/sample.fastq`          | `PowerSeqv2.31.config` |
+| `tools/strait-razor-forenseq` | Verogen ForenSeq      | `tools/strait-razor-forenseq/fixtures/nist-mds2-2157/sample.fastq` | `ForenSeqv1.27.config` |
 
-## Build a tiny fixture
+Each fixture dir has a `SOURCE.txt` with exact provenance and the rebuild snippet.
+
+## How they were built (no multi-GB download)
+The per-assay zips are huge (PowerSeq 5.8 GB, ForenSeq 7.6 GB) but NIST serves
+them from S3 with HTTP range support, so we pull just ONE FASTQ from inside the
+zip with `remotezip` and keep only the first 5,000 reads — no full download.
+
 ```bash
-unzip -q powerseq46gy.zip -d powerseq46gy
-# Read the bundled README to choose a single-source sample, then down-sample it:
-seqkit sample -n 5000 powerseq46gy/<some_single_source>.fastq.gz -o sample.fastq
-# place it where the manifest expects:
-mkdir -p fixtures/nist-mds2-2157
-mv sample.fastq fixtures/nist-mds2-2157/sample.fastq
+python -m pip install remotezip   # use a venv if your Python is externally managed
+python - <<'PY'
+import io
+from remotezip import RemoteZip
+# PowerSeq 46GY single-source donor NTD01, read 1:
+url ="https://data.nist.gov/od/ds/ark:/88434/mds2-2157/NGS_Assays/Promega_PowerSeq_46GY.zip"
+name="Promega_PowerSeq_46GY/PowerSeq46GY-SingleSource/PS_NTD01_S1_L001_R1_001.fastq"
+with RemoteZip(url) as z, z.open(name) as fh, open("sample.fastq","wb") as w:
+    r=io.BufferedReader(fh)
+    for _ in range(5000):
+        rec=[r.readline() for _ in range(4)]
+        if not rec[3]: break
+        w.writelines(rec)
+PY
 ```
+(For ForenSeq use the zip/member in `tools/strait-razor-forenseq/fixtures/nist-mds2-2157/SOURCE.txt`.)
+
+The classic route still works too — `curl` the whole zip, `unzip`, then
+`seqkit sample -n 5000 <single_source>.fastq -o sample.fastq` — it just downloads
+several GB you don't need.
 
 ## Match the config to the assay
 STRait Razor needs the config that matches the kit:

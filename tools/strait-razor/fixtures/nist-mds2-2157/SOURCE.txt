@@ -1,0 +1,36 @@
+Fixture provenance — STRait Razor (PowerSeq path)
+=================================================
+
+sample.fastq is REAL data: the first 5,000 reads of a single-source sample from
+the NIST Forensic DNA Open Dataset (mds2-2157), Promega PowerSeq 46GY kit
+(Illumina MiSeq). It replaces the earlier synthetic placeholder. The original
+synthetic engine smoke-test fixture is preserved at fixtures/example/sample.fastq.
+
+Dataset : NIST mds2-2157  (DOI 10.18434/M32157)
+Landing  : https://data.nist.gov/od/id/mds2-2157
+Use scope: research / training / education only; not for donor identification or
+           database searching (per NIST). A smoke test is within scope.
+
+Source file inside the dataset zip:
+  NGS_Assays/Promega_PowerSeq_46GY.zip
+  -> Promega_PowerSeq_46GY/PowerSeq46GY-SingleSource/PS_NTD01_S1_L001_R1_001.fastq
+  (donor NTD01, read 1)
+
+Matching STRait Razor config: PowerSeqv2.31.config  (used in manifest.yml)
+
+How it was built (no multi-GB download; HTTP range reads into the zip):
+  python -m pip install remotezip
+  python - <<'PY'
+  import io
+  from remotezip import RemoteZip
+  url="https://data.nist.gov/od/ds/ark:/88434/mds2-2157/NGS_Assays/Promega_PowerSeq_46GY.zip"
+  name="Promega_PowerSeq_46GY/PowerSeq46GY-SingleSource/PS_NTD01_S1_L001_R1_001.fastq"
+  with RemoteZip(url) as z, z.open(name) as fh, open("sample.fastq","wb") as w:
+      r=io.BufferedReader(fh)
+      for _ in range(5000):
+          rec=[r.readline() for _ in range(4)]
+          if not rec[3]: break
+          w.writelines(rec)
+  PY
+
+seqkit stats: 5,000 reads, len 53-301 bp (adapter-trimmed Illumina R1).

@@ -138,6 +138,34 @@ adentro está `reports/strspy.json` (la atestación) y `reports/strspy.badge.jso
 ## Atajo para validar el motor primero (opcional)
 
 Si querés ver el pipeline entero en verde ANTES de pelear con el env real de
-STRspy, corré el workflow con `tool = strait-razor` usando el fixture sintético
-que ya viene incluido. Te confirma que Actions, las compuertas y el reporte
-funcionan; después vas por el caso difícil.
+STRspy, corré el workflow con `tool = strait-razor`. Te confirma que Actions, las
+compuertas y el reporte funcionan; después vas por el caso difícil.
+
+---
+
+## StraitRazor sobre datos reales del NIST (Illumina, mds2-2157)
+
+StraitRazor es MPS/Illumina, así que se valida con los datos del NIST
+`mds2-2157` (no con los BAM ONT de STRspy). Ya hay **dos variantes** listas, con
+fixtures reales chiquitos (5.000 reads, mismo donante NTD01) commiteados:
+
+| `tool` en Actions | Kit (Illumina) | Config |
+|---|---|---|
+| `strait-razor`          | Promega PowerSeq 46GY | `PowerSeqv2.31.config` |
+| `strait-razor-forenseq` | Verogen ForenSeq      | `ForenSeqv1.27.config` |
+
+Disparalas igual que STRspy: pestaña **Actions** → workflow **STRhub Verified** →
+**Run workflow** → en `tool` escribí `strait-razor` (o `strait-razor-forenseq`).
+Cada corrida produce su atestación en `reports/` y su badge.
+
+La procedencia exacta de cada fixture (archivo dentro del zip + cómo se regenera
+con `remotezip`, sin bajar los 5-8 GB) está en el `SOURCE.txt` de cada carpeta
+`tools/<variante>/fixtures/nist-mds2-2157/` y en `fixtures/nist-mds2-2157/README.md`.
+
+Qué esperar en este primer run real:
+- **Available / Installs**: deberían pasar (repo público + build C++ del binario).
+- **Runs**: primer contacto del binario con reads reales; si algún flag o ruta de
+  config necesita ajuste, el log lo muestra (el manifest marca esos puntos).
+- **Expected IO**: confirma que `*.allsequences.txt` salió no vacío (atrapa el
+  exit-0-pero-vacío). Si querés exigir loci concretos, descomentá `must_contain`
+  en el manifest.
