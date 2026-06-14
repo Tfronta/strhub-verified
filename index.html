@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STRhub Verified</title>
+<style>
+  body { font: 16px/1.6 system-ui, sans-serif; max-width: 960px; margin: 2rem auto;
+          padding: 0 1rem; background:#ffffff; color:#1a1a1a; }
+  header p { color:#666; }
+  .grid { display:grid; gap:1rem; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); }
+  .card { display:block; text-decoration:none; color:inherit; border:1px solid #ddd;
+           border-radius:12px; padding:1rem 1.1rem; transition:.15s; }
+  .card:hover { border-color:#2563eb; transform:translateY(-2px); }
+  .card h2 { margin:.4rem 0 .1rem; font-size:1.15rem; }
+  .badge { display:inline-block; padding:.2rem .6rem; border-radius:999px; color:#fff; font-size:.8rem; font-weight:600; }
+  .slug { color:#666; font-family:ui-monospace,monospace; font-size:.85rem; margin:.1rem 0; }
+  .stat { font-size:.9rem; margin:.3rem 0 0; }
+  .src { color:#999; font-size:.78rem; margin:.4rem 0 0; word-break:break-all; }
+  footer { color:#999; font-size:.82rem; margin-top:2rem; }
+  @media (prefers-color-scheme: dark) {
+    body { background:#0d1117; color:#e6edf3; }
+    header p { color:#9da7b3; }
+    .card { border-color:#30363d; }
+    .slug { color:#9da7b3; }
+  }
+</style></head><body>
+<header>
+  <h1>STRhub Verified</h1>
+  <p>Reproducible-execution attestations for forensic STR genotyping tools.
+     Each card reports the highest verification gate cleared — not a claim of
+     genotype accuracy or casework fitness.</p>
+</header>
+<main class="grid">
+  <a class="card" href="strait-razor-PowerSeqv2.31.html">
+    <span class="badge" style="background:#16a34a">Runs + Plausible output</span>
+    <h2>STRait Razor</h2>
+    <p class="slug">strait-razor-PowerSeqv2.31</p>
+    <p class="stat">44 loci · 4634 reads</p>
+    <p class="src">https://github.com/Ahhgust/STRaitRazor</p>
+  </a></main>
+<footer>Generated 2026-06-14T18:56:25+00:00 · 1 tool(s)</footer>
+</body></html>
