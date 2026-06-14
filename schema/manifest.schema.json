@@ -75,6 +75,21 @@
             "type": "array",
             "items": { "type": "string" },
             "description": "Optional substrings/loci that must appear (e.g. ['D3S1358','vWA'])."
+          },
+          "content": {
+            "type": "object",
+            "description": "OPTIONAL content gate (rung above IO): structural + locus plausibility checks on the rows. Proves the output looks like genotype-bearing data; still no claim of biological correctness.",
+            "additionalProperties": false,
+            "properties": {
+              "columns": { "type": "integer", "minimum": 1, "description": "Exact number of tab-separated fields every data row must have." },
+              "dna_column": { "type": "integer", "minimum": 0, "description": "0-based index of a column that must contain only A/C/G/T/N." },
+              "count_columns": { "type": "array", "items": { "type": "integer", "minimum": 0 }, "description": "0-based indices of columns that must be non-negative integers (read counts)." },
+              "locus_column": { "type": "integer", "minimum": 0, "description": "0-based index of the locus column (e.g. 'CSF1PO:10')." },
+              "locus_sep": { "type": "string", "default": ":", "description": "Separator between locus and allele in the locus column." },
+              "min_distinct_loci": { "type": "integer", "minimum": 1, "description": "Minimum number of distinct loci that must appear." },
+              "expect_loci": { "type": "array", "items": { "type": "string" }, "description": "Loci that MUST be present (e.g. core CODIS loci)." },
+              "min_total_reads": { "type": "integer", "minimum": 0, "description": "Minimum sum of read counts across all calls (guards against all-noise output)." }
+            }
           }
         }
       }

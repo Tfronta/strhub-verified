@@ -39,7 +39,17 @@ outputs:
   - path: "*.allsequences.txt"
     format: "tsv"
     min_records: 1              # guard against exit-0-but-empty silent failure
-    # must_contain: ["D3S1358", "vWA"]   # optional: loci you expect on this fixture
+    # str8rzr allsequences columns: 0=Locus:allele 1="N bases" 2=sequence 3=fwd 4=rev
+    content:
+      columns: 5
+      dna_column: 2
+      count_columns: [3, 4]
+      locus_column: 0
+      locus_sep: ":"
+      min_distinct_loci: 20        # PowerSeq 46GY observed ~44 loci on the fixture
+      min_total_reads: 500
+      expect_loci: ["Amelogenin", "CSF1PO", "TH01", "TPOX", "vWA",
+                    "D3S1358", "D8S1179", "D18S51", "D21S11", "FGA"]
 
 # OPTIONAL gate 5 — uncomment to require the tool to reproduce its OWN example output.
 # reproduces_own_example:
