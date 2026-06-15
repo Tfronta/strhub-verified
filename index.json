@@ -1,14 +1,14 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-06-15T18:40:03+00:00",
-  "count": 6,
+  "generated": "2026-06-15T18:43:55+00:00",
+  "count": 7,
   "tools": [
     {
       "slug": "index",
       "name": "index",
       "level": "none",
       "label": "not run",
-      "generated": "2026-06-15T18:31:30+00:00",
+      "generated": "2026-06-15T18:40:03+00:00",
       "source_repo": null,
       "source_ref": null,
       "ci_run": null,
@@ -116,6 +116,25 @@
       "readme_max": 5,
       "report": "straitrazor-v1-0-4.json",
       "page": "straitrazor-v1-0-4.html"
+    },
+    {
+      "slug": "straitrazor-v1-0-5",
+      "name": "StraitRazor",
+      "level": "io",
+      "label": "Runs + Expected IO",
+      "generated": "2026-06-15T18:43:53+00:00",
+      "source_repo": "https://github.com/Ahhgust/STRaitRazor",
+      "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27568371876",
+      "distinct_str_loci": null,
+      "distinct_snp_markers": null,
+      "total_reads": null,
+      "own_state": "pass",
+      "external_state": "na",
+      "readme_score": 5,
+      "readme_max": 5,
+      "report": "straitrazor-v1-0-5.json",
+      "page": "straitrazor-v1-0-5.html"
     }
   ]
 }
