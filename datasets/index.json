@@ -1,0 +1,16 @@
+{
+  "schema": "strhub-verified/datasets/1",
+  "description": "Typed reference-dataset library. The verify workflow's external matrix leg looks up a compatible dataset by the manifest's inputs.type. If no entry matches, the external leg is reported N/A (never a failure).",
+  "datasets": {
+    "illumina-str-fastq": {
+      "dir": "datasets/illumina-str-fastq",
+      "data": "datasets/illumina-str-fastq/sample.fastq",
+      "format": "fastq",
+      "name": "NIST mds2-2157 — Verogen ForenSeq single-source (NTD01)",
+      "source": "https://data.nist.gov/od/id/mds2-2157",
+      "doi": "10.18434/M32157",
+      "license": "research / training / education only (per NIST); not for donor identification or database searching",
+      "notes": "First 5,000 reads (351 bp) of a single-source Illumina MiSeq ForenSeq sample. Used as the external STR-fastq dataset."
+    }
+  }
+}

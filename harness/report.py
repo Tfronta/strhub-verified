@@ -103,6 +103,29 @@ def _summary_md(report: dict, slug: str) -> str:
             f"- Top markers by read depth: {top}" if top else "",
         ]
 
+    # Verification matrix (own / external legs), if present.
+    datasets = report.get("datasets") or []
+    if datasets:
+        lines += ["", "## Verification matrix", "",
+                  "| Leg | Available | Result | Dataset |", "|---|---|---|---|"]
+        for leg in datasets:
+            avail = leg.get("available", True)
+            status = "N/A" if not avail else ("PASS" if leg.get("passed") else "—")
+            lines.append(
+                f"| {leg.get('label', leg.get('leg', '?'))} | "
+                f"{'yes' if avail else 'N/A'} | {status} | "
+                f"{leg.get('dataset', leg.get('type', '—'))} |"
+            )
+
+    # README minimum-to-run checklist (advisory).
+    rc = report.get("readme_check")
+    if rc:
+        lines += ["", "## README check (advisory)", "",
+                  f"Score: **{rc.get('score', 0)}/{rc.get('max', 5)}** — advisory only, "
+                  "does not affect the execution badge.", ""]
+        for name, c in (rc.get("checks") or {}).items():
+            lines.append(f"- {'PASS' if c.get('present') else '—'} {name}")
+
     lines += [
         "",
         "## Scope (read this)",
@@ -162,6 +185,45 @@ def _summary_html(report: dict, slug: str) -> str:
       {'<li>Top markers by read depth: ' + esc(top) + '</li>' if top else ''}
     </ul>"""
 
+    # Verification matrix (own / external legs).
+    matrix_block = ""
+    datasets = report.get("datasets") or []
+    if datasets:
+        mrows = []
+        for leg in datasets:
+            avail = leg.get("available", True)
+            if not avail:
+                chip = '<span class="no">N/A</span>'
+            elif leg.get("passed"):
+                chip = '<span class="ok">PASS</span>'
+            else:
+                chip = '<span class="no">—</span>'
+            mrows.append(
+                f"<tr><td>{esc(leg.get('label', leg.get('leg', '?')))}</td>"
+                f"<td>{chip}</td>"
+                f"<td>{esc(leg.get('dataset', leg.get('type', '—')))}</td></tr>"
+            )
+        matrix_block = (
+            "<h2>Verification matrix</h2>"
+            "<table><thead><tr><th>Leg</th><th>Result</th><th>Dataset</th></tr></thead>"
+            f"<tbody>{''.join(mrows)}</tbody></table>"
+        )
+
+    # README minimum-to-run checklist (advisory).
+    readme_block = ""
+    rc = report.get("readme_check")
+    if rc:
+        items = "".join(
+            f"<li>{'<b>PASS</b>' if c.get('present') else '—'} {esc(name)}</li>"
+            for name, c in (rc.get("checks") or {}).items()
+        )
+        readme_block = (
+            "<h2>README check <span style='font-weight:400;color:#888'>(advisory)</span></h2>"
+            f"<p>Score: <b>{esc(rc.get('score', 0))}/{esc(rc.get('max', 5))}</b> — "
+            "advisory only; does not affect the execution badge.</p>"
+            f"<ul class='stats'>{items}</ul>"
+        )
+
     ci = (f'<a href="{esc(report["ci_run"])}">CI run</a>'
           if report.get("ci_run") else "")
     return f"""<!doctype html>
@@ -204,6 +266,8 @@ def _summary_html(report: dict, slug: str) -> str:
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table>
 {content_block}
+{matrix_block}
+{readme_block}
 <h2>Scope</h2>
 <p class="scope">{esc(report['scope'])}<br><br>
 This is <b>not</b> a claim that the genotypes are correct, nor that the tool is
@@ -226,6 +290,10 @@ def main() -> int:
     ap.add_argument("--io", default="io_result.json", help="path to io_result.json")
     ap.add_argument("--content", default="content_result.json",
                     help="path to content_result.json")
+    ap.add_argument("--matrix", default="matrix.json",
+                    help="path to matrix.json (own/external legs, Fase 3)")
+    ap.add_argument("--readme", default="readme_result.json",
+                    help="path to readme_result.json (advisory, Fase 3)")
     ap.add_argument("--ref", default="")
     ap.add_argument("--run-url", default="")
     args = ap.parse_args()
@@ -244,6 +312,25 @@ def main() -> int:
     if cp.exists():
         content_detail = json.loads(cp.read_text())
         content_pass = bool(content_detail.get("passed"))
+
+    # Fase 3: matrix of verification legs (own + external) and the advisory
+    # README check. Both are optional; absence keeps the legacy single-leg shape.
+    datasets = []
+    mp = pathlib.Path(args.matrix)
+    if mp.exists():
+        try:
+            loaded = json.loads(mp.read_text())
+            datasets = loaded if isinstance(loaded, list) else loaded.get("legs", [])
+        except Exception:  # noqa: BLE001
+            datasets = []
+
+    readme_check = None
+    rp = pathlib.Path(args.readme)
+    if rp.exists():
+        try:
+            readme_check = json.loads(rp.read_text())
+        except Exception:  # noqa: BLE001
+            readme_check = None
 
     gates = {
         "available": _status(args.available),
@@ -272,6 +359,8 @@ def main() -> int:
         "level": level,
         "io_detail": io_detail,
         "content_detail": content_detail,
+        "datasets": datasets,
+        "readme_check": readme_check,
         "scope": SCOPE,
     }
 

@@ -56,7 +56,26 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "fixture": { "type": "string", "description": "Path to the test fixture dir, relative to repo root", "default": "fixtures/example" }
+        "type": {
+          "type": "string",
+          "description": "Assay/input type used to match a compatible external reference dataset (e.g. 'illumina-str-fastq'). See datasets/index.json. The external matrix leg is N/A if no dataset matches."
+        },
+        "fixture": {
+          "description": "The author's own test data (BYOR). Either a path inside this repo, OR a remote pointer into the author's PUBLIC repo (repo + ref + path) so STRhub stores no data.",
+          "oneOf": [
+            { "type": "string", "description": "Path to the test fixture dir, relative to repo root", "default": "fixtures/example" },
+            {
+              "type": "object",
+              "required": ["repo", "ref", "path"],
+              "additionalProperties": false,
+              "properties": {
+                "repo": { "type": "string", "format": "uri", "description": "Author's PUBLIC repo URL" },
+                "ref": { "type": "string", "description": "Immutable commit SHA or tag" },
+                "path": { "type": "string", "description": "Path to the fixture file inside that repo" }
+              }
+            }
+          ]
+        }
       }
     },
     "outputs": {

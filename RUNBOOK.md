@@ -186,3 +186,94 @@ Qué esperar en este primer run real:
 
 Cada run genera también `reports/<slug>.summary.md`: un resumen legible para
 humanos (qué pasó, qué loci salieron, profundidad, y qué NO se afirma).
+
+---
+
+## Fase 2 — Submission self-service (GitHub App)
+
+La web (`strhub-web`) puede commitear el `manifest.yml` + `Dockerfile` a este repo
+y disparar el workflow en nombre del autor, vía una **GitHub App central**. El
+autor nunca toca este repo; su código nunca se guarda (el Dockerfile lo clona en
+build time).
+
+### Crear la GitHub App (una vez, acción del mantenedor)
+
+1. GitHub → Settings → Developer settings → **GitHub Apps** → New GitHub App.
+2. Permisos (mínimos):
+   - **Repository → Contents: Read and write** (commitear `tools/<slug>/`).
+   - **Repository → Actions: Read and write** (`workflow_dispatch` + leer runs).
+   - **Repository → Metadata: Read-only** (obligatorio).
+3. Instalar la App **solo en el repo `strhub-verified`**.
+4. Generar una **private key** (PEM) y anotar el **App ID** y el **Installation ID**.
+
+### Cargar los secrets en la web (Vercel/host de `strhub-web`)
+
+| Variable | Valor |
+|---|---|
+| `GITHUB_APP_ID` | el App ID numérico |
+| `GITHUB_APP_PRIVATE_KEY` | el PEM (raw o base64; el helper acepta ambos) |
+| `GITHUB_APP_INSTALLATION_ID` | el Installation ID |
+| `VERIFIED_ENGINE_REPO` | `Tfronta/strhub-verified` (default) |
+| `VERIFIED_ENGINE_BRANCH` | `main` (default) |
+| `VERIFIED_WORKFLOW_FILE` | `verify.yml` (default) |
+| `JWT_SECRET` | el mismo secreto admin (para `/api/verify/approve`) |
+
+### Flujo
+
+1. Autor completa `/verified/submit` (validación `zod` espejo del schema).
+2. `POST /api/verify/submit`: valida, rate-limit, chequea slug libre y que el
+   fixture BYOR sea público; si el repo es nuevo, queda **pendiente de aprobación**.
+3. Admin aprueba el repo nuevo: `POST /api/verify/approve` con `Authorization:
+   Bearer <jwt>` y `{ "repo": "https://github.com/owner/tool" }`. El autor reenvía.
+4. Repos aprobados: la web commitea `tools/<slug>/{manifest.yml,Dockerfile}` y
+   dispara `verify.yml` con un `dispatch_id` único.
+5. `run-name` del workflow incluye el `dispatch_id`; `GET /api/verify/status?
+   dispatchId=` lo encuentra filtrando los runs y muestra el progreso en vivo.
+
+> Rate-limit por defecto: 5 envíos/hora por IP, 3/hora por repo
+> (`lib/verified/store.ts`).
+
+---
+
+## Fase 3 — Matriz own/external, datasets tipados y README-check
+
+### Librería de datasets (`datasets/`)
+
+Datasets de referencia tipados por assay. `datasets/index.json` mapea
+`inputs.type` → archivo de datos:
+
+```
+datasets/
+  index.json                  # type → { data, name, source, doi, license }
+  illumina-str-fastq/
+    dataset.yml               # metadata
+    sample.fastq              # datos (NIST mds2-2157)
+    SOURCE.txt                # procedencia
+```
+
+Agregar un dataset: crear `datasets/<type>/` con su `dataset.yml` + datos, y una
+entrada en `datasets/index.json`. Si un `inputs.type` no tiene match, la pierna
+externa se reporta **N/A** (nunca falla).
+
+### Matriz de verificación (en `verify.yml`)
+
+Cada run corre dos piernas (cuando aplican):
+
+| Pierna | Input | Origen |
+|---|---|---|
+| **own** | `work/in_own` | fixture del autor (path local o BYOR remoto `repo+ref+path`) |
+| **external** | `work/in_external` | dataset tipado de `datasets/` por `inputs.type` |
+
+`harness/prepare.py` resuelve el dataset y stagea ambas piernas (descarga el BYOR
+remoto desde `raw.githubusercontent.com`). El badge/escalera usa la pierna
+**own**; la matriz completa va a `matrix.json` → `report.py` → `<slug>.json`,
+HTML y `index.json` (`own_state` / `external_state`).
+
+### README-check (advisory)
+
+`harness/check_readme.py` baja el README del repo del autor (al ref fijado) y
+corre un checklist de presencia de 5 ítems (install, comando, input, output,
+dependencias). Es **siempre informativo**: nunca cambia el badge de ejecución.
+Determinista (keywords), sin costo de API.
+
+Salida en el reporte: `readme_check.score` / `readme_check.max` + cada ítem.

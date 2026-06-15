@@ -1,0 +1,18 @@
+# Typed reference dataset — illumina-str-fastq
+# Matched against a manifest's `inputs.type: illumina-str-fastq` for the external
+# verification leg. This is shared, third-party data: certifying a tool against
+# it shows the tool works on more than the author's own example.
+
+type: "illumina-str-fastq"
+data: "sample.fastq"          # relative to this directory
+format: "fastq"
+
+name: "NIST mds2-2157 — Verogen ForenSeq single-source (NTD01)"
+source: "https://data.nist.gov/od/id/mds2-2157"
+doi: "10.18434/M32157"
+license: >
+  Research / training / education only (per NIST); not for donor identification
+  or database searching. A smoke test is within scope.
+notes: >
+  First 5,000 reads (fixed 351 bp) of a single-source Illumina MiSeq ForenSeq DNA
+  Signature Prep sample. See SOURCE.txt for exact provenance and how it was built.

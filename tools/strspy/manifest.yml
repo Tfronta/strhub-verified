@@ -33,6 +33,7 @@ run:
   timeout_minutes: 20
 
 inputs:
+  type: "ont-bam-hg38"             # no shared dataset yet → external leg reported N/A
   fixture: "fixtures/strspy-bam"   # a tiny hg38-aligned ONT BAM over a few DB loci (e.g. D3S1358)
 
 outputs:
