@@ -1,10 +1,17 @@
-Fixture provenance — STRait Razor (ForenSeq path)
-=================================================
+Fixture provenance — external leg (Illumina STR FASTQ)
+======================================================
 
 sample.fastq is REAL data: the first 5,000 reads of a single-source sample from
 the NIST Forensic DNA Open Dataset (mds2-2157), Verogen ForenSeq DNA Signature
-Prep Kit (Illumina MiSeq). Same donor (NTD01) as the PowerSeq fixture, so the
-two assay paths are directly comparable.
+Prep Kit (Illumina MiSeq). Same donor (NTD01) as the PowerSeq fixture in
+tools/strait-razor-PowerSeqv2.31/fixtures/nist-mds2-2157/, so the two assay
+paths are directly comparable.
+
+NIST mds2-2157 covers multiple Illumina STR kits (ForenSeq, PowerSeq 46GY, …).
+STRhub Verified has published examples for both ForenSeq and PowerSeq. This
+directory holds the ForenSeq slice used for the typed external leg; tool
+manifests should point their own fixture to kit-matched reads (see
+fixtures/nist-mds2-2157/README.md).
 
 Dataset : NIST mds2-2157  (DOI 10.18434/M32157)
 Landing  : https://data.nist.gov/od/id/mds2-2157

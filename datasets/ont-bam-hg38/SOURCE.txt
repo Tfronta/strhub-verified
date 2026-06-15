@@ -1,0 +1,57 @@
+Fixture provenance — ont-bam-hg38 (1000 Genomes ONT, hg38-aligned CODIS slices)
+================================================================================
+
+STRhub Verified does NOT host or redistribute full genomes. The BAM files in
+`ont_slices/` are **small, pre-built slices** over forensic STR regions, derived
+from publicly available 1000 Genomes Oxford Nanopore data. They are used only as
+smoke-test inputs for the external verification leg.
+
+Upstream (open access)
+----------------------
+Project  : 1000 Genomes — Oxford Nanopore Technology (ONT) data
+Landing  : https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/
+Path     : PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/
+Reference: GRCh38 / hg38 (minimap2-aligned BAMs)
+Chemistry: ONT R10 flow cells, basecalling model SUP (as distributed in the
+           1000 Genomes ONT release)
+
+License / use scope
+-------------------
+Open-access research data from the 1000 Genomes / Human Pangenome Reference
+Consortium ecosystem. STRhub adds no additional restrictions beyond documenting
+that these files are third-party materials used for reproducible-execution
+smoke tests only — not for donor identification, database searching, or
+casework claims.
+
+How the slices were built
+-------------------------
+Region BED: `ont_slices/codis_pm10kb.bed` (CODIS core + common forensic STR loci,
+            ±10 kb padding, hg38 coordinates).
+
+Each `*.codis.bam` is a region extract from one upstream hg38-aligned ONT BAM,
+indexed with samtools. The slices are **already committed** in `ont_slices/`;
+rebuild only if you replace the upstream file or change the BED.
+
+Samples in ont_slices/ (all available in-repo)
+------------------------------------------------
+  HG00113.codis.bam   (~30 MB)  ← default for external verification leg
+  HG00154.codis.bam   (~30 MB)
+  GM19038.codis.bam   (~34 MB)
+  HG00097.codis.bam   (~65 MB)
+  HG00263.codis.bam   (~65 MB)
+
+Each sample has a matching `.codis.bam.bai` index alongside it.
+
+Default for CI / external matrix leg
+------------------------------------
+`datasets/index.json` points the `ont-bam-hg38` type at HG00113 (smallest slice).
+Tools that read `/data/in` as a directory receive the BAM + BAI pair via
+`harness/prepare.py`.
+
+Rebuild recipe (optional — slices already exist)
+-------------------------------------------------
+  samtools view -b -L ont_slices/codis_pm10kb.bed UPSTREAM.bam \
+    | samtools sort -o ont_slices/HG00113.codis.bam -
+  samtools index ont_slices/HG00113.codis.bam
+
+Replace UPSTREAM.bam with the appropriate file from the AWS bucket above.

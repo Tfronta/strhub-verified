@@ -33,8 +33,8 @@ run:
   timeout_minutes: 20
 
 inputs:
-  type: "ont-bam-hg38"             # no shared dataset yet → external leg reported N/A
-  fixture: "fixtures/strspy-bam"   # a tiny hg38-aligned ONT BAM over a few DB loci (e.g. D3S1358)
+  type: "ont-bam-hg38"
+  fixture: "ont_slices/HG00113.codis.bam"   # canonical CODIS slice; see datasets/ont-bam-hg38/
 
 outputs:
   # VERIFY exact output filenames against one real run; STRspy writes per-sample

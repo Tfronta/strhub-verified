@@ -34,6 +34,9 @@ def resolve(input_type: str | None) -> dict | None:
     data = entry.get("data")
     if data and not (ROOT / data).exists():
         return None  # indexed but the file is missing → treat as N/A
+    bam_index = entry.get("bam_index")
+    if bam_index and not (ROOT / bam_index).exists():
+        return None
     return entry
 
 

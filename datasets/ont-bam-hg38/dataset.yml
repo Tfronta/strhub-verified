@@ -1,0 +1,20 @@
+# Typed reference dataset — ont-bam-hg38
+# Matched against a manifest's `inputs.type: ont-bam-hg38` for the external
+# verification leg. BAM slices live in ont_slices/ (pre-built, committed).
+
+type: "ont-bam-hg38"
+# Default external test file (see datasets/index.json); slices stored in ont_slices/
+data: "ont_slices/HG00113.codis.bam"
+bam_index: "ont_slices/HG00113.codis.bam.bai"
+format: "bam"
+reference: "hg38"
+
+name: "1000 Genomes ONT — hg38 CODIS slice (R10 SUP)"
+source: "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/"
+license: >
+  Open access (1000 Genomes / Human Pangenome Reference Consortium). Research
+  and educational use. STRhub is not the data provider.
+chemistry: "Oxford Nanopore R10, basecalling model SUP"
+notes: >
+  Pre-built CODIS ±10 kb slices in ont_slices/. Default external leg uses
+  HG00113 (~30 MB). See SOURCE.txt for all samples and upstream URLs.

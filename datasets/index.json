@@ -6,11 +6,23 @@
       "dir": "datasets/illumina-str-fastq",
       "data": "datasets/illumina-str-fastq/sample.fastq",
       "format": "fastq",
-      "name": "NIST mds2-2157 — Verogen ForenSeq single-source (NTD01)",
+      "name": "NIST mds2-2157 — Illumina STR (ForenSeq slice, donor NTD01)",
       "source": "https://data.nist.gov/od/id/mds2-2157",
       "doi": "10.18434/M32157",
       "license": "research / training / education only (per NIST); not for donor identification or database searching",
-      "notes": "First 5,000 reads (351 bp) of a single-source Illumina MiSeq ForenSeq sample. Used as the external STR-fastq dataset."
+      "notes": "First 5,000 reads (351 bp) of a Verogen ForenSeq single-source sample (NTD01). NIST mds2-2157 also includes Promega PowerSeq 46GY and other MPS assays — tool manifests should pair kit-matched reads in the own leg. External leg uses this ForenSeq slice."
+    },
+    "ont-bam-hg38": {
+      "dir": "datasets/ont-bam-hg38",
+      "data": "ont_slices/HG00113.codis.bam",
+      "bam_index": "ont_slices/HG00113.codis.bam.bai",
+      "format": "bam",
+      "reference": "hg38",
+      "name": "1000 Genomes ONT — hg38 CODIS slice (R10 SUP)",
+      "source": "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+      "license": "Open access (1000 Genomes / HPRC). Research use. STRhub is not the data provider.",
+      "chemistry": "ONT R10, basecalling model SUP",
+      "notes": "Pre-built CODIS slices in ont_slices/. Default external test: HG00113.codis.bam (~30 MB). See datasets/ont-bam-hg38/SOURCE.txt."
     }
   }
 }
