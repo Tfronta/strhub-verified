@@ -1,8 +1,27 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-06-15T18:23:36+00:00",
-  "count": 3,
+  "generated": "2026-06-15T18:31:30+00:00",
+  "count": 5,
   "tools": [
+    {
+      "slug": "index",
+      "name": "index",
+      "level": "none",
+      "label": "not run",
+      "generated": "2026-06-15T18:23:36+00:00",
+      "source_repo": null,
+      "source_ref": null,
+      "ci_run": null,
+      "distinct_str_loci": null,
+      "distinct_snp_markers": null,
+      "total_reads": null,
+      "own_state": null,
+      "external_state": null,
+      "readme_score": null,
+      "readme_max": null,
+      "report": "index.json",
+      "page": "index.html"
+    },
     {
       "slug": "strait-razor-ForenSeqv1.27",
       "name": "STRait Razor",
@@ -59,6 +78,25 @@
       "readme_max": 5,
       "report": "straitrazor-v1-0-2.json",
       "page": "straitrazor-v1-0-2.html"
+    },
+    {
+      "slug": "straitrazor-v1-0-3",
+      "name": "StraitRazor",
+      "level": "installs",
+      "label": "Installs",
+      "generated": "2026-06-15T18:31:28+00:00",
+      "source_repo": "https://github.com/Ahhgust/STRaitRazor",
+      "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27567640615",
+      "distinct_str_loci": null,
+      "distinct_snp_markers": null,
+      "total_reads": null,
+      "own_state": "fail",
+      "external_state": "fail",
+      "readme_score": 5,
+      "readme_max": 5,
+      "report": "straitrazor-v1-0-3.json",
+      "page": "straitrazor-v1-0-3.html"
     }
   ]
 }
