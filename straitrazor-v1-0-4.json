@@ -1,0 +1,103 @@
+{
+  "schema": "strhub-verified/1",
+  "tool": {
+    "name": "StraitRazor",
+    "version": "v1.0-4"
+  },
+  "source": {
+    "repo": "https://github.com/Ahhgust/STRaitRazor",
+    "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+    "ref_resolved": "b618e9345ab40f348b504083ae8de2b39abb60fa"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ]
+  },
+  "generated": "2026-06-15T18:40:01+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27568142531",
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": false,
+    "io": false,
+    "content": false
+  },
+  "level": "installs",
+  "io_detail": {
+    "gate": "io",
+    "passed": false,
+    "outputs": [
+      {
+        "path": "*.txt",
+        "format": "text",
+        "checks": {
+          "exists": true,
+          "non_empty": false,
+          "parses_as_text": true,
+          "min_records": false
+        },
+        "resolved": "sample.allsequences.txt",
+        "records": 0,
+        "passed": false
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": false,
+    "passed": false,
+    "outputs": []
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "Your data",
+      "available": true,
+      "io": false,
+      "content": false,
+      "passed": false
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": false,
+      "type": null,
+      "dataset": null,
+      "io": false,
+      "content": false,
+      "passed": false
+    }
+  ],
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\bfastq\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "requirements"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation."
+}
