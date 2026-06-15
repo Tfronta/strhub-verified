@@ -244,16 +244,26 @@ Datasets de referencia tipados por assay. `datasets/index.json` mapea
 
 ```
 datasets/
-  index.json                  # type → { data, name, source, doi, license }
+  README.md                   # disclaimer + catalogue (STRhub is not data custodian)
+  index.json                  # type → { data, bam_index?, name, source, license, … }
   illumina-str-fastq/
     dataset.yml               # metadata
     sample.fastq              # datos (NIST mds2-2157)
     SOURCE.txt                # procedencia
+  ont-bam-hg38/
+    dataset.yml               # metadata (data lives in ont_slices/)
+    SOURCE.txt                # 1000 Genomes ONT, R10 SUP, open access on AWS
+
+ont_slices/                   # pre-built hg38 CODIS BAM slices (shared by ont-bam-hg38)
+  codis_pm10kb.bed
+  HG00113.codis.bam (+ .bai)  # default external test file (~30 MB)
+  …                           # HG00154, GM19038, HG00097, HG00263 also available
 ```
 
-Agregar un dataset: crear `datasets/<type>/` con su `dataset.yml` + datos, y una
-entrada en `datasets/index.json`. Si un `inputs.type` no tiene match, la pierna
-externa se reporta **N/A** (nunca falla).
+Agregar un dataset: crear `datasets/<type>/` con metadata + `SOURCE.txt`, apuntar
+`data` (y `bam_index` si aplica) en `datasets/index.json`. Los BAM ONT ya
+commiteados viven en `ont_slices/` — no hace falta duplicarlos. Si un
+`inputs.type` no tiene match, la pierna externa se reporta **N/A** (nunca falla).
 
 ### Matriz de verificación (en `verify.yml`)
 

@@ -30,6 +30,23 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = "https://raw.githubusercontent.com"
 
 
+def _bam_sidecar(bam: pathlib.Path) -> pathlib.Path:
+    """Return the .bai path for a BAM (handles *.codis.bam → *.codis.bam.bai)."""
+    return bam.parent / f"{bam.name}.bai"
+
+
+def _copy_bam_pair(src_bam: pathlib.Path, dest_dir: pathlib.Path) -> bool:
+    """Copy a BAM and its .bai sidecar into dest_dir. Returns False if BAM missing."""
+    if not src_bam.is_file():
+        return False
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src_bam, dest_dir / src_bam.name)
+    bai = _bam_sidecar(src_bam)
+    if bai.is_file():
+        shutil.copy2(bai, dest_dir / bai.name)
+    return True
+
+
 def _repo_path(repo_url: str) -> str:
     return (
         repo_url.strip()
@@ -65,6 +82,9 @@ def stage_own(fixture, work_in: pathlib.Path) -> bool:
         for f in src.iterdir():
             if f.is_file():
                 shutil.copy2(f, work_in / f.name)
+    elif src.suffix == ".bam" or src.name.endswith(".bam"):
+        if not _copy_bam_pair(src, work_in):
+            return False
     else:
         shutil.copy2(src, work_in / src.name)
     return any(work_in.iterdir())
@@ -79,7 +99,15 @@ def stage_external(input_type, work_in: pathlib.Path) -> tuple[bool, str]:
     if not data.exists():
         return False, ""
     work_in.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(data, work_in / data.name)
+    if rec.get("format") == "bam" or str(data).endswith(".bam"):
+        bam_index = rec.get("bam_index")
+        idx_path = ROOT / bam_index if bam_index else _bam_sidecar(data)
+        if not _copy_bam_pair(data, work_in):
+            return False, ""
+        if bam_index and not (work_in / idx_path.name).exists():
+            return False, ""
+    else:
+        shutil.copy2(data, work_in / data.name)
     return True, rec.get("name", input_type or "")
 
 

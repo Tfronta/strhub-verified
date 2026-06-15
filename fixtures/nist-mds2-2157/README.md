@@ -14,7 +14,7 @@ Everything in `NGS_Assays/` is **short-read MPS** (Illumina MiSeq / Ion Torrent)
 amplicon-based. There is **NO Oxford Nanopore / long-read data** here.
 - Use it for MPS tools (e.g. STRait Razor, lusSTR).
 - Do NOT use it for ONT tools (e.g. STRspy) — wrong read type. Those use the
-  `fixtures/strspy-bam` (1KGP-ONT) fixture instead.
+  `ont-bam-hg38` typed dataset (`ont_slices/`, see `datasets/ont-bam-hg38/`).
 
 ## Real fixtures already built (two assays)
 Two tiny, real fixtures are committed in-tree (5,000 reads each, ~2-4 MB),

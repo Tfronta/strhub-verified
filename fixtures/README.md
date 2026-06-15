@@ -16,6 +16,13 @@ Replace it for real attestations.
   (e.g. `seqtk sample in.fastq 5000 > sample.fastq`), and commit via Git LFS.
   Keep it tiny so CI stays under the runner limits and fast.
 
-## ONT track (later)
-mds2-2157 has no long-read data. Use a down-sampled 1000 Genomes ONT sample
-for ONT-targeted tools, in a parallel fixture dir.
+## ONT track — `ont-bam-hg38`
+
+mds2-2157 has no long-read data. ONT tools use the typed dataset **`ont-bam-hg38`**
+(see `datasets/ont-bam-hg38/` + `ont_slices/`).
+
+- **Source:** [1000 Genomes ONT on AWS](https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/) (open access)
+- **Chemistry:** ONT R10, basecalling model SUP
+- **Slices:** pre-built CODIS ±10 kb extracts in `ont_slices/*.codis.bam` (already in-repo)
+- **Default CI file:** `ont_slices/HG00113.codis.bam` (+ `.bai`)
+- **Disclaimer:** see `datasets/README.md` — STRhub is not the data provider
