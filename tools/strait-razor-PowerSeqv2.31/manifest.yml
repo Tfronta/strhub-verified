@@ -31,6 +31,7 @@ run:
   timeout_minutes: 15
 
 inputs:
+  type: "illumina-str-fastq"           # matches datasets/illumina-str-fastq (external leg)
   fixture: "tools/strait-razor-PowerSeqv2.31/fixtures/nist-mds2-2157"
                                        # Match run.cmd's config to the assay you pick
                                        # (PowerSeq reads -> PowerSeqv2.31.config, as below).

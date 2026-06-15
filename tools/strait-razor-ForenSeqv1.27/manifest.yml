@@ -31,6 +31,7 @@ run:
   timeout_minutes: 15
 
 inputs:
+  type: "illumina-str-fastq"           # matches datasets/illumina-str-fastq (external leg)
   fixture: "tools/strait-razor-ForenSeqv1.27/fixtures/nist-mds2-2157"
                                        # Real NIST mds2-2157 ForenSeq reads (NTD01).
 

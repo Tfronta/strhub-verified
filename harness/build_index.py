@@ -45,10 +45,22 @@ def _stats(r: dict) -> dict | None:
     return None
 
 
+def _leg_state(datasets: list, leg: str) -> str | None:
+    """Compact state for a matrix leg: 'pass' | 'fail' | 'na' | None (absent)."""
+    for d in datasets or []:
+        if d.get("leg") == leg:
+            if not d.get("available", True):
+                return "na"
+            return "pass" if d.get("passed") else "fail"
+    return None
+
+
 def _summary_entry(slug: str, r: dict) -> dict:
     """Compact, stable summary for index.json — what the web dashboard lists."""
     level = r.get("level", "none")
     stats = _stats(r) or {}
+    datasets = r.get("datasets") or []
+    readme = r.get("readme_check") or {}
     return {
         "slug": slug,
         "name": r.get("tool", {}).get("name", slug),
@@ -61,6 +73,10 @@ def _summary_entry(slug: str, r: dict) -> dict:
         "distinct_str_loci": stats.get("distinct_str_loci", stats.get("distinct_loci")),
         "distinct_snp_markers": stats.get("distinct_snp_markers"),
         "total_reads": stats.get("total_reads"),
+        "own_state": _leg_state(datasets, "own"),
+        "external_state": _leg_state(datasets, "external"),
+        "readme_score": readme.get("score"),
+        "readme_max": readme.get("max"),
         "report": f"{slug}.json",
         "page": f"{slug}.html",
     }

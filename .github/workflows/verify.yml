@@ -1,19 +1,27 @@
 name: STRhub Verified
 
+# Surface the dispatch id in the run name so the web backend can correlate a
+# workflow_dispatch (which returns no run id, §10) back to its run.
+run-name: >-
+  Verify ${{ github.event.inputs.tool || 'strait-razor-PowerSeqv2.31' }}${{ github.event.inputs.dispatch_id && format(' [{0}]', github.event.inputs.dispatch_id) || '' }}
+
 # The engine. Each gate is a CI step; failures are captured (continue-on-error)
 # so the report is always produced and reflects the furthest gate cleared.
 on:
   workflow_dispatch:
     inputs:
       tool:
+        # Free-form so self-service submissions (any slug under tools/) work, not
+        # just the maintainer's built-in variants.
         description: "Tool variant to verify (directory under tools/)"
-        type: choice
+        type: string
         default: "strait-razor-PowerSeqv2.31"
         required: true
-        options:
-          - strait-razor-PowerSeqv2.31   # StraitRazor v3 · Promega PowerSeq 46GY
-          - strait-razor-ForenSeqv1.27   # StraitRazor v3 · Verogen ForenSeq
-          - strspy
+      dispatch_id:
+        description: "Unique id echoed in run-name for dispatch→run correlation"
+        type: string
+        required: false
+        default: ""
   pull_request:
     paths:
       - "tools/**"
@@ -39,30 +47,18 @@ jobs:
           python-version: "3.11"
       - run: pip install pyyaml jsonschema
 
-      # --- Parse the manifest into step outputs -------------------------------
+      # --- Prepare: read manifest, resolve external dataset, stage inputs -----
+      # prepare.py stages each matrix leg: work/in_own (BYOR, local or remote)
+      # and work/in_external (typed dataset from datasets/, or N/A).
       - id: m
-        name: Read manifest
-        run: |
-          python - "$TOOL" <<'PY' >> "$GITHUB_OUTPUT"
-          import sys, yaml, pathlib
-          tool = sys.argv[1]
-          mf = pathlib.Path("tools")/tool/"manifest.yml"
-          m = yaml.safe_load(mf.read_text())
-          ref = m["source"]["ref"]
-          print(f"ref={ref}")
-          print(f"cmd={' '.join(m['run']['cmd'].split())}")
-          print(f"fixture={m.get('inputs',{}).get('fixture','fixtures/example')}")
-          print(f"dockerdir=tools/{tool}")
-          print(f"dockerfile={m['environment']['dockerfile']}")
-          print(f"timeout={m['run'].get('timeout_minutes',30)}")
-          print(f"manifest={mf}")
-          PY
+        name: Prepare run (manifest + dataset matrix)
+        run: python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
 
       # --- Gate: Available ----------------------------------------------------
       - id: available
         name: "Gate · Available"
         continue-on-error: true
-        run: git ls-remote "$(python -c "import yaml;print(yaml.safe_load(open('tools/'+__import__('os').environ['TOOL']+'/manifest.yml'))['source']['repo'])")" >/dev/null
+        run: git ls-remote "${{ steps.m.outputs.repo }}" >/dev/null
 
       # --- Gate: Installs (docker build) -------------------------------------
       - id: installs
@@ -71,34 +67,116 @@ jobs:
         run: |
           docker build \
             --build-arg STRAITRAZOR_REF=${{ steps.m.outputs.ref }} \
+            --build-arg TOOL_REF=${{ steps.m.outputs.ref }} \
             -f ${{ steps.m.outputs.dockerdir }}/${{ steps.m.outputs.dockerfile }} \
             -t toolimg:ci \
             ${{ steps.m.outputs.dockerdir }}
 
-      # --- Gate: Runs (docker run on the fixture) ----------------------------
+      # --- Matrix leg: own data (the badge ladder uses THIS leg) -------------
       - id: runs
-        name: "Gate · Runs"
+        name: "Gate · Runs (own data)"
+        if: steps.m.outputs.own_ready == '1'
         continue-on-error: true
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         run: |
-          mkdir -p work/out
+          mkdir -p work/out_own
           docker run --rm \
-            -v "$PWD/${{ steps.m.outputs.fixture }}:/data/in:ro" \
-            -v "$PWD/work/out:/data/out" \
+            -v "$PWD/work/in_own:/data/in:ro" \
+            -v "$PWD/work/out_own:/data/out" \
             toolimg:ci \
             "${{ steps.m.outputs.cmd }}"
 
-      # --- Gate: Expected IO --------------------------------------------------
       - id: io
-        name: "Gate · Expected IO"
+        name: "Gate · Expected IO (own)"
+        if: steps.m.outputs.own_ready == '1'
         continue-on-error: true
-        run: python harness/check_io.py "${{ steps.m.outputs.manifest }}" work/out --json io_result.json
+        run: python harness/check_io.py "${{ steps.m.outputs.manifest }}" work/out_own --json io_own.json
 
-      # --- Gate: Content (plausible genotype-bearing output) ------------------
       - id: content
-        name: "Gate · Content"
+        name: "Gate · Content (own)"
+        if: steps.m.outputs.own_ready == '1'
         continue-on-error: true
-        run: python harness/check_content.py "${{ steps.m.outputs.manifest }}" work/out --json content_result.json
+        run: python harness/check_content.py "${{ steps.m.outputs.manifest }}" work/out_own --json content_own.json
+
+      # --- Matrix leg: external typed dataset (N/A if no compatible dataset) --
+      - id: runs_ext
+        name: "Runs (external data)"
+        if: steps.m.outputs.external_ready == '1'
+        continue-on-error: true
+        timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
+        run: |
+          mkdir -p work/out_external
+          docker run --rm \
+            -v "$PWD/work/in_external:/data/in:ro" \
+            -v "$PWD/work/out_external:/data/out" \
+            toolimg:ci \
+            "${{ steps.m.outputs.cmd }}"
+
+      - id: io_ext
+        name: "Expected IO (external)"
+        if: steps.m.outputs.external_ready == '1'
+        continue-on-error: true
+        run: python harness/check_io.py "${{ steps.m.outputs.manifest }}" work/out_external --json io_external.json
+
+      - id: content_ext
+        name: "Content (external)"
+        if: steps.m.outputs.external_ready == '1'
+        continue-on-error: true
+        run: python harness/check_content.py "${{ steps.m.outputs.manifest }}" work/out_external --json content_external.json
+
+      # --- README minimum-to-run check (advisory; never gates the badge) ------
+      - name: "README check (advisory)"
+        if: always()
+        continue-on-error: true
+        run: |
+          repo="${{ steps.m.outputs.repo }}"; ref="${{ steps.m.outputs.ref }}"
+          slug="${repo#https://github.com/}"; slug="${slug%.git}"
+          rm -f readme.md
+          for name in README.md readme.md README.MD README.rst README.txt README; do
+            if curl -fsSL "https://raw.githubusercontent.com/${slug}/${ref}/${name}" -o readme.md; then break; fi
+          done
+          [ -f readme.md ] || echo -n > readme.md
+          python harness/check_readme.py readme.md --json readme_result.json
+
+      # --- Assemble the matrix (own + external legs) -------------------------
+      - name: Assemble matrix
+        if: always()
+        env:
+          OWN_READY: ${{ steps.m.outputs.own_ready }}
+          EXT_READY: ${{ steps.m.outputs.external_ready }}
+          INPUT_TYPE: ${{ steps.m.outputs.input_type }}
+          DATASET_NAME: ${{ steps.m.outputs.dataset_name }}
+        run: |
+          python - <<'PY'
+          import json, os, pathlib
+          def load(p):
+              q = pathlib.Path(p)
+              try:
+                  return json.loads(q.read_text()) if q.exists() else None
+              except Exception:
+                  return None
+          legs = []
+          own_io, own_ct = load("io_own.json"), load("content_own.json")
+          legs.append({
+              "leg": "own", "label": "Your data",
+              "available": os.environ.get("OWN_READY") == "1",
+              "io": bool(own_io and own_io.get("passed")),
+              "content": bool(own_ct and own_ct.get("passed")),
+              "passed": bool(own_io and own_io.get("passed")),
+          })
+          ext_io, ext_ct = load("io_external.json"), load("content_external.json")
+          legs.append({
+              "leg": "external", "label": "External data",
+              "available": os.environ.get("EXT_READY") == "1",
+              "type": os.environ.get("INPUT_TYPE") or None,
+              "dataset": os.environ.get("DATASET_NAME") or None,
+              "io": bool(ext_io and ext_io.get("passed")),
+              "content": bool(ext_ct and ext_ct.get("passed")),
+              "passed": bool(ext_io and ext_io.get("passed")),
+          })
+          pathlib.Path("matrix.json").write_text(json.dumps(legs, indent=2))
+          print(json.dumps(legs, indent=2))
+          PY
 
       # --- Assemble attestation (always runs) --------------------------------
       - name: Build attestation + badge
@@ -109,8 +187,10 @@ jobs:
             --available ${{ steps.available.outcome }} \
             --installs ${{ steps.installs.outcome }} \
             --runs ${{ steps.runs.outcome }} \
-            --io io_result.json \
-            --content content_result.json \
+            --io io_own.json \
+            --content content_own.json \
+            --matrix matrix.json \
+            --readme readme_result.json \
             --ref ${{ steps.m.outputs.ref }} \
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
