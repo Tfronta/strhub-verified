@@ -1,0 +1,26 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: StraitRazor
+  version: v1.0
+source:
+  repo: "https://github.com/Ahhgust/STRaitRazor"
+  ref: b618e9345ab40f348b504083ae8de2b39abb60fa
+report:
+  slug: "straitrazor-v1-0"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "str8rzr -c /opt/strait-razor/ForenSeqv1.27.config/data/in/sample.fastq>
+/data/out/sample.allsequences.txt"
+  timeout_minutes: 15
+inputs:
+  type: "illumina-str-fastq"
+  fixture: "tools/strait-razor-ForenSeqv1.27/fixtures/nist-mds2-2157"
+outputs:
+- path: "*.txt"
+  format: text
+  min_records: 1
