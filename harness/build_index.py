@@ -1,8 +1,11 @@
-"""Build a navigable index.html from every <slug>.json in a reports directory.
+"""Build a navigable index.html (and a machine-readable index.json) from every
+<slug>.json in a reports directory.
 
-Scans the directory for attestation JSONs (skipping *.badge.json) and renders a
-landing page that lists each verified tool with its result badge and a link to
-its per-tool page (<slug>.html).
+Scans the directory for attestation JSONs (skipping *.badge.json) and renders:
+  - index.html : a human landing page (cards + badges, links to <slug>.html)
+  - index.json : a compact catalogue (one summary entry per tool) that external
+                 consumers — e.g. the STRhub web dashboard — read to list the
+                 verified tools without fetching every full report.
 
 Usage:
   python harness/build_index.py reports --out reports/index.html
@@ -35,14 +38,50 @@ def _load(reports: pathlib.Path) -> list[dict]:
     return items
 
 
+def _stats(r: dict) -> dict | None:
+    outs = r.get("content_detail", {}).get("outputs", [])
+    if outs and isinstance(outs[0], dict):
+        return outs[0].get("stats")
+    return None
+
+
+def _summary_entry(slug: str, r: dict) -> dict:
+    """Compact, stable summary for index.json — what the web dashboard lists."""
+    level = r.get("level", "none")
+    stats = _stats(r) or {}
+    return {
+        "slug": slug,
+        "name": r.get("tool", {}).get("name", slug),
+        "level": level,
+        "label": LABELS.get(level, "not run"),
+        "generated": r.get("generated"),
+        "source_repo": r.get("source", {}).get("repo"),
+        "source_ref": r.get("source", {}).get("ref_resolved"),
+        "ci_run": r.get("ci_run"),
+        "distinct_str_loci": stats.get("distinct_str_loci", stats.get("distinct_loci")),
+        "distinct_snp_markers": stats.get("distinct_snp_markers"),
+        "total_reads": stats.get("total_reads"),
+        "report": f"{slug}.json",
+        "page": f"{slug}.html",
+    }
+
+
+def build_catalogue(reports: pathlib.Path) -> dict:
+    """The index.json payload: a versioned list of tool summaries."""
+    items = _load(reports)
+    return {
+        "schema": "strhub-verified/index/1",
+        "generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        "count": len(items),
+        "tools": [_summary_entry(slug, r) for slug, r in items],
+    }
+
+
 def _card(slug: str, r: dict) -> str:
     level = r.get("level", "none")
     tool = r.get("tool", {})
     color = COLOR.get(level, "#c33")
-    stats = None
-    outs = r.get("content_detail", {}).get("outputs", [])
-    if outs and isinstance(outs[0], dict):
-        stats = outs[0].get("stats")
+    stats = _stats(r)
     extra = ""
     if stats:
         n_str = stats.get("distinct_str_loci", stats.get("distinct_loci", 0))
@@ -113,6 +152,11 @@ def main() -> int:
     out = pathlib.Path(args.out) if args.out else reports / "index.html"
     out.write_text(render(reports))
     print(f"wrote {out}")
+
+    # Machine-readable catalogue for external consumers (STRhub web dashboard).
+    index_json = out.parent / "index.json"
+    index_json.write_text(json.dumps(build_catalogue(reports), indent=2))
+    print(f"wrote {index_json}")
     return 0
 
 
