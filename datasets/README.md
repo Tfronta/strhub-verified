@@ -25,9 +25,10 @@ See each subdirectory's `SOURCE.txt` for provenance, chemistry, and rebuild note
 |---|---|---|---|
 | `illumina-str-fastq` | FASTQ | `datasets/illumina-str-fastq/sample.fastq` (ForenSeq slice; NIST also has PowerSeq) | [NIST mds2-2157](https://data.nist.gov/od/id/mds2-2157) |
 | `ont-bam-hg38` | BAM (hg38) | `ont_slices/*.codis.bam` | [1000 Genomes ONT on AWS](https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/) |
+| `illumina-bam-hg38` | BAM (hg38) | `illumina_slices/*.codis.bam` | [1000 Genomes 30x Illumina](https://www.internationalgenome.org/data-portal/data-collection/30x-grch38) |
 
-**Scope:** reference datasets cover **STR assays only** (Illumina STR FASTQ and ONT
-CODIS BAM). No SNP panels or capillary FSA/HID reference data.
+**Scope:** reference datasets cover **STR assays only** (Illumina STR FASTQ,
+Illumina BAM, and ONT CODIS BAM). No SNP panels or capillary FSA/HID reference data.
 
 Machine-readable index: `datasets/index.json`. The workflow resolves
 `manifest.inputs.type` → compatible dataset (or **N/A** if none).

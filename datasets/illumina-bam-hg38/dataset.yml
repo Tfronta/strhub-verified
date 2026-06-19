@@ -1,0 +1,20 @@
+# Typed reference dataset — illumina-bam-hg38
+# Matched against a manifest's `inputs.type: illumina-bam-hg38` for the external
+# verification leg. BAM slices live in illumina_slices/ (pre-built, committed).
+
+type: "illumina-bam-hg38"
+data: "illumina_slices/HG00145.codis.bam"
+bam_index: "illumina_slices/HG00145.codis.bam.bai"
+format: "bam"
+reference: "hg38"
+
+name: "1000 Genomes Illumina 30x — hg38 CODIS slice"
+source: "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38"
+license: >
+  Open access (1000 Genomes Project). Research and educational use.
+  STRhub is not the data provider.
+sequencer: "Illumina NovaSeq 6000"
+notes: >
+  Pre-built CODIS STR slices from the 1000 Genomes 30x Illumina WGS dataset,
+  aligned to GRCh38 (±50kb flanking around 27 CODIS loci). Default external leg
+  uses HG00145 (~30 MB, 617k reads). See SOURCE.txt.
