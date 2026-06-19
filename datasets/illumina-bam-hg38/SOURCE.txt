@@ -1,0 +1,55 @@
+Fixture provenance — illumina-bam-hg38 (1000 Genomes Illumina 30x, hg38-aligned CODIS slices)
+================================================================================================
+
+STRhub Verified does NOT host or redistribute full genomes. The BAM files in
+`illumina_slices/` are **small, pre-built slices** over forensic STR regions,
+derived from publicly available 1000 Genomes Illumina high-coverage data. They
+are used only as smoke-test inputs for the external verification leg.
+
+Upstream (open access)
+----------------------
+Project   : 1000 Genomes Project — High-coverage (30×) Illumina WGS
+Portal    : https://www.internationalgenome.org/data-portal/data-collection/30x-grch38
+Index     : https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/
+Reference : GRCh38 / hg38 (BWA-MEM aligned)
+Sequencer : Illumina NovaSeq 6000
+
+Intermediate source
+-------------------
+BAM slices were prepared in the STRhub demo-data repository and reused here:
+  Repo   : https://github.com/Tfronta/strhub-demo-data
+  Commit : 9cc5dac5fc842fd6c180efcfa2acfc5d357d86e9
+  Path   : data/HG00145_sort.bam
+
+License / use scope
+-------------------
+Open-access research data from the 1000 Genomes Project (Fort Lauderdale
+Agreement). STRhub adds no additional restrictions beyond documenting that
+these files are third-party materials used for reproducible-execution smoke
+tests only — not for donor identification, database searching, or casework
+claims.
+
+Samples in illumina_slices/ (all available in-repo)
+----------------------------------------------------
+  HG00145.codis.bam   (~30 MB, 617k reads)  ← default for external verification leg
+    Sample: HG00145 (GBR, EUR, male)
+    Source CRAM: https://ftp.sra.ebi.ac.uk/vol1/run/ERR324/ERR3240150/HG00145.final.cram
+
+Additional samples available in Tfronta/strhub-demo-data (same commit):
+  HG00097_sort.bam   (~82 MB)  HG00097 (GBR, EUR, female)
+  HG00263_sort.bam   (~93 MB)  HG00263 (GBR, EUR, female)
+  HG00372_sort.bam   (~67 MB)  HG00372 (FIN, EUR, male)
+  HG01063_sort.bam   (~88 MB)  HG01063 (PUR, AMR, male)
+
+Regions covered
+---------------
+Region BED: `illumina_slices/codis_hg38.bed`
+27 forensic STR loci: CODIS 20 + Amelogenin + PentaD + PentaE + DYS391 + SE33.
+See the BED file for exact hg38 coordinates.
+
+Default for CI / external matrix leg
+------------------------------------
+`datasets/index.json` points the `illumina-bam-hg38` type at HG00145 (male —
+includes chrY reads for DYS391 and Amelogenin-Y). Sliced with ±50kb flanking
+around 27 CODIS loci (617k reads, ~30 MB). Tools that read `/data/in` as a
+directory receive the BAM + BAI pair via `harness/prepare.py`.

@@ -23,6 +23,18 @@
       "license": "Open access (1000 Genomes / HPRC). Research use. STRhub is not the data provider.",
       "chemistry": "ONT R10, basecalling model SUP",
       "notes": "Pre-built CODIS slices in ont_slices/. Default external test: HG00113.codis.bam (~30 MB). See datasets/ont-bam-hg38/SOURCE.txt."
+    },
+    "illumina-bam-hg38": {
+      "dir": "datasets/illumina-bam-hg38",
+      "data": "illumina_slices/HG00145.codis.bam",
+      "bam_index": "illumina_slices/HG00145.codis.bam.bai",
+      "format": "bam",
+      "reference": "hg38",
+      "name": "1000 Genomes Illumina 30x — hg38 CODIS slice",
+      "source": "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
+      "license": "Open access (1000 Genomes). Research use. STRhub is not the data provider.",
+      "sequencer": "Illumina NovaSeq 6000",
+      "notes": "Pre-built CODIS slices in illumina_slices/. Default external test: HG00145.codis.bam (~30 MB, 617k reads, ±50kb flanking). See datasets/illumina-bam-hg38/SOURCE.txt."
     }
   }
 }
