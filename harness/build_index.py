@@ -27,13 +27,14 @@ COLOR = {"content": "#16a34a", "io": "#22a722", "runs": "#22a722",
 def _load(reports: pathlib.Path) -> list[dict]:
     items = []
     for p in sorted(reports.glob("*.json")):
-        if p.name.endswith(".badge.json"):
+        if p.name.endswith(".badge.json") or p.name == "index.json":
             continue
         try:
             r = json.loads(p.read_text())
         except Exception:
             continue
-        if r.get("schema", "").startswith("strhub-verified"):
+        # Only attestation reports (strhub-verified/1), not catalogues or datasets.
+        if r.get("schema") == "strhub-verified/1":
             items.append((p.stem, r))
     return items
 
