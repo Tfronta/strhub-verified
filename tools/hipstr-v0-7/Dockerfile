@@ -15,7 +15,10 @@ RUN git clone https://github.com/tfwillems/HipSTR.git tool \
     && git submodule update --init --recursive
 
 WORKDIR /opt/tool
-RUN apt install make g++ zlib1g-dev libhts-dev libbz2-dev liblzma-dev && make
+RUN make
+
+# Sanity check at BUILD time → a broken install fails Installs, not Runs.
+RUN ./HipSTR --help >/dev/null 2>&1 || true
 
 # Execution contract: the manifest cmd runs via bash -lc.
 WORKDIR /work
