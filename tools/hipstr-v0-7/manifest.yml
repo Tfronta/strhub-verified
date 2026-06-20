@@ -1,0 +1,24 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: HipSTR
+  version: v0.7
+source:
+  repo: "https://github.com/tfwillems/HipSTR"
+  ref: b2033bfbb5cf55496b776463bdf2993fa763a4be
+report:
+  slug: "hipstr-v0-7"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "HipSTR --input /data/in/input.bam --fasta /data/ref/hg38.fa --out /data/out/result.tsv"
+  timeout_minutes: 15
+inputs:
+  type: "illumina-bam-hg38"
+outputs:
+- path: str_calls.vcf.gz
+  format: vcf
+  min_records: 1
