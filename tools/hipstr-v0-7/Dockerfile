@@ -4,13 +4,15 @@ FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential cmake git ca-certificates \
+        zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Immutable ref of the author's public repo.
 ARG TOOL_REF=b2033bfbb5cf55496b776463bdf2993fa763a4be
 WORKDIR /opt
-RUN git clone https://github.com/tfwillems/HipSTR.git tool \
-    && cd tool && git checkout "${TOOL_REF}"
+RUN git clone https://github.com/tfwillems/HipSTR/.git tool \
+    && cd tool && git checkout "${TOOL_REF}" \
+    && git submodule update --init --recursive
 
 WORKDIR /opt/tool
 RUN make
