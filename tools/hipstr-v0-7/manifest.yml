@@ -20,5 +20,5 @@ inputs:
   type: "illumina-bam-hg38"
 outputs:
 - path: result.vcf
-  format: tsv
+  format: vcf
   min_records: 1
