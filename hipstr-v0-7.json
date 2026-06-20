@@ -1,11 +1,11 @@
 {
   "schema": "strhub-verified/1",
   "tool": {
-    "name": "HipSTR",
-    "version": "V0.7"
+    "name": "hipstr",
+    "version": "v0.7"
   },
   "source": {
-    "repo": "https://github.com/tfwillems/HipSTR/",
+    "repo": "https://github.com/tfwillems/HipSTR",
     "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
     "ref_resolved": "b2033bfbb5cf55496b776463bdf2993fa763a4be"
   },
@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-20T19:32:22+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27881576664",
+  "generated": "2026-06-20T20:03:02+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27882329074",
   "gates": {
     "available": true,
     "installs": false,
@@ -31,7 +31,7 @@
     "outputs": [
       {
         "path": "result.vcf",
-        "format": "vcf",
+        "format": "tsv",
         "checks": {
           "exists": false
         },
