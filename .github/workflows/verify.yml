@@ -54,6 +54,28 @@ jobs:
         name: Prepare run (manifest + dataset matrix)
         run: python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
 
+      # --- Reference genome (for BAM-based tools needing --fasta) -------------
+      - name: Cache reference genome
+        if: steps.m.outputs.ref_genome_url != ''
+        uses: actions/cache@v4
+        id: ref-cache
+        with:
+          path: work/ref
+          key: ref-${{ steps.m.outputs.ref_genome_filename }}-v1
+
+      - name: Download + index reference genome
+        if: steps.m.outputs.ref_genome_url != '' && steps.ref-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p work/ref
+          echo "::group::Downloading ${{ steps.m.outputs.ref_genome_filename }}"
+          curl -fsSL "${{ steps.m.outputs.ref_genome_url }}" | gunzip > "work/ref/${{ steps.m.outputs.ref_genome_filename }}"
+          echo "::endgroup::"
+          echo "::group::Indexing with samtools faidx"
+          sudo apt-get install -y -qq samtools >/dev/null 2>&1
+          samtools faidx "work/ref/${{ steps.m.outputs.ref_genome_filename }}"
+          echo "::endgroup::"
+          ls -lh work/ref/
+
       # --- Gate: Available ----------------------------------------------------
       - id: available
         name: "Gate · Available"
@@ -80,9 +102,12 @@ jobs:
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         run: |
           mkdir -p work/out_own
+          REF_MOUNT=""
+          [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
           docker run --rm \
             -v "$PWD/work/in_own:/data/in:ro" \
             -v "$PWD/work/out_own:/data/out" \
+            $REF_MOUNT \
             toolimg:ci \
             "${{ steps.m.outputs.cmd }}"
 
@@ -106,9 +131,12 @@ jobs:
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         run: |
           mkdir -p work/out_external
+          REF_MOUNT=""
+          [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
           docker run --rm \
             -v "$PWD/work/in_external:/data/in:ro" \
             -v "$PWD/work/out_external:/data/out" \
+            $REF_MOUNT \
             toolimg:ci \
             "${{ steps.m.outputs.cmd }}"
 
