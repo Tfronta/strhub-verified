@@ -17,9 +17,6 @@ RUN git clone https://github.com/tfwillems/HipSTR.git tool \
 WORKDIR /opt/tool
 RUN make
 
-# Sanity check at BUILD time → a broken install fails Installs, not Runs.
-RUN ./HipSTR --help >/dev/null 2>&1 || true
-
 # Execution contract: the manifest cmd runs via bash -lc.
 WORKDIR /work
 ENTRYPOINT ["/bin/bash", "-lc"]
