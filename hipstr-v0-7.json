@@ -1,0 +1,98 @@
+{
+  "schema": "strhub-verified/1",
+  "tool": {
+    "name": "HipSTR",
+    "version": "v0.7"
+  },
+  "source": {
+    "repo": "https://github.com/tfwillems/HipSTR",
+    "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+    "ref_resolved": "b2033bfbb5cf55496b776463bdf2993fa763a4be"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ]
+  },
+  "generated": "2026-06-20T18:36:18+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27880219291",
+  "gates": {
+    "available": true,
+    "installs": false,
+    "runs": false,
+    "io": false,
+    "content": false
+  },
+  "level": "available",
+  "io_detail": {
+    "gate": "io",
+    "passed": false,
+    "outputs": [
+      {
+        "path": "str_calls.vcf.gz",
+        "format": "vcf",
+        "checks": {
+          "exists": false
+        },
+        "passed": false
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": false,
+    "passed": false,
+    "outputs": []
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "Your data",
+      "available": true,
+      "io": false,
+      "content": false,
+      "passed": false
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-bam-hg38",
+      "dataset": "1000 Genomes Illumina 30x \u2014 hg38 CODIS slice",
+      "io": false,
+      "content": false,
+      "passed": false
+    }
+  ],
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bdependenc(y|ies)\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation."
+}
