@@ -3,10 +3,10 @@
 # Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
 
 tool:
-  name: HipSTR
-  version: V0.7
+  name: hipstr
+  version: v0.7
 source:
-  repo: "https://github.com/tfwillems/HipSTR/"
+  repo: "https://github.com/tfwillems/HipSTR"
   ref: b2033bfbb5cf55496b776463bdf2993fa763a4be
 report:
   slug: "hipstr-v0-7"
@@ -20,5 +20,5 @@ inputs:
   type: "illumina-bam-hg38"
 outputs:
 - path: result.vcf
-  format: vcf
+  format: tsv
   min_records: 1
