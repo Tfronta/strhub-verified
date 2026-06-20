@@ -35,15 +35,21 @@ def _bam_sidecar(bam: pathlib.Path) -> pathlib.Path:
     return bam.parent / f"{bam.name}.bai"
 
 
-def _copy_bam_pair(src_bam: pathlib.Path, dest_dir: pathlib.Path) -> bool:
-    """Copy a BAM and its .bai sidecar into dest_dir. Returns False if BAM missing."""
+def _copy_bam_pair(
+    src_bam: pathlib.Path,
+    dest_dir: pathlib.Path,
+    canonical: str | None = None,
+) -> bool:
+    """Copy a BAM and its .bai sidecar into dest_dir, optionally renaming to
+    a canonical filename so that the same run command works for both legs."""
     if not src_bam.is_file():
         return False
     dest_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src_bam, dest_dir / src_bam.name)
+    dest_name = canonical or src_bam.name
+    shutil.copy2(src_bam, dest_dir / dest_name)
     bai = _bam_sidecar(src_bam)
     if bai.is_file():
-        shutil.copy2(bai, dest_dir / bai.name)
+        shutil.copy2(bai, dest_dir / f"{dest_name}.bai")
     return True
 
 
@@ -56,8 +62,17 @@ def _repo_path(repo_url: str) -> str:
     )
 
 
-def stage_own(fixture, work_in: pathlib.Path) -> bool:
-    """Stage the author's own fixture. Returns True if staged."""
+def stage_own(
+    fixture,
+    work_in: pathlib.Path,
+    canonical: str | None = None,
+) -> bool:
+    """Stage the author's own fixture. Returns True if staged.
+
+    When *canonical* is set (e.g. ``"input.bam"``), the primary data file is
+    renamed so that the same run command works identically for the own and
+    external legs.
+    """
     work_in.mkdir(parents=True, exist_ok=True)
     if isinstance(fixture, dict):
         # Remote BYOR: fetch the single file from the author's PUBLIC repo.
@@ -65,14 +80,30 @@ def stage_own(fixture, work_in: pathlib.Path) -> bool:
         ref = fixture["ref"]
         path = fixture["path"].lstrip("/")
         url = f"{RAW}/{repo}/{ref}/{path}"
-        dest = work_in / pathlib.Path(path).name
+        raw_name = pathlib.Path(path).name
+        dest_name = canonical or raw_name
+        dest = work_in / dest_name
         try:
             urllib.request.urlretrieve(url, dest)  # noqa: S310 (public raw URL)
         except Exception as exc:  # noqa: BLE001
             print(f"::warning::could not fetch BYOR fixture {url}: {exc}",
                   file=sys.stderr)
             return False
-        return dest.stat().st_size > 0
+        if dest.stat().st_size > 0:
+            # For BAM files fetched remotely, also try to fetch the .bai sidecar.
+            if dest_name.endswith(".bam"):
+                for bai_suffix in [".bai", ".bam.bai"]:
+                    bai_url = f"{RAW}/{repo}/{ref}/{path}{bai_suffix}"
+                    bai_dest = work_in / f"{dest_name}.bai"
+                    try:
+                        urllib.request.urlretrieve(bai_url, bai_dest)  # noqa: S310
+                        if bai_dest.stat().st_size > 0:
+                            break
+                        bai_dest.unlink(missing_ok=True)
+                    except Exception:  # noqa: BLE001
+                        bai_dest.unlink(missing_ok=True)
+            return True
+        return False
     # Local path in this repo: copy the directory contents.
     src = ROOT / str(fixture)
     if not src.exists():
@@ -83,15 +114,20 @@ def stage_own(fixture, work_in: pathlib.Path) -> bool:
             if f.is_file():
                 shutil.copy2(f, work_in / f.name)
     elif src.suffix == ".bam" or src.name.endswith(".bam"):
-        if not _copy_bam_pair(src, work_in):
+        if not _copy_bam_pair(src, work_in, canonical):
             return False
     else:
-        shutil.copy2(src, work_in / src.name)
+        dest_name = canonical or src.name
+        shutil.copy2(src, work_in / dest_name)
     return any(work_in.iterdir())
 
 
 def stage_external(input_type, work_in: pathlib.Path) -> tuple[bool, str]:
-    """Stage the typed external dataset. Returns (staged, dataset_name)."""
+    """Stage the typed external dataset. Returns (staged, dataset_name).
+
+    Files are renamed to their ``canonical_input`` name (if configured) so the
+    same run command works identically for both the own and external legs.
+    """
     rec = datasets_lib.resolve(input_type)
     if not rec:
         return False, ""
@@ -99,15 +135,22 @@ def stage_external(input_type, work_in: pathlib.Path) -> tuple[bool, str]:
     if not data.exists():
         return False, ""
     work_in.mkdir(parents=True, exist_ok=True)
+    canonical = rec.get("canonical_input")
     if rec.get("format") == "bam" or str(data).endswith(".bam"):
+        if not _copy_bam_pair(data, work_in, canonical):
+            return False, ""
+        # Verify the index was staged too.
+        expected_bai = f"{canonical}.bai" if canonical else None
         bam_index = rec.get("bam_index")
-        idx_path = ROOT / bam_index if bam_index else _bam_sidecar(data)
-        if not _copy_bam_pair(data, work_in):
-            return False, ""
-        if bam_index and not (work_in / idx_path.name).exists():
-            return False, ""
+        if bam_index:
+            idx_src = ROOT / bam_index
+            if idx_src.is_file() and expected_bai:
+                idx_dest = work_in / expected_bai
+                if not idx_dest.exists():
+                    shutil.copy2(idx_src, idx_dest)
     else:
-        shutil.copy2(data, work_in / data.name)
+        dest_name = canonical or data.name
+        shutil.copy2(data, work_in / dest_name)
     return True, rec.get("name", input_type or "")
 
 
@@ -123,8 +166,15 @@ def main() -> int:
     fixture = inputs.get("fixture", "fixtures/example")
     input_type = inputs.get("type")
 
+    # Resolve canonical filename so both legs use identical names.
+    canonical = None
+    if input_type:
+        ds_rec = datasets_lib.resolve(input_type)
+        if ds_rec:
+            canonical = ds_rec.get("canonical_input")
+
     work = pathlib.Path(args.work)
-    own_ready = stage_own(fixture, work / "in_own")
+    own_ready = stage_own(fixture, work / "in_own", canonical)
     external_ready, dataset_name = stage_external(input_type, work / "in_external")
 
     out = [

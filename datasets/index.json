@@ -6,6 +6,7 @@
       "dir": "datasets/illumina-str-fastq",
       "data": "datasets/illumina-str-fastq/sample.fastq",
       "format": "fastq",
+      "canonical_input": "sample.fastq",
       "name": "NIST mds2-2157 — Illumina STR (ForenSeq slice, donor NTD01)",
       "source": "https://data.nist.gov/od/id/mds2-2157",
       "doi": "10.18434/M32157",
@@ -17,7 +18,14 @@
       "data": "ont_slices/HG00113.codis.bam",
       "bam_index": "ont_slices/HG00113.codis.bam.bai",
       "format": "bam",
+      "canonical_input": "input.bam",
       "reference": "hg38",
+      "reference_genome": {
+        "assembly": "GRCh38 / hg38",
+        "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
+        "filename": "hg38.fa",
+        "mount_path": "/data/ref/hg38.fa"
+      },
       "name": "1000 Genomes ONT — hg38 CODIS slice (R10 SUP)",
       "source": "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
       "license": "Open access (1000 Genomes / HPRC). Research use. STRhub is not the data provider.",
@@ -29,7 +37,14 @@
       "data": "illumina_slices/HG00145.codis.bam",
       "bam_index": "illumina_slices/HG00145.codis.bam.bai",
       "format": "bam",
+      "canonical_input": "input.bam",
       "reference": "hg38",
+      "reference_genome": {
+        "assembly": "GRCh38 / hg38",
+        "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
+        "filename": "hg38.fa",
+        "mount_path": "/data/ref/hg38.fa"
+      },
       "name": "1000 Genomes Illumina 30x — hg38 CODIS slice",
       "source": "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
       "license": "Open access (1000 Genomes). Research use. STRhub is not the data provider.",
