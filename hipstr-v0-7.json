@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-20T20:17:11+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27882623617",
+  "generated": "2026-06-20T20:23:20+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27882775569",
   "gates": {
     "available": true,
     "installs": true,
