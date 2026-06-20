@@ -177,6 +177,15 @@ def main() -> int:
     own_ready = stage_own(fixture, work / "in_own", canonical)
     external_ready, dataset_name = stage_external(input_type, work / "in_external")
 
+    ref_genome_url = ""
+    ref_genome_filename = ""
+    if input_type:
+        ds_rec = datasets_lib.resolve(input_type)
+        if ds_rec and ds_rec.get("reference_genome"):
+            rg = ds_rec["reference_genome"]
+            ref_genome_url = rg.get("url", "")
+            ref_genome_filename = rg.get("filename", "")
+
     out = [
         f"ref={m['source']['ref']}",
         f"cmd={' '.join(m['run']['cmd'].split())}",
@@ -189,6 +198,8 @@ def main() -> int:
         f"own_ready={'1' if own_ready else '0'}",
         f"external_ready={'1' if external_ready else '0'}",
         f"dataset_name={dataset_name}",
+        f"ref_genome_url={ref_genome_url}",
+        f"ref_genome_filename={ref_genome_filename}",
     ]
     print("\n".join(out))
     return 0
