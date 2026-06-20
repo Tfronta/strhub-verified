@@ -1,17 +1,17 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-06-20T20:03:03+00:00",
+  "generated": "2026-06-20T20:17:13+00:00",
   "count": 7,
   "tools": [
     {
       "slug": "hipstr-v0-7",
       "name": "hipstr",
-      "level": "available",
-      "label": "Available",
-      "generated": "2026-06-20T20:03:02+00:00",
+      "level": "installs",
+      "label": "Installs",
+      "generated": "2026-06-20T20:17:11+00:00",
       "source_repo": "https://github.com/tfwillems/HipSTR",
       "source_ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27882329074",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27882623617",
       "distinct_str_loci": null,
       "distinct_snp_markers": null,
       "total_reads": null,

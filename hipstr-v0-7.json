@@ -15,23 +15,23 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-20T20:03:02+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27882329074",
+  "generated": "2026-06-20T20:17:11+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27882623617",
   "gates": {
     "available": true,
-    "installs": false,
+    "installs": true,
     "runs": false,
     "io": false,
     "content": false
   },
-  "level": "available",
+  "level": "installs",
   "io_detail": {
     "gate": "io",
     "passed": false,
     "outputs": [
       {
         "path": "result.vcf",
-        "format": "tsv",
+        "format": "vcf",
         "checks": {
           "exists": false
         },

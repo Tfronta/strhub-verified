@@ -1,18 +1,18 @@
 # STRhub Verified — hipstr (hipstr-v0-7)
 
-**Result: Available** — the pinned public source exists.
+**Result: Installs** — the environment builds from source.
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-20T20:03:02+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27882329074
+- Generated: 2026-06-20T20:17:11+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27882623617
 
 ## Gates
 
 | Gate | Status | Meaning |
 |---|---|---|
 | Available | PASS | the pinned public source exists |
-| Installs | — | the environment builds from source |
+| Installs | PASS | the environment builds from source |
 | Runs | — | it executes end-to-end without crashing |
 | Runs + Expected IO | — | it produces a non-empty file in the declared format |
 | Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
