@@ -2,10 +2,10 @@
 
 **Result: Available** — the pinned public source exists.
 
-- Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
+- Source: `https://github.com/tfwillems/HipSTR/` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-20T18:36:18+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27880219291
+- Generated: 2026-06-20T19:32:22+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27881576664
 
 ## Gates
 
