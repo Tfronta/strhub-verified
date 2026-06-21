@@ -20,6 +20,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
+import diagnose_log  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCOPE = ("Executed end-to-end in the stated environment with output in the "
@@ -390,6 +391,16 @@ def main() -> int:
             logs[leg] = dest
     if logs:
         report["logs"] = logs
+
+    diagnostics = {}
+    for leg, flag in [("own", args.log_own), ("external", args.log_external)]:
+        if not flag:
+            continue
+        issues = diagnose_log.diagnose_file(flag)
+        if issues:
+            diagnostics[leg] = issues
+    if diagnostics:
+        report["diagnostics"] = diagnostics
 
     (reports / f"{slug}.json").write_text(json.dumps(report, indent=2))
 
