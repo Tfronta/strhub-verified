@@ -16,6 +16,7 @@ Exit:   0 if all required content checks pass, 1 otherwise.
 from __future__ import annotations
 import argparse
 import collections
+import gzip
 import json
 import pathlib
 import re
@@ -39,7 +40,11 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
     locus_col = spec.get("locus_column")
     locus_sep = spec.get("locus_sep", ":")
 
-    rows = [r for r in path.read_text(errors="replace").splitlines()
+    if path.suffix == ".gz" or path.name.endswith(".gz"):
+        text = gzip.open(path, "rt", errors="replace").read()
+    else:
+        text = path.read_text(errors="replace")
+    rows = [r for r in text.splitlines()
             if r.strip() and not r.startswith("#")]
 
     malformed = 0

@@ -175,6 +175,7 @@ def main() -> int:
 
     work = pathlib.Path(args.work)
     own_ready = stage_own(fixture, work / "in_own", canonical)
+    fixture_source = "tool" if isinstance(fixture, dict) else "strhub"
     external_ready, dataset_name = stage_external(input_type, work / "in_external")
 
     # Stage tool-specific assets (e.g. regions BED) into both legs.
@@ -209,6 +210,7 @@ def main() -> int:
         f"dataset_name={dataset_name}",
         f"ref_genome_url={ref_genome_url}",
         f"ref_genome_filename={ref_genome_filename}",
+        f"fixture_source={fixture_source}",
     ]
     print("\n".join(out))
     return 0

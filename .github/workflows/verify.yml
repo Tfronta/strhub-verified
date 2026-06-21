@@ -176,6 +176,7 @@ jobs:
           EXT_READY: ${{ steps.m.outputs.external_ready }}
           INPUT_TYPE: ${{ steps.m.outputs.input_type }}
           DATASET_NAME: ${{ steps.m.outputs.dataset_name }}
+          FIXTURE_SOURCE: ${{ steps.m.outputs.fixture_source }}
         run: |
           python - <<'PY'
           import json, os, pathlib
@@ -187,12 +188,15 @@ jobs:
                   return None
           legs = []
           own_io, own_ct = load("io_own.json"), load("content_own.json")
+          fixture_source = os.environ.get("FIXTURE_SOURCE", "strhub")
+          own_label = "Your data" if fixture_source == "tool" else "STRhub fixture"
           legs.append({
-              "leg": "own", "label": "Your data",
+              "leg": "own", "label": own_label,
               "available": os.environ.get("OWN_READY") == "1",
               "io": bool(own_io and own_io.get("passed")),
               "content": bool(own_ct and own_ct.get("passed")),
               "passed": bool(own_io and own_io.get("passed")),
+              "fixture_source": fixture_source,
           })
           ext_io, ext_ct = load("io_external.json"), load("content_external.json")
           legs.append({
