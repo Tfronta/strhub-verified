@@ -15,27 +15,32 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-21T13:01:57+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27905093465",
+  "generated": "2026-06-21T13:07:04+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27905225776",
   "gates": {
     "available": true,
     "installs": true,
-    "runs": false,
-    "io": false,
+    "runs": true,
+    "io": true,
     "content": false
   },
-  "level": "installs",
+  "level": "io",
   "io_detail": {
     "gate": "io",
-    "passed": false,
+    "passed": true,
     "outputs": [
       {
         "path": "result.vcf.gz",
         "format": "vcf",
         "checks": {
-          "exists": false
+          "exists": true,
+          "non_empty": true,
+          "parses_as_vcf": true,
+          "min_records": true
         },
-        "passed": false
+        "resolved": "result.vcf.gz",
+        "records": 143,
+        "passed": true
       }
     ]
   },
@@ -50,9 +55,9 @@
       "leg": "own",
       "label": "Your data",
       "available": true,
-      "io": false,
+      "io": true,
       "content": false,
-      "passed": false
+      "passed": true
     },
     {
       "leg": "external",
