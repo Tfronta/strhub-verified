@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-21T12:53:57+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27904891143
+- Generated: 2026-06-21T12:58:02+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27904986897
 
 ## Gates
 
@@ -22,7 +22,7 @@
 | Leg | Available | Result | Dataset |
 |---|---|---|---|
 | Your data | yes | — | — |
-| External data | yes | — | 1000 Genomes Illumina 30x — hg38 CODIS slice |
+| External data | yes | PASS | 1000 Genomes Illumina 30x — hg38 CODIS slice |
 
 ## README check (advisory)
 

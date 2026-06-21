@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-21T12:53:57+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27904891143",
+  "generated": "2026-06-21T12:58:02+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27904986897",
   "gates": {
     "available": true,
     "installs": true,
@@ -30,7 +30,7 @@
     "passed": false,
     "outputs": [
       {
-        "path": "result.vcf",
+        "path": "result.vcf.gz",
         "format": "vcf",
         "checks": {
           "exists": false
@@ -60,9 +60,9 @@
       "available": true,
       "type": "illumina-bam-hg38",
       "dataset": "1000 Genomes Illumina 30x \u2014 hg38 CODIS slice",
-      "io": false,
+      "io": true,
       "content": false,
-      "passed": false
+      "passed": true
     }
   ],
   "readme_check": {
