@@ -100,7 +100,7 @@ _rule(
 
 # --- Too few reads / loci skipped ------------------------------------------
 _rule(
-    r"[Ss]kipp(?:ed|ing)\s+(?:(\d+)\s+)?loci\s+with\s+too\s+few\s+reads|[Ss]kipping\s+(?:region|locus)\s+\S+\s+with\s+too\s+few\s+reads",
+    r"[Ss]kipp(?:ed|ing)\s+(?:(\d+)\s+)?loci\s+with\s+too\s+few\s+reads|[Ss]kipping\s+(?:region|locus)\s+(?:\S+\s+)?with\s+too\s+few\s+reads",
     "warning", "too_few_reads",
     "Loci skipped (too few reads)",
     "Some loci had insufficient reads after quality filtering. Try lowering "
@@ -109,7 +109,7 @@ _rule(
 )
 
 _rule(
-    r"[Ss]kipping\s+(?:region|locus).*(?:allele\s+)?length\s*\((\d+)\)\s*exceeds.*threshold\s*\((\d+)\)",
+    r"[Ss]kipping\s+(?:region|locus).*(?:allele\s+)?length\s+exceeds.*(?:threshold|maximum)\s*\((\d+)\s+vs\s+(\d+)\)",
     "warning", "str_too_long",
     "Locus skipped: reference allele too long ({0} vs max {1})",
     "Some STR loci have reference alleles longer than the tool's maximum. "
