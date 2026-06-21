@@ -1,11 +1,11 @@
-# STRhub Verified — HipSTR (hipstr-v0-7)
+# STRhub Verified — hipstr (hipstr-v0-7)
 
-**Result: Installs** — the environment builds from source.
+**Result: Runs + Expected IO** — it produces a non-empty file in the declared format.
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-21T13:41:57+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27906135054
+- Generated: 2026-06-21T13:59:54+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27906585699
 
 ## Gates
 
@@ -13,16 +13,16 @@
 |---|---|---|
 | Available | PASS | the pinned public source exists |
 | Installs | PASS | the environment builds from source |
-| Runs | — | it executes end-to-end without crashing |
-| Runs + Expected IO | — | it produces a non-empty file in the declared format |
+| Runs | PASS | it executes end-to-end without crashing |
+| Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
 
 ## Verification matrix
 
 | Leg | Available | Result | Dataset |
 |---|---|---|---|
-| Your data | yes | — | — |
-| External data | yes | — | 1000 Genomes Illumina 30x — hg38 CODIS slice |
+| Your data | yes | PASS | — |
+| External data | yes | PASS | 1000 Genomes Illumina 30x — hg38 CODIS slice |
 
 ## README check (advisory)
 
