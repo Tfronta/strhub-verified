@@ -14,7 +14,7 @@ environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]
 run:
-  cmd: "./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf"
+  cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf"
   timeout_minutes: 15
 inputs:
   type: "illumina-bam-hg38"
