@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-21T19:44:50+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27915355741",
+  "generated": "2026-06-21T20:02:41+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27915789839",
   "gates": {
     "available": true,
     "installs": true,
@@ -138,5 +138,45 @@
   "logs": {
     "own": "hipstr-v0-7.log-own.txt",
     "external": "hipstr-v0-7.log-external.txt"
+  },
+  "diagnostics": {
+    "own": [
+      {
+        "id": "low_bq_reads",
+        "severity": "info",
+        "title": "Reads filtered by base quality",
+        "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
+      },
+      {
+        "id": "too_few_reads",
+        "severity": "warning",
+        "title": "Loci skipped (too few reads)",
+        "suggestion": "Some loci had insufficient reads after quality filtering. Try lowering --min-reads or relaxing quality filters (e.g. --read-qual-trim for HipSTR). The input BAM may also need more coverage at STR regions."
+      },
+      {
+        "id": "genotyping_summary",
+        "severity": "info",
+        "title": "Genotyping: 1/1 loci succeeded"
+      }
+    ],
+    "external": [
+      {
+        "id": "low_bq_reads",
+        "severity": "info",
+        "title": "Reads filtered by base quality",
+        "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
+      },
+      {
+        "id": "too_few_reads",
+        "severity": "warning",
+        "title": "Loci skipped (too few reads)",
+        "suggestion": "Some loci had insufficient reads after quality filtering. Try lowering --min-reads or relaxing quality filters (e.g. --read-qual-trim for HipSTR). The input BAM may also need more coverage at STR regions."
+      },
+      {
+        "id": "genotyping_summary",
+        "severity": "info",
+        "title": "Genotyping: 1/1 loci succeeded"
+      }
+    ]
   }
 }
