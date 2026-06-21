@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import csv
 import glob
+import gzip
 import json
 import os
 import pathlib
@@ -21,8 +22,14 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
 
 
+def _read_text(path: pathlib.Path) -> str:
+    if path.suffix == ".gz" or path.name.endswith(".gz"):
+        return gzip.open(path, "rt", errors="replace").read()
+    return path.read_text(errors="replace")
+
+
 def _count_records(path: pathlib.Path, fmt: str) -> int:
-    text = path.read_text(errors="replace")
+    text = _read_text(path)
     if fmt == "vcf":
         return sum(1 for ln in text.splitlines() if ln and not ln.startswith("#"))
     if fmt == "json":
@@ -68,7 +75,7 @@ def check(manifest_path: str, out_dir: str) -> dict:
         entry["checks"]["min_records"] = n >= spec.get("min_records", 1)
 
         if spec.get("must_contain"):
-            blob = f.read_text(errors="replace")
+            blob = _read_text(f)
             missing = [s for s in spec["must_contain"] if s not in blob]
             entry["checks"]["must_contain"] = not missing
             if missing:
