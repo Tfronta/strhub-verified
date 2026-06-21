@@ -1,11 +1,11 @@
 # STRhub Verified — hipstr (hipstr-v0-7)
 
-**Result: Installs** — the environment builds from source.
+**Result: Runs + Plausible output** — its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-21T19:37:05+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27915182021
+- Generated: 2026-06-21T19:44:50+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27915355741
 
 ## Gates
 
@@ -13,16 +13,24 @@
 |---|---|---|
 | Available | PASS | the pinned public source exists |
 | Installs | PASS | the environment builds from source |
-| Runs | — | it executes end-to-end without crashing |
-| Runs + Expected IO | — | it produces a non-empty file in the declared format |
-| Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Runs | PASS | it executes end-to-end without crashing |
+| Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
+| Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+
+## Output content (plausibility evidence)
+
+- Sequence records: **1** (malformed: 0)
+- STR loci detected: **1**
+- Total reads across calls: **0** (deepest single sequence: 0)
+- STR loci: PentaE
+- Top markers by read depth: PentaE (0)
 
 ## Verification matrix
 
 | Leg | Available | Result | Dataset |
 |---|---|---|---|
-| STRhub fixture | yes | — | — |
-| External data | yes | — | 1000 Genomes Illumina 30x — hg38 CODIS slice |
+| STRhub fixture | yes | PASS | — |
+| External data | yes | PASS | 1000 Genomes Illumina 30x — hg38 CODIS slice |
 
 ## README check (advisory)
 

@@ -1,3 +1,411 @@
-HipSTR: unrecognized option '--min-bp-qual'
-ERROR: Unrecognized command line option
-Exiting...
+Detected 1 BAM/CRAM files
+BAMs/CRAMs contain unique read group IDs for 1 unique libraries and 1 unique samples
+Reading region file /data/in/regions.bed
+Region file contains 26 regions
+
+Processing region chr1 230769615 230769683
+Adapter trimming removed
+	0 likely adapter bases from 0/31 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+31 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	30 had low base quality scores
+	0 did not have a unique mapping
+	1 PASSED ALL FILTERS
+Found 0 fully paired reads and 1 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 1 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=1, MIN=5
+Processing region chr10 129294243 129294295
+Adapter trimming removed
+	0 likely adapter bases from 0/32 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+32 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	30 had low base quality scores
+	0 did not have a unique mapping
+	2 PASSED ALL FILTERS
+Found 0 fully paired reads and 2 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 2 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=2, MIN=5
+Processing region chr11 2171087 2171115
+Adapter trimming removed
+	0 likely adapter bases from 0/25 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+25 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	25 had low base quality scores
+	0 did not have a unique mapping
+	0 PASSED ALL FILTERS
+Found 0 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 0 reads and 0 out of 0 samples
+Skipping locus with too few reads: TOTAL=0, MIN=5
+Processing region chr12 5983968 5984044
+Adapter trimming removed
+	0 likely adapter bases from 0/44 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+46 reads overlapped region, of which 
+	2 were hard clipped
+	0 had an 'N' base call
+	41 had low base quality scores
+	0 did not have a unique mapping
+	3 PASSED ALL FILTERS
+Found 0 fully paired reads and 3 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 3 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=3, MIN=5
+Processing region chr12 12297019 12297095
+Adapter trimming removed
+	0 likely adapter bases from 0/42 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+43 reads overlapped region, of which 
+	1 were hard clipped
+	0 had an 'N' base call
+	41 had low base quality scores
+	0 did not have a unique mapping
+	1 PASSED ALL FILTERS
+Found 0 fully paired reads and 1 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 1 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=1, MIN=5
+Processing region chr13 82148024 82148068
+Adapter trimming removed
+	0 likely adapter bases from 0/28 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+30 reads overlapped region, of which 
+	2 were hard clipped
+	0 had an 'N' base call
+	25 had low base quality scores
+	0 did not have a unique mapping
+	3 PASSED ALL FILTERS
+Found 0 fully paired reads and 3 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 3 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=3, MIN=5
+Processing region chr15 96831013 96831039
+Adapter trimming removed
+	0 likely adapter bases from 0/36 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+37 reads overlapped region, of which 
+	1 were hard clipped
+	0 had an 'N' base call
+	31 had low base quality scores
+	0 did not have a unique mapping
+	5 PASSED ALL FILTERS
+Found 0 fully paired reads and 5 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 5 reads and 0 out of 1 samples
+Using default stutter model
+Left aligning reads
+Generating candidate haplotypes
+	ATTTGGGTTATTAAT...CTCCTTACAATT TTCTTTTCTTTTCTTTTCTTTTCTTT                                    GAGACTGAGTCTTGC...CCAGGCTGGAGT 
+	                               TTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTCTTT                                                          
+	                               TTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT                                                         
+	                               TTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT                                
+Aligning reads to each candidate haplotype
+Recomputing sample posteriors after removing 1 uncalled alleles across 1 blocks
+Reassembling flanking sequences
+Allele counts
+	TTCTTTTCTTTTCTTTTCTTTTCTTT 0
+	TTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT 0
+	TTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT 0
+Filtered 1 sample genotypes for the following reasons:	1=FLANK_INDEL_FRAC	
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.068631 seconds
+ SNP info extraction = 2.6e-05 seconds
+ Stutter estimation  = 7e-06 seconds
+ Genotyping          = 0.008 seconds
+	 Left alignment        = 0.001493 seconds
+	 Haplotype generation  = 0.000932 seconds
+	 Haplotype alignment   = 0.002739 seconds
+	 Flank assembly        = 0.000195 seconds
+	 Posterior computation = 7e-06 seconds
+	 Alignment traceback   = 0.001725 seconds
+
+Processing region chr16 86352701 86352745
+Adapter trimming removed
+	16 likely adapter bases from 2/33 R1 reads (6.1%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+36 reads overlapped region, of which 
+	3 were hard clipped
+	0 had an 'N' base call
+	33 had low base quality scores
+	0 did not have a unique mapping
+	0 PASSED ALL FILTERS
+Found 0 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 0 reads and 0 out of 0 samples
+Skipping locus with too few reads: TOTAL=0, MIN=5
+Processing region chr17 62444270 62444293
+Adapter trimming removed
+	0 likely adapter bases from 0/0 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+0 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	0 had low base quality scores
+	0 did not have a unique mapping
+	0 PASSED ALL FILTERS
+Found 0 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 0 reads and 0 out of 0 samples
+Skipping locus with too few reads: TOTAL=0, MIN=5
+Processing region chr18 63281666 63281738
+Adapter trimming removed
+	0 likely adapter bases from 0/25 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+30 reads overlapped region, of which 
+	5 were hard clipped
+	0 had an 'N' base call
+	24 had low base quality scores
+	0 did not have a unique mapping
+	1 PASSED ALL FILTERS
+Found 0 fully paired reads and 1 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 1 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=1, MIN=5
+Processing region chr19 29926234 29926298
+Adapter trimming removed
+	0 likely adapter bases from 0/39 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+42 reads overlapped region, of which 
+	3 were hard clipped
+	0 had an 'N' base call
+	37 had low base quality scores
+	0 did not have a unique mapping
+	2 PASSED ALL FILTERS
+Found 0 fully paired reads and 2 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 2 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=2, MIN=5
+Processing region chr2 1489652 1489684
+Adapter trimming removed
+	0 likely adapter bases from 0/34 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+37 reads overlapped region, of which 
+	3 were hard clipped
+	0 had an 'N' base call
+	34 had low base quality scores
+	0 did not have a unique mapping
+	0 PASSED ALL FILTERS
+Found 0 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 0 reads and 0 out of 0 samples
+Skipping locus with too few reads: TOTAL=0, MIN=5
+Processing region chr2 68011946 68011994
+Adapter trimming removed
+	0 likely adapter bases from 0/24 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+25 reads overlapped region, of which 
+	1 were hard clipped
+	0 had an 'N' base call
+	24 had low base quality scores
+	0 did not have a unique mapping
+	0 PASSED ALL FILTERS
+Found 0 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 0 reads and 0 out of 0 samples
+Skipping locus with too few reads: TOTAL=0, MIN=5
+Processing region chr2 218014858 218014950
+Adapter trimming removed
+	0 likely adapter bases from 0/29 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+30 reads overlapped region, of which 
+	1 were hard clipped
+	0 had an 'N' base call
+	26 had low base quality scores
+	0 did not have a unique mapping
+	3 PASSED ALL FILTERS
+Found 0 fully paired reads and 3 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 3 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=3, MIN=5
+Processing region chr20 46270379 46270480
+Adapter trimming removed
+	0 likely adapter bases from 0/0 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+0 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	0 had low base quality scores
+	0 did not have a unique mapping
+	0 PASSED ALL FILTERS
+Found 0 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 0 reads and 0 out of 0 samples
+Skipping locus with too few reads: TOTAL=0, MIN=5
+Processing region chr21 19181972 19182099
+Adapter trimming removed
+	0 likely adapter bases from 0/26 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+27 reads overlapped region, of which 
+	1 were hard clipped
+	0 had an 'N' base call
+	26 had low base quality scores
+	0 did not have a unique mapping
+	0 PASSED ALL FILTERS
+Found 0 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 0 reads and 0 out of 0 samples
+Skipping locus with too few reads: TOTAL=0, MIN=5
+Processing region chr21 43636209 43636269
+Adapter trimming removed
+	0 likely adapter bases from 0/44 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+48 reads overlapped region, of which 
+	4 were hard clipped
+	0 had an 'N' base call
+	41 had low base quality scores
+	0 did not have a unique mapping
+	3 PASSED ALL FILTERS
+Found 0 fully paired reads and 3 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 3 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=3, MIN=5
+Processing region chr22 37140286 37140337
+Adapter trimming removed
+	0 likely adapter bases from 0/36 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+36 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	35 had low base quality scores
+	0 did not have a unique mapping
+	1 PASSED ALL FILTERS
+Found 0 fully paired reads and 1 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 1 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=1, MIN=5
+Processing region chr3 45540738 45540802
+Adapter trimming removed
+	16 likely adapter bases from 2/45 R1 reads (4.4%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+47 reads overlapped region, of which 
+	2 were hard clipped
+	0 had an 'N' base call
+	45 had low base quality scores
+	0 did not have a unique mapping
+	0 PASSED ALL FILTERS
+Found 0 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 0 reads and 0 out of 0 samples
+Skipping locus with too few reads: TOTAL=0, MIN=5
+Processing region chr4 154587735 154587823
+Adapter trimming removed
+	0 likely adapter bases from 0/36 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+38 reads overlapped region, of which 
+	2 were hard clipped
+	0 had an 'N' base call
+	35 had low base quality scores
+	0 did not have a unique mapping
+	1 PASSED ALL FILTERS
+Found 0 fully paired reads and 1 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 1 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=1, MIN=5
+Processing region chr5 123775555 123775599
+Adapter trimming removed
+	0 likely adapter bases from 0/21 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+24 reads overlapped region, of which 
+	3 were hard clipped
+	0 had an 'N' base call
+	19 had low base quality scores
+	0 did not have a unique mapping
+	2 PASSED ALL FILTERS
+Found 0 fully paired reads and 2 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 2 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=2, MIN=5
+Processing region chr5 150076323 150076375
+Adapter trimming removed
+	0 likely adapter bases from 0/34 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+38 reads overlapped region, of which 
+	4 were hard clipped
+	0 had an 'N' base call
+	32 had low base quality scores
+	0 did not have a unique mapping
+	2 PASSED ALL FILTERS
+Found 0 fully paired reads and 2 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 2 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=2, MIN=5
+Processing region chr6 88987499 88988200
+Skipping region as the reference allele length exceeds the threshold (701 vs 250)
+You can increase this threshold using the --max-str-len option
+Processing region chr7 84160225 84160277
+Adapter trimming removed
+	0 likely adapter bases from 0/33 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+34 reads overlapped region, of which 
+	1 were hard clipped
+	0 had an 'N' base call
+	30 had low base quality scores
+	0 did not have a unique mapping
+	3 PASSED ALL FILTERS
+Found 0 fully paired reads and 3 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 3 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=3, MIN=5
+Processing region chr8 124894864 124894916
+Adapter trimming removed
+	19336 likely adapter bases from 1/46 R1 reads (2.2%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+50 reads overlapped region, of which 
+	4 were hard clipped
+	0 had an 'N' base call
+	44 had low base quality scores
+	0 did not have a unique mapping
+	2 PASSED ALL FILTERS
+Found 0 fully paired reads and 2 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 2 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=2, MIN=5
+Processing region chrY 11982088 11982132
+Adapter trimming removed
+	0 likely adapter bases from 0/18 R1 reads (0%)
+	0 likely adapter bases from 0/0 R2 reads (0%)
+19 reads overlapped region, of which 
+	1 were hard clipped
+	0 had an 'N' base call
+	17 had low base quality scores
+	0 did not have a unique mapping
+	1 PASSED ALL FILTERS
+Found 0 fully paired reads and 1 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 1 reads and 0 out of 1 samples
+Skipping locus with too few reads: TOTAL=1, MIN=5
+
+
+
+------HipSTR Execution Summary------
+Skipped 1 loci whose lengths were above the maximum threshold.
+	 If this is a sizeable portion of your loci, see the --max-str-len command line option
+Skipped 24 loci with too few reads for stutter model model training or genotyping.
+	 If this is a sizeable portion of your loci, see the --min-reads command line option
+Genotyping succeeded for 1/1 loci
+
+Approximate timing breakdown
+ BAM seek time       = 0.00011 seconds
+ Read filtering      = 1.76235 seconds
+ SNP info extraction = 0.000492 seconds
+ Stutter estimation  = 7e-06 seconds
+ Genotyping          = 0.008 seconds
+	 Left alignment        = 0.001493 seconds
+	 Haplotype generation  = 0.000932 seconds
+	 Haplotype alignment   = 0.002739 seconds
+	 Flank assembly        = 0.000195 seconds
+	 Posterior computation = 7e-06 seconds
+	 Alignment traceback   = 0.001725 seconds
+HipSTR execution finished: Total runtime = 14.875 sec
+-----------------
+
+

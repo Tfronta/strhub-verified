@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "STRhub Verified",
-  "message": "Installs",
-  "color": "yellow"
+  "message": "Runs + Plausible output",
+  "color": "brightgreen"
 }
