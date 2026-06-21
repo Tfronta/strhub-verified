@@ -177,6 +177,15 @@ def main() -> int:
     own_ready = stage_own(fixture, work / "in_own", canonical)
     external_ready, dataset_name = stage_external(input_type, work / "in_external")
 
+    # Stage tool-specific assets (e.g. regions BED) into both legs.
+    assets_dir = ROOT / "tools" / args.tool / "assets"
+    if assets_dir.is_dir():
+        for leg in [work / "in_own", work / "in_external"]:
+            leg.mkdir(parents=True, exist_ok=True)
+            for f in assets_dir.iterdir():
+                if f.is_file():
+                    shutil.copy2(f, leg / f.name)
+
     ref_genome_url = ""
     ref_genome_filename = ""
     if input_type:

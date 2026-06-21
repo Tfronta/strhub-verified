@@ -19,6 +19,6 @@ run:
 inputs:
   type: "illumina-bam-hg38"
 outputs:
-- path: result.vcf
-  format: vcf
-  min_records: 1
+  - path: result.vcf
+    format: vcf
+    min_records: 1
