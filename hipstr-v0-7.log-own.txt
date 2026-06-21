@@ -117,16 +117,16 @@ Allele counts
 Filtered 1 sample genotypes for the following reasons:	1=FLANK_INDEL_FRAC	
 Locus timing:
  BAM seek time       = 5e-06 seconds
- Read filtering      = 0.068675 seconds
- SNP info extraction = 2.4e-05 seconds
+ Read filtering      = 0.068505 seconds
+ SNP info extraction = 2.5e-05 seconds
  Stutter estimation  = 6e-06 seconds
- Genotyping          = 0.007627 seconds
-	 Left alignment        = 0.001385 seconds
-	 Haplotype generation  = 0.000893 seconds
-	 Haplotype alignment   = 0.002583 seconds
-	 Flank assembly        = 0.000199 seconds
-	 Posterior computation = 6e-06 seconds
-	 Alignment traceback   = 0.001721 seconds
+ Genotyping          = 0.008175 seconds
+	 Left alignment        = 0.001565 seconds
+	 Haplotype generation  = 0.000921 seconds
+	 Haplotype alignment   = 0.002859 seconds
+	 Flank assembly        = 0.000186 seconds
+	 Posterior computation = 7e-06 seconds
+	 Alignment traceback   = 0.001777 seconds
 
 Processing region chr16 86352701 86352745
 Adapter trimming removed
@@ -394,18 +394,18 @@ Skipped 24 loci with too few reads for stutter model model training or genotypin
 Genotyping succeeded for 1/1 loci
 
 Approximate timing breakdown
- BAM seek time       = 0.0001 seconds
- Read filtering      = 1.77118 seconds
- SNP info extraction = 0.000574 seconds
+ BAM seek time       = 0.000106 seconds
+ Read filtering      = 1.76852 seconds
+ SNP info extraction = 0.000412 seconds
  Stutter estimation  = 6e-06 seconds
- Genotyping          = 0.007627 seconds
-	 Left alignment        = 0.001385 seconds
-	 Haplotype generation  = 0.000893 seconds
-	 Haplotype alignment   = 0.002583 seconds
-	 Flank assembly        = 0.000199 seconds
-	 Posterior computation = 6e-06 seconds
-	 Alignment traceback   = 0.001721 seconds
-HipSTR execution finished: Total runtime = 15.0048 sec
+ Genotyping          = 0.008175 seconds
+	 Left alignment        = 0.001565 seconds
+	 Haplotype generation  = 0.000921 seconds
+	 Haplotype alignment   = 0.002859 seconds
+	 Flank assembly        = 0.000186 seconds
+	 Posterior computation = 7e-06 seconds
+	 Alignment traceback   = 0.001777 seconds
+HipSTR execution finished: Total runtime = 14.9112 sec
 -----------------
 
 

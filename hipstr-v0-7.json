@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-21T20:02:41+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27915789839",
+  "generated": "2026-06-21T20:07:24+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27915924530",
   "gates": {
     "available": true,
     "installs": true,
@@ -154,6 +154,12 @@
         "suggestion": "Some loci had insufficient reads after quality filtering. Try lowering --min-reads or relaxing quality filters (e.g. --read-qual-trim for HipSTR). The input BAM may also need more coverage at STR regions."
       },
       {
+        "id": "str_too_long",
+        "severity": "warning",
+        "title": "Locus skipped: reference allele too long (701 vs max 250)",
+        "suggestion": "Some STR loci have reference alleles longer than the tool's maximum. Increase the max length threshold (e.g. --max-str-len for HipSTR)."
+      },
+      {
         "id": "genotyping_summary",
         "severity": "info",
         "title": "Genotyping: 1/1 loci succeeded"
@@ -171,6 +177,12 @@
         "severity": "warning",
         "title": "Loci skipped (too few reads)",
         "suggestion": "Some loci had insufficient reads after quality filtering. Try lowering --min-reads or relaxing quality filters (e.g. --read-qual-trim for HipSTR). The input BAM may also need more coverage at STR regions."
+      },
+      {
+        "id": "str_too_long",
+        "severity": "warning",
+        "title": "Locus skipped: reference allele too long (701 vs max 250)",
+        "suggestion": "Some STR loci have reference alleles longer than the tool's maximum. Increase the max length threshold (e.g. --max-str-len for HipSTR)."
       },
       {
         "id": "genotyping_summary",
