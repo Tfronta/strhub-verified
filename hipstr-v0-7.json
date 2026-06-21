@@ -15,16 +15,16 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-21T19:30:35+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27915002158",
+  "generated": "2026-06-21T19:37:05+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27915182021",
   "gates": {
     "available": true,
     "installs": true,
-    "runs": true,
+    "runs": false,
     "io": false,
     "content": false
   },
-  "level": "runs",
+  "level": "installs",
   "io_detail": {
     "gate": "io",
     "passed": false,
@@ -33,13 +33,8 @@
         "path": "result.vcf.gz",
         "format": "vcf",
         "checks": {
-          "exists": true,
-          "non_empty": true,
-          "parses_as_vcf": true,
-          "min_records": false
+          "exists": false
         },
-        "resolved": "result.vcf.gz",
-        "records": 0,
         "passed": false
       }
     ]
@@ -51,27 +46,8 @@
     "outputs": [
       {
         "path": "result.vcf.gz",
-        "resolved": "result.vcf.gz",
-        "checks": {
-          "dna_is_acgtn": true,
-          "min_distinct_loci": false
-        },
-        "stats": {
-          "rows": 0,
-          "malformed_rows": 0,
-          "dna_invalid_rows": 0,
-          "count_invalid_rows": 0,
-          "distinct_loci": 0,
-          "distinct_str_loci": 0,
-          "distinct_snp_markers": 0,
-          "loci": [],
-          "str_loci": [],
-          "snp_markers": [],
-          "total_reads": 0,
-          "max_sequence_depth": 0,
-          "top_loci_by_depth": []
-        },
-        "passed": false
+        "passed": false,
+        "error": "output not found"
       }
     ]
   },

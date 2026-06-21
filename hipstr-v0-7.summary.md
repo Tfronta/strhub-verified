@@ -1,11 +1,11 @@
 # STRhub Verified — hipstr (hipstr-v0-7)
 
-**Result: Runs** — it executes end-to-end without crashing.
+**Result: Installs** — the environment builds from source.
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-21T19:30:35+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27915002158
+- Generated: 2026-06-21T19:37:05+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27915182021
 
 ## Gates
 
@@ -13,17 +13,9 @@
 |---|---|---|
 | Available | PASS | the pinned public source exists |
 | Installs | PASS | the environment builds from source |
-| Runs | PASS | it executes end-to-end without crashing |
+| Runs | — | it executes end-to-end without crashing |
 | Runs + Expected IO | — | it produces a non-empty file in the declared format |
 | Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
-
-## Output content (plausibility evidence)
-
-- Sequence records: **0** (malformed: 0)
-- STR loci detected: **0**
-- Total reads across calls: **0** (deepest single sequence: 0)
-
-
 
 ## Verification matrix
 
