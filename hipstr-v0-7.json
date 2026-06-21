@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/1",
   "tool": {
-    "name": "hipstr",
+    "name": "HipSTR",
     "version": "v0.7"
   },
   "source": {
@@ -15,32 +15,27 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-21T13:59:54+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27906585699",
+  "generated": "2026-06-21T14:10:17+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27906867586",
   "gates": {
     "available": true,
     "installs": true,
-    "runs": true,
-    "io": true,
+    "runs": false,
+    "io": false,
     "content": false
   },
-  "level": "io",
+  "level": "installs",
   "io_detail": {
     "gate": "io",
-    "passed": true,
+    "passed": false,
     "outputs": [
       {
-        "path": "result.vcf.gz",
+        "path": "result.vcf",
         "format": "vcf",
         "checks": {
-          "exists": true,
-          "non_empty": true,
-          "parses_as_vcf": true,
-          "min_records": true
+          "exists": false
         },
-        "resolved": "result.vcf.gz",
-        "records": 134,
-        "passed": true
+        "passed": false
       }
     ]
   },
@@ -55,9 +50,9 @@
       "leg": "own",
       "label": "Your data",
       "available": true,
-      "io": true,
+      "io": false,
       "content": false,
-      "passed": true
+      "passed": false
     },
     {
       "leg": "external",
@@ -65,9 +60,9 @@
       "available": true,
       "type": "illumina-bam-hg38",
       "dataset": "1000 Genomes Illumina 30x \u2014 hg38 CODIS slice",
-      "io": true,
+      "io": false,
       "content": false,
-      "passed": true
+      "passed": false
     }
   ],
   "readme_check": {
