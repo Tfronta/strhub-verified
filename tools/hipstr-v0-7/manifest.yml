@@ -23,3 +23,8 @@ outputs:
   - path: result.vcf.gz
     format: vcf
     min_records: 1
+    # VCF columns: 0=CHROM 1=POS 2=ID(locus) 3=REF 4=ALT 5=QUAL 6=FILTER 7=INFO 8=FORMAT 9+=SAMPLE
+    content:
+      locus_column: 2
+      dna_column: 3
+      min_distinct_loci: 1
