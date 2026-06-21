@@ -368,9 +368,9 @@ Skipped 23 loci with too few reads for stutter model model training or genotypin
 Genotyping succeeded for 0/0 loci
 
 Approximate timing breakdown
- BAM seek time       = 7.6e-05 seconds
- Read filtering      = 1.61708 seconds
- SNP info extraction = 0.000162 seconds
+ BAM seek time       = 9.9e-05 seconds
+ Read filtering      = 1.71317 seconds
+ SNP info extraction = 0.00036 seconds
  Stutter estimation  = 0 seconds
  Genotyping          = 0 seconds
 	 Left alignment        = 0 seconds
@@ -379,7 +379,7 @@ Approximate timing breakdown
 	 Flank assembly        = 0 seconds
 	 Posterior computation = 0 seconds
 	 Alignment traceback   = 0 seconds
-HipSTR execution finished: Total runtime = 11.2481 sec
+HipSTR execution finished: Total runtime = 14.5097 sec
 -----------------
 
 

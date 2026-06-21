@@ -15,19 +15,19 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-21T19:14:46+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27914623807",
+  "generated": "2026-06-21T19:30:35+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27915002158",
   "gates": {
     "available": true,
     "installs": true,
     "runs": true,
-    "io": true,
+    "io": false,
     "content": false
   },
-  "level": "io",
+  "level": "runs",
   "io_detail": {
     "gate": "io",
-    "passed": true,
+    "passed": false,
     "outputs": [
       {
         "path": "result.vcf.gz",
@@ -36,11 +36,11 @@
           "exists": true,
           "non_empty": true,
           "parses_as_vcf": true,
-          "min_records": true
+          "min_records": false
         },
         "resolved": "result.vcf.gz",
-        "records": 134,
-        "passed": true
+        "records": 0,
+        "passed": false
       }
     ]
   },
@@ -53,56 +53,23 @@
         "path": "result.vcf.gz",
         "resolved": "result.vcf.gz",
         "checks": {
-          "dna_is_acgtn": false,
-          "min_distinct_loci": true
+          "dna_is_acgtn": true,
+          "min_distinct_loci": false
         },
         "stats": {
-          "rows": 134,
+          "rows": 0,
           "malformed_rows": 0,
-          "dna_invalid_rows": 1,
+          "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
-          "distinct_loci": 5,
-          "distinct_str_loci": 5,
+          "distinct_loci": 0,
+          "distinct_str_loci": 0,
           "distinct_snp_markers": 0,
-          "loci": [
-            "\u0017\u0007",
-            "+\ufffd\ufffd\ufffdW\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd",
-            "\ufffdL\ufffdba5\ufffd',",
-            "\ufffd_\u0016PB\ufffd[",
-            "\ufffd\ufffd\u0013EN\u0600\ufffd\ufffd|k\u0474\ufffd\ufffd\ufffd\ufffdC\ufffd\u0000\ufffd\ufffd\u0004o\ufffd"
-          ],
-          "str_loci": [
-            "\u0017\u0007",
-            "+\ufffd\ufffd\ufffdW\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd",
-            "\ufffdL\ufffdba5\ufffd',",
-            "\ufffd_\u0016PB\ufffd[",
-            "\ufffd\ufffd\u0013EN\u0600\ufffd\ufffd|k\u0474\ufffd\ufffd\ufffd\ufffdC\ufffd\u0000\ufffd\ufffd\u0004o\ufffd"
-          ],
+          "loci": [],
+          "str_loci": [],
           "snp_markers": [],
           "total_reads": 0,
           "max_sequence_depth": 0,
-          "top_loci_by_depth": [
-            [
-              "\ufffdL\ufffdba5\ufffd',",
-              0
-            ],
-            [
-              "\ufffd\ufffd\u0013EN\u0600\ufffd\ufffd|k\u0474\ufffd\ufffd\ufffd\ufffdC\ufffd\u0000\ufffd\ufffd\u0004o\ufffd",
-              0
-            ],
-            [
-              "\u0017\u0007",
-              0
-            ],
-            [
-              "\ufffd_\u0016PB\ufffd[",
-              0
-            ],
-            [
-              "+\ufffd\ufffd\ufffdW\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd",
-              0
-            ]
-          ]
+          "top_loci_by_depth": []
         },
         "passed": false
       }
@@ -111,11 +78,12 @@
   "datasets": [
     {
       "leg": "own",
-      "label": "Your data",
+      "label": "STRhub fixture",
       "available": true,
-      "io": true,
+      "io": false,
       "content": false,
-      "passed": true
+      "passed": false,
+      "fixture_source": "strhub"
     },
     {
       "leg": "external",
@@ -123,9 +91,9 @@
       "available": true,
       "type": "illumina-bam-hg38",
       "dataset": "1000 Genomes Illumina 30x \u2014 hg38 CODIS slice",
-      "io": true,
+      "io": false,
       "content": false,
-      "passed": true
+      "passed": false
     }
   ],
   "readme_check": {
