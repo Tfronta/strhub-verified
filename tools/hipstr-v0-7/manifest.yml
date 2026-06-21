@@ -14,7 +14,7 @@ environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]
 run:
-  cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --min-bp-qual 10 --max-str-len 250"
+  cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250"
   timeout_minutes: 15
 inputs:
   type: "illumina-bam-hg38"
