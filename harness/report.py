@@ -277,6 +277,7 @@ truth is out of scope.</p>
 <a href="{esc(slug)}.json">{esc(slug)}.json</a> ·
 <a href="{esc(slug)}.badge.json">badge</a> ·
 <a href="{esc(slug)}.summary.md">summary.md</a></p>
+{''.join(f'<p style="font-size:.85rem">Log ({esc(leg)}): <a href="{esc(fname)}">{esc(fname)}</a></p>' for leg, fname in (report.get("logs") or {}).items())}
 </body></html>
 """
 
@@ -294,6 +295,10 @@ def main() -> int:
                     help="path to matrix.json (own/external legs, Fase 3)")
     ap.add_argument("--readme", default="readme_result.json",
                     help="path to readme_result.json (advisory, Fase 3)")
+    ap.add_argument("--log-own", default="",
+                    help="path to captured stdout+stderr from own-data run")
+    ap.add_argument("--log-external", default="",
+                    help="path to captured stdout+stderr from external-data run")
     ap.add_argument("--ref", default="")
     ap.add_argument("--run-url", default="")
     args = ap.parse_args()
@@ -372,6 +377,20 @@ def main() -> int:
         slug = re.sub(r"[^a-z0-9]+", "-", m["tool"]["name"].lower()).strip("-")
     reports = ROOT / "reports"
     reports.mkdir(exist_ok=True)
+
+    import shutil
+    logs = {}
+    for leg, flag in [("own", args.log_own), ("external", args.log_external)]:
+        if not flag:
+            continue
+        lp = pathlib.Path(flag)
+        if lp.exists() and lp.stat().st_size > 0:
+            dest = f"{slug}.log-{leg}.txt"
+            shutil.copy2(lp, reports / dest)
+            logs[leg] = dest
+    if logs:
+        report["logs"] = logs
+
     (reports / f"{slug}.json").write_text(json.dumps(report, indent=2))
 
     color = "brightgreen" if level == "content" \

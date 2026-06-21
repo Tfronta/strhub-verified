@@ -101,6 +101,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         run: |
+          set -o pipefail
           mkdir -p work/out_own
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
@@ -109,7 +110,7 @@ jobs:
             -v "$PWD/work/out_own:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            "${{ steps.m.outputs.cmd }}"
+            "${{ steps.m.outputs.cmd }}" 2>&1 | tee work/log_own.txt
 
       - id: io
         name: "Gate · Expected IO (own)"
@@ -130,6 +131,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         run: |
+          set -o pipefail
           mkdir -p work/out_external
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
@@ -138,7 +140,7 @@ jobs:
             -v "$PWD/work/out_external:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            "${{ steps.m.outputs.cmd }}"
+            "${{ steps.m.outputs.cmd }}" 2>&1 | tee work/log_external.txt
 
       - id: io_ext
         name: "Expected IO (external)"
@@ -219,6 +221,8 @@ jobs:
             --content content_own.json \
             --matrix matrix.json \
             --readme readme_result.json \
+            --log-own work/log_own.txt \
+            --log-external work/log_external.txt \
             --ref ${{ steps.m.outputs.ref }} \
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
