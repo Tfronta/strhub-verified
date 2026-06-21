@@ -17,6 +17,8 @@ RUN git clone https://github.com/tfwillems/HipSTR.git tool \
 WORKDIR /opt/tool
 RUN make
 
+ENV PATH="/opt/tool:$PATH"
+
 # Execution contract: the manifest cmd runs via bash -lc.
 WORKDIR /work
 ENTRYPOINT ["/bin/bash", "-lc"]
