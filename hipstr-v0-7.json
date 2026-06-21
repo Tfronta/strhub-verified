@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-21T14:25:36+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27907252219",
+  "generated": "2026-06-21T19:14:46+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27914623807",
   "gates": {
     "available": true,
     "installs": true,
@@ -46,9 +46,67 @@
   },
   "content_detail": {
     "gate": "content",
-    "applicable": false,
+    "applicable": true,
     "passed": false,
-    "outputs": []
+    "outputs": [
+      {
+        "path": "result.vcf.gz",
+        "resolved": "result.vcf.gz",
+        "checks": {
+          "dna_is_acgtn": false,
+          "min_distinct_loci": true
+        },
+        "stats": {
+          "rows": 134,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 1,
+          "count_invalid_rows": 0,
+          "distinct_loci": 5,
+          "distinct_str_loci": 5,
+          "distinct_snp_markers": 0,
+          "loci": [
+            "\u0017\u0007",
+            "+\ufffd\ufffd\ufffdW\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd",
+            "\ufffdL\ufffdba5\ufffd',",
+            "\ufffd_\u0016PB\ufffd[",
+            "\ufffd\ufffd\u0013EN\u0600\ufffd\ufffd|k\u0474\ufffd\ufffd\ufffd\ufffdC\ufffd\u0000\ufffd\ufffd\u0004o\ufffd"
+          ],
+          "str_loci": [
+            "\u0017\u0007",
+            "+\ufffd\ufffd\ufffdW\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd",
+            "\ufffdL\ufffdba5\ufffd',",
+            "\ufffd_\u0016PB\ufffd[",
+            "\ufffd\ufffd\u0013EN\u0600\ufffd\ufffd|k\u0474\ufffd\ufffd\ufffd\ufffdC\ufffd\u0000\ufffd\ufffd\u0004o\ufffd"
+          ],
+          "snp_markers": [],
+          "total_reads": 0,
+          "max_sequence_depth": 0,
+          "top_loci_by_depth": [
+            [
+              "\ufffdL\ufffdba5\ufffd',",
+              0
+            ],
+            [
+              "\ufffd\ufffd\u0013EN\u0600\ufffd\ufffd|k\u0474\ufffd\ufffd\ufffd\ufffdC\ufffd\u0000\ufffd\ufffd\u0004o\ufffd",
+              0
+            ],
+            [
+              "\u0017\u0007",
+              0
+            ],
+            [
+              "\ufffd_\u0016PB\ufffd[",
+              0
+            ],
+            [
+              "+\ufffd\ufffd\ufffdW\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd",
+              0
+            ]
+          ]
+        },
+        "passed": false
+      }
+    ]
   },
   "datasets": [
     {
@@ -99,5 +157,9 @@
     },
     "empty": false
   },
-  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation."
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "logs": {
+    "own": "hipstr-v0-7.log-own.txt",
+    "external": "hipstr-v0-7.log-external.txt"
+  }
 }
