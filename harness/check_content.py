@@ -39,7 +39,8 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
     locus_col = spec.get("locus_column")
     locus_sep = spec.get("locus_sep", ":")
 
-    rows = [r for r in path.read_text(errors="replace").splitlines() if r.strip()]
+    rows = [r for r in path.read_text(errors="replace").splitlines()
+            if r.strip() and not r.startswith("#")]
 
     malformed = 0
     dna_bad = 0
