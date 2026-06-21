@@ -18,6 +18,7 @@ run:
   timeout_minutes: 15
 inputs:
   type: "illumina-bam-hg38"
+  fixture: "illumina_slices/HG00145.codis.bam"
 outputs:
   - path: result.vcf.gz
     format: vcf
