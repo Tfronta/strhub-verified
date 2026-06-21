@@ -3,7 +3,7 @@
 # Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
 
 tool:
-  name: hipstr
+  name: HipSTR
   version: v0.7
 source:
   repo: "https://github.com/tfwillems/HipSTR"
@@ -14,12 +14,11 @@ environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]
 run:
-  cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 20"
+  cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf"
   timeout_minutes: 15
 inputs:
   type: "illumina-bam-hg38"
-  fixture: "illumina_slices/HG00145.codis.bam"
 outputs:
-  - path: result.vcf.gz
-    format: vcf
-    min_records: 1
+- path: result.vcf
+  format: vcf
+  min_records: 1
