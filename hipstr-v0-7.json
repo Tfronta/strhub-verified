@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-21T22:20:14+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27919210286",
+  "generated": "2026-06-22T13:36:19+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27956541776",
   "gates": {
     "available": true,
     "installs": true,
@@ -39,7 +39,7 @@
           "min_records": true
         },
         "resolved": "result.vcf.gz",
-        "records": 1,
+        "records": 23,
         "passed": true
       }
     ]
@@ -57,25 +57,97 @@
           "min_distinct_loci": true
         },
         "stats": {
-          "rows": 1,
+          "rows": 23,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
-          "distinct_loci": 1,
-          "distinct_str_loci": 1,
+          "distinct_loci": 23,
+          "distinct_str_loci": 23,
           "distinct_snp_markers": 0,
           "loci": [
-            "PentaE"
+            "CSF1PO",
+            "D10S1248",
+            "D12S391",
+            "D13S317",
+            "D16S539",
+            "D18S51",
+            "D19S433",
+            "D1S1656",
+            "D22S1045",
+            "D2S1338",
+            "D2S441",
+            "D3S1358",
+            "D5S818",
+            "D6S1043",
+            "D7S820",
+            "D8S1179",
+            "FGA",
+            "PentaD",
+            "PentaE",
+            "SE33",
+            "TH01",
+            "TPOX",
+            "vWA"
           ],
           "str_loci": [
-            "PentaE"
+            "CSF1PO",
+            "D10S1248",
+            "D12S391",
+            "D13S317",
+            "D16S539",
+            "D18S51",
+            "D19S433",
+            "D1S1656",
+            "D22S1045",
+            "D2S1338",
+            "D2S441",
+            "D3S1358",
+            "D5S818",
+            "D6S1043",
+            "D7S820",
+            "D8S1179",
+            "FGA",
+            "PentaD",
+            "PentaE",
+            "SE33",
+            "TH01",
+            "TPOX",
+            "vWA"
           ],
           "snp_markers": [],
           "total_reads": 0,
           "max_sequence_depth": 0,
           "top_loci_by_depth": [
             [
+              "D1S1656",
+              0
+            ],
+            [
+              "D10S1248",
+              0
+            ],
+            [
+              "TH01",
+              0
+            ],
+            [
+              "vWA",
+              0
+            ],
+            [
+              "D12S391",
+              0
+            ],
+            [
+              "D13S317",
+              0
+            ],
+            [
               "PentaE",
+              0
+            ],
+            [
+              "D16S539",
               0
             ]
           ]
@@ -99,7 +171,7 @@
       "label": "External data",
       "available": true,
       "type": "illumina-bam-hg38",
-      "dataset": "1000 Genomes Illumina 30x \u2014 hg38 CODIS slice",
+      "dataset": "Illumina BAM (hg38) \u2014 NA12878 (autosomal, mujer)",
       "io": true,
       "content": true,
       "passed": true
@@ -148,21 +220,9 @@
         "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
       },
       {
-        "id": "too_few_reads",
-        "severity": "warning",
-        "title": "Loci skipped (too few reads)",
-        "suggestion": "Some loci had insufficient reads after quality filtering. Try lowering --min-reads or relaxing quality filters (e.g. --read-qual-trim for HipSTR). The input BAM may also need more coverage at STR regions."
-      },
-      {
-        "id": "str_too_long",
-        "severity": "warning",
-        "title": "Locus skipped: reference allele too long (701 vs max 250)",
-        "suggestion": "Some STR loci have reference alleles longer than the tool's maximum. Increase the max length threshold (e.g. --max-str-len for HipSTR)."
-      },
-      {
         "id": "genotyping_summary",
         "severity": "info",
-        "title": "Genotyping: 1/1 loci succeeded"
+        "title": "Genotyping: 23/24 loci succeeded"
       }
     ],
     "external": [
@@ -173,21 +233,9 @@
         "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
       },
       {
-        "id": "too_few_reads",
-        "severity": "warning",
-        "title": "Loci skipped (too few reads)",
-        "suggestion": "Some loci had insufficient reads after quality filtering. Try lowering --min-reads or relaxing quality filters (e.g. --read-qual-trim for HipSTR). The input BAM may also need more coverage at STR regions."
-      },
-      {
-        "id": "str_too_long",
-        "severity": "warning",
-        "title": "Locus skipped: reference allele too long (701 vs max 250)",
-        "suggestion": "Some STR loci have reference alleles longer than the tool's maximum. Increase the max length threshold (e.g. --max-str-len for HipSTR)."
-      },
-      {
         "id": "genotyping_summary",
         "severity": "info",
-        "title": "Genotyping: 1/1 loci succeeded"
+        "title": "Genotyping: 23/24 loci succeeded"
       }
     ]
   }
