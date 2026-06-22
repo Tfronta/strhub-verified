@@ -16,7 +16,7 @@ reference_genome:
   filename: "hg38.fa"
   mount_path: "/data/ref/hg38.fa"
 
-name: "Illumina BAM (hg38) — NA12878 (autosomal, mujer)"
+name: "Illumina BAM (hg38) — NA12878 (autosomal, female)"
 source: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/"
 license: >
   Open access (GIAB / NIST). Research and educational use.
