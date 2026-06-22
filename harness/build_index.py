@@ -56,6 +56,18 @@ def _leg_state(datasets: list, leg: str) -> str | None:
     return None
 
 
+def _dataset_types(datasets: list) -> list[str]:
+    """Unique dataset input types across all legs, preserving first-seen order."""
+    seen: set[str] = set()
+    out: list[str] = []
+    for d in datasets or []:
+        t = d.get("type")
+        if t and t not in seen:
+            seen.add(t)
+            out.append(t)
+    return out
+
+
 def _summary_entry(slug: str, r: dict) -> dict:
     """Compact, stable summary for index.json — what the web dashboard lists."""
     level = r.get("level", "none")
@@ -78,6 +90,7 @@ def _summary_entry(slug: str, r: dict) -> dict:
         "external_state": _leg_state(datasets, "external"),
         "readme_score": readme.get("score"),
         "readme_max": readme.get("max"),
+        "dataset_types": _dataset_types(datasets),
         "report": f"{slug}.json",
         "page": f"{slug}.html",
     }
