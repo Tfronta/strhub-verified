@@ -105,11 +105,14 @@ def _summary_md(report: dict, slug: str) -> str:
         ]
 
     # Verification matrix (own / external legs), if present.
+    # Legs where fixture_source=="strhub" are omitted: both legs run on the same
+    # STRhub data, so showing them separately would be misleading.
     datasets = report.get("datasets") or []
-    if datasets:
+    visible = [leg for leg in datasets if leg.get("fixture_source") != "strhub"]
+    if visible:
         lines += ["", "## Verification matrix", "",
                   "| Leg | Available | Result | Dataset |", "|---|---|---|---|"]
-        for leg in datasets:
+        for leg in visible:
             avail = leg.get("available", True)
             status = "N/A" if not avail else ("PASS" if leg.get("passed") else "—")
             lines.append(
@@ -117,13 +120,6 @@ def _summary_md(report: dict, slug: str) -> str:
                 f"{'yes' if avail else 'N/A'} | {status} | "
                 f"{leg.get('dataset', leg.get('type', '—'))} |"
             )
-        if any(leg.get("fixture_source") == "strhub" for leg in datasets):
-            lines += ["",
-                "> **Note:** this tool's manifest does not point to a test file in its "
-                "own public repository, so the *STRhub fixture* leg also ran on a "
-                "STRhub-provided reference dataset — the same data provenance as the "
-                "*External data* leg. Neither leg uses test data from the tool's own "
-                "repository; both verify reproducible execution on open-access STRhub data."]
 
     # README minimum-to-run checklist (advisory).
     rc = report.get("readme_check")
@@ -194,11 +190,14 @@ def _summary_html(report: dict, slug: str) -> str:
     </ul>"""
 
     # Verification matrix (own / external legs).
+    # Legs where fixture_source=="strhub" are omitted: both legs run on the same
+    # STRhub data, so showing them separately would be misleading.
     matrix_block = ""
     datasets = report.get("datasets") or []
-    if datasets:
+    visible_ds = [leg for leg in datasets if leg.get("fixture_source") != "strhub"]
+    if visible_ds:
         mrows = []
-        for leg in datasets:
+        for leg in visible_ds:
             avail = leg.get("available", True)
             if not avail:
                 chip = '<span class="no">N/A</span>'
@@ -211,20 +210,10 @@ def _summary_html(report: dict, slug: str) -> str:
                 f"<td>{chip}</td>"
                 f"<td>{esc(leg.get('dataset', leg.get('type', '—')))}</td></tr>"
             )
-        note = ""
-        if any(leg.get("fixture_source") == "strhub" for leg in datasets):
-            note = (
-                '<p style="font-size:.85rem;color:#555"><b>Note:</b> this tool\'s '
-                "manifest does not point to a test file in its own public repository, "
-                "so the <i>STRhub fixture</i> leg also ran on a STRhub-provided "
-                "reference dataset — the same data provenance as the <i>External data</i> "
-                "leg. Neither leg uses test data from the tool's own repository; both "
-                "verify reproducible execution on open-access STRhub data.</p>"
-            )
         matrix_block = (
             "<h2>Verification matrix</h2>"
             "<table><thead><tr><th>Leg</th><th>Result</th><th>Dataset</th></tr></thead>"
-            f"<tbody>{''.join(mrows)}</tbody></table>{note}"
+            f"<tbody>{''.join(mrows)}</tbody></table>"
         )
 
     # README minimum-to-run checklist (advisory).
