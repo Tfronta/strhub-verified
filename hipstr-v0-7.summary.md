@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-22T13:58:25+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27957946675
+- Generated: 2026-06-22T14:17:01+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27959143360
 
 ## Gates
 
@@ -21,16 +21,18 @@
 
 - Sequence records: **23** (malformed: 0)
 - STR loci detected: **23**
-- Total reads across calls: **0** (deepest single sequence: 0)
+- Total reads across calls: **8230** (deepest single sequence: 523)
 - STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA, PentaD …
-- Top markers by read depth: D1S1656 (0), D10S1248 (0), TH01 (0), vWA (0), D12S391 (0), D13S317 (0)
+- Top markers by read depth: D18S51 (523), FGA (475), vWA (465), PentaD (444), D2S441 (433), D3S1358 (423)
 
 ## Verification matrix
 
 | Leg | Available | Result | Dataset |
 |---|---|---|---|
 | STRhub fixture | yes | PASS | — |
-| External data | yes | PASS | Illumina BAM (hg38) — NA12878 (autosomal, mujer) |
+| External data | yes | PASS | Illumina BAM (hg38) — NA12878 (autosomal, female) |
+
+> **Note:** this tool's manifest does not point to a test file in its own public repository, so the *STRhub fixture* leg also ran on a STRhub-provided reference dataset — the same data provenance as the *External data* leg. Neither leg uses test data from the tool's own repository; both verify reproducible execution on open-access STRhub data.
 
 ## README check (advisory)
 

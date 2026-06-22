@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-22T13:58:25+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27957946675",
+  "generated": "2026-06-22T14:17:01+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27959143360",
   "gates": {
     "available": true,
     "installs": true,
@@ -115,40 +115,40 @@
             "vWA"
           ],
           "snp_markers": [],
-          "total_reads": 0,
-          "max_sequence_depth": 0,
+          "total_reads": 8230,
+          "max_sequence_depth": 523,
           "top_loci_by_depth": [
             [
-              "D1S1656",
-              0
+              "D18S51",
+              523
             ],
             [
-              "D10S1248",
-              0
-            ],
-            [
-              "TH01",
-              0
+              "FGA",
+              475
             ],
             [
               "vWA",
-              0
+              465
             ],
             [
-              "D12S391",
-              0
+              "PentaD",
+              444
             ],
             [
-              "D13S317",
-              0
+              "D2S441",
+              433
             ],
             [
-              "PentaE",
-              0
+              "D3S1358",
+              423
             ],
             [
-              "D16S539",
-              0
+              "D22S1045",
+              416
+            ],
+            [
+              "D7S820",
+              412
             ]
           ]
         },
@@ -171,7 +171,7 @@
       "label": "External data",
       "available": true,
       "type": "illumina-bam-hg38",
-      "dataset": "Illumina BAM (hg38) \u2014 NA12878 (autosomal, mujer)",
+      "dataset": "Illumina BAM (hg38) \u2014 NA12878 (autosomal, female)",
       "io": true,
       "content": true,
       "passed": true
