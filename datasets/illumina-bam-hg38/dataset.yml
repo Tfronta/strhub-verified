@@ -1,10 +1,10 @@
-# Typed reference dataset — illumina-bam-hg38
+# Typed reference dataset — illumina-bam-hg38 (autosomal)
 # Matched against a manifest's `inputs.type: illumina-bam-hg38` for the external
 # verification leg. BAM slices live in illumina_slices/ (pre-built, committed).
 
 type: "illumina-bam-hg38"
-data: "illumina_slices/HG00145.codis.bam"
-bam_index: "illumina_slices/HG00145.codis.bam.bai"
+data: "illumina_slices/NA12878.autosomal.bam"
+bam_index: "illumina_slices/NA12878.autosomal.bam.bai"
 format: "bam"
 reference: "hg38"
 
@@ -16,13 +16,15 @@ reference_genome:
   filename: "hg38.fa"
   mount_path: "/data/ref/hg38.fa"
 
-name: "1000 Genomes Illumina 30x — hg38 CODIS slice"
-source: "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38"
+name: "Illumina BAM (hg38) — NA12878 (autosomal, mujer)"
+source: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/"
 license: >
-  Open access (1000 Genomes Project). Research and educational use.
+  Open access (GIAB / NIST). Research and educational use.
   STRhub is not the data provider.
-sequencer: "Illumina NovaSeq 6000"
+sequencer: "Illumina HiSeq 2500 (GIAB 300x)"
 notes: >
-  Pre-built CODIS STR slices from the 1000 Genomes 30x Illumina WGS dataset,
-  aligned to GRCh38 (±50kb flanking around 27 CODIS loci). Default external leg
-  uses HG00145 (~30 MB, 617k reads). See SOURCE.txt.
+  GIAB NA12878/HG001 300x WGS, aligned to GRCh38, sliced around 24 autosomal
+  forensic STR loci (CODIS 20 + PentaD + PentaE + D6S1043 + SE33) with ±1000bp
+  flanking. ~200-350x per locus. Pick this dataset for autosomal/CODIS tools.
+  Female sample — contains NO Y-chromosome markers (use illumina-bam-hg38-y for
+  Y-STR tools). See SOURCE.txt.

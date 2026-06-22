@@ -34,8 +34,8 @@
     },
     "illumina-bam-hg38": {
       "dir": "datasets/illumina-bam-hg38",
-      "data": "illumina_slices/HG00145.codis.bam",
-      "bam_index": "illumina_slices/HG00145.codis.bam.bai",
+      "data": "illumina_slices/NA12878.autosomal.bam",
+      "bam_index": "illumina_slices/NA12878.autosomal.bam.bai",
       "format": "bam",
       "canonical_input": "input.bam",
       "reference": "hg38",
@@ -45,11 +45,30 @@
         "filename": "hg38.fa",
         "mount_path": "/data/ref/hg38.fa"
       },
-      "name": "1000 Genomes Illumina 30x — hg38 CODIS slice",
-      "source": "https://www.internationalgenome.org/data-portal/data-collection/30x-grch38",
-      "license": "Open access (1000 Genomes). Research use. STRhub is not the data provider.",
-      "sequencer": "Illumina NovaSeq 6000",
-      "notes": "Pre-built CODIS slices in illumina_slices/. Default external test: HG00145.codis.bam (~30 MB, 617k reads, ±50kb flanking). See datasets/illumina-bam-hg38/SOURCE.txt."
+      "name": "Illumina BAM (hg38) — NA12878 (autosomal, mujer)",
+      "source": "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
+      "license": "Open access (GIAB / NIST). Research and educational use. STRhub is not the data provider.",
+      "sequencer": "Illumina HiSeq 2500 (GIAB 300x)",
+      "notes": "GIAB NA12878/HG001 300x, GRCh38, sliced around 24 autosomal forensic STR loci (CODIS 20 + PentaD + PentaE + D6S1043 + SE33), ±1000bp flanking, ~200-350x per locus. Pick this dataset for autosomal/CODIS tools. Female sample: no Y markers. See datasets/illumina-bam-hg38/SOURCE.txt."
+    },
+    "illumina-bam-hg38-y": {
+      "dir": "datasets/illumina-bam-hg38-y",
+      "data": "illumina_slices/HG002.ystr.bam",
+      "bam_index": "illumina_slices/HG002.ystr.bam.bai",
+      "format": "bam",
+      "canonical_input": "input.bam",
+      "reference": "hg38",
+      "reference_genome": {
+        "assembly": "GRCh38 / hg38",
+        "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
+        "filename": "hg38.fa",
+        "mount_path": "/data/ref/hg38.fa"
+      },
+      "name": "Illumina BAM (hg38) — HG002 (Y-STR, varón)",
+      "source": "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/NIST_HiSeq_HG002_Homogeneity-10953946/",
+      "license": "Open access (GIAB / NIST). Research and educational use. STRhub is not the data provider.",
+      "sequencer": "Illumina HiSeq 2500 (GIAB 300x)",
+      "notes": "GIAB HG002 300x, GRCh38, sliced around 15 Y-STR forensic loci (DYS19/385a-b/389I-II/390/391/392/393/438/448/456/458/635 + Y-GATA-H4/A10), ±1000bp flanking, ~96-390x per locus. Pick this dataset for Y-chromosome tools. PENDING: Y leg activation requires dataset-level regions.bed wiring in the harness (see datasets/illumina-bam-hg38-y/regions.bed)."
     }
   }
 }
