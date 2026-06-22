@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-06-22T18:49:47+00:00",
+  "generated": "2026-06-22T19:13:55+00:00",
   "count": 8,
   "tools": [
     {
@@ -19,6 +19,9 @@
       "external_state": "pass",
       "readme_score": 5,
       "readme_max": 5,
+      "dataset_types": [
+        "illumina-bam-hg38-y"
+      ],
       "report": "hipstr-v0-7-y.json",
       "page": "hipstr-v0-7-y.html"
     },
@@ -27,10 +30,10 @@
       "name": "hipstr",
       "level": "content",
       "label": "Runs + Plausible output",
-      "generated": "2026-06-22T14:17:01+00:00",
+      "generated": "2026-06-22T19:13:53+00:00",
       "source_repo": "https://github.com/tfwillems/HipSTR",
       "source_ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27959143360",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27977359701",
       "distinct_str_loci": 23,
       "distinct_snp_markers": 0,
       "total_reads": 8230,
@@ -38,6 +41,9 @@
       "external_state": "pass",
       "readme_score": 5,
       "readme_max": 5,
+      "dataset_types": [
+        "illumina-bam-hg38"
+      ],
       "report": "hipstr-v0-7.json",
       "page": "hipstr-v0-7.html"
     },
@@ -57,6 +63,7 @@
       "external_state": null,
       "readme_score": null,
       "readme_max": null,
+      "dataset_types": [],
       "report": "strait-razor-ForenSeqv1.27.json",
       "page": "strait-razor-ForenSeqv1.27.html"
     },
@@ -76,6 +83,7 @@
       "external_state": null,
       "readme_score": null,
       "readme_max": null,
+      "dataset_types": [],
       "report": "strait-razor-PowerSeqv2.31.json",
       "page": "strait-razor-PowerSeqv2.31.html"
     },
@@ -95,6 +103,9 @@
       "external_state": "fail",
       "readme_score": 5,
       "readme_max": 5,
+      "dataset_types": [
+        "illumina-str-fastq"
+      ],
       "report": "straitrazor-v1-0-2.json",
       "page": "straitrazor-v1-0-2.html"
     },
@@ -114,6 +125,9 @@
       "external_state": "fail",
       "readme_score": 5,
       "readme_max": 5,
+      "dataset_types": [
+        "illumina-str-fastq"
+      ],
       "report": "straitrazor-v1-0-3.json",
       "page": "straitrazor-v1-0-3.html"
     },
@@ -133,6 +147,7 @@
       "external_state": "na",
       "readme_score": 5,
       "readme_max": 5,
+      "dataset_types": [],
       "report": "straitrazor-v1-0-4.json",
       "page": "straitrazor-v1-0-4.html"
     },
@@ -152,6 +167,7 @@
       "external_state": "na",
       "readme_score": 5,
       "readme_max": 5,
+      "dataset_types": [],
       "report": "straitrazor-v1-0-5.json",
       "page": "straitrazor-v1-0-5.html"
     }
