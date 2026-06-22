@@ -1,0 +1,35 @@
+# Typed reference dataset — illumina-bam-hg38-y (Y-STR)
+# Matched against a manifest's `inputs.type: illumina-bam-hg38-y` for the external
+# verification leg. BAM slice lives in illumina_slices/ (pre-built, committed).
+#
+# STATUS: declared / form-visible. The Y external leg is NOT wired yet — it needs
+# the harness to mount dataset-level regions (regions.bed below) instead of the
+# per-tool asset. Until then, tools selecting this dataset get the BAM but HipSTR
+# still reads the autosomal tool-asset regions. Activation is tracked separately.
+
+type: "illumina-bam-hg38-y"
+data: "illumina_slices/HG002.ystr.bam"
+bam_index: "illumina_slices/HG002.ystr.bam.bai"
+format: "bam"
+reference: "hg38"
+
+# Reference genome — automatically downloaded and mounted by the harness.
+reference_genome:
+  assembly: "GRCh38 / hg38"
+  url: "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz"
+  filename: "hg38.fa"
+  mount_path: "/data/ref/hg38.fa"
+
+name: "Illumina BAM (hg38) — HG002 (Y-STR, varón)"
+source: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/NIST_HiSeq_HG002_Homogeneity-10953946/"
+license: >
+  Open access (GIAB / NIST). Research and educational use.
+  STRhub is not the data provider.
+sequencer: "Illumina HiSeq 2500 (GIAB 300x)"
+notes: >
+  GIAB HG002 300x WGS, aligned to GRCh38, sliced around 15 Y-STR forensic loci
+  (DYS19, DYS385a/b, DYS389 I+II, DYS390, DYS391, DYS392, DYS393, DYS438, DYS448,
+  DYS456, DYS458, DYS635, Y-GATA-H4, Y-GATA-A10) with ±1000bp flanking,
+  ~96-390x per locus. Pick this dataset for Y-chromosome tools. Male sample.
+  regions.bed here is the intended HipSTR region set; it is incomplete (10/18
+  rows) until regenerated from the source HipSTR reference — see regions.bed header.
