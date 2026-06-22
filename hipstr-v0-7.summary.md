@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-22T19:13:53+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27977359701
+- Generated: 2026-06-22T19:37:15+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27978708372
 
 ## Gates
 
@@ -29,10 +29,7 @@
 
 | Leg | Available | Result | Dataset |
 |---|---|---|---|
-| STRhub fixture | yes | PASS | — |
 | External data | yes | PASS | Illumina BAM (hg38) — NA12878 (autosomal, female) |
-
-> **Note:** this tool's manifest does not point to a test file in its own public repository, so the *STRhub fixture* leg also ran on a STRhub-provided reference dataset — the same data provenance as the *External data* leg. Neither leg uses test data from the tool's own repository; both verify reproducible execution on open-access STRhub data.
 
 ## README check (advisory)
 
