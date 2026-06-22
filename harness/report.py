@@ -117,6 +117,13 @@ def _summary_md(report: dict, slug: str) -> str:
                 f"{'yes' if avail else 'N/A'} | {status} | "
                 f"{leg.get('dataset', leg.get('type', '—'))} |"
             )
+        if any(leg.get("fixture_source") == "strhub" for leg in datasets):
+            lines += ["",
+                "> **Note:** this tool's manifest does not point to a test file in its "
+                "own public repository, so the *STRhub fixture* leg also ran on a "
+                "STRhub-provided reference dataset — the same data provenance as the "
+                "*External data* leg. Neither leg uses test data from the tool's own "
+                "repository; both verify reproducible execution on open-access STRhub data."]
 
     # README minimum-to-run checklist (advisory).
     rc = report.get("readme_check")
@@ -204,10 +211,20 @@ def _summary_html(report: dict, slug: str) -> str:
                 f"<td>{chip}</td>"
                 f"<td>{esc(leg.get('dataset', leg.get('type', '—')))}</td></tr>"
             )
+        note = ""
+        if any(leg.get("fixture_source") == "strhub" for leg in datasets):
+            note = (
+                '<p style="font-size:.85rem;color:#555"><b>Note:</b> this tool\'s '
+                "manifest does not point to a test file in its own public repository, "
+                "so the <i>STRhub fixture</i> leg also ran on a STRhub-provided "
+                "reference dataset — the same data provenance as the <i>External data</i> "
+                "leg. Neither leg uses test data from the tool's own repository; both "
+                "verify reproducible execution on open-access STRhub data.</p>"
+            )
         matrix_block = (
             "<h2>Verification matrix</h2>"
             "<table><thead><tr><th>Leg</th><th>Result</th><th>Dataset</th></tr></thead>"
-            f"<tbody>{''.join(mrows)}</tbody></table>"
+            f"<tbody>{''.join(mrows)}</tbody></table>{note}"
         )
 
     # README minimum-to-run checklist (advisory).
