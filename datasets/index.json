@@ -45,7 +45,7 @@
         "filename": "hg38.fa",
         "mount_path": "/data/ref/hg38.fa"
       },
-      "name": "Illumina BAM (hg38) — NA12878 (autosomal, mujer)",
+      "name": "Illumina BAM (hg38) — NA12878 (autosomal, female)",
       "source": "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
       "license": "Open access (GIAB / NIST). Research and educational use. STRhub is not the data provider.",
       "sequencer": "Illumina HiSeq 2500 (GIAB 300x)",
@@ -64,7 +64,7 @@
         "filename": "hg38.fa",
         "mount_path": "/data/ref/hg38.fa"
       },
-      "name": "Illumina BAM (hg38) — HG002 (Y-STR, varón)",
+      "name": "Illumina BAM (hg38) — HG002 (Y-STR, male)",
       "source": "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/NIST_HiSeq_HG002_Homogeneity-10953946/",
       "license": "Open access (GIAB / NIST). Research and educational use. STRhub is not the data provider.",
       "sequencer": "Illumina HiSeq 2500 (GIAB 300x)",
