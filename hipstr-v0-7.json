@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-22T19:59:44+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27979992000",
+  "generated": "2026-06-22T20:30:23+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27981751637",
   "gates": {
     "available": true,
     "installs": true,
@@ -149,6 +149,66 @@
             [
               "D7S820",
               412
+            ],
+            [
+              "PentaE",
+              408
+            ],
+            [
+              "D5S818",
+              400
+            ],
+            [
+              "D16S539",
+              374
+            ],
+            [
+              "D6S1043",
+              366
+            ],
+            [
+              "D12S391",
+              361
+            ],
+            [
+              "D1S1656",
+              360
+            ],
+            [
+              "D8S1179",
+              349
+            ],
+            [
+              "D13S317",
+              321
+            ],
+            [
+              "D10S1248",
+              313
+            ],
+            [
+              "D19S433",
+              300
+            ],
+            [
+              "CSF1PO",
+              280
+            ],
+            [
+              "TH01",
+              278
+            ],
+            [
+              "D2S1338",
+              265
+            ],
+            [
+              "TPOX",
+              264
+            ],
+            [
+              "SE33",
+              0
             ]
           ]
         },
