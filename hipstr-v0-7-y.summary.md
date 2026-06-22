@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-22T14:37:42+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27960531280
+- Generated: 2026-06-22T18:49:19+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27975999519
 
 ## Gates
 
@@ -19,11 +19,11 @@
 
 ## Output content (plausibility evidence)
 
-- Sequence records: **6** (malformed: 0)
-- STR loci detected: **6**
-- Total reads across calls: **1337** (deepest single sequence: 320)
-- STR loci: DYS385_1, DYS385_2, DYS389I, DYS389II.1, Y-GATA-A10, Y-GATA-H4
-- Top markers by read depth: Y-GATA-H4 (320), DYS389II.1 (298), DYS389I (272), DYS385_2 (219), Y-GATA-A10 (194), DYS385_1 (34)
+- Sequence records: **14** (malformed: 0)
+- STR loci detected: **14**
+- Total reads across calls: **2946** (deepest single sequence: 320)
+- STR loci: DYS385_1, DYS385_2, DYS389I, DYS389II.1, DYS390, DYS391, DYS392, DYS393, DYS438, DYS456, DYS458, DYS635, Y-GATA-A10, Y-GATA-H4
+- Top markers by read depth: Y-GATA-H4 (320), DYS389II.1 (298), DYS389I (272), DYS635 (258), DYS385_2 (219), DYS390 (218)
 
 ## Verification matrix
 

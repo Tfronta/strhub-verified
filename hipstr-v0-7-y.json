@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-22T14:37:42+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27960531280",
+  "generated": "2026-06-22T18:49:19+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27975999519",
   "gates": {
     "available": true,
     "installs": true,
@@ -39,7 +39,7 @@
           "min_records": true
         },
         "resolved": "result.vcf.gz",
-        "records": 6,
+        "records": 14,
         "passed": true
       }
     ]
@@ -57,18 +57,26 @@
           "min_distinct_loci": true
         },
         "stats": {
-          "rows": 6,
+          "rows": 14,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
-          "distinct_loci": 6,
-          "distinct_str_loci": 6,
+          "distinct_loci": 14,
+          "distinct_str_loci": 14,
           "distinct_snp_markers": 0,
           "loci": [
             "DYS385_1",
             "DYS385_2",
             "DYS389I",
             "DYS389II.1",
+            "DYS390",
+            "DYS391",
+            "DYS392",
+            "DYS393",
+            "DYS438",
+            "DYS456",
+            "DYS458",
+            "DYS635",
             "Y-GATA-A10",
             "Y-GATA-H4"
           ],
@@ -77,11 +85,19 @@
             "DYS385_2",
             "DYS389I",
             "DYS389II.1",
+            "DYS390",
+            "DYS391",
+            "DYS392",
+            "DYS393",
+            "DYS438",
+            "DYS456",
+            "DYS458",
+            "DYS635",
             "Y-GATA-A10",
             "Y-GATA-H4"
           ],
           "snp_markers": [],
-          "total_reads": 1337,
+          "total_reads": 2946,
           "max_sequence_depth": 320,
           "top_loci_by_depth": [
             [
@@ -97,16 +113,24 @@
               272
             ],
             [
+              "DYS635",
+              258
+            ],
+            [
               "DYS385_2",
               219
             ],
             [
-              "Y-GATA-A10",
-              194
+              "DYS390",
+              218
             ],
             [
-              "DYS385_1",
-              34
+              "DYS438",
+              198
+            ],
+            [
+              "DYS456",
+              196
             ]
           ]
         },
@@ -180,7 +204,7 @@
       {
         "id": "genotyping_summary",
         "severity": "info",
-        "title": "Genotyping: 6/10 loci succeeded"
+        "title": "Genotyping: 14/18 loci succeeded"
       }
     ],
     "external": [
@@ -193,7 +217,7 @@
       {
         "id": "genotyping_summary",
         "severity": "info",
-        "title": "Genotyping: 6/10 loci succeeded"
+        "title": "Genotyping: 14/18 loci succeeded"
       }
     ]
   }
