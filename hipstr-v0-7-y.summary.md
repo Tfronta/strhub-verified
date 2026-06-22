@@ -1,0 +1,52 @@
+# STRhub Verified — hipstr (hipstr-v0-7-y)
+
+**Result: Runs + Plausible output** — its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+
+- Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
+- Environment: ubuntu-22.04 (`Dockerfile`)
+- Generated: 2026-06-22T14:37:42+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27960531280
+
+## Gates
+
+| Gate | Status | Meaning |
+|---|---|---|
+| Available | PASS | the pinned public source exists |
+| Installs | PASS | the environment builds from source |
+| Runs | PASS | it executes end-to-end without crashing |
+| Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
+| Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+
+## Output content (plausibility evidence)
+
+- Sequence records: **6** (malformed: 0)
+- STR loci detected: **6**
+- Total reads across calls: **1337** (deepest single sequence: 320)
+- STR loci: DYS385_1, DYS385_2, DYS389I, DYS389II.1, Y-GATA-A10, Y-GATA-H4
+- Top markers by read depth: Y-GATA-H4 (320), DYS389II.1 (298), DYS389I (272), DYS385_2 (219), Y-GATA-A10 (194), DYS385_1 (34)
+
+## Verification matrix
+
+| Leg | Available | Result | Dataset |
+|---|---|---|---|
+| STRhub fixture | yes | PASS | — |
+| External data | yes | PASS | Illumina BAM (hg38) — HG002 (Y-STR, male) |
+
+> **Note:** this tool's manifest does not point to a test file in its own public repository, so the *STRhub fixture* leg also ran on a STRhub-provided reference dataset — the same data provenance as the *External data* leg. Neither leg uses test data from the tool's own repository; both verify reproducible execution on open-access STRhub data.
+
+## README check (advisory)
+
+Score: **5/5** — advisory only, does not affect the execution badge.
+
+- PASS install
+- PASS command
+- PASS input
+- PASS output
+- PASS dependencies
+
+## Scope (read this)
+
+Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.
+
+This is **not** a claim that the genotypes are correct, nor that the tool is fit for casework or meets any regulatory standard. Concordance against known truth is out of scope.
+

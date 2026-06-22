@@ -1,0 +1,200 @@
+{
+  "schema": "strhub-verified/1",
+  "tool": {
+    "name": "hipstr",
+    "version": "v0.7"
+  },
+  "source": {
+    "repo": "https://github.com/tfwillems/HipSTR",
+    "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+    "ref_resolved": "b2033bfbb5cf55496b776463bdf2993fa763a4be"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ]
+  },
+  "generated": "2026-06-22T14:37:42+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27960531280",
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": true,
+    "io": true,
+    "content": true
+  },
+  "level": "content",
+  "io_detail": {
+    "gate": "io",
+    "passed": true,
+    "outputs": [
+      {
+        "path": "result.vcf.gz",
+        "format": "vcf",
+        "checks": {
+          "exists": true,
+          "non_empty": true,
+          "parses_as_vcf": true,
+          "min_records": true
+        },
+        "resolved": "result.vcf.gz",
+        "records": 6,
+        "passed": true
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": true,
+    "outputs": [
+      {
+        "path": "result.vcf.gz",
+        "resolved": "result.vcf.gz",
+        "checks": {
+          "dna_is_acgtn": true,
+          "min_distinct_loci": true
+        },
+        "stats": {
+          "rows": 6,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 6,
+          "distinct_str_loci": 6,
+          "distinct_snp_markers": 0,
+          "loci": [
+            "DYS385_1",
+            "DYS385_2",
+            "DYS389I",
+            "DYS389II.1",
+            "Y-GATA-A10",
+            "Y-GATA-H4"
+          ],
+          "str_loci": [
+            "DYS385_1",
+            "DYS385_2",
+            "DYS389I",
+            "DYS389II.1",
+            "Y-GATA-A10",
+            "Y-GATA-H4"
+          ],
+          "snp_markers": [],
+          "total_reads": 1337,
+          "max_sequence_depth": 320,
+          "top_loci_by_depth": [
+            [
+              "Y-GATA-H4",
+              320
+            ],
+            [
+              "DYS389II.1",
+              298
+            ],
+            [
+              "DYS389I",
+              272
+            ],
+            [
+              "DYS385_2",
+              219
+            ],
+            [
+              "Y-GATA-A10",
+              194
+            ],
+            [
+              "DYS385_1",
+              34
+            ]
+          ]
+        },
+        "passed": true
+      }
+    ]
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": true,
+      "io": true,
+      "content": true,
+      "passed": true,
+      "fixture_source": "strhub"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-bam-hg38-y",
+      "dataset": "Illumina BAM (hg38) \u2014 HG002 (Y-STR, male)",
+      "io": true,
+      "content": true,
+      "passed": true
+    }
+  ],
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bdependenc(y|ies)\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "logs": {
+    "own": "hipstr-v0-7-y.log-own.txt",
+    "external": "hipstr-v0-7-y.log-external.txt"
+  },
+  "diagnostics": {
+    "own": [
+      {
+        "id": "low_bq_reads",
+        "severity": "info",
+        "title": "Reads filtered by base quality",
+        "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
+      },
+      {
+        "id": "genotyping_summary",
+        "severity": "info",
+        "title": "Genotyping: 6/10 loci succeeded"
+      }
+    ],
+    "external": [
+      {
+        "id": "low_bq_reads",
+        "severity": "info",
+        "title": "Reads filtered by base quality",
+        "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
+      },
+      {
+        "id": "genotyping_summary",
+        "severity": "info",
+        "title": "Genotyping: 6/10 loci succeeded"
+      }
+    ]
+  }
+}
