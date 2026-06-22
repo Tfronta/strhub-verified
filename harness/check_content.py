@@ -114,7 +114,7 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
         "snp_markers": snp_markers,
         "total_reads": total_reads,
         "max_sequence_depth": max_depth,
-        "top_loci_by_depth": locus_reads.most_common(8),
+        "top_loci_by_depth": locus_reads.most_common(),
     }
 
 
