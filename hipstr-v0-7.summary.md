@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-24T20:10:04+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/28126305658
+- Generated: 2026-06-24T20:24:19+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/28127117894
 
 ## Gates
 
