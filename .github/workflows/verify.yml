@@ -45,7 +45,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      - run: pip install pyyaml jsonschema
+      - run: pip install pyyaml jsonschema reportlab pillow
 
       # --- Prepare: read manifest, resolve external dataset, stage inputs -----
       # prepare.py stages each matrix leg: work/in_own (BYOR, local or remote)
@@ -229,6 +229,12 @@ jobs:
             --log-external work/log_external.txt \
             --ref ${{ steps.m.outputs.ref }} \
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Generate PDF report
+        if: always()
+        run: |
+          python harness/generate_pdf.py \
+            --manifest "${{ steps.m.outputs.manifest }}"
 
       # Render the human-readable summary on the run's "Summary" page (no download
       # needed). $GITHUB_STEP_SUMMARY accepts Markdown.
