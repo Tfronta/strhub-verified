@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/gymreklab/gangstr` @ `v2.5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-24T21:37:35+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/28131191634
+- Generated: 2026-06-24T21:37:46+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/28131196560
 
 ## Gates
 
