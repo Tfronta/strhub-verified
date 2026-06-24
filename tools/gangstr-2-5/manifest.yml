@@ -1,0 +1,25 @@
+tool:
+  name: GangSTR
+  version: "2.5"
+source:
+  repo: "https://github.com/gymreklab/gangstr"
+  ref: "v2.5"
+report:
+  slug: "gangstr-2-5"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out /data/out/output"
+  timeout_minutes: 20
+inputs:
+  type: "illumina-bam-hg38"
+  fixture: "illumina_slices/NA12878.autosomal.bam"
+outputs:
+  - path: output.vcf
+    format: vcf
+    min_records: 1
+    content:
+      locus_column: 2
+      dna_column: 3
+      min_distinct_loci: 1
