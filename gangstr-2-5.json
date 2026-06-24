@@ -1,0 +1,109 @@
+{
+  "schema": "strhub-verified/1",
+  "tool": {
+    "name": "GangSTR",
+    "version": "2.5"
+  },
+  "source": {
+    "repo": "https://github.com/gymreklab/gangstr",
+    "ref": "v2.5",
+    "ref_resolved": "v2.5"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ]
+  },
+  "generated": "2026-06-24T21:37:35+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28131191634",
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": false,
+    "io": false,
+    "content": false
+  },
+  "level": "installs",
+  "io_detail": {
+    "gate": "io",
+    "passed": false,
+    "outputs": [
+      {
+        "path": "output.vcf",
+        "format": "vcf",
+        "checks": {
+          "exists": false
+        },
+        "passed": false
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": false,
+    "outputs": [
+      {
+        "path": "output.vcf",
+        "passed": false,
+        "error": "output not found"
+      }
+    ]
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": true,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "strhub"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-bam-hg38",
+      "dataset": "Illumina BAM (hg38) \u2014 NA12878 (autosomal, female)",
+      "io": false,
+      "content": false,
+      "passed": false
+    }
+  ],
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bdependenc(y|ies)\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "logs": {
+    "own": "gangstr-2-5.log-own.txt",
+    "external": "gangstr-2-5.log-external.txt"
+  }
+}
