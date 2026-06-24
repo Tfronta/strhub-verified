@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-22T18:49:44+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27976005532",
+  "generated": "2026-06-24T20:42:59+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28128172407",
   "gates": {
     "available": true,
     "installs": true,
@@ -131,6 +131,30 @@
             [
               "DYS456",
               196
+            ],
+            [
+              "DYS391",
+              195
+            ],
+            [
+              "Y-GATA-A10",
+              194
+            ],
+            [
+              "DYS458",
+              193
+            ],
+            [
+              "DYS392",
+              190
+            ],
+            [
+              "DYS393",
+              161
+            ],
+            [
+              "DYS385_1",
+              34
             ]
           ]
         },
