@@ -1,0 +1,11 @@
+{
+  "slug": "gangstr-v2-5",
+  "repo": "https://github.com/gymreklab/gangstr",
+  "ref": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+  "dispatchId": "sv_mqtgi2p1_n540r0fi",
+  "createdAt": "2026-06-25T12:06:27.109Z",
+  "ip": "181.94.209.70",
+  "status": "approved-pending",
+  "toolName": "GangSTR",
+  "payload": "{\"tool\":{\"name\":\"GangSTR\",\"version\":\"v2.5\"},\"source\":{\"repo\":\"https://github.com/gymreklab/gangstr\",\"ref\":\"6ea9b2b8daca51dcab1f0e46210622b94b52ff17\"},\"docker\":{\"mode\":\"generated\",\"language\":\"conda\",\"build_cmd\":\"conda install -c bioconda -c conda-forge gangstr=2.5.0 --yes\",\"check_cmd\":\"GangSTR --help\"},\"run\":{\"cmd\":\"GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out /data/out/output\",\"timeout_minutes\":15},\"inputs\":{\"type\":\"illumina-bam-hg38\"},\"outputs\":[{\"path\":\"result.vcf\",\"format\":\"vcf\",\"min_records\":1}],\"os\":[\"ubuntu-22.04\"]}"
+}
