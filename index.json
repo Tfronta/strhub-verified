@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-06-24T21:37:47+00:00",
-  "count": 9,
+  "generated": "2026-06-25T12:18:36+00:00",
+  "count": 10,
   "tools": [
     {
       "slug": "gangstr-2-5",
@@ -24,6 +24,28 @@
       ],
       "report": "gangstr-2-5.json",
       "page": "gangstr-2-5.html"
+    },
+    {
+      "slug": "gangstr-v2-5",
+      "name": "GangSTR",
+      "level": "installs",
+      "label": "Installs",
+      "generated": "2026-06-25T12:18:34+00:00",
+      "source_repo": "https://github.com/gymreklab/gangstr",
+      "source_ref": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28169467954",
+      "distinct_str_loci": null,
+      "distinct_snp_markers": null,
+      "total_reads": null,
+      "own_state": "fail",
+      "external_state": "fail",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-bam-hg38"
+      ],
+      "report": "gangstr-v2-5.json",
+      "page": "gangstr-v2-5.html"
     },
     {
       "slug": "hipstr-v0-7-y",
