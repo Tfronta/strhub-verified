@@ -15,10 +15,11 @@ environment:
   os: ["ubuntu-22.04"]
 run:
   cmd: "GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out /data/out/output"
-  timeout_minutes: 15
+  timeout_minutes: 20
 inputs:
   type: "illumina-bam-hg38"
+  fixture: "illumina_slices/NA12878.autosomal.bam"
 outputs:
-- path: result.vcf
+- path: output.vcf
   format: vcf
   min_records: 1
