@@ -15,27 +15,32 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-25T12:18:34+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28169467954",
+  "generated": "2026-06-25T12:21:52+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28169655482",
   "gates": {
     "available": true,
     "installs": true,
-    "runs": false,
-    "io": false,
+    "runs": true,
+    "io": true,
     "content": false
   },
-  "level": "installs",
+  "level": "io",
   "io_detail": {
     "gate": "io",
-    "passed": false,
+    "passed": true,
     "outputs": [
       {
-        "path": "result.vcf",
+        "path": "output.vcf",
         "format": "vcf",
         "checks": {
-          "exists": false
+          "exists": true,
+          "non_empty": true,
+          "parses_as_vcf": true,
+          "min_records": true
         },
-        "passed": false
+        "resolved": "output.vcf",
+        "records": 9,
+        "passed": true
       }
     ]
   },
@@ -50,9 +55,9 @@
       "leg": "own",
       "label": "STRhub fixture",
       "available": true,
-      "io": false,
+      "io": true,
       "content": false,
-      "passed": false,
+      "passed": true,
       "fixture_source": "strhub"
     },
     {
@@ -61,9 +66,9 @@
       "available": true,
       "type": "illumina-bam-hg38",
       "dataset": "Illumina BAM (hg38) \u2014 NA12878 (autosomal, female)",
-      "io": false,
+      "io": true,
       "content": false,
-      "passed": false
+      "passed": true
     }
   ],
   "readme_check": {

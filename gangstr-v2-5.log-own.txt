@@ -1,1 +1,19 @@
-[GangSTR-2.5.0] ERROR: Could not open regions file
+[GangSTR-2.5.0] ProgressMeter: Loading read group id NA12878 for sample NA12878
+[GangSTR-2.5.0] ProgressMeter: Processing chr2:1489651
+[GangSTR-2.5.0] ProgressMeter: 	Genotyper Results:  8, 8	likelihood = 2192.46
+[GangSTR-2.5.0] ProgressMeter: Processing chr2:68011947
+[GangSTR-2.5.0] ProgressMeter: 	Genotyper Results:  11, 14	likelihood = 3778.69
+[GangSTR-2.5.0] ProgressMeter: Processing chr5:123775553
+[GangSTR-2.5.0] ProgressMeter: 	Genotyper Results:  12, 12	likelihood = 4384.69
+[GangSTR-2.5.0] ProgressMeter: Processing chr7:84160225
+[GangSTR-2.5.0] ProgressMeter: 	Genotyper Results:  8, 10	likelihood = 4296.92
+[GangSTR-2.5.0] ProgressMeter: Processing chr10:129294244
+[GangSTR-2.5.0] ProgressMeter: 	Genotyper Results:  15, 16	likelihood = 3486.08
+[GangSTR-2.5.0] ProgressMeter: Processing chr11:2171086
+[GangSTR-2.5.0] ProgressMeter: 	Genotyper Results:  7, 10	likelihood = 2287.5
+[GangSTR-2.5.0] ProgressMeter: Processing chr12:5983795
+[GangSTR-2.5.0] ProgressMeter: 	Genotyper Results:  7, 7	likelihood = 4311.12
+[GangSTR-2.5.0] ProgressMeter: Processing chr15:96831012
+[GangSTR-2.5.0] ProgressMeter: 	Genotyper Results:  7, 12	likelihood = 4385.45
+[GangSTR-2.5.0] ProgressMeter: Processing chr21:43636205
+[GangSTR-2.5.0] ProgressMeter: 	Genotyper Results:  11, 13	likelihood = 4628.81
