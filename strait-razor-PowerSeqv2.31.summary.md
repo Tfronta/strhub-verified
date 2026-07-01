@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-14T18:56:17+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/27508739344
+- Generated: 2026-07-01T09:47:42+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/28508688098
 
 ## Gates
 
@@ -20,10 +20,26 @@
 ## Output content (plausibility evidence)
 
 - Sequence records: **1172** (malformed: 0)
-- Distinct forensic loci detected: **44**
+- STR loci detected: **44**
 - Total reads across calls: **4634** (deepest single sequence: 179)
-- Loci: Amelogenin, CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D7S820, D8S1179, DYS19 …
-- Top loci by read depth: DYS439 (205), DYS385 (204), D2S1338 (200), DYS393 (177), Amelogenin (170), D10S1248 (151)
+- STR loci: Amelogenin, CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D7S820, D8S1179, DYS19 …
+- Top markers by read depth: DYS439 (205), DYS385 (204), D2S1338 (200), DYS393 (177), Amelogenin (170), D10S1248 (151)
+
+## Verification matrix
+
+| Leg | Available | Result | Dataset |
+|---|---|---|---|
+| External data | yes | PASS | NIST mds2-2157 — Illumina STR (ForenSeq slice, donor NTD01) |
+
+## README check (advisory)
+
+Score: **5/5** — advisory only, does not affect the execution badge.
+
+- PASS install
+- PASS command
+- PASS input
+- PASS output
+- PASS dependencies
 
 ## Scope (read this)
 

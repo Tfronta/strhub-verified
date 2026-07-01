@@ -17,8 +17,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-14T18:56:17+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27508739344",
+  "generated": "2026-07-01T09:47:42+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28508688098",
   "gates": {
     "available": true,
     "installs": true,
@@ -68,6 +68,8 @@
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
           "distinct_loci": 44,
+          "distinct_str_loci": 44,
+          "distinct_snp_markers": 0,
           "loci": [
             "Amelogenin",
             "CSF1PO",
@@ -114,6 +116,53 @@
             "Y-GATA-H4",
             "vWA"
           ],
+          "str_loci": [
+            "Amelogenin",
+            "CSF1PO",
+            "D10S1248",
+            "D12S391",
+            "D13S317",
+            "D16S539",
+            "D18S51",
+            "D19S433",
+            "D1S1656",
+            "D21S11",
+            "D22S1045",
+            "D2S1338",
+            "D2S441",
+            "D3S1358",
+            "D5S818",
+            "D7S820",
+            "D8S1179",
+            "DYS19",
+            "DYS385",
+            "DYS389II",
+            "DYS390",
+            "DYS391",
+            "DYS392",
+            "DYS393",
+            "DYS437",
+            "DYS438",
+            "DYS439",
+            "DYS448",
+            "DYS456",
+            "DYS458",
+            "DYS481",
+            "DYS533",
+            "DYS549",
+            "DYS570",
+            "DYS576",
+            "DYS635",
+            "DYS643",
+            "FGA",
+            "PentaD",
+            "PentaE",
+            "TH01",
+            "TPOX",
+            "Y-GATA-H4",
+            "vWA"
+          ],
+          "snp_markers": [],
           "total_reads": 4634,
           "max_sequence_depth": 179,
           "top_loci_by_depth": [
@@ -148,12 +197,206 @@
             [
               "D21S11",
               131
+            ],
+            [
+              "D3S1358",
+              131
+            ],
+            [
+              "DYS481",
+              128
+            ],
+            [
+              "D8S1179",
+              127
+            ],
+            [
+              "DYS448",
+              125
+            ],
+            [
+              "D7S820",
+              121
+            ],
+            [
+              "FGA",
+              119
+            ],
+            [
+              "TPOX",
+              119
+            ],
+            [
+              "DYS390",
+              119
+            ],
+            [
+              "DYS389II",
+              107
+            ],
+            [
+              "DYS643",
+              106
+            ],
+            [
+              "DYS391",
+              105
+            ],
+            [
+              "DYS437",
+              103
+            ],
+            [
+              "DYS635",
+              100
+            ],
+            [
+              "D1S1656",
+              98
+            ],
+            [
+              "D5S818",
+              96
+            ],
+            [
+              "DYS19",
+              93
+            ],
+            [
+              "TH01",
+              90
+            ],
+            [
+              "DYS549",
+              89
+            ],
+            [
+              "DYS458",
+              88
+            ],
+            [
+              "Y-GATA-H4",
+              88
+            ],
+            [
+              "DYS533",
+              87
+            ],
+            [
+              "D16S539",
+              86
+            ],
+            [
+              "D13S317",
+              84
+            ],
+            [
+              "DYS456",
+              83
+            ],
+            [
+              "PentaE",
+              82
+            ],
+            [
+              "vWA",
+              79
+            ],
+            [
+              "DYS576",
+              74
+            ],
+            [
+              "PentaD",
+              69
+            ],
+            [
+              "D12S391",
+              67
+            ],
+            [
+              "CSF1PO",
+              64
+            ],
+            [
+              "D2S441",
+              63
+            ],
+            [
+              "DYS570",
+              63
+            ],
+            [
+              "DYS392",
+              59
+            ],
+            [
+              "D22S1045",
+              58
+            ],
+            [
+              "D18S51",
+              48
+            ],
+            [
+              "DYS438",
+              42
             ]
           ]
         },
         "passed": true
       }
     ]
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": true,
+      "io": true,
+      "content": true,
+      "passed": true,
+      "fixture_source": "strhub"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-str-fastq",
+      "dataset": "NIST mds2-2157 \u2014 Illumina STR (ForenSeq slice, donor NTD01)",
+      "io": true,
+      "content": false,
+      "passed": true
+    }
+  ],
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\bfastq\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "requirements"
+      }
+    },
+    "empty": false
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation."
 }

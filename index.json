@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-06-26T19:04:05+00:00",
+  "generated": "2026-07-01T09:47:45+00:00",
   "count": 10,
   "tools": [
     {
@@ -116,18 +116,20 @@
       "name": "STRait Razor",
       "level": "content",
       "label": "Runs + Plausible output",
-      "generated": "2026-06-14T18:56:17+00:00",
+      "generated": "2026-07-01T09:47:42+00:00",
       "source_repo": "https://github.com/Ahhgust/STRaitRazor",
       "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27508739344",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28508688098",
       "distinct_str_loci": 44,
-      "distinct_snp_markers": null,
+      "distinct_snp_markers": 0,
       "total_reads": 4634,
-      "own_state": null,
-      "external_state": null,
-      "readme_score": null,
-      "readme_max": null,
-      "dataset_types": [],
+      "own_state": "pass",
+      "external_state": "pass",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-str-fastq"
+      ],
       "report": "strait-razor-PowerSeqv2.31.json",
       "page": "strait-razor-PowerSeqv2.31.html"
     },
