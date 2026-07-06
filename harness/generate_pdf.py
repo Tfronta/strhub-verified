@@ -696,13 +696,26 @@ def build_appendix(cfg):
     if not loci_data:
         return []
 
+    # ReportLab cannot split a single table row across pages, and the appendix
+    # renders the loci as one two-column row. A large panel (e.g. ForenSeq's
+    # ~220 STR+SNP markers) would overflow one page and raise LayoutError, so
+    # cap it to the deepest markers; the full counts remain in the report JSON.
+    CAP = 60
+    total_loci = len(loci_data)
+    truncated = total_loci > CAP
+    loci_data = loci_data[:CAP]
+
     els = []
     els.append(build_header_inner(cfg))
     els.append(HR(TEAL, thickness=1.2, spaceB=4, spaceA=8))
     els.append(Paragraph("Appendix — Detected Markers with Read Depth",
                           ST["appendix_title"]))
+    subtitle = f"{cfg['tool_display']} · verified {cfg['ver_date']}"
+    if truncated:
+        subtitle += (f" · showing the {CAP} deepest of {total_loci} detected "
+                     "markers by read depth")
     els.append(Paragraph(
-        f"{cfg['tool_display']} · verified {cfg['ver_date']}",
+        subtitle,
         S("as2", fontSize=8, textColor=GRAY, leading=12, spaceAfter=10)))
 
     MAX = max((d for _, d in loci_data), default=1) or 1
