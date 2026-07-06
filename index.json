@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-07-01T09:47:45+00:00",
-  "count": 10,
+  "generated": "2026-07-06T19:26:45+00:00",
+  "count": 11,
   "tools": [
     {
       "slug": "gangstr-2-5",
@@ -216,6 +216,28 @@
       "dataset_types": [],
       "report": "straitrazor-v1-0-5.json",
       "page": "straitrazor-v1-0-5.html"
+    },
+    {
+      "slug": "straitrazor-v3-0",
+      "name": "STRaitRazor",
+      "level": "runs",
+      "label": "Runs",
+      "generated": "2026-07-06T19:26:44+00:00",
+      "source_repo": "https://github.com/Ahhgust/STRaitRazor",
+      "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28817497649",
+      "distinct_str_loci": null,
+      "distinct_snp_markers": null,
+      "total_reads": null,
+      "own_state": "fail",
+      "external_state": "pass",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-str-fastq"
+      ],
+      "report": "straitrazor-v3-0.json",
+      "page": "straitrazor-v3-0.html"
     }
   ]
 }
