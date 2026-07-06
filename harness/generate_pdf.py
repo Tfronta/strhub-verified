@@ -648,6 +648,11 @@ def build_body(cfg):
     n_loci = stats.get("distinct_str_loci", 0)
     max_depth = stats.get("max_sequence_depth", 0)
     deepest_locus = top_loci[0][0] if top_loci else "—"
+    # Derive format + dataset from real values (not hardcoded), so the
+    # conclusion cannot contradict Sections 6/7.
+    fmt = (cfg.get("declared_format") or "").strip()
+    fmt_label = f"{fmt} " if fmt and fmt != "—" else ""
+    ds_name = cfg.get("dataset", {}).get("name") or "a public reference dataset"
 
     conclusion_items = [
         ("Runs end-to-end",
@@ -655,15 +660,14 @@ def build_body(cfg):
          f"ubuntu-22.04 environment at the pinned commit. All {n_pass} verification "
          "gates were passed."),
         ("Produces valid output",
-         f"The tool generated a structurally valid VCF file with genotype "
+         f"The tool generated a structurally valid {fmt_label}output file with genotype "
          f"calls across {n_loci} target forensic STR loci, with a "
          f"maximum read depth of {max_depth} at {deepest_locus}."),
         ("No bundled demo data",
          f"{cfg['tool_name']} does not include its own test or demo dataset. "
-         "STRhub Verified supplied the GIAB NA12878 300× dataset "
-         "(GRCh38) as the reference input for this verification run. "
-         "Users replicating this result should use the same or equivalent "
-         "publicly available reference material."),
+         f"STRhub Verified supplied {ds_name} as the reference input for this "
+         "verification run. Users replicating this result should use the same or "
+         "equivalent publicly available reference material."),
         ("Reproducibility statement",
          "The exact command reported in Section 3, executed at the pinned "
          "commit in the described environment, is sufficient to reproduce "
