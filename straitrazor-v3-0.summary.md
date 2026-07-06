@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-07-06T19:45:31+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/28818544704
+- Generated: 2026-07-06T19:57:33+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/28819241215
 
 ## Gates
 
@@ -29,6 +29,7 @@
 
 | Leg | Available | Result | Dataset |
 |---|---|---|---|
+| STRhub fixture | N/A | N/A | — |
 | External data | yes | PASS | NIST mds2-2157 — Illumina STR (ForenSeq slice, donor NTD01) |
 
 ## README check (advisory)

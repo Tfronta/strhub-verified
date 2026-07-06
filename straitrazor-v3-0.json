@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-07-06T19:45:31+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28818544704",
+  "generated": "2026-07-06T19:57:33+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28819241215",
   "gates": {
     "available": true,
     "installs": true,
@@ -1407,11 +1407,11 @@
     {
       "leg": "own",
       "label": "STRhub fixture",
-      "available": true,
-      "io": true,
-      "content": true,
-      "passed": true,
-      "fixture_source": "strhub"
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
     },
     {
       "leg": "external",
