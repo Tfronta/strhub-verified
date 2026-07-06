@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-07-06T19:26:44+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28817497649",
+  "generated": "2026-07-06T19:42:24+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28818363294",
   "gates": {
     "available": true,
     "installs": true,
@@ -31,11 +31,11 @@
     "outputs": [
       {
         "path": "*.allsequences.txt",
-        "format": "text",
+        "format": "tsv",
         "checks": {
           "exists": true,
           "non_empty": false,
-          "parses_as_text": true,
+          "parses_as_tsv": true,
           "min_records": false
         },
         "resolved": "sample.allsequences.txt",
@@ -46,9 +46,50 @@
   },
   "content_detail": {
     "gate": "content",
-    "applicable": false,
+    "applicable": true,
     "passed": false,
-    "outputs": []
+    "outputs": [
+      {
+        "path": "*.allsequences.txt",
+        "resolved": "sample.allsequences.txt",
+        "checks": {
+          "columns_consistent": true,
+          "dna_is_acgtn": true,
+          "counts_are_integers": true,
+          "min_distinct_loci": false,
+          "min_total_reads": false,
+          "expect_loci": false
+        },
+        "stats": {
+          "rows": 0,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 0,
+          "distinct_str_loci": 0,
+          "distinct_snp_markers": 0,
+          "loci": [],
+          "str_loci": [],
+          "snp_markers": [],
+          "total_reads": 0,
+          "max_sequence_depth": 0,
+          "top_loci_by_depth": []
+        },
+        "passed": false,
+        "missing_loci": [
+          "Amelogenin",
+          "CSF1PO",
+          "TH01",
+          "TPOX",
+          "vWA",
+          "D3S1358",
+          "D8S1179",
+          "D18S51",
+          "D21S11",
+          "FGA"
+        ]
+      }
+    ]
   },
   "datasets": [
     {
@@ -67,7 +108,7 @@
       "type": "illumina-str-fastq",
       "dataset": "NIST mds2-2157 \u2014 Illumina STR (ForenSeq slice, donor NTD01)",
       "io": true,
-      "content": false,
+      "content": true,
       "passed": true
     }
   ],
