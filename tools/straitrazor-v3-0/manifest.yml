@@ -17,10 +17,7 @@ run:
   cmd: "/opt/tool/str8rzr -c /opt/tool/ForenSeqv1.27.config /data/in/sample.fastq > /data/out/sample.allsequences.txt"
   timeout_minutes: 14
 inputs:
-  type: "illumina-str-fastq"
-  # No author BYOR fixture was submitted, so the "own" leg runs on real NIST
-  # mds2-2157 ForenSeq reads (matches the ForenSeqv1.27.config used above).
-  fixture: "tools/strait-razor-ForenSeqv1.27/fixtures/nist-mds2-2157"
+  type: "illumina-str-fastq"   # drives the external leg; no BYOR fixture -> own leg N/A
 outputs:
 - path: "*.allsequences.txt"
   format: "tsv"

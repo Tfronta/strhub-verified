@@ -515,14 +515,16 @@ def build_body(cfg):
     # §6 Output Content Evidence
     els.append(section_num("6", "Output Content Evidence"))
     stats = cfg.get("stats", {})
+    assessed = bool(stats)   # the Content gate ran and produced statistics
+    na = "Not assessed"
     total_reads = stats.get("total_reads", 0)
     ev_rows = [
-        ("Output file",              stats.get("output_file", "result.vcf.gz")),
-        ("Format",                   stats.get("format", "VCF")),
-        ("Sequence records",         str(stats.get("rows", "—"))),
-        ("Distinct STR loci",        str(stats.get("distinct_str_loci", "—"))),
-        ("Total reads",              f"{total_reads:,}" if total_reads else "—"),
-        ("Max depth (single locus)", str(stats.get("max_sequence_depth", "—"))),
+        ("Output file",              stats.get("output_file") or cfg.get("declared_output", "—")),
+        ("Format",                   stats.get("format") or cfg.get("declared_format", "—")),
+        ("Sequence records",         str(stats.get("rows", 0)) if assessed else na),
+        ("Distinct STR loci",        str(stats.get("distinct_str_loci", 0)) if assessed else na),
+        ("Total reads",              f"{total_reads:,}" if assessed else na),
+        ("Max depth (single locus)", str(stats.get("max_sequence_depth", 0)) if assessed else na),
     ]
     tdata = [[Paragraph(k, ST["meta_label"]),
               Paragraph(v, ST["tbl_cell"])] for k, v in ev_rows]
@@ -829,14 +831,20 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         ds_index = json.loads(ds_file.read_text())
         dataset = ds_index.get("datasets", {}).get(input_type, {})
 
-    # Stats from content_detail
+    # Declared output (from the manifest) — the honest fallback when the Content
+    # gate did not run (no content: block), instead of a hardcoded VCF guess.
+    declared_out = (m.get("outputs") or [{}])[0]
+    declared_output = declared_out.get("path", "—")
+    declared_format = (declared_out.get("format") or "—").upper()
+
+    # Stats from content_detail (present only when the Content gate ran).
     stats: dict = {}
     outputs = report.get("content_detail", {}).get("outputs", [])
-    if outputs and isinstance(outputs[0], dict):
+    if outputs and isinstance(outputs[0], dict) and outputs[0].get("stats"):
         raw_stats = outputs[0].get("stats", {})
         stats = {**raw_stats,
-                 "output_file": outputs[0].get("resolved", "result.vcf.gz"),
-                 "format": "VCF"}
+                 "output_file": outputs[0].get("resolved", declared_output),
+                 "format": declared_format}
 
     # Loci (sorted by depth desc — top_loci_by_depth is already most_common())
     loci_with_depth = [(l, d) for l, d in stats.get("top_loci_by_depth", [])]
@@ -860,6 +868,8 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         "container_os":   (m.get("environment", {}).get("os") or ["ubuntu-22.04"])[0],
         "panel":          PANEL_MAP.get(input_type, input_type or "STR"),
         "stats":          stats,
+        "declared_output": declared_output,
+        "declared_format": declared_format,
         "loci_with_depth":loci_with_depth,
         "loci_list":      stats.get("str_loci", []),
         "dataset":        dataset,
