@@ -163,7 +163,7 @@ def main() -> int:
     mf = ROOT / "tools" / args.tool / "manifest.yml"
     m = yaml.safe_load(mf.read_text())
     inputs = m.get("inputs", {})
-    fixture = inputs.get("fixture", "fixtures/example")
+    fixture = inputs.get("fixture")
     input_type = inputs.get("type")
 
     # Resolve canonical filename so both legs use identical names.
@@ -174,8 +174,16 @@ def main() -> int:
             canonical = ds_rec.get("canonical_input")
 
     work = pathlib.Path(args.work)
-    own_ready = stage_own(fixture, work / "in_own", canonical)
-    fixture_source = "tool" if isinstance(fixture, dict) else "strhub"
+    # The own leg runs only when the author declared a BYOR fixture. Without one
+    # we do NOT fall back to a placeholder fixture (that produced spurious
+    # Content failures on a 2-read dummy); the own leg is simply N/A and the
+    # badge rests on the external typed-dataset leg (chosen by inputs.type).
+    if fixture is None:
+        own_ready = False
+        fixture_source = "none"
+    else:
+        own_ready = stage_own(fixture, work / "in_own", canonical)
+        fixture_source = "tool" if isinstance(fixture, dict) else "strhub"
     external_ready, dataset_name = stage_external(input_type, work / "in_external")
 
     # Stage tool-specific assets (e.g. regions BED) into both legs.
