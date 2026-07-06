@@ -449,7 +449,7 @@ def build_body(cfg):
     els.append(section_num("3", "Exact Run Command"))
     els.append(Paragraph(
         "The following command was executed verbatim in the CI environment. "
-        "Replacing the BAM, reference, and BED paths with your own inputs "
+        "Replacing the input paths under /data/in with your own inputs "
         "reproduces the verified run.",
         ST["body"]))
     els.append(vspace(3))
