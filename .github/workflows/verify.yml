@@ -216,13 +216,22 @@ jobs:
       - name: Build attestation + badge
         if: always()
         run: |
+          # The badge ladder follows the author's BYOR "own" leg when present;
+          # otherwise it rests on the external typed-dataset leg (chosen by
+          # inputs.type), which is where the real data ran for form submissions
+          # that don't supply a fixture.
+          if [ "${{ steps.m.outputs.own_ready }}" = "1" ]; then
+            LADDER_RUNS="${{ steps.runs.outcome }}"; LADDER_IO=io_own.json; LADDER_CT=content_own.json
+          else
+            LADDER_RUNS="${{ steps.runs_ext.outcome }}"; LADDER_IO=io_external.json; LADDER_CT=content_external.json
+          fi
           python harness/report.py \
             --manifest "${{ steps.m.outputs.manifest }}" \
             --available ${{ steps.available.outcome }} \
             --installs ${{ steps.installs.outcome }} \
-            --runs ${{ steps.runs.outcome }} \
-            --io io_own.json \
-            --content content_own.json \
+            --runs "$LADDER_RUNS" \
+            --io "$LADDER_IO" \
+            --content "$LADDER_CT" \
             --matrix matrix.json \
             --readme readme_result.json \
             --log-own work/log_own.txt \
