@@ -257,6 +257,9 @@ jobs:
             --log-own work/log_own.txt \
             --log-external work/log_external.txt \
             --ref ${{ steps.m.outputs.ref }} \
+            --regions-source "${{ steps.m.outputs.regions_source }}" \
+            --regions-validation regions_validation.json \
+            --supported-loci "${{ steps.m.outputs.supported_loci }}" \
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       - name: Generate PDF report
