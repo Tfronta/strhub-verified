@@ -1,17 +1,19 @@
 # Typed reference dataset — illumina-bam-hg38-y (Y-STR)
 # Matched against a manifest's `inputs.type: illumina-bam-hg38-y` for the external
 # verification leg. BAM slice lives in illumina_slices/ (pre-built, committed).
-#
-# STATUS: declared / form-visible. The Y external leg is NOT wired yet — it needs
-# the harness to mount dataset-level regions (regions.bed below) instead of the
-# per-tool asset. Until then, tools selecting this dataset get the BAM but HipSTR
-# still reads the autosomal tool-asset regions. Activation is tracked separately.
 
 type: "illumina-bam-hg38-y"
 data: "illumina_slices/HG002.ystr.bam"
 bam_index: "illumina_slices/HG002.ystr.bam.bai"
 format: "bam"
 reference: "hg38"
+
+# Supported-loci panel — the contract with tool authors. A submitted regions BED
+# must overlap these windows; anything outside is a REJECTED SUBMISSION, not a
+# failed tool (this slice is not a whole genome). Generated + verified from the
+# BAM by harness/build_panel.py; `harness/build_panel.py --check` guards drift.
+supported_loci: "loci.bed"
+min_loci: 5
 
 # Reference genome — automatically downloaded and mounted by the harness.
 reference_genome:
@@ -27,9 +29,16 @@ license: >
   STRhub is not the data provider.
 sequencer: "Illumina HiSeq 2500 (GIAB 300x)"
 notes: >
-  GIAB HG002 300x WGS, aligned to GRCh38, sliced around 15 Y-STR forensic loci
-  (DYS19, DYS385a/b, DYS389 I+II, DYS390, DYS391, DYS392, DYS393, DYS438, DYS448,
-  DYS456, DYS458, DYS635, Y-GATA-H4, Y-GATA-A10) with ±1000bp flanking,
-  ~96-390x per locus. Pick this dataset for Y-chromosome tools. Male sample.
-  regions.bed here is the intended HipSTR region set; it is incomplete (10/18
-  rows) until regenerated from the source HipSTR reference — see regions.bed header.
+  GIAB HG002 300x WGS, aligned to GRCh38, sliced around Y-STR forensic loci with
+  ±1000bp flanking. Pick this dataset for Y-chromosome tools. Male sample.
+
+  The panel (loci.bed) guarantees 14 loci at >=10x across the whole window:
+  DYS19/DYS394, DYS385b, DYS389 I+II, DYS390, DYS391, DYS392, DYS393, DYS438,
+  DYS448, DYS456, DYS458, DYS635, Y-GATA-A10, Y-GATA-H4. Typical depth 48-188x.
+
+  DYS385a (DYS385_1) is EXCLUDED. DYS385a/b are near-identical palindromic copies
+  ~40kb apart; the GIAB alignment collapses them onto the b copy, starving a to
+  ~2-10x over the repeat itself. Not a slicing artifact — the reads are absent from
+  the source BAM (the few that map there are MAPQ 70, and no MAPQ filter was
+  applied). Promising DYS385a would hand authors a low-confidence call and let them
+  think their tool broke. Restoring it needs a source BAM without the collapse.
