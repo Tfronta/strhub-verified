@@ -54,6 +54,26 @@ jobs:
         name: Prepare run (manifest + dataset matrix)
         run: python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
 
+      # --- Pre-flight: author-supplied regions BED must fit the slice's panel --
+      # NOT a gate. STRhub's reference BAMs are slices; a BED targeting loci the
+      # slice doesn't cover would make a healthy tool look broken. So an invalid
+      # BED is a REJECTED SUBMISSION: this step has no continue-on-error, so it
+      # ABORTS the run — no gates, no report, no badge. Only author-provided BEDs
+      # (regions_source == 'tool') are checked; STRhub-committed BEDs are trusted.
+      #
+      # Every reporting step below is additionally guarded on this step's
+      # conclusion: they run `if: always()`, which by itself would survive this
+      # abort and emit a red "not run" badge for a tool that never ran.
+      - id: preflight
+        name: "Pre-flight · Regions within panel"
+        if: steps.m.outputs.regions_source == 'tool' && steps.m.outputs.supported_loci != ''
+        run: |
+          python harness/validate_bed.py \
+            --bed work/in_external/regions.bed \
+            --supported "${{ steps.m.outputs.supported_loci }}" \
+            --min-loci "${{ steps.m.outputs.min_loci || '5' }}" \
+            --json regions_validation.json
+
       # --- Reference genome (for BAM-based tools needing --fasta) -------------
       - name: Cache reference genome
         if: steps.m.outputs.ref_genome_url != ''
@@ -156,7 +176,7 @@ jobs:
 
       # --- README minimum-to-run check (advisory; never gates the badge) ------
       - name: "README check (advisory)"
-        if: always()
+        if: always() && steps.preflight.conclusion != 'failure'
         continue-on-error: true
         run: |
           repo="${{ steps.m.outputs.repo }}"; ref="${{ steps.m.outputs.ref }}"
@@ -170,7 +190,7 @@ jobs:
 
       # --- Assemble the matrix (own + external legs) -------------------------
       - name: Assemble matrix
-        if: always()
+        if: always() && steps.preflight.conclusion != 'failure'
         env:
           OWN_READY: ${{ steps.m.outputs.own_ready }}
           EXT_READY: ${{ steps.m.outputs.external_ready }}
@@ -214,7 +234,7 @@ jobs:
 
       # --- Assemble attestation (always runs) --------------------------------
       - name: Build attestation + badge
-        if: always()
+        if: always() && steps.preflight.conclusion != 'failure'
         run: |
           # The badge ladder follows the author's BYOR "own" leg when present;
           # otherwise it rests on the external typed-dataset leg (chosen by
@@ -237,10 +257,13 @@ jobs:
             --log-own work/log_own.txt \
             --log-external work/log_external.txt \
             --ref ${{ steps.m.outputs.ref }} \
+            --regions-source "${{ steps.m.outputs.regions_source }}" \
+            --regions-validation regions_validation.json \
+            --supported-loci "${{ steps.m.outputs.supported_loci }}" \
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       - name: Generate PDF report
-        if: always()
+        if: always() && steps.preflight.conclusion != 'failure'
         run: |
           python harness/generate_pdf.py \
             --manifest "${{ steps.m.outputs.manifest }}"
@@ -248,14 +271,14 @@ jobs:
       # Render the human-readable summary on the run's "Summary" page (no download
       # needed). $GITHUB_STEP_SUMMARY accepts Markdown.
       - name: Publish summary to run page
-        if: always()
+        if: always() && steps.preflight.conclusion != 'failure'
         run: |
           for f in reports/*.summary.md; do
             [ -f "$f" ] && cat "$f" >> "$GITHUB_STEP_SUMMARY"
           done
 
       - name: Upload attestation
-        if: always()
+        if: always() && steps.preflight.conclusion != 'failure'
         uses: actions/upload-artifact@v7
         with:
           name: attestation-${{ env.TOOL }}
@@ -264,8 +287,12 @@ jobs:
       # Publish a navigable web page (index + per-tool HTML) to the gh-pages
       # branch. Reports accumulate across runs: we clone the existing branch,
       # drop in this run's files, regenerate the index, and push.
+      # Publishing is for main only. A dispatch from a test branch must never reach
+      # strhub.app/verified — gh-pages IS production. The web backend always
+      # dispatches with ref=main (VERIFIED_ENGINE_BRANCH), so real submissions are
+      # unaffected; only branch-based testing is held back.
       - name: Deploy reports to GitHub Pages
-        if: always() && github.event_name != 'pull_request'
+        if: always() && steps.preflight.conclusion != 'failure' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

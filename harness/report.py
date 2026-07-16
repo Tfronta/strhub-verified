@@ -50,6 +50,28 @@ def _status(flag: str) -> bool:
     return str(flag).lower() in ("pass", "true", "ok", "1", "success")
 
 
+def _regions_note(rg: dict) -> str:
+    """One sentence on who defined the target regions, and that the data is a slice.
+
+    Shared by the markdown and HTML renders so the two cannot drift. Returns "" for
+    tools that take no regions BED (FASTQ-based).
+    """
+    total = rg.get("panel_size")
+    slice_note = (
+        f" The reference dataset is a slice around {total} forensic STR loci, not a "
+        "whole genome: it carries reads only at those loci."
+        if total else ""
+    )
+    if rg.get("source") == "tool":
+        covered = rg.get("covered_loci")
+        detail = (f", covering {covered} of {total} supported loci"
+                  if covered and total else "")
+        return (f"The tool author supplied the regions BED{detail}.{slice_note}")
+    if rg.get("source") == "strhub":
+        return f"STRhub supplied the regions BED.{slice_note}"
+    return ""
+
+
 def _summary_md(report: dict, slug: str) -> str:
     """A human-readable attestation summary: what STRhub shows the user."""
     tool = report["tool"]
@@ -120,6 +142,14 @@ def _summary_md(report: dict, slug: str) -> str:
                 f"{'yes' if avail else 'N/A'} | {status} | "
                 f"{leg.get('dataset', leg.get('type', '—'))} |"
             )
+
+    # Who chose the regions, and the fact that the dataset is a slice. A
+    # coordinate-based tool only calls where its BED points, so both are material.
+    rg = report.get("regions") or {}
+    if rg.get("source") in ("tool", "strhub"):
+        note = _regions_note(rg)
+        if note:
+            lines += ["", "## Regions", "", note]
 
     # README minimum-to-run checklist (advisory).
     rc = report.get("readme_check")
@@ -216,6 +246,12 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<tbody>{''.join(mrows)}</tbody></table>"
         )
 
+    # Who chose the regions + the slice caveat (see _regions_note).
+    regions_note = _regions_note(report.get("regions") or {})
+    regions_block = (
+        f"<h2>Regions</h2><p>{esc(regions_note)}</p>" if regions_note else ""
+    )
+
     # README minimum-to-run checklist (advisory).
     readme_block = ""
     rc = report.get("readme_check")
@@ -274,6 +310,7 @@ def _summary_html(report: dict, slug: str) -> str:
 <tbody>{''.join(rows)}</tbody></table>
 {content_block}
 {matrix_block}
+{regions_block}
 {readme_block}
 <h2>Scope</h2>
 <p class="scope">{esc(report['scope'])}<br><br>
@@ -308,6 +345,13 @@ def main() -> int:
                     help="path to captured stdout+stderr from external-data run")
     ap.add_argument("--ref", default="")
     ap.add_argument("--run-url", default="")
+    ap.add_argument("--regions-source", default="",
+                    help="who supplied the regions BED: tool | strhub | none")
+    ap.add_argument("--regions-validation", default="regions_validation.json",
+                    help="path to validate_bed.py output (panel coverage)")
+    ap.add_argument("--supported-loci", default="",
+                    help="path to the dataset's loci.bed — panel size fallback when "
+                         "no validation ran (STRhub-supplied BEDs skip the pre-flight)")
     args = ap.parse_args()
 
     m = _manifest.load(args.manifest)
@@ -344,6 +388,31 @@ def main() -> int:
         except Exception:  # noqa: BLE001
             readme_check = None
 
+    # Who defined the regions this run targeted. Material to a reader: it says
+    # whether the author chose the loci (within our panel) or STRhub did. Absent
+    # for tools that take no regions BED (FASTQ-based).
+    regions = None
+    if args.regions_source and args.regions_source != "none":
+        regions = {"source": args.regions_source}
+        vp = pathlib.Path(args.regions_validation)
+        if vp.exists():
+            try:
+                v = json.loads(vp.read_text())
+                regions["covered_loci"] = v.get("covered_count")
+                regions["panel_size"] = v.get("panel_size")
+            except Exception:  # noqa: BLE001
+                pass
+        # Only author-supplied BEDs are pre-flighted, so a STRhub-supplied one has
+        # no validation file. Count the panel directly — the "this is a slice"
+        # caveat is true either way and the reader needs it either way.
+        if not regions.get("panel_size") and args.supported_loci:
+            sp = ROOT / args.supported_loci
+            if sp.is_file():
+                regions["panel_size"] = sum(
+                    1 for ln in sp.read_text().splitlines()
+                    if ln.strip() and not ln.startswith("#")
+                ) or None
+
     gates = {
         "available": _status(args.available),
         "installs": _status(args.installs),
@@ -372,6 +441,7 @@ def main() -> int:
         "io_detail": io_detail,
         "content_detail": content_detail,
         "datasets": datasets,
+        "regions": regions,
         "readme_check": readme_check,
         "scope": SCOPE,
     }

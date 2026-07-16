@@ -544,10 +544,16 @@ def build_body(cfg):
     # §7 Verification Data
     els.append(section_num("7", "Verification Data"))
     ds = cfg.get("dataset", {})
-    els.append(Paragraph(
-        "This tool does not include its own demo or test data. "
-        "STRhub ran the verification using the public reference dataset listed below.",
-        ST["body"]))
+    intro = ("This tool does not include its own demo or test data. "
+             "STRhub ran the verification using the public reference dataset listed below.")
+    # Say plainly that the dataset is a slice. Without this a reader sees only
+    # "Illumina BAM (hg38) — HG002" and may take it for a whole genome, which makes
+    # the narrow locus list below look like a shortcoming of the tool.
+    panel_size = cfg.get("regions", {}).get("panel_size")
+    if panel_size:
+        intro += (f" That dataset is a slice around {panel_size} forensic STR loci, "
+                  "not a whole genome: it carries reads only at the loci listed below.")
+    els.append(Paragraph(intro, ST["body"]))
     els.append(vspace(3))
 
     ref_genome = ds.get("reference_genome", {})
@@ -563,6 +569,17 @@ def build_body(cfg):
         ("Ref. genome", ref_assembly),
         ("Loci tested", loci_val),
     ]
+
+    # Who chose the regions. A coordinate-based tool only calls where its BED points,
+    # so the reader needs to know whether that BED was the author's or ours.
+    rg = cfg.get("regions", {})
+    if rg.get("source") == "tool":
+        covered, total = rg.get("covered_loci"), rg.get("panel_size")
+        detail = (f" — covers {covered} of {total} supported loci"
+                  if covered and total else "")
+        ds_rows.append(("Regions BED", f"Provided by the tool author{detail}"))
+    elif rg.get("source") == "strhub":
+        ds_rows.append(("Regions BED", "Provided by STRhub"))
     tdata = [[Paragraph(k, ST["meta_label"]),
               Paragraph(v, S("dv", fontSize=8, textColor=GRAY, leading=13))]
              for k, v in ds_rows]
@@ -890,6 +907,7 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         "loci_with_depth":loci_with_depth,
         "loci_list":      stats.get("str_loci", []),
         "dataset":        dataset,
+        "regions":        report.get("regions") or {},
         "readme_check":   report.get("readme_check") or {},
         "log_filename":   (report.get("logs") or {}).get("external")
                           or (report.get("logs") or {}).get("own", ""),
