@@ -15,8 +15,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-24T20:42:59+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28128172407",
+  "generated": "2026-07-16T17:41:24+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29520559534",
   "gates": {
     "available": true,
     "installs": true,
@@ -39,7 +39,7 @@
           "min_records": true
         },
         "resolved": "result.vcf.gz",
-        "records": 14,
+        "records": 13,
         "passed": true
       }
     ]
@@ -57,15 +57,14 @@
           "min_distinct_loci": true
         },
         "stats": {
-          "rows": 14,
+          "rows": 13,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
-          "distinct_loci": 14,
-          "distinct_str_loci": 14,
+          "distinct_loci": 13,
+          "distinct_str_loci": 13,
           "distinct_snp_markers": 0,
           "loci": [
-            "DYS385_1",
             "DYS385_2",
             "DYS389I",
             "DYS389II.1",
@@ -81,7 +80,6 @@
             "Y-GATA-H4"
           ],
           "str_loci": [
-            "DYS385_1",
             "DYS385_2",
             "DYS389I",
             "DYS389II.1",
@@ -97,7 +95,7 @@
             "Y-GATA-H4"
           ],
           "snp_markers": [],
-          "total_reads": 2946,
+          "total_reads": 2912,
           "max_sequence_depth": 320,
           "top_loci_by_depth": [
             [
@@ -151,10 +149,6 @@
             [
               "DYS393",
               161
-            ],
-            [
-              "DYS385_1",
-              34
             ]
           ]
         },
@@ -183,6 +177,10 @@
       "passed": true
     }
   ],
+  "regions": {
+    "source": "strhub",
+    "panel_size": 14
+  },
   "readme_check": {
     "gate": "readme",
     "advisory": true,
@@ -228,7 +226,7 @@
       {
         "id": "genotyping_summary",
         "severity": "info",
-        "title": "Genotyping: 14/18 loci succeeded"
+        "title": "Genotyping: 13/17 loci succeeded"
       }
     ],
     "external": [
@@ -241,7 +239,7 @@
       {
         "id": "genotyping_summary",
         "severity": "info",
-        "title": "Genotyping: 14/18 loci succeeded"
+        "title": "Genotyping: 13/17 loci succeeded"
       }
     ]
   }
