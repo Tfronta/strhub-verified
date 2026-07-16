@@ -29,6 +29,10 @@ import datasets as datasets_lib  # noqa: E402
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = "https://raw.githubusercontent.com"
 
+# Coordinate-based tools read /data/in/regions.bed; the author's BED (whatever its
+# original name) is staged under this canonical name so one run cmd fits both legs.
+REGIONS_CANONICAL = "regions.bed"
+
 
 def _bam_sidecar(bam: pathlib.Path) -> pathlib.Path:
     """Return the .bai path for a BAM (handles *.codis.bam → *.codis.bam.bai)."""
@@ -122,6 +126,54 @@ def stage_own(
     return any(work_in.iterdir())
 
 
+def stage_regions(regions, legs: list[pathlib.Path]) -> str:
+    """Stage the regions BED into every leg as canonical ``regions.bed``.
+
+    An explicit ``inputs.regions`` takes precedence over any per-tool asset
+    regions.bed already staged (which is why this runs after asset staging).
+
+    Returns the provenance, used by the workflow to decide whether to validate:
+      "tool"   — author-supplied via a remote pointer (repo+ref+path). VALIDATED.
+      "strhub" — a path committed in this repo, or a legacy per-tool asset. Trusted.
+      "none"   — no regions BED anywhere.
+    """
+    if isinstance(regions, dict):
+        # Remote: fetch once from the author's PUBLIC repo, then fan out to legs.
+        repo = _repo_path(regions["repo"])
+        ref = regions["ref"]
+        path = regions["path"].lstrip("/")
+        url = f"{RAW}/{repo}/{ref}/{path}"
+        first = legs[0] / REGIONS_CANONICAL
+        legs[0].mkdir(parents=True, exist_ok=True)
+        try:
+            urllib.request.urlretrieve(url, first)  # noqa: S310 (public raw URL)
+        except Exception as exc:  # noqa: BLE001
+            print(f"::error::could not fetch regions BED {url}: {exc}", file=sys.stderr)
+            return "none"
+        if first.stat().st_size == 0:
+            print(f"::error::regions BED is empty: {url}", file=sys.stderr)
+            return "none"
+        for leg in legs[1:]:
+            leg.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(first, leg / REGIONS_CANONICAL)
+        return "tool"
+
+    if isinstance(regions, str):
+        src = ROOT / regions
+        if not src.is_file():
+            print(f"::warning::regions path not found: {src}", file=sys.stderr)
+            return "none"
+        for leg in legs:
+            leg.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, leg / REGIONS_CANONICAL)
+        return "strhub"
+
+    # No explicit regions — a legacy per-tool asset may already have staged one.
+    if any((leg / REGIONS_CANONICAL).is_file() for leg in legs):
+        return "strhub"
+    return "none"
+
+
 def stage_external(input_type, work_in: pathlib.Path) -> tuple[bool, str]:
     """Stage the typed external dataset. Returns (staged, dataset_name).
 
@@ -165,6 +217,7 @@ def main() -> int:
     inputs = m.get("inputs", {})
     fixture = inputs.get("fixture")
     input_type = inputs.get("type")
+    regions = inputs.get("regions")
 
     # Resolve canonical filename so both legs use identical names.
     canonical = None
@@ -186,14 +239,29 @@ def main() -> int:
         fixture_source = "tool" if isinstance(fixture, dict) else "strhub"
     external_ready, dataset_name = stage_external(input_type, work / "in_external")
 
-    # Stage tool-specific assets (e.g. regions BED) into both legs.
+    # Stage tool-specific assets into both legs. A legacy per-tool regions.bed
+    # lives here; an explicit inputs.regions (staged next) overrides it.
+    legs = [work / "in_own", work / "in_external"]
     assets_dir = ROOT / "tools" / args.tool / "assets"
     if assets_dir.is_dir():
-        for leg in [work / "in_own", work / "in_external"]:
+        for leg in legs:
             leg.mkdir(parents=True, exist_ok=True)
             for f in assets_dir.iterdir():
                 if f.is_file():
                     shutil.copy2(f, leg / f.name)
+
+    # Regions BED (coordinate-based tools). Precedence over the asset above.
+    regions_source = stage_regions(regions, legs)
+
+    # Supported-loci panel for this input type — the validator's reference. Emitted
+    # so the workflow can pre-flight the author's BED before any gate runs.
+    supported_loci = ""
+    min_loci = ""
+    if input_type:
+        ds_rec = datasets_lib.resolve(input_type)
+        if ds_rec:
+            supported_loci = ds_rec.get("supported_loci", "") or ""
+            min_loci = str(ds_rec.get("min_loci", "") or "")
 
     ref_genome_url = ""
     ref_genome_filename = ""
@@ -219,6 +287,9 @@ def main() -> int:
         f"ref_genome_url={ref_genome_url}",
         f"ref_genome_filename={ref_genome_filename}",
         f"fixture_source={fixture_source}",
+        f"regions_source={regions_source}",
+        f"supported_loci={supported_loci}",
+        f"min_loci={min_loci}",
     ]
     print("\n".join(out))
     return 0

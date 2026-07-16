@@ -75,6 +75,22 @@
               }
             }
           ]
+        },
+        "regions": {
+          "description": "Author-supplied regions BED for coordinate-based tools (HipSTR, GangSTR, ...). STRhub's reference BAMs are SLICES, not whole genomes: this BED's intervals must overlap the dataset's supported-loci panel (datasets/<type>/loci.bed). A BED outside the panel is a rejected submission, NOT a failed tool — it is validated before any gate runs. The tool's own column layout is preserved; only columns 1-3 (chrom, start, end) are checked, so any tool's BED format is accepted. Either a path inside this repo, OR a remote pointer into the author's PUBLIC repo (repo + ref + path) so STRhub stores no data.",
+          "oneOf": [
+            { "type": "string", "description": "Path to the regions BED, relative to repo root" },
+            {
+              "type": "object",
+              "required": ["repo", "ref", "path"],
+              "additionalProperties": false,
+              "properties": {
+                "repo": { "type": "string", "format": "uri", "description": "Author's PUBLIC repo URL" },
+                "ref": { "type": "string", "description": "Immutable commit SHA or tag" },
+                "path": { "type": "string", "description": "Path to the regions BED inside that repo" }
+              }
+            }
+          ]
         }
       }
     },

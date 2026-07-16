@@ -45,11 +45,14 @@
         "filename": "hg38.fa",
         "mount_path": "/data/ref/hg38.fa"
       },
+      "supported_loci": "datasets/illumina-bam-hg38/loci.bed",
+      "loci_count": 24,
+      "min_loci": 5,
       "name": "Illumina BAM (hg38) — NA12878 (autosomal, female)",
       "source": "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
       "license": "Open access (GIAB / NIST). Research and educational use. STRhub is not the data provider.",
       "sequencer": "Illumina HiSeq 2500 (GIAB 300x)",
-      "notes": "GIAB NA12878/HG001 300x, GRCh38, sliced around 24 autosomal forensic STR loci (CODIS 20 + PentaD + PentaE + D6S1043 + SE33), ±1000bp flanking, ~200-350x per locus. Pick this dataset for autosomal/CODIS tools. Female sample: no Y markers. See datasets/illumina-bam-hg38/SOURCE.txt."
+      "notes": "GIAB NA12878/HG001 300x, GRCh38, sliced around 24 autosomal forensic STR loci (CODIS 20 + PentaD + PentaE + D6S1043 + SE33), ±1000bp flanking. Pick this dataset for autosomal/CODIS tools. Female sample: no Y markers. Panel (loci.bed) guarantees all 24 loci at >=10x window-wide; observed floor 55x. See datasets/illumina-bam-hg38/SOURCE.txt."
     },
     "illumina-bam-hg38-y": {
       "dir": "datasets/illumina-bam-hg38-y",
@@ -64,11 +67,14 @@
         "filename": "hg38.fa",
         "mount_path": "/data/ref/hg38.fa"
       },
+      "supported_loci": "datasets/illumina-bam-hg38-y/loci.bed",
+      "loci_count": 14,
+      "min_loci": 5,
       "name": "Illumina BAM (hg38) — HG002 (Y-STR, male)",
       "source": "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/NIST_HiSeq_HG002_Homogeneity-10953946/",
       "license": "Open access (GIAB / NIST). Research and educational use. STRhub is not the data provider.",
       "sequencer": "Illumina HiSeq 2500 (GIAB 300x)",
-      "notes": "GIAB HG002 300x, GRCh38, sliced around 15 Y-STR forensic loci (DYS19/385a-b/389I-II/390/391/392/393/438/448/456/458/635 + Y-GATA-H4/A10), ±1000bp flanking, ~96-390x per locus. Pick this dataset for Y-chromosome tools. PENDING: Y leg activation requires dataset-level regions.bed wiring in the harness (see datasets/illumina-bam-hg38-y/regions.bed)."
+      "notes": "GIAB HG002 300x, GRCh38, sliced around Y-STR forensic loci, ±1000bp flanking. Pick this dataset for Y-chromosome tools. Panel (loci.bed) guarantees 14 loci at >=10x window-wide (DYS19/389I-II/390/391/392/393/438/448/456/458/635 + DYS385b + Y-GATA-H4/A10); typical depth 48-188x. DYS385a is EXCLUDED: the palindromic DYS385a/b pair is collapsed in the GIAB alignment, starving the 'a' copy to ~2-10x over the repeat. Not a slicing artifact — the reads are absent from the source BAM."
     }
   }
 }

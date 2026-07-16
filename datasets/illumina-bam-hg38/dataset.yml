@@ -8,6 +8,13 @@ bam_index: "illumina_slices/NA12878.autosomal.bam.bai"
 format: "bam"
 reference: "hg38"
 
+# Supported-loci panel — the contract with tool authors. A submitted regions BED
+# must overlap these windows; anything outside is a REJECTED SUBMISSION, not a
+# failed tool (this slice is not a whole genome). Generated + verified from the
+# BAM by harness/build_panel.py; `harness/build_panel.py --check` guards drift.
+supported_loci: "loci.bed"
+min_loci: 5
+
 # Reference genome — automatically downloaded and mounted by the harness.
 # Tools that need --fasta (HipSTR, GangSTR, ExpansionHunter, etc.) use this path.
 reference_genome:
@@ -25,6 +32,10 @@ sequencer: "Illumina HiSeq 2500 (GIAB 300x)"
 notes: >
   GIAB NA12878/HG001 300x WGS, aligned to GRCh38, sliced around 24 autosomal
   forensic STR loci (CODIS 20 + PentaD + PentaE + D6S1043 + SE33) with ±1000bp
-  flanking. ~200-350x per locus. Pick this dataset for autosomal/CODIS tools.
+  flanking. Pick this dataset for autosomal/CODIS tools.
+
+  The panel (loci.bed) guarantees all 24 loci at >=10x across the whole window;
+  observed floor is 55x (D2S1338) and typical depth is 100-250x. No exclusions.
+
   Female sample — contains NO Y-chromosome markers (use illumina-bam-hg38-y for
   Y-STR tools). See SOURCE.txt.
