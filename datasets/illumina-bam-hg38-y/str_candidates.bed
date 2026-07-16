@@ -1,3 +1,11 @@
+# STR candidate coordinates for the illumina-bam-hg38-y slice (HipSTR-format: chrom start end period ref_copies NAME motif).
+#
+# Input to harness/build_panel.py, which measures each against the BAM and decides
+# which make the panel (datasets/illumina-bam-hg38-y/loci.bed). Candidates that fail the depth floor
+# are excluded there, with the reason. Lives at dataset level ON PURPOSE: the panel is
+# a property of the slice, not of any one tool, so cleaning a tool asset must never
+# silently change it.
+#
 chrY	3263111	3263158	4	12	DYS393	N/A
 chrY	4402919	4402978	4	15	DYS456	N/A
 chrY	7999839	7999902	4	16	DYS458	N/A
@@ -11,6 +19,7 @@ chrY	12825899	12825948	5	10	DYS438	N/A
 chrY	15163067	15163162	4	24	DYS390	N/A
 chrY	16607009	16607060	4	13	Y-GATA-A10	N/A
 chrY	16631635	16631756	4	30.5	Y-GATA-H4	N/A
+chrY	18639712	18639875	4	41	DYS385_1	N/A
 chrY	18680513	18680687	4	43.75	DYS385_2	N/A
 chrY	20471987	20472025	3	13	DYS392	N/A
 chrY	22218923	22218996	6	12.3333	DYS448.1	N/A

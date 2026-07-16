@@ -35,17 +35,24 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 FLANK = 1000   # bp each side of the STR, matching how the Illumina slices were cut
 FLOOR = 10     # min reads/base; below this no STR caller can attempt a call
 
-# dataset slug -> (slice BAM, STR-coordinate source, flank)
-# The STR source is a HipSTR-format BED: chrom start end period copies NAME [motif]
+# dataset slug -> (slice BAM, STR-candidate coordinates, flank)
+#
+# The candidates live under datasets/, NOT in any tool's assets. The panel is a
+# property of the slice, so it must not move when a tool's BED is edited — pointing
+# here at a tool asset once meant that trimming that asset silently dropped a locus's
+# exclusion note from the panel.
+#
+# Candidate format is HipSTR's: chrom start end period copies NAME [motif]. Only
+# cols 1-3 and 6 are read.
 PANELS = {
     "illumina-bam-hg38": (
         "illumina_slices/NA12878.autosomal.bam",
-        "tools/hipstr-v0-7/assets/regions.bed",
+        "datasets/illumina-bam-hg38/str_candidates.bed",
         FLANK,
     ),
     "illumina-bam-hg38-y": (
         "illumina_slices/HG002.ystr.bam",
-        "tools/hipstr-v0-7-y/assets/regions.bed",
+        "datasets/illumina-bam-hg38-y/str_candidates.bed",
         FLANK,
     ),
 }
