@@ -54,6 +54,21 @@ jobs:
         name: Prepare run (manifest + dataset matrix)
         run: python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
 
+      # --- Pre-flight: author-supplied regions BED must fit the slice's panel --
+      # NOT a gate. STRhub's reference BAMs are slices; a BED targeting loci the
+      # slice doesn't cover would make a healthy tool look broken. So an invalid
+      # BED is a REJECTED SUBMISSION: this step has no continue-on-error, so it
+      # ABORTS the run — no gates, no report, no badge. Only author-provided BEDs
+      # (regions_source == 'tool') are checked; STRhub-committed BEDs are trusted.
+      - name: "Pre-flight · Regions within panel"
+        if: steps.m.outputs.regions_source == 'tool' && steps.m.outputs.supported_loci != ''
+        run: |
+          python harness/validate_bed.py \
+            --bed work/in_external/regions.bed \
+            --supported "${{ steps.m.outputs.supported_loci }}" \
+            --min-loci "${{ steps.m.outputs.min_loci || '5' }}" \
+            --json regions_validation.json
+
       # --- Reference genome (for BAM-based tools needing --fasta) -------------
       - name: Cache reference genome
         if: steps.m.outputs.ref_genome_url != ''
@@ -264,8 +279,12 @@ jobs:
       # Publish a navigable web page (index + per-tool HTML) to the gh-pages
       # branch. Reports accumulate across runs: we clone the existing branch,
       # drop in this run's files, regenerate the index, and push.
+      # Publishing is for main only. A dispatch from a test branch must never reach
+      # strhub.app/verified — gh-pages IS production. The web backend always
+      # dispatches with ref=main (VERIFIED_ENGINE_BRANCH), so real submissions are
+      # unaffected; only branch-based testing is held back.
       - name: Deploy reports to GitHub Pages
-        if: always() && github.event_name != 'pull_request'
+        if: always() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
