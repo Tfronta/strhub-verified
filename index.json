@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-07-19T18:11:11+00:00",
+  "generated": "2026-07-19T18:34:12+00:00",
   "count": 12,
   "tools": [
     {
@@ -244,10 +244,10 @@
       "name": "ztest-upload (inventado \u2192 slug ztest-upload-v0-7-y",
       "level": "content",
       "label": "Runs + Plausible output",
-      "generated": "2026-07-19T18:11:09+00:00",
+      "generated": "2026-07-19T18:34:10+00:00",
       "source_repo": "https://github.com/tfwillems/HipSTR",
       "source_ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29698187750",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29698862349",
       "distinct_str_loci": 13,
       "distinct_snp_markers": 0,
       "total_reads": 2912,
