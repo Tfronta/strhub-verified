@@ -1,0 +1,30 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: "ztest-upload (inventado → slug ztest-upload-v0-7-y"
+  version: v0.7
+source:
+  repo: "https://github.com/tfwillems/HipSTR"
+  ref: b2033bfbb5cf55496b776463bdf2993fa763a4be
+report:
+  slug: "ztest-upload-inventado-slug-ztest-upload-v0-7-y-v0-7-y"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250"
+  timeout_minutes: 15
+inputs:
+  type: "illumina-bam-hg38-y"
+  regions:
+    path: "tools/ztest-upload-inventado-slug-ztest-upload-v0-7-y-v0-7-y/assets/regions.bed"
+    provided_by: author
+outputs:
+- path: result.vcf.gz
+  format: vcf
+  min_records: 1
+  content:
+    locus_column: 2
+    min_distinct_loci: 5
