@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-07-19T18:34:12+00:00",
-  "count": 12,
+  "generated": "2026-07-19T18:37:39+00:00",
+  "count": 11,
   "tools": [
     {
       "slug": "gangstr-2-5",
@@ -238,28 +238,6 @@
       ],
       "report": "straitrazor-v3-0.json",
       "page": "straitrazor-v3-0.html"
-    },
-    {
-      "slug": "ztest-upload-inventado-slug-ztest-upload-v0-7-y-v0-7-y",
-      "name": "ztest-upload (inventado \u2192 slug ztest-upload-v0-7-y",
-      "level": "content",
-      "label": "Runs + Plausible output",
-      "generated": "2026-07-19T18:34:10+00:00",
-      "source_repo": "https://github.com/tfwillems/HipSTR",
-      "source_ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29698862349",
-      "distinct_str_loci": 13,
-      "distinct_snp_markers": 0,
-      "total_reads": 2912,
-      "own_state": "na",
-      "external_state": "pass",
-      "readme_score": 5,
-      "readme_max": 5,
-      "dataset_types": [
-        "illumina-bam-hg38-y"
-      ],
-      "report": "ztest-upload-inventado-slug-ztest-upload-v0-7-y-v0-7-y.json",
-      "page": "ztest-upload-inventado-slug-ztest-upload-v0-7-y-v0-7-y.html"
     }
   ]
 }
