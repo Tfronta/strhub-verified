@@ -77,11 +77,25 @@
           ]
         },
         "regions": {
-          "description": "Author-supplied regions BED for coordinate-based tools (HipSTR, GangSTR, ...). STRhub's reference BAMs are SLICES, not whole genomes: this BED's intervals must overlap the dataset's supported-loci panel (datasets/<type>/loci.bed). A BED outside the panel is a rejected submission, NOT a failed tool — it is validated before any gate runs. The tool's own column layout is preserved; only columns 1-3 (chrom, start, end) are checked, so any tool's BED format is accepted. Either a path inside this repo, OR a remote pointer into the author's PUBLIC repo (repo + ref + path) so STRhub stores no data.",
+          "description": "Regions BED for coordinate-based tools (HipSTR, GangSTR, ...). STRhub's reference BAMs are SLICES, not whole genomes: this BED's intervals must overlap the dataset's supported-loci panel (datasets/<type>/loci.bed). A BED outside the panel is a rejected submission, NOT a failed tool — it is validated before any gate runs. Only columns 1-3 (chrom, start, end) are read, so any tool's column layout is accepted: STRhub supplies the coordinates, the author supplies the format.",
           "oneOf": [
-            { "type": "string", "description": "Path to the regions BED, relative to repo root" },
+            {
+              "type": "string",
+              "description": "Path to a regions BED committed in THIS repo, relative to the repo root. Provenance is STRhub."
+            },
             {
               "type": "object",
+              "description": "A BED the author uploaded through the submit form. STRhub commits it under the tool's assets/ and records that the author, not STRhub, chose the regions — the report must not credit us for their choice.",
+              "required": ["path", "provided_by"],
+              "additionalProperties": false,
+              "properties": {
+                "path": { "type": "string", "description": "Path relative to the repo root, e.g. tools/<slug>/assets/regions.bed" },
+                "provided_by": { "type": "string", "enum": ["author"], "description": "Who chose the regions" }
+              }
+            },
+            {
+              "type": "object",
+              "description": "DEPRECATED: a pointer into the author's PUBLIC repo. The submit form no longer produces this — chasing every tool's publishing habits (gzipped files, /raw/ URLs, genome-wide references) was unbounded, so authors upload the BED instead. Still honoured for hand-written manifests.",
               "required": ["repo", "ref", "path"],
               "additionalProperties": false,
               "properties": {
