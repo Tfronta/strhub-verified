@@ -1,0 +1,7 @@
+Detected 1 BAM/CRAM files
+BAMs/CRAMs contain unique read group IDs for 1 unique libraries and 1 unique samples
+Reading region file /data/in/regions.bed
+ERROR: Improperly formatted region file. 
+Required format is tab-delimited columns CHROM START STOP PERIOD NCOPIES
+ Bad line: chrY	3262111	3264158	DYS393	92
+Exiting...
