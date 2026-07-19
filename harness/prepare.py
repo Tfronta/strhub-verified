@@ -132,13 +132,33 @@ def stage_regions(regions, legs: list[pathlib.Path]) -> str:
     An explicit ``inputs.regions`` takes precedence over any per-tool asset
     regions.bed already staged (which is why this runs after asset staging).
 
-    Returns the provenance, used by the workflow to decide whether to validate:
-      "tool"   — author-supplied via a remote pointer (repo+ref+path). VALIDATED.
-      "strhub" — a path committed in this repo, or a legacy per-tool asset. Trusted.
+    Returns the provenance, used by the workflow to decide whether to validate and
+    by the report to say who chose the regions:
+      "tool"   — the author chose them: uploaded through the form (stored under the
+                 tool's assets/), or a remote pointer. VALIDATED against the panel.
+      "strhub" — a path committed by us, or a legacy per-tool asset. Trusted.
       "none"   — no regions BED anywhere.
     """
+    def _fan_out(src: pathlib.Path) -> bool:
+        for leg in legs:
+            leg.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, leg / REGIONS_CANONICAL)
+        return True
+
+    if isinstance(regions, dict) and "path" in regions and "repo" not in regions:
+        # Author uploaded it; we store it. The file is ours to read, but the CHOICE
+        # of loci was theirs — provenance must survive that, or the report would
+        # credit STRhub for the author's panel.
+        src = ROOT / regions["path"]
+        if not src.is_file():
+            print(f"::error::uploaded regions BED not found: {src}", file=sys.stderr)
+            return "none"
+        _fan_out(src)
+        return "tool" if regions.get("provided_by") == "author" else "strhub"
+
     if isinstance(regions, dict):
-        # Remote: fetch once from the author's PUBLIC repo, then fan out to legs.
+        # Remote pointer (deprecated; hand-written manifests only). Fetch once from
+        # the author's PUBLIC repo, then fan out.
         repo = _repo_path(regions["repo"])
         ref = regions["ref"]
         path = regions["path"].lstrip("/")
@@ -163,9 +183,7 @@ def stage_regions(regions, legs: list[pathlib.Path]) -> str:
         if not src.is_file():
             print(f"::warning::regions path not found: {src}", file=sys.stderr)
             return "none"
-        for leg in legs:
-            leg.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, leg / REGIONS_CANONICAL)
+        _fan_out(src)
         return "strhub"
 
     # No explicit regions — a legacy per-tool asset may already have staged one.
