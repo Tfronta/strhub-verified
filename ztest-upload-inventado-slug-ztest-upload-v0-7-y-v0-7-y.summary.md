@@ -1,11 +1,11 @@
 # STRhub Verified — ztest-upload (inventado → slug ztest-upload-v0-7-y (ztest-upload-inventado-slug-ztest-upload-v0-7-y-v0-7-y)
 
-**Result: Installs** — the environment builds from source.
+**Result: Runs + Plausible output** — its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-07-19T18:00:37+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/29697849727
+- Generated: 2026-07-19T18:11:09+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/29698187750
 
 ## Gates
 
@@ -13,24 +13,24 @@
 |---|---|---|
 | Available | PASS | the pinned public source exists |
 | Installs | PASS | the environment builds from source |
-| Runs | — | it executes end-to-end without crashing |
-| Runs + Expected IO | — | it produces a non-empty file in the declared format |
-| Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Runs | PASS | it executes end-to-end without crashing |
+| Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
+| Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
 
 ## Output content (plausibility evidence)
 
-- Sequence records: **0** (malformed: 0)
-- STR loci detected: **0**
-- Total reads across calls: **0** (deepest single sequence: 0)
-
-
+- Sequence records: **13** (malformed: 0)
+- STR loci detected: **13**
+- Total reads across calls: **2912** (deepest single sequence: 320)
+- STR loci: DYS385_2, DYS389I, DYS389II.1, DYS390, DYS391, DYS392, DYS393, DYS438, DYS456, DYS458, DYS635, Y-GATA-A10, Y-GATA-H4
+- Top markers by read depth: Y-GATA-H4 (320), DYS389II.1 (298), DYS389I (272), DYS635 (258), DYS385_2 (219), DYS390 (218)
 
 ## Verification matrix
 
 | Leg | Available | Result | Dataset |
 |---|---|---|---|
 | STRhub fixture | N/A | N/A | — |
-| External data | yes | — | Illumina BAM (hg38) — HG002 (Y-STR, male) |
+| External data | yes | PASS | Illumina BAM (hg38) — HG002 (Y-STR, male) |
 
 ## Regions
 

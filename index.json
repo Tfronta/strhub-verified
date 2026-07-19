@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-07-19T18:00:38+00:00",
+  "generated": "2026-07-19T18:11:11+00:00",
   "count": 12,
   "tools": [
     {
@@ -242,17 +242,17 @@
     {
       "slug": "ztest-upload-inventado-slug-ztest-upload-v0-7-y-v0-7-y",
       "name": "ztest-upload (inventado \u2192 slug ztest-upload-v0-7-y",
-      "level": "installs",
-      "label": "Installs",
-      "generated": "2026-07-19T18:00:37+00:00",
+      "level": "content",
+      "label": "Runs + Plausible output",
+      "generated": "2026-07-19T18:11:09+00:00",
       "source_repo": "https://github.com/tfwillems/HipSTR",
       "source_ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29697849727",
-      "distinct_str_loci": 0,
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29698187750",
+      "distinct_str_loci": 13,
       "distinct_snp_markers": 0,
-      "total_reads": 0,
+      "total_reads": 2912,
       "own_state": "na",
-      "external_state": "fail",
+      "external_state": "pass",
       "readme_score": 5,
       "readme_max": 5,
       "dataset_types": [

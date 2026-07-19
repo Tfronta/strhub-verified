@@ -15,62 +15,143 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-07-19T18:00:37+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29697849727",
+  "generated": "2026-07-19T18:11:09+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29698187750",
   "gates": {
     "available": true,
     "installs": true,
-    "runs": false,
-    "io": false,
-    "content": false
+    "runs": true,
+    "io": true,
+    "content": true
   },
-  "level": "installs",
+  "level": "content",
   "io_detail": {
     "gate": "io",
-    "passed": false,
+    "passed": true,
     "outputs": [
       {
         "path": "result.vcf.gz",
         "format": "vcf",
         "checks": {
           "exists": true,
-          "non_empty": false,
+          "non_empty": true,
           "parses_as_vcf": true,
-          "min_records": false
+          "min_records": true
         },
         "resolved": "result.vcf.gz",
-        "records": 0,
-        "passed": false
+        "records": 13,
+        "passed": true
       }
     ]
   },
   "content_detail": {
     "gate": "content",
     "applicable": true,
-    "passed": false,
+    "passed": true,
     "outputs": [
       {
         "path": "result.vcf.gz",
         "resolved": "result.vcf.gz",
         "checks": {
-          "min_distinct_loci": false
+          "min_distinct_loci": true
         },
         "stats": {
-          "rows": 0,
+          "rows": 13,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
-          "distinct_loci": 0,
-          "distinct_str_loci": 0,
+          "distinct_loci": 13,
+          "distinct_str_loci": 13,
           "distinct_snp_markers": 0,
-          "loci": [],
-          "str_loci": [],
+          "loci": [
+            "DYS385_2",
+            "DYS389I",
+            "DYS389II.1",
+            "DYS390",
+            "DYS391",
+            "DYS392",
+            "DYS393",
+            "DYS438",
+            "DYS456",
+            "DYS458",
+            "DYS635",
+            "Y-GATA-A10",
+            "Y-GATA-H4"
+          ],
+          "str_loci": [
+            "DYS385_2",
+            "DYS389I",
+            "DYS389II.1",
+            "DYS390",
+            "DYS391",
+            "DYS392",
+            "DYS393",
+            "DYS438",
+            "DYS456",
+            "DYS458",
+            "DYS635",
+            "Y-GATA-A10",
+            "Y-GATA-H4"
+          ],
           "snp_markers": [],
-          "total_reads": 0,
-          "max_sequence_depth": 0,
-          "top_loci_by_depth": []
+          "total_reads": 2912,
+          "max_sequence_depth": 320,
+          "top_loci_by_depth": [
+            [
+              "Y-GATA-H4",
+              320
+            ],
+            [
+              "DYS389II.1",
+              298
+            ],
+            [
+              "DYS389I",
+              272
+            ],
+            [
+              "DYS635",
+              258
+            ],
+            [
+              "DYS385_2",
+              219
+            ],
+            [
+              "DYS390",
+              218
+            ],
+            [
+              "DYS438",
+              198
+            ],
+            [
+              "DYS456",
+              196
+            ],
+            [
+              "DYS391",
+              195
+            ],
+            [
+              "Y-GATA-A10",
+              194
+            ],
+            [
+              "DYS458",
+              193
+            ],
+            [
+              "DYS392",
+              190
+            ],
+            [
+              "DYS393",
+              161
+            ]
+          ]
         },
-        "passed": false
+        "passed": true
       }
     ]
   },
@@ -90,9 +171,9 @@
       "available": true,
       "type": "illumina-bam-hg38-y",
       "dataset": "Illumina BAM (hg38) \u2014 HG002 (Y-STR, male)",
-      "io": false,
-      "content": false,
-      "passed": false
+      "io": true,
+      "content": true,
+      "passed": true
     }
   ],
   "regions": {
@@ -132,5 +213,20 @@
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "logs": {
     "external": "ztest-upload-inventado-slug-ztest-upload-v0-7-y-v0-7-y.log-external.txt"
+  },
+  "diagnostics": {
+    "external": [
+      {
+        "id": "low_bq_reads",
+        "severity": "info",
+        "title": "Reads filtered by base quality",
+        "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
+      },
+      {
+        "id": "genotyping_summary",
+        "severity": "info",
+        "title": "Genotyping: 13/17 loci succeeded"
+      }
+    ]
   }
 }
