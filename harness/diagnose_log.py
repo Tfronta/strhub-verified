@@ -203,35 +203,65 @@ _rule(
 )
 
 
+#: How many distinct examples to keep per rule. Enough to show the scale and the
+#: pattern (e.g. which loci broke) without pasting a whole log into the report.
+MAX_EXAMPLES = 12
+
+
+def _clean(value: str) -> str:
+    """Trim quoting/punctuation a greedy `\\S+` capture drags in.
+
+    Tools quote paths inconsistently ('file "x.bam":' vs "file 'x.bam'"), so the
+    same path can be captured as several distinct strings and show up as separate
+    examples — inflating the list while hiding real ones.
+    """
+    return value.strip().strip("\"'`").rstrip(":;,.").strip("\"'`")
+
+
 def diagnose(log_text: str) -> list[dict]:
-    """Return a list of diagnostic issues found in the log text."""
-    seen: set[str] = set()
-    issues: list[dict] = []
+    """Return a list of diagnostic issues found in the log text.
+
+    One entry per rule, but carrying `count` and `examples`: an earlier version
+    kept only the FIRST match per rule and dropped the rest, which under-reported
+    badly — a run where nine loci each failed to open their alignment file looked
+    like a single stray file error. The scale of a failure is part of the finding.
+    """
+    order: list[str] = []
+    by_rule: dict[str, dict] = {}
 
     for line in log_text.splitlines():
         line = line.strip()
         if not line:
             continue
         for pattern, severity, rid, title_tmpl, suggestion_tmpl in _RULES:
-            if rid in seen:
-                continue
             m = pattern.search(line)
             if not m:
                 continue
-            groups = m.groups()
-            seen.add(rid)
-            title = title_tmpl.format(*groups) if groups else title_tmpl
-            suggestion = suggestion_tmpl.format(*groups) if groups else suggestion_tmpl
-            entry: dict = {
-                "id": rid,
-                "severity": severity,
-                "title": title,
-            }
-            if suggestion:
-                entry["suggestion"] = suggestion
-            issues.append(entry)
+            groups = tuple(_clean(g) if isinstance(g, str) else g for g in m.groups())
+            entry = by_rule.get(rid)
+            if entry is None:
+                title = title_tmpl.format(*groups) if groups else title_tmpl
+                suggestion = suggestion_tmpl.format(*groups) if groups else suggestion_tmpl
+                entry = {
+                    "id": rid,
+                    "severity": severity,
+                    "title": title,
+                    "count": 0,
+                    "examples": [],
+                }
+                if suggestion:
+                    entry["suggestion"] = suggestion
+                by_rule[rid] = entry
+                order.append(rid)
+            entry["count"] += 1
+            # Distinct captured values (the file, the option, ...) are what make
+            # the scale legible; a bare repeat count would not say WHAT repeated.
+            if groups:
+                sample = groups[0]
+                if sample and sample not in entry["examples"] and len(entry["examples"]) < MAX_EXAMPLES:
+                    entry["examples"].append(sample)
 
-    return issues
+    return [by_rule[rid] for rid in order]
 
 
 def diagnose_file(path: str | pathlib.Path) -> list[dict]:
