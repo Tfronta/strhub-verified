@@ -327,26 +327,57 @@ REVIEW_LABELS = {
 }
 
 
-def external_leg_notes(diagnostics: dict[str, list[dict]]) -> list[str]:
-    """Review notes to append when errors landed on STRhub's reference leg.
+# Error classes a coverage-limited reference slice could plausibly cause: the tool
+# ran but the sample was too thin to call, or STRhub's own slicing left the BAM
+# short. For these we hedge — we cannot prove it was the sample rather than the tool.
+SAMPLE_ATTRIBUTABLE = {"zero_genotyped", "bad_bam", "no_read_groups"}
 
-    The 'own' leg runs the author's own fixture (their data, presumably complete);
-    the 'external' leg runs STRhub's reference sample, which is a SLICE. An error
-    on the external leg may therefore reflect the slice's coverage rather than the
-    tool — we cannot prove which, so we say so instead of silently blaming either.
-    The closing line turns that limitation into the actionable ask: ship demo data.
+# Structural failures: read depth has no bearing on whether a file opens, a flag is
+# recognized, or a build is complete. A slice cannot cause these, so attributing
+# them to the sample would hand the tool an alibi it has not earned — we say plainly
+# they are not ours. Ids in NEITHER set are genuinely ambiguous (could be STRhub's
+# staging, could be the tool) and get no note: the error table stands on its own.
+STRUCTURAL = {"cannot_open", "bad_option", "vcf_gz_required",
+              "cmd_not_found", "missing_module", "import_error"}
+
+
+def external_leg_notes(diagnostics: dict[str, list[dict]]) -> list[str]:
+    """Review notes to append, scoped to what STRhub's reference slice can explain.
+
+    The 'external' leg runs STRhub's reference sample, which is a SLICE. Whether an
+    error there reflects the slice depends on the KIND of error: a coverage-limited
+    sample yields fewer reads, but it cannot make a file fail to open or a build be
+    incomplete. So we split the errors — hedging on the ones a slice could cause,
+    stating plainly that the structural ones are not ours — instead of blanketing
+    every failure with a coverage excuse. The closing line stays actionable: ship
+    demo data so the tool can also be run against the author's complete sample.
     """
     external = diagnostics.get("external", [])
-    if not any(i.get("severity") == "error" for i in external):
+    error_ids = {i["id"] for i in external if i.get("severity") == "error"}
+    if not error_ids:
         return []
-    return [
-        "Some of these errors occurred on STRhub's reference sample, which is a "
-        "slice around the panel loci rather than a whole genome, so they may "
-        "reflect the sample's coverage rather than the tool.",
-        "For this reason we strongly recommend the tool ship its own demo or test "
-        "data in its official repository, so it can be evaluated against complete "
-        "data rather than a coverage-limited slice.",
-    ]
+
+    notes: list[str] = []
+    if error_ids & SAMPLE_ATTRIBUTABLE:
+        notes.append(
+            "Some of these errors occurred on STRhub's reference sample, which is a "
+            "slice around the panel loci rather than a whole genome, so they may "
+            "reflect the sample's coverage rather than the tool."
+        )
+    if error_ids & STRUCTURAL:
+        notes.append(
+            "Structural errors, such as a file that will not open, an unrecognized "
+            "command-line flag, or an incomplete build, do not depend on the sample: "
+            "a coverage-limited slice yields fewer reads, but it cannot cause them. "
+            "These are not attributable to STRhub's reference sample."
+        )
+    if notes:
+        notes.append(
+            "We recommend the tool ship its own demo or test data in its official "
+            "repository, so it can be evaluated against the author's complete data "
+            "as well as STRhub's slice."
+        )
+    return notes
 
 
 def summarize(diagnostics: dict[str, list[dict]]) -> list[dict]:
