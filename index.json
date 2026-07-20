@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-07-19T18:37:39+00:00",
-  "count": 11,
+  "generated": "2026-07-20T18:23:20+00:00",
+  "count": 12,
   "tools": [
     {
       "slug": "gangstr-2-5",
@@ -238,6 +238,28 @@
       ],
       "report": "straitrazor-v3-0.json",
       "page": "straitrazor-v3-0.html"
+    },
+    {
+      "slug": "strspy-v2-0-ont",
+      "name": "Strspy",
+      "level": "io",
+      "label": "Runs + Expected IO",
+      "generated": "2026-07-20T18:23:17+00:00",
+      "source_repo": "https://github.com/unique379r/strspy",
+      "source_ref": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29767081160",
+      "distinct_str_loci": null,
+      "distinct_snp_markers": null,
+      "total_reads": null,
+      "own_state": "na",
+      "external_state": "pass",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "ont-bam-hg38"
+      ],
+      "report": "strspy-v2-0-ont.json",
+      "page": "strspy-v2-0-ont.html"
     }
   ]
 }

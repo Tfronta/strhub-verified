@@ -1,0 +1,130 @@
+{
+  "schema": "strhub-verified/1",
+  "tool": {
+    "name": "Strspy",
+    "version": "v2.0"
+  },
+  "source": {
+    "repo": "https://github.com/unique379r/strspy",
+    "ref": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
+    "ref_resolved": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ]
+  },
+  "generated": "2026-07-20T18:23:17+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29767081160",
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": true,
+    "io": true,
+    "content": false
+  },
+  "level": "io",
+  "io_detail": {
+    "gate": "io",
+    "passed": true,
+    "outputs": [
+      {
+        "path": "**/*.txt",
+        "format": "tsv",
+        "checks": {
+          "exists": true,
+          "non_empty": true,
+          "parses_as_tsv": true,
+          "min_records": true
+        },
+        "resolved": "Countings/CSF1PO_input.bam_Allele_freqs.txt",
+        "records": 5,
+        "passed": true
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": false,
+    "passed": false,
+    "outputs": []
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "ont-bam-hg38",
+      "dataset": "1000 Genomes ONT, hg38 CODIS slice (R10 SUP)",
+      "io": true,
+      "content": false,
+      "passed": true
+    }
+  ],
+  "regions": null,
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\bresult"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bversions?\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "logs": {
+    "external": "strspy-v2-0-ont.log-external.txt"
+  },
+  "diagnostics": {
+    "external": [
+      {
+        "id": "cannot_open",
+        "severity": "error",
+        "title": "Cannot open file: /data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam",
+        "count": 18,
+        "examples": [
+          "/data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam",
+          "/data/out/IntersectMappedReads/D12S391_input.bam_alignment.sorted.bam",
+          "/data/out/IntersectMappedReads/D13S317_input.bam_alignment.sorted.bam",
+          "/data/out/IntersectMappedReads/D5S818_input.bam_alignment.sorted.bam",
+          "/data/out/IntersectMappedReads/D7S820_input.bam_alignment.sorted.bam",
+          "/data/out/IntersectMappedReads/D8S1179_input.bam_alignment.sorted.bam",
+          "/data/out/IntersectMappedReads/FGA_input.bam_alignment.sorted.bam",
+          "/data/out/IntersectMappedReads/TPOX_input.bam_alignment.sorted.bam",
+          "/data/out/IntersectMappedReads/vWA_input.bam_alignment.sorted.bam"
+        ],
+        "suggestion": "The tool could not open '/data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam'. Verify the path exists and the file format is correct."
+      }
+    ]
+  }
+}
