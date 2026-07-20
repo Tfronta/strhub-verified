@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/unique379r/strspy` @ `dafdee7e7e5672c8dc732e8577dbe153f53a12f5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-07-20T18:55:25+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/29769345188
+- Generated: 2026-07-20T19:38:55+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/29772391083
 
 ## Gates
 
@@ -33,9 +33,9 @@ This does not assess whether the results produced are correct.
 |---|---|---|
 | Could not open expected files | 18 | D10S1248, D12S391, D13S317, D5S818, D7S820, D8S1179, FGA, TPOX, vWA |
 
-Some of these errors occurred on STRhub's reference sample, which is a slice around the panel loci rather than a whole genome, so they may reflect the sample's coverage rather than the tool.
+Structural errors, such as a file that will not open, an unrecognized command-line flag, or an incomplete build, do not depend on the sample: a coverage-limited slice yields fewer reads, but it cannot cause them. These are not attributable to STRhub's reference sample.
 
-For this reason we strongly recommend the tool ship its own demo or test data in its official repository, so it can be evaluated against complete data rather than a coverage-limited slice.
+We recommend the tool ship its own demo or test data in its official repository, so it can be evaluated against the author's complete data as well as STRhub's slice.
 
 ## README check (advisory)
 
