@@ -79,9 +79,9 @@ def _summary_md(report: dict, slug: str) -> str:
     gates = report["gates"]
     mark = {True: "PASS", False: "—"}
     lines = [
-        f"# STRhub Verified — {tool['name']} ({slug})",
+        f"# STRhub Verified: {tool['name']} ({slug})",
         "",
-        f"**Result: {LABELS.get(level, 'not run')}** — {MEANING.get(level, '')}.",
+        f"**Result: {LABELS.get(level, 'not run')}.** {MEANING.get(level, '')}.",
         "",
         f"- Source: `{report['source']['repo']}` @ `{report['source']['ref_resolved']}`",
         f"- Environment: {', '.join(report['environment'].get('os', []))} "
@@ -179,7 +179,7 @@ def _summary_md(report: dict, slug: str) -> str:
     rc = report.get("readme_check")
     if rc:
         lines += ["", "## README check (advisory)", "",
-                  f"Score: **{rc.get('score', 0)}/{rc.get('max', 5)}** — advisory only, "
+                  f"Score: **{rc.get('score', 0)}/{rc.get('max', 5)}**. Advisory only; "
                   "does not affect the execution badge.", ""]
         for name, c in (rc.get("checks") or {}).items():
             lines.append(f"- {'PASS' if c.get('present') else '—'} {name}")
@@ -321,8 +321,8 @@ def _summary_html(report: dict, slug: str) -> str:
         )
         readme_block = (
             "<h2>README check <span style='font-weight:400;color:#888'>(advisory)</span></h2>"
-            f"<p>Score: <b>{esc(rc.get('score', 0))}/{esc(rc.get('max', 5))}</b> — "
-            "advisory only; does not affect the execution badge.</p>"
+            f"<p>Score: <b>{esc(rc.get('score', 0))}/{esc(rc.get('max', 5))}</b>. "
+            "Advisory only; does not affect the execution badge.</p>"
             f"<ul class='stats'>{items}</ul>"
         )
 
@@ -331,7 +331,7 @@ def _summary_html(report: dict, slug: str) -> str:
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STRhub Verified — {esc(tool['name'])} ({esc(slug)})</title>
+<title>STRhub Verified · {esc(tool['name'])} ({esc(slug)})</title>
 <style>
   body {{ font: 16px/1.6 system-ui, sans-serif; max-width: 820px; margin: 2rem auto;
           padding: 0 1rem; background:#ffffff; color:#1a1a1a; }}
@@ -355,7 +355,7 @@ def _summary_html(report: dict, slug: str) -> str:
   }}
 </style></head><body>
 <nav><a href="index.html">← All tools</a></nav>
-<h1>STRhub Verified — {esc(tool['name'])}</h1>
+<h1>STRhub Verified · {esc(tool['name'])}</h1>
 <p><span class="badge">{esc(LABELS.get(level, 'not run'))}</span></p>
 <p>{esc(MEANING.get(level, ''))}.</p>
 <ul class="meta">

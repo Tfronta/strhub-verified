@@ -9,7 +9,7 @@ bam_index: "ont_slices/HG00113.codis.bam.bai"
 format: "bam"
 reference: "hg38"
 
-name: "1000 Genomes ONT — hg38 CODIS slice (R10 SUP)"
+name: "1000 Genomes ONT, hg38 CODIS slice (R10 SUP)"
 source: "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/"
 license: >
   Open access (1000 Genomes / Human Pangenome Reference Consortium). Research
