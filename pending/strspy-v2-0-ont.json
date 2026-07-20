@@ -1,0 +1,11 @@
+{
+  "slug": "strspy-v2-0-ont",
+  "repo": "https://github.com/unique379r/strspy",
+  "ref": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
+  "dispatchId": "sv_mrtjo05y_r145z4ni",
+  "createdAt": "2026-07-20T18:14:44.950Z",
+  "ip": "181.94.209.70",
+  "status": "approved-pending",
+  "toolName": "Strspy",
+  "payload": "{\"tool\":{\"name\":\"Strspy\",\"version\":\"v2.0\"},\"source\":{\"repo\":\"https://github.com/unique379r/strspy\",\"ref\":\"dafdee7e7e5672c8dc732e8577dbe153f53a12f5\"},\"docker\":{\"mode\":\"provided\",\"dockerfile\":\"FROM mambaorg/micromamba:1.5.8\\n\\nUSER root\\nRUN apt-get update && apt-get install -y --no-install-recommends \\\\\\n        git ca-certificates unzip \\\\\\n    && rm -rf /var/lib/apt/lists/*\\n\\nARG STRSPY_REF=dafdee7e7e5672c8dc732e8577dbe153f53a12f5\\n\\nWORKDIR /opt\\nRUN git clone --branch STRspy2.0 --single-branch https://github.com/unique379r/strspy.git strspy \\\\\\n    && cd strspy && git checkout \\\"${STRSPY_REF}\\\"\\n\\nWORKDIR /opt/strspy\\n\\nRUN micromamba env create -y -n strspy_env -f setup/STRspy_2.0_env.yml \\\\\\n    && micromamba clean -a -y\\n\\nRUN unzip -oq db-v2/STRspy2.0-DB.zip -d db \\\\\\n    && rm -rf db/__MACOSX \\\\\\n    && find db -name '._*' -delete -o -name '.DS_Store' -delete\\n\\nSHELL [\\\"micromamba\\\", \\\"run\\\", \\\"-n\\\", \\\"strspy_env\\\", \\\"/bin/bash\\\", \\\"-c\\\"]\\nRUN { \\\\\\n      echo \\\"SAMTOOLS=$(which samtools)\\\"; \\\\\\n      echo \\\"BEDTOOLS=$(which bedtools)\\\"; \\\\\\n      echo \\\"XATLAS=$(which xatlas)\\\"; \\\\\\n      echo \\\"PARALLEL=$(which parallel)\\\"; \\\\\\n      echo \\\"MINIMAP=$(which minimap2)\\\"; \\\\\\n      echo \\\"SEQKIT=$(which seqkit)\\\"; \\\\\\n    } > config/ToolsConfig.txt && cat config/ToolsConfig.txt\\n\\nENTRYPOINT [\\\"micromamba\\\", \\\"run\\\", \\\"-n\\\", \\\"strspy_env\\\", \\\"/bin/bash\\\", \\\"-lc\\\"]\"},\"run\":{\"cmd\":\"bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /opt/strspy/db/STRspy2.0-DB -b /opt/strspy/db/STRspy2.0-DB -l /opt/strspy/db-v2/STRspy_v2.DB.sort.bed -k 0.4 -o /data/out -c /opt/strspy/config/ToolsConfig.txt -d 1\",\"timeout_minutes\":20},\"inputs\":{\"type\":\"ont-bam-hg38\"},\"outputs\":[{\"path\":\"**/*.txt\",\"format\":\"tsv\",\"min_records\":1}],\"os\":[\"ubuntu-22.04\"]}"
+}
