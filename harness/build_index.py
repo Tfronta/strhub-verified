@@ -74,11 +74,20 @@ def _summary_entry(slug: str, r: dict) -> dict:
     stats = _stats(r) or {}
     datasets = r.get("datasets") or []
     readme = r.get("readme_check") or {}
+    # Whether the run reported errors, so the catalogue card can qualify a green
+    # level the same way the detail page and badge do. Without this the list shows
+    # a clean green for a run that failed on some loci.
+    errors_reported = any(
+        i.get("severity") == "error"
+        for issues in (r.get("diagnostics") or {}).values()
+        for i in issues
+    )
     return {
         "slug": slug,
         "name": r.get("tool", {}).get("name", slug),
         "level": level,
         "label": LABELS.get(level, "not run"),
+        "errors_reported": errors_reported,
         "generated": r.get("generated"),
         "source_repo": r.get("source", {}).get("repo"),
         "source_ref": r.get("source", {}).get("ref_resolved"),
