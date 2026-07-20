@@ -27,7 +27,7 @@
 Read Type: ont
 ========================================================
 Arguments are fine !! analysis proceeded..
-Analysis date and time: Mon Jul 20 18:18:13 UTC 2026
+Analysis date and time: Mon Jul 20 18:50:22 UTC 2026
 ========================================================
 Input read dir: /data/in
 Input type: bam
@@ -53,16 +53,16 @@ Working for: input.bam CSF1PO.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.57] collected minimizers
-[M::mm_idx_gen::0.002*1.47] sorted minimizers
-[M::main::0.002*1.46] loaded/built the index for 22 target sequence(s)
-[M::mm_mapopt_update::0.002*1.44] mid_occ = 132
+[M::mm_idx_gen::0.002*1.53] collected minimizers
+[M::mm_idx_gen::0.002*1.45] sorted minimizers
+[M::main::0.002*1.44] loaded/built the index for 22 target sequence(s)
+[M::mm_mapopt_update::0.002*1.42] mid_occ = 132
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 22
-[M::mm_idx_stat::0.002*1.43] distinct minimizers: 201 (6.97% are singletons); average occurrences: 20.582; average spacing: 5.545; total length: 22939
-[M::worker_pipeline::0.166*1.01] mapped 36 sequences
+[M::mm_idx_stat::0.002*1.41] distinct minimizers: 201 (6.97% are singletons); average occurrences: 20.582; average spacing: 5.545; total length: 22939
+[M::worker_pipeline::0.155*1.01] mapped 36 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/CSF1PO_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/CSF1PO.fa /data/out/IntersectedRegions/input.bam_CSF1PO.bed.bam.fq
-[M::main] Real time: 0.166 sec; CPU: 0.167 sec; Peak RSS: 0.012 GB
+[M::main] Real time: 0.155 sec; CPU: 0.156 sec; Peak RSS: 0.012 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -301,16 +301,16 @@ Working for: input.bam D16S539.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.58] collected minimizers
-[M::mm_idx_gen::0.002*1.48] sorted minimizers
-[M::main::0.002*1.47] loaded/built the index for 20 target sequence(s)
-[M::mm_mapopt_update::0.002*1.45] mid_occ = 114
+[M::mm_idx_gen::0.001*1.56] collected minimizers
+[M::mm_idx_gen::0.001*1.45] sorted minimizers
+[M::main::0.001*1.44] loaded/built the index for 20 target sequence(s)
+[M::mm_mapopt_update::0.002*1.43] mid_occ = 114
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 20
-[M::mm_idx_stat::0.002*1.44] distinct minimizers: 216 (9.72% are singletons); average occurrences: 18.301; average spacing: 5.272; total length: 20841
-[M::worker_pipeline::0.154*1.01] mapped 38 sequences
+[M::mm_idx_stat::0.002*1.42] distinct minimizers: 216 (9.72% are singletons); average occurrences: 18.301; average spacing: 5.272; total length: 20841
+[M::worker_pipeline::0.135*1.00] mapped 38 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D16S539_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D16S539.fa /data/out/IntersectedRegions/input.bam_D16S539.bed.bam.fq
-[M::main] Real time: 0.154 sec; CPU: 0.155 sec; Peak RSS: 0.012 GB
+[M::main] Real time: 0.135 sec; CPU: 0.136 sec; Peak RSS: 0.011 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -408,16 +408,16 @@ Working for: input.bam D18S51.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.41] collected minimizers
-[M::mm_idx_gen::0.002*1.34] sorted minimizers
-[M::main::0.003*1.34] loaded/built the index for 43 target sequence(s)
-[M::mm_mapopt_update::0.003*1.33] mid_occ = 548
+[M::mm_idx_gen::0.002*1.42] collected minimizers
+[M::mm_idx_gen::0.002*1.35] sorted minimizers
+[M::main::0.002*1.34] loaded/built the index for 43 target sequence(s)
+[M::mm_mapopt_update::0.002*1.33] mid_occ = 548
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 43
-[M::mm_idx_stat::0.003*1.32] distinct minimizers: 216 (6.94% are singletons); average occurrences: 40.491; average spacing: 5.258; total length: 45986
-[M::worker_pipeline::0.438*1.00] mapped 37 sequences
+[M::mm_idx_stat::0.002*1.32] distinct minimizers: 216 (6.94% are singletons); average occurrences: 40.491; average spacing: 5.258; total length: 45986
+[M::worker_pipeline::0.410*1.00] mapped 37 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D18S51_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D18S51.fa /data/out/IntersectedRegions/input.bam_D18S51.bed.bam.fq
-[M::main] Real time: 0.438 sec; CPU: 0.439 sec; Peak RSS: 0.013 GB
+[M::main] Real time: 0.410 sec; CPU: 0.411 sec; Peak RSS: 0.014 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -584,16 +584,16 @@ Working for: input.bam D19S433.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.47] collected minimizers
+[M::mm_idx_gen::0.002*1.48] collected minimizers
 [M::mm_idx_gen::0.002*1.39] sorted minimizers
 [M::main::0.002*1.39] loaded/built the index for 35 target sequence(s)
 [M::mm_mapopt_update::0.002*1.38] mid_occ = 387
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 35
 [M::mm_idx_stat::0.002*1.37] distinct minimizers: 215 (6.51% are singletons); average occurrences: 32.981; average spacing: 5.244; total length: 37182
-[M::worker_pipeline::0.504*1.00] mapped 47 sequences
+[M::worker_pipeline::0.481*1.00] mapped 47 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D19S433_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D19S433.fa /data/out/IntersectedRegions/input.bam_D19S433.bed.bam.fq
-[M::main] Real time: 0.505 sec; CPU: 0.505 sec; Peak RSS: 0.013 GB
+[M::main] Real time: 0.481 sec; CPU: 0.482 sec; Peak RSS: 0.012 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -736,16 +736,16 @@ Working for: input.bam D1S1656.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.40] collected minimizers
-[M::mm_idx_gen::0.003*1.33] sorted minimizers
-[M::main::0.003*1.33] loaded/built the index for 50 target sequence(s)
-[M::mm_mapopt_update::0.003*1.32] mid_occ = 494
+[M::mm_idx_gen::0.002*1.39] collected minimizers
+[M::mm_idx_gen::0.002*1.32] sorted minimizers
+[M::main::0.002*1.32] loaded/built the index for 50 target sequence(s)
+[M::mm_mapopt_update::0.002*1.31] mid_occ = 494
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 50
-[M::mm_idx_stat::0.003*1.31] distinct minimizers: 208 (6.25% are singletons); average occurrences: 47.216; average spacing: 5.399; total length: 53023
-[M::worker_pipeline::0.294*1.00] mapped 30 sequences
+[M::mm_idx_stat::0.002*1.30] distinct minimizers: 208 (6.25% are singletons); average occurrences: 47.216; average spacing: 5.399; total length: 53023
+[M::worker_pipeline::0.261*1.00] mapped 30 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D1S1656_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D1S1656.fa /data/out/IntersectedRegions/input.bam_D1S1656.bed.bam.fq
-[M::main] Real time: 0.295 sec; CPU: 0.296 sec; Peak RSS: 0.008 GB
+[M::main] Real time: 0.261 sec; CPU: 0.261 sec; Peak RSS: 0.008 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -933,16 +933,16 @@ Working for: input.bam D21S11.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.005*1.16] collected minimizers
-[M::mm_idx_gen::0.009*1.10] sorted minimizers
-[M::main::0.009*1.10] loaded/built the index for 180 target sequence(s)
-[M::mm_mapopt_update::0.009*1.10] mid_occ = 2174
+[M::mm_idx_gen::0.004*1.18] collected minimizers
+[M::mm_idx_gen::0.008*1.09] sorted minimizers
+[M::main::0.008*1.08] loaded/built the index for 180 target sequence(s)
+[M::mm_mapopt_update::0.008*1.08] mid_occ = 2174
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 180
-[M::mm_idx_stat::0.009*1.10] distinct minimizers: 229 (5.24% are singletons); average occurrences: 171.223; average spacing: 5.217; total length: 204546
-[M::worker_pipeline::1.387*1.00] mapped 30 sequences
+[M::mm_idx_stat::0.008*1.08] distinct minimizers: 229 (5.24% are singletons); average occurrences: 171.223; average spacing: 5.217; total length: 204546
+[M::worker_pipeline::1.276*1.00] mapped 30 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D21S11_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D21S11.fa /data/out/IntersectedRegions/input.bam_D21S11.bed.bam.fq
-[M::main] Real time: 1.387 sec; CPU: 1.388 sec; Peak RSS: 0.014 GB
+[M::main] Real time: 1.276 sec; CPU: 1.277 sec; Peak RSS: 0.014 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -1520,16 +1520,16 @@ Working for: input.bam D22S1045.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.69] collected minimizers
-[M::mm_idx_gen::0.002*1.57] sorted minimizers
-[M::main::0.002*1.56] loaded/built the index for 17 target sequence(s)
-[M::mm_mapopt_update::0.002*1.53] mid_occ = 111
+[M::mm_idx_gen::0.001*1.56] collected minimizers
+[M::mm_idx_gen::0.001*1.45] sorted minimizers
+[M::main::0.001*1.45] loaded/built the index for 17 target sequence(s)
+[M::mm_mapopt_update::0.001*1.43] mid_occ = 111
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 17
-[M::mm_idx_stat::0.002*1.52] distinct minimizers: 199 (1.51% are singletons); average occurrences: 16.804; average spacing: 5.301; total length: 17726
-[M::worker_pipeline::0.125*1.01] mapped 31 sequences
+[M::mm_idx_stat::0.001*1.42] distinct minimizers: 199 (1.51% are singletons); average occurrences: 16.804; average spacing: 5.301; total length: 17726
+[M::worker_pipeline::0.107*1.01] mapped 31 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D22S1045_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D22S1045.fa /data/out/IntersectedRegions/input.bam_D22S1045.bed.bam.fq
-[M::main] Real time: 0.126 sec; CPU: 0.127 sec; Peak RSS: 0.010 GB
+[M::main] Real time: 0.108 sec; CPU: 0.108 sec; Peak RSS: 0.008 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -1618,16 +1618,16 @@ Working for: input.bam D2S1338.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.003*1.27] collected minimizers
-[M::mm_idx_gen::0.006*1.15] sorted minimizers
-[M::main::0.006*1.14] loaded/built the index for 100 target sequence(s)
-[M::mm_mapopt_update::0.006*1.14] mid_occ = 1006
+[M::mm_idx_gen::0.002*1.31] collected minimizers
+[M::mm_idx_gen::0.005*1.14] sorted minimizers
+[M::main::0.005*1.14] loaded/built the index for 100 target sequence(s)
+[M::mm_mapopt_update::0.005*1.14] mid_occ = 1006
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 100
-[M::mm_idx_stat::0.006*1.13] distinct minimizers: 210 (4.29% are singletons); average occurrences: 95.790; average spacing: 5.388; total length: 108381
-[M::worker_pipeline::0.495*1.00] mapped 26 sequences
+[M::mm_idx_stat::0.005*1.14] distinct minimizers: 210 (4.29% are singletons); average occurrences: 95.790; average spacing: 5.388; total length: 108381
+[M::worker_pipeline::0.448*1.00] mapped 26 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D2S1338_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D2S1338.fa /data/out/IntersectedRegions/input.bam_D2S1338.bed.bam.fq
-[M::main] Real time: 0.495 sec; CPU: 0.496 sec; Peak RSS: 0.009 GB
+[M::main] Real time: 0.448 sec; CPU: 0.449 sec; Peak RSS: 0.010 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -1965,16 +1965,16 @@ Working for: input.bam D2S441.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.45] collected minimizers
-[M::mm_idx_gen::0.002*1.37] sorted minimizers
-[M::main::0.002*1.37] loaded/built the index for 39 target sequence(s)
-[M::mm_mapopt_update::0.003*1.36] mid_occ = 265
+[M::mm_idx_gen::0.001*1.41] collected minimizers
+[M::mm_idx_gen::0.002*1.33] sorted minimizers
+[M::main::0.002*1.33] loaded/built the index for 39 target sequence(s)
+[M::mm_mapopt_update::0.002*1.32] mid_occ = 265
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 39
-[M::mm_idx_stat::0.003*1.35] distinct minimizers: 207 (5.31% are singletons); average occurrences: 36.077; average spacing: 5.473; total length: 40874
-[M::worker_pipeline::0.324*1.00] mapped 44 sequences
+[M::mm_idx_stat::0.002*1.31] distinct minimizers: 207 (5.31% are singletons); average occurrences: 36.077; average spacing: 5.473; total length: 40874
+[M::worker_pipeline::0.279*1.00] mapped 44 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D2S441_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D2S441.fa /data/out/IntersectedRegions/input.bam_D2S441.bed.bam.fq
-[M::main] Real time: 0.324 sec; CPU: 0.325 sec; Peak RSS: 0.013 GB
+[M::main] Real time: 0.280 sec; CPU: 0.280 sec; Peak RSS: 0.013 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -2129,16 +2129,16 @@ Working for: input.bam D3S1358.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.43] collected minimizers
-[M::mm_idx_gen::0.003*1.35] sorted minimizers
-[M::main::0.003*1.34] loaded/built the index for 45 target sequence(s)
-[M::mm_mapopt_update::0.003*1.33] mid_occ = 415
+[M::mm_idx_gen::0.002*1.44] collected minimizers
+[M::mm_idx_gen::0.002*1.36] sorted minimizers
+[M::main::0.002*1.36] loaded/built the index for 45 target sequence(s)
+[M::mm_mapopt_update::0.002*1.35] mid_occ = 415
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 45
-[M::mm_idx_stat::0.003*1.32] distinct minimizers: 209 (7.66% are singletons); average occurrences: 41.292; average spacing: 5.550; total length: 47896
-[M::worker_pipeline::0.316*1.00] mapped 36 sequences
+[M::mm_idx_stat::0.002*1.34] distinct minimizers: 209 (7.66% are singletons); average occurrences: 41.292; average spacing: 5.550; total length: 47896
+[M::worker_pipeline::0.273*1.00] mapped 36 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D3S1358_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D3S1358.fa /data/out/IntersectedRegions/input.bam_D3S1358.bed.bam.fq
-[M::main] Real time: 0.316 sec; CPU: 0.317 sec; Peak RSS: 0.010 GB
+[M::main] Real time: 0.273 sec; CPU: 0.274 sec; Peak RSS: 0.011 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -2357,14 +2357,14 @@ Working for: input.bam D6S1043.bed
 #Mapping fastq to motif fasta...
 
 [M::mm_idx_gen::0.002*1.38] collected minimizers
-[M::mm_idx_gen::0.003*1.33] sorted minimizers
-[M::main::0.003*1.33] loaded/built the index for 52 target sequence(s)
-[M::mm_mapopt_update::0.003*1.32] mid_occ = 534
+[M::mm_idx_gen::0.002*1.31] sorted minimizers
+[M::main::0.002*1.31] loaded/built the index for 52 target sequence(s)
+[M::mm_mapopt_update::0.002*1.30] mid_occ = 534
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 52
-[M::mm_idx_stat::0.003*1.31] distinct minimizers: 216 (6.02% are singletons); average occurrences: 48.500; average spacing: 5.308; total length: 55608
+[M::mm_idx_stat::0.002*1.30] distinct minimizers: 216 (6.02% are singletons); average occurrences: 48.500; average spacing: 5.308; total length: 55608
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/D6S1043_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/D6S1043.fa /data/out/IntersectedRegions/input.bam_D6S1043.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.004 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.003 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -2648,15 +2648,15 @@ Working for: input.bam DYF387S1.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.003*1.31] collected minimizers
-[M::mm_idx_gen::0.003*1.25] sorted minimizers
-[M::main::0.003*1.25] loaded/built the index for 60 target sequence(s)
-[M::mm_mapopt_update::0.003*1.24] mid_occ = 750
+[M::mm_idx_gen::0.002*1.28] collected minimizers
+[M::mm_idx_gen::0.002*1.22] sorted minimizers
+[M::main::0.002*1.22] loaded/built the index for 60 target sequence(s)
+[M::mm_mapopt_update::0.002*1.21] mid_occ = 750
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 60
-[M::mm_idx_stat::0.003*1.23] distinct minimizers: 219 (3.65% are singletons); average occurrences: 62.749; average spacing: 5.020; total length: 68985
+[M::mm_idx_stat::0.003*1.21] distinct minimizers: 219 (3.65% are singletons); average occurrences: 62.749; average spacing: 5.020; total length: 68985
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYF387S1_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYF387S1.fa /data/out/IntersectedRegions/input.bam_DYF387S1.bed.bam.fq
-[M::main] Real time: 0.004 sec; CPU: 0.005 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.003 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -2874,15 +2874,15 @@ Working for: input.bam DYS19.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.72] collected minimizers
-[M::mm_idx_gen::0.002*1.59] sorted minimizers
-[M::main::0.002*1.57] loaded/built the index for 9 target sequence(s)
-[M::mm_mapopt_update::0.002*1.55] mid_occ = 87
+[M::mm_idx_gen::0.001*1.46] collected minimizers
+[M::mm_idx_gen::0.002*1.39] sorted minimizers
+[M::main::0.002*1.38] loaded/built the index for 9 target sequence(s)
+[M::mm_mapopt_update::0.002*1.37] mid_occ = 87
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 9
-[M::mm_idx_stat::0.002*1.53] distinct minimizers: 195 (0.00% are singletons); average occurrences: 9.379; average spacing: 5.244; total length: 9592
+[M::mm_idx_stat::0.002*1.36] distinct minimizers: 195 (0.00% are singletons); average occurrences: 9.379; average spacing: 5.244; total length: 9592
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS19_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS19.fa /data/out/IntersectedRegions/input.bam_DYS19.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.005 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -2947,15 +2947,15 @@ Working for: input.bam DYS385ab.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.46] collected minimizers
-[M::mm_idx_gen::0.003*1.32] sorted minimizers
-[M::main::0.003*1.32] loaded/built the index for 36 target sequence(s)
-[M::mm_mapopt_update::0.003*1.31] mid_occ = 414
+[M::mm_idx_gen::0.001*1.43] collected minimizers
+[M::mm_idx_gen::0.002*1.34] sorted minimizers
+[M::main::0.002*1.34] loaded/built the index for 36 target sequence(s)
+[M::mm_mapopt_update::0.002*1.33] mid_occ = 414
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 36
-[M::mm_idx_stat::0.003*1.30] distinct minimizers: 207 (2.42% are singletons); average occurrences: 37.024; average spacing: 5.094; total length: 39044
+[M::mm_idx_stat::0.002*1.32] distinct minimizers: 207 (2.42% are singletons); average occurrences: 37.024; average spacing: 5.094; total length: 39044
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS385ab_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS385ab.fa /data/out/IntersectedRegions/input.bam_DYS385ab.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.004 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -3101,15 +3101,15 @@ Working for: input.bam DYS389I.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.75] collected minimizers
-[M::mm_idx_gen::0.002*1.58] sorted minimizers
-[M::main::0.002*1.57] loaded/built the index for 7 target sequence(s)
-[M::mm_mapopt_update::0.002*1.54] mid_occ = 173
+[M::mm_idx_gen::0.001*1.67] collected minimizers
+[M::mm_idx_gen::0.001*1.53] sorted minimizers
+[M::main::0.001*1.53] loaded/built the index for 7 target sequence(s)
+[M::mm_mapopt_update::0.001*1.50] mid_occ = 173
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 7
-[M::mm_idx_stat::0.002*1.51] distinct minimizers: 165 (0.61% are singletons); average occurrences: 8.594; average spacing: 5.182; total length: 7348
+[M::mm_idx_stat::0.001*1.49] distinct minimizers: 165 (0.61% are singletons); average occurrences: 8.594; average spacing: 5.182; total length: 7348
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS389I_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS389I.fa /data/out/IntersectedRegions/input.bam_DYS389I.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -3168,15 +3168,15 @@ Working for: input.bam DYS389II.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.003*1.36] collected minimizers
-[M::mm_idx_gen::0.003*1.27] sorted minimizers
-[M::main::0.003*1.27] loaded/built the index for 64 target sequence(s)
-[M::mm_mapopt_update::0.003*1.26] mid_occ = 1579
+[M::mm_idx_gen::0.002*1.35] collected minimizers
+[M::mm_idx_gen::0.003*1.26] sorted minimizers
+[M::main::0.003*1.26] loaded/built the index for 64 target sequence(s)
+[M::mm_mapopt_update::0.003*1.25] mid_occ = 1579
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 64
-[M::mm_idx_stat::0.004*1.26] distinct minimizers: 195 (0.51% are singletons); average occurrences: 74.426; average spacing: 5.150; total length: 74736
+[M::mm_idx_stat::0.003*1.25] distinct minimizers: 195 (0.51% are singletons); average occurrences: 74.426; average spacing: 5.150; total length: 74736
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS389II_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS389II.fa /data/out/IntersectedRegions/input.bam_DYS389II.bed.bam.fq
-[M::main] Real time: 0.004 sec; CPU: 0.005 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.003 sec; CPU: 0.004 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -3406,15 +3406,15 @@ Working for: input.bam DYS390.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.57] collected minimizers
-[M::mm_idx_gen::0.002*1.45] sorted minimizers
-[M::main::0.002*1.44] loaded/built the index for 29 target sequence(s)
-[M::mm_mapopt_update::0.002*1.42] mid_occ = 263
+[M::mm_idx_gen::0.001*1.49] collected minimizers
+[M::mm_idx_gen::0.002*1.39] sorted minimizers
+[M::main::0.002*1.38] loaded/built the index for 29 target sequence(s)
+[M::mm_mapopt_update::0.002*1.37] mid_occ = 263
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 29
-[M::mm_idx_stat::0.002*1.41] distinct minimizers: 195 (3.08% are singletons); average occurrences: 29.882; average spacing: 5.433; total length: 31656
+[M::mm_idx_stat::0.002*1.36] distinct minimizers: 195 (3.08% are singletons); average occurrences: 29.882; average spacing: 5.433; total length: 31656
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS390_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS390.fa /data/out/IntersectedRegions/input.bam_DYS390.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.004 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -3539,16 +3539,16 @@ Working for: input.bam DYS391.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.80] collected minimizers
-[M::mm_idx_gen::0.002*1.62] sorted minimizers
-[M::main::0.002*1.60] loaded/built the index for 11 target sequence(s)
-[M::mm_mapopt_update::0.002*1.58] mid_occ = 191
+[M::mm_idx_gen::0.001*1.70] collected minimizers
+[M::mm_idx_gen::0.001*1.55] sorted minimizers
+[M::main::0.001*1.54] loaded/built the index for 11 target sequence(s)
+[M::mm_mapopt_update::0.001*1.52] mid_occ = 191
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 11
-[M::mm_idx_stat::0.002*1.55] distinct minimizers: 182 (1.10% are singletons); average occurrences: 12.005; average spacing: 5.231; total length: 11430
-[M::worker_pipeline::0.187*1.01] mapped 18 sequences
+[M::mm_idx_stat::0.001*1.51] distinct minimizers: 182 (1.10% are singletons); average occurrences: 12.005; average spacing: 5.231; total length: 11430
+[M::worker_pipeline::0.181*1.00] mapped 18 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS391_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS391.fa /data/out/IntersectedRegions/input.bam_DYS391.bed.bam.fq
-[M::main] Real time: 0.188 sec; CPU: 0.189 sec; Peak RSS: 0.012 GB
+[M::main] Real time: 0.181 sec; CPU: 0.182 sec; Peak RSS: 0.011 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -3619,15 +3619,15 @@ Working for: input.bam DYS392.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.82] collected minimizers
-[M::mm_idx_gen::0.002*1.65] sorted minimizers
-[M::main::0.002*1.64] loaded/built the index for 10 target sequence(s)
-[M::mm_mapopt_update::0.002*1.61] mid_occ = 76
+[M::mm_idx_gen::0.001*1.66] collected minimizers
+[M::mm_idx_gen::0.001*1.53] sorted minimizers
+[M::main::0.001*1.52] loaded/built the index for 10 target sequence(s)
+[M::mm_mapopt_update::0.001*1.51] mid_occ = 76
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 10
-[M::mm_idx_stat::0.002*1.58] distinct minimizers: 188 (0.00% are singletons); average occurrences: 10.399; average spacing: 5.292; total length: 10345
+[M::mm_idx_stat::0.001*1.49] distinct minimizers: 188 (0.00% are singletons); average occurrences: 10.399; average spacing: 5.292; total length: 10345
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS392_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS392.fa /data/out/IntersectedRegions/input.bam_DYS392.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -3695,16 +3695,16 @@ Working for: input.bam DYS393.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.86] collected minimizers
-[M::mm_idx_gen::0.001*1.67] sorted minimizers
-[M::main::0.001*1.65] loaded/built the index for 6 target sequence(s)
-[M::mm_mapopt_update::0.001*1.62] mid_occ = 73
+[M::mm_idx_gen::0.001*1.68] collected minimizers
+[M::mm_idx_gen::0.001*1.51] sorted minimizers
+[M::main::0.001*1.50] loaded/built the index for 6 target sequence(s)
+[M::mm_mapopt_update::0.001*1.48] mid_occ = 73
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 6
-[M::mm_idx_stat::0.002*1.58] distinct minimizers: 178 (1.12% are singletons); average occurrences: 6.629; average spacing: 5.366; total length: 6332
-[M::worker_pipeline::0.076*1.01] mapped 21 sequences
+[M::mm_idx_stat::0.001*1.47] distinct minimizers: 178 (1.12% are singletons); average occurrences: 6.629; average spacing: 5.366; total length: 6332
+[M::worker_pipeline::0.068*1.00] mapped 21 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS393_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS393.fa /data/out/IntersectedRegions/input.bam_DYS393.bed.bam.fq
-[M::main] Real time: 0.077 sec; CPU: 0.078 sec; Peak RSS: 0.008 GB
+[M::main] Real time: 0.068 sec; CPU: 0.069 sec; Peak RSS: 0.010 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -3760,15 +3760,15 @@ Working for: input.bam DYS437.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.59] collected minimizers
-[M::mm_idx_gen::0.002*1.49] sorted minimizers
-[M::main::0.002*1.48] loaded/built the index for 18 target sequence(s)
-[M::mm_mapopt_update::0.002*1.46] mid_occ = 263
+[M::mm_idx_gen::0.002*1.43] collected minimizers
+[M::mm_idx_gen::0.002*1.37] sorted minimizers
+[M::main::0.002*1.36] loaded/built the index for 18 target sequence(s)
+[M::mm_mapopt_update::0.002*1.35] mid_occ = 263
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 18
-[M::mm_idx_stat::0.002*1.44] distinct minimizers: 176 (2.84% are singletons); average occurrences: 20.869; average spacing: 5.201; total length: 19104
+[M::mm_idx_stat::0.002*1.35] distinct minimizers: 176 (2.84% are singletons); average occurrences: 20.869; average spacing: 5.201; total length: 19104
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS437_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS437.fa /data/out/IntersectedRegions/input.bam_DYS437.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.005 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -3860,15 +3860,15 @@ Working for: input.bam DYS438.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.60] collected minimizers
-[M::mm_idx_gen::0.002*1.50] sorted minimizers
-[M::main::0.002*1.49] loaded/built the index for 10 target sequence(s)
-[M::mm_mapopt_update::0.002*1.47] mid_occ = 72
+[M::mm_idx_gen::0.001*1.81] collected minimizers
+[M::mm_idx_gen::0.001*1.62] sorted minimizers
+[M::main::0.001*1.61] loaded/built the index for 10 target sequence(s)
+[M::mm_mapopt_update::0.001*1.57] mid_occ = 72
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 10
-[M::mm_idx_stat::0.002*1.45] distinct minimizers: 203 (0.49% are singletons); average occurrences: 10.148; average spacing: 5.109; total length: 10525
+[M::mm_idx_stat::0.001*1.56] distinct minimizers: 203 (0.49% are singletons); average occurrences: 10.148; average spacing: 5.109; total length: 10525
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS438_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS438.fa /data/out/IntersectedRegions/input.bam_DYS438.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.003 sec; Peak RSS: 0.005 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -3936,15 +3936,15 @@ Working for: input.bam DYS439.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.89] collected minimizers
-[M::mm_idx_gen::0.001*1.70] sorted minimizers
-[M::main::0.001*1.68] loaded/built the index for 7 target sequence(s)
-[M::mm_mapopt_update::0.002*1.65] mid_occ = 71
+[M::mm_idx_gen::0.001*1.72] collected minimizers
+[M::mm_idx_gen::0.001*1.56] sorted minimizers
+[M::main::0.001*1.55] loaded/built the index for 7 target sequence(s)
+[M::mm_mapopt_update::0.001*1.53] mid_occ = 71
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 7
-[M::mm_idx_stat::0.002*1.62] distinct minimizers: 178 (0.00% are singletons); average occurrences: 7.354; average spacing: 5.604; total length: 7336
+[M::mm_idx_stat::0.001*1.51] distinct minimizers: 178 (0.00% are singletons); average occurrences: 7.354; average spacing: 5.604; total length: 7336
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS439_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS439.fa /data/out/IntersectedRegions/input.bam_DYS439.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4003,15 +4003,15 @@ Working for: input.bam DYS448.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.53] collected minimizers
-[M::mm_idx_gen::0.002*1.43] sorted minimizers
-[M::main::0.002*1.43] loaded/built the index for 31 target sequence(s)
-[M::mm_mapopt_update::0.002*1.41] mid_occ = 503
+[M::mm_idx_gen::0.001*1.52] collected minimizers
+[M::mm_idx_gen::0.002*1.42] sorted minimizers
+[M::main::0.002*1.41] loaded/built the index for 31 target sequence(s)
+[M::mm_mapopt_update::0.002*1.40] mid_occ = 503
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 31
-[M::mm_idx_stat::0.002*1.40] distinct minimizers: 218 (5.05% are singletons); average occurrences: 31.601; average spacing: 5.208; total length: 35881
+[M::mm_idx_stat::0.002*1.39] distinct minimizers: 218 (5.05% are singletons); average occurrences: 31.601; average spacing: 5.208; total length: 35881
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS448_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS448.fa /data/out/IntersectedRegions/input.bam_DYS448.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.004 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4142,15 +4142,15 @@ Working for: input.bam DYS456.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.72] collected minimizers
-[M::mm_idx_gen::0.002*1.59] sorted minimizers
-[M::main::0.002*1.58] loaded/built the index for 10 target sequence(s)
-[M::mm_mapopt_update::0.002*1.55] mid_occ = 122
+[M::mm_idx_gen::0.001*1.52] collected minimizers
+[M::mm_idx_gen::0.002*1.44] sorted minimizers
+[M::main::0.002*1.44] loaded/built the index for 10 target sequence(s)
+[M::mm_mapopt_update::0.002*1.42] mid_occ = 122
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 10
-[M::mm_idx_stat::0.002*1.53] distinct minimizers: 192 (3.12% are singletons); average occurrences: 10.479; average spacing: 5.478; total length: 11022
+[M::mm_idx_stat::0.002*1.41] distinct minimizers: 192 (3.12% are singletons); average occurrences: 10.479; average spacing: 5.478; total length: 11022
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS456_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS456.fa /data/out/IntersectedRegions/input.bam_DYS456.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.005 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4218,15 +4218,15 @@ Working for: input.bam DYS458.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.63] collected minimizers
-[M::mm_idx_gen::0.002*1.51] sorted minimizers
-[M::main::0.002*1.50] loaded/built the index for 18 target sequence(s)
-[M::mm_mapopt_update::0.002*1.48] mid_occ = 230
+[M::mm_idx_gen::0.001*1.58] collected minimizers
+[M::mm_idx_gen::0.001*1.47] sorted minimizers
+[M::main::0.001*1.46] loaded/built the index for 18 target sequence(s)
+[M::mm_mapopt_update::0.001*1.44] mid_occ = 230
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 18
-[M::mm_idx_stat::0.002*1.47] distinct minimizers: 204 (3.92% are singletons); average occurrences: 17.877; average spacing: 5.267; total length: 19208
+[M::mm_idx_stat::0.001*1.43] distinct minimizers: 204 (3.92% are singletons); average occurrences: 17.877; average spacing: 5.267; total length: 19208
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS458_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS458.fa /data/out/IntersectedRegions/input.bam_DYS458.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4318,15 +4318,15 @@ Working for: input.bam DYS460.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.81] collected minimizers
-[M::mm_idx_gen::0.001*1.64] sorted minimizers
-[M::main::0.001*1.63] loaded/built the index for 9 target sequence(s)
-[M::mm_mapopt_update::0.002*1.60] mid_occ = 139
+[M::mm_idx_gen::0.001*1.67] collected minimizers
+[M::mm_idx_gen::0.001*1.52] sorted minimizers
+[M::main::0.001*1.51] loaded/built the index for 9 target sequence(s)
+[M::mm_mapopt_update::0.001*1.49] mid_occ = 139
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 9
-[M::mm_idx_stat::0.002*1.58] distinct minimizers: 187 (1.07% are singletons); average occurrences: 9.695; average spacing: 5.191; total length: 9412
+[M::mm_idx_stat::0.001*1.48] distinct minimizers: 187 (1.07% are singletons); average occurrences: 9.695; average spacing: 5.191; total length: 9412
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS460_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS460.fa /data/out/IntersectedRegions/input.bam_DYS460.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4391,15 +4391,15 @@ Working for: input.bam DYS461.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.80] collected minimizers
-[M::mm_idx_gen::0.002*1.65] sorted minimizers
-[M::main::0.002*1.64] loaded/built the index for 9 target sequence(s)
-[M::mm_mapopt_update::0.002*1.61] mid_occ = 130
+[M::mm_idx_gen::0.001*1.63] collected minimizers
+[M::mm_idx_gen::0.001*1.51] sorted minimizers
+[M::main::0.001*1.50] loaded/built the index for 9 target sequence(s)
+[M::mm_mapopt_update::0.001*1.48] mid_occ = 130
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 9
-[M::mm_idx_stat::0.002*1.58] distinct minimizers: 188 (0.53% are singletons); average occurrences: 9.691; average spacing: 5.166; total length: 9412
+[M::mm_idx_stat::0.002*1.46] distinct minimizers: 188 (0.53% are singletons); average occurrences: 9.691; average spacing: 5.166; total length: 9412
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS461_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS461.fa /data/out/IntersectedRegions/input.bam_DYS461.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4464,15 +4464,15 @@ Working for: input.bam DYS481.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.62] collected minimizers
-[M::mm_idx_gen::0.002*1.50] sorted minimizers
-[M::main::0.002*1.49] loaded/built the index for 23 target sequence(s)
-[M::mm_mapopt_update::0.002*1.47] mid_occ = 436
+[M::mm_idx_gen::0.001*1.51] collected minimizers
+[M::mm_idx_gen::0.002*1.41] sorted minimizers
+[M::main::0.002*1.41] loaded/built the index for 23 target sequence(s)
+[M::mm_mapopt_update::0.002*1.39] mid_occ = 436
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 23
-[M::mm_idx_stat::0.002*1.45] distinct minimizers: 196 (0.00% are singletons); average occurrences: 24.526; average spacing: 5.136; total length: 24689
+[M::mm_idx_stat::0.002*1.38] distinct minimizers: 196 (0.00% are singletons); average occurrences: 24.526; average spacing: 5.136; total length: 24689
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS481_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS481.fa /data/out/IntersectedRegions/input.bam_DYS481.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4579,15 +4579,15 @@ Working for: input.bam DYS505.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.72] collected minimizers
-[M::mm_idx_gen::0.002*1.53] sorted minimizers
-[M::main::0.002*1.53] loaded/built the index for 9 target sequence(s)
-[M::mm_mapopt_update::0.002*1.50] mid_occ = 235
+[M::mm_idx_gen::0.001*1.47] collected minimizers
+[M::mm_idx_gen::0.002*1.37] sorted minimizers
+[M::main::0.002*1.37] loaded/built the index for 9 target sequence(s)
+[M::mm_mapopt_update::0.002*1.36] mid_occ = 235
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 9
-[M::mm_idx_stat::0.002*1.49] distinct minimizers: 153 (0.00% are singletons); average occurrences: 12.882; average spacing: 4.785; total length: 9432
+[M::mm_idx_stat::0.002*1.35] distinct minimizers: 153 (0.00% are singletons); average occurrences: 12.882; average spacing: 4.785; total length: 9432
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS505_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS505.fa /data/out/IntersectedRegions/input.bam_DYS505.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.005 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4652,15 +4652,15 @@ Working for: input.bam DYS522.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.73] collected minimizers
-[M::mm_idx_gen::0.002*1.58] sorted minimizers
-[M::main::0.002*1.57] loaded/built the index for 9 target sequence(s)
-[M::mm_mapopt_update::0.002*1.54] mid_occ = 73
+[M::mm_idx_gen::0.001*1.68] collected minimizers
+[M::mm_idx_gen::0.001*1.54] sorted minimizers
+[M::main::0.001*1.53] loaded/built the index for 9 target sequence(s)
+[M::mm_mapopt_update::0.001*1.51] mid_occ = 73
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 9
-[M::mm_idx_stat::0.002*1.51] distinct minimizers: 193 (0.00% are singletons); average occurrences: 9.244; average spacing: 5.271; total length: 9404
+[M::mm_idx_stat::0.001*1.50] distinct minimizers: 193 (0.00% are singletons); average occurrences: 9.244; average spacing: 5.271; total length: 9404
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS522_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS522.fa /data/out/IntersectedRegions/input.bam_DYS522.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4725,15 +4725,15 @@ Working for: input.bam DYS533.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.99] collected minimizers
-[M::mm_idx_gen::0.001*1.69] sorted minimizers
-[M::main::0.001*1.68] loaded/built the index for 8 target sequence(s)
-[M::mm_mapopt_update::0.001*1.64] mid_occ = 110
+[M::mm_idx_gen::0.001*1.68] collected minimizers
+[M::mm_idx_gen::0.001*1.52] sorted minimizers
+[M::main::0.001*1.52] loaded/built the index for 8 target sequence(s)
+[M::mm_mapopt_update::0.001*1.50] mid_occ = 110
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 8
-[M::mm_idx_stat::0.002*1.62] distinct minimizers: 173 (1.16% are singletons); average occurrences: 9.023; average spacing: 5.358; total length: 8364
+[M::mm_idx_stat::0.001*1.48] distinct minimizers: 173 (1.16% are singletons); average occurrences: 9.023; average spacing: 5.358; total length: 8364
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS533_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS533.fa /data/out/IntersectedRegions/input.bam_DYS533.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4795,15 +4795,15 @@ Working for: input.bam DYS549.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.74] collected minimizers
-[M::mm_idx_gen::0.002*1.60] sorted minimizers
-[M::main::0.002*1.59] loaded/built the index for 9 target sequence(s)
-[M::mm_mapopt_update::0.002*1.57] mid_occ = 80
+[M::mm_idx_gen::0.001*1.69] collected minimizers
+[M::mm_idx_gen::0.001*1.56] sorted minimizers
+[M::main::0.001*1.55] loaded/built the index for 9 target sequence(s)
+[M::mm_mapopt_update::0.001*1.53] mid_occ = 80
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 9
-[M::mm_idx_stat::0.002*1.54] distinct minimizers: 196 (1.53% are singletons); average occurrences: 9.219; average spacing: 5.226; total length: 9444
+[M::mm_idx_stat::0.001*1.52] distinct minimizers: 196 (1.53% are singletons); average occurrences: 9.219; average spacing: 5.226; total length: 9444
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS549_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS549.fa /data/out/IntersectedRegions/input.bam_DYS549.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4868,15 +4868,15 @@ Working for: input.bam DYS570.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.61] collected minimizers
-[M::mm_idx_gen::0.002*1.49] sorted minimizers
-[M::main::0.002*1.48] loaded/built the index for 22 target sequence(s)
-[M::mm_mapopt_update::0.002*1.46] mid_occ = 331
+[M::mm_idx_gen::0.001*1.49] collected minimizers
+[M::mm_idx_gen::0.002*1.41] sorted minimizers
+[M::main::0.002*1.41] loaded/built the index for 22 target sequence(s)
+[M::mm_mapopt_update::0.002*1.40] mid_occ = 331
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 22
-[M::mm_idx_stat::0.002*1.45] distinct minimizers: 183 (1.09% are singletons); average occurrences: 22.995; average spacing: 5.616; total length: 23632
+[M::mm_idx_stat::0.002*1.39] distinct minimizers: 183 (1.09% are singletons); average occurrences: 22.995; average spacing: 5.616; total length: 23632
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS570_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS570.fa /data/out/IntersectedRegions/input.bam_DYS570.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.005 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -4980,15 +4980,15 @@ Working for: input.bam DYS576.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.64] collected minimizers
-[M::mm_idx_gen::0.002*1.52] sorted minimizers
-[M::main::0.002*1.51] loaded/built the index for 10 target sequence(s)
-[M::mm_mapopt_update::0.002*1.49] mid_occ = 142
+[M::mm_idx_gen::0.001*1.67] collected minimizers
+[M::mm_idx_gen::0.001*1.54] sorted minimizers
+[M::main::0.001*1.53] loaded/built the index for 10 target sequence(s)
+[M::mm_mapopt_update::0.001*1.51] mid_occ = 142
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 10
-[M::mm_idx_stat::0.002*1.47] distinct minimizers: 199 (2.01% are singletons); average occurrences: 10.477; average spacing: 5.130; total length: 10696
+[M::mm_idx_stat::0.001*1.49] distinct minimizers: 199 (2.01% are singletons); average occurrences: 10.477; average spacing: 5.130; total length: 10696
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS576_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS576.fa /data/out/IntersectedRegions/input.bam_DYS576.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -5056,15 +5056,15 @@ Working for: input.bam DYS612.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.45] collected minimizers
-[M::mm_idx_gen::0.002*1.36] sorted minimizers
-[M::main::0.003*1.36] loaded/built the index for 36 target sequence(s)
-[M::mm_mapopt_update::0.003*1.34] mid_occ = 697
+[M::mm_idx_gen::0.002*1.32] collected minimizers
+[M::mm_idx_gen::0.002*1.25] sorted minimizers
+[M::main::0.002*1.25] loaded/built the index for 36 target sequence(s)
+[M::mm_mapopt_update::0.002*1.24] mid_occ = 697
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 36
-[M::mm_idx_stat::0.003*1.33] distinct minimizers: 195 (4.10% are singletons); average occurrences: 37.974; average spacing: 5.381; total length: 39843
+[M::mm_idx_stat::0.002*1.24] distinct minimizers: 195 (4.10% are singletons); average occurrences: 37.974; average spacing: 5.381; total length: 39843
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS612_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS612.fa /data/out/IntersectedRegions/input.bam_DYS612.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.004 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.003 sec; CPU: 0.003 sec; Peak RSS: 0.005 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -5210,15 +5210,15 @@ Working for: input.bam DYS635.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.53] collected minimizers
-[M::mm_idx_gen::0.002*1.43] sorted minimizers
-[M::main::0.002*1.42] loaded/built the index for 28 target sequence(s)
-[M::mm_mapopt_update::0.002*1.40] mid_occ = 234
+[M::mm_idx_gen::0.001*1.54] collected minimizers
+[M::mm_idx_gen::0.002*1.44] sorted minimizers
+[M::main::0.002*1.43] loaded/built the index for 28 target sequence(s)
+[M::mm_mapopt_update::0.002*1.42] mid_occ = 234
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 28
-[M::mm_idx_stat::0.002*1.39] distinct minimizers: 205 (1.95% are singletons); average occurrences: 28.527; average spacing: 5.211; total length: 30475
+[M::mm_idx_stat::0.002*1.41] distinct minimizers: 205 (1.95% are singletons); average occurrences: 28.527; average spacing: 5.211; total length: 30475
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS635_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS635.fa /data/out/IntersectedRegions/input.bam_DYS635.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.004 sec; Peak RSS: 0.005 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -5340,15 +5340,15 @@ Working for: input.bam DYS643.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.67] collected minimizers
-[M::mm_idx_gen::0.002*1.53] sorted minimizers
-[M::main::0.002*1.53] loaded/built the index for 11 target sequence(s)
-[M::mm_mapopt_update::0.002*1.50] mid_occ = 93
+[M::mm_idx_gen::0.001*1.48] collected minimizers
+[M::mm_idx_gen::0.002*1.41] sorted minimizers
+[M::main::0.002*1.40] loaded/built the index for 11 target sequence(s)
+[M::mm_mapopt_update::0.002*1.39] mid_occ = 93
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 11
-[M::mm_idx_stat::0.002*1.49] distinct minimizers: 204 (1.47% are singletons); average occurrences: 11.216; average spacing: 5.073; total length: 11606
+[M::mm_idx_stat::0.002*1.38] distinct minimizers: 204 (1.47% are singletons); average occurrences: 11.216; average spacing: 5.073; total length: 11606
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/DYS643_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/DYS643.fa /data/out/IntersectedRegions/input.bam_DYS643.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.005 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -5464,15 +5464,15 @@ Working for: input.bam PentaD.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.63] collected minimizers
-[M::mm_idx_gen::0.002*1.51] sorted minimizers
-[M::main::0.002*1.50] loaded/built the index for 17 target sequence(s)
-[M::mm_mapopt_update::0.002*1.48] mid_occ = 156
+[M::mm_idx_gen::0.001*1.61] collected minimizers
+[M::mm_idx_gen::0.001*1.48] sorted minimizers
+[M::main::0.001*1.48] loaded/built the index for 17 target sequence(s)
+[M::mm_mapopt_update::0.001*1.46] mid_occ = 156
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 17
-[M::mm_idx_stat::0.002*1.46] distinct minimizers: 197 (5.08% are singletons); average occurrences: 16.944; average spacing: 5.385; total length: 17975
+[M::mm_idx_stat::0.001*1.44] distinct minimizers: 197 (5.08% are singletons); average occurrences: 16.944; average spacing: 5.385; total length: 17975
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/PentaD_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/PentaD.fa /data/out/IntersectedRegions/input.bam_PentaD.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -5561,15 +5561,15 @@ Working for: input.bam PentaE.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.002*1.44] collected minimizers
+[M::mm_idx_gen::0.001*1.45] collected minimizers
 [M::mm_idx_gen::0.002*1.36] sorted minimizers
-[M::main::0.002*1.36] loaded/built the index for 39 target sequence(s)
-[M::mm_mapopt_update::0.002*1.35] mid_occ = 515
+[M::main::0.002*1.35] loaded/built the index for 39 target sequence(s)
+[M::mm_mapopt_update::0.002*1.34] mid_occ = 515
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 39
-[M::mm_idx_stat::0.003*1.34] distinct minimizers: 215 (5.12% are singletons); average occurrences: 36.498; average spacing: 5.366; total length: 42105
+[M::mm_idx_stat::0.002*1.33] distinct minimizers: 215 (5.12% are singletons); average occurrences: 36.498; average spacing: 5.366; total length: 42105
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/PentaE_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/PentaE.fa /data/out/IntersectedRegions/input.bam_PentaE.bed.bam.fq
-[M::main] Real time: 0.003 sec; CPU: 0.004 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -5724,15 +5724,15 @@ Working for: input.bam SE33.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.008*1.12] collected minimizers
-[M::mm_idx_gen::0.011*1.08] sorted minimizers
-[M::main::0.011*1.08] loaded/built the index for 265 target sequence(s)
-[M::mm_mapopt_update::0.011*1.08] mid_occ = 5409
+[M::mm_idx_gen::0.005*1.11] collected minimizers
+[M::mm_idx_gen::0.010*1.06] sorted minimizers
+[M::main::0.010*1.06] loaded/built the index for 265 target sequence(s)
+[M::mm_mapopt_update::0.010*1.06] mid_occ = 5409
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 265
-[M::mm_idx_stat::0.012*1.08] distinct minimizers: 232 (8.19% are singletons); average occurrences: 249.802; average spacing: 5.214; total length: 302156
+[M::mm_idx_stat::0.010*1.06] distinct minimizers: 232 (8.19% are singletons); average occurrences: 249.802; average spacing: 5.214; total length: 302156
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/SE33_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/SE33.fa /data/out/IntersectedRegions/input.bam_SE33.bed.bam.fq
-[M::main] Real time: 0.012 sec; CPU: 0.013 sec; Peak RSS: 0.007 GB
+[M::main] Real time: 0.010 sec; CPU: 0.011 sec; Peak RSS: 0.005 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -6565,16 +6565,16 @@ Working for: input.bam TH01.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.71] collected minimizers
-[M::mm_idx_gen::0.002*1.56] sorted minimizers
-[M::main::0.002*1.55] loaded/built the index for 14 target sequence(s)
-[M::mm_mapopt_update::0.002*1.53] mid_occ = 67
+[M::mm_idx_gen::0.001*1.65] collected minimizers
+[M::mm_idx_gen::0.001*1.51] sorted minimizers
+[M::main::0.001*1.51] loaded/built the index for 14 target sequence(s)
+[M::mm_mapopt_update::0.001*1.49] mid_occ = 67
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 14
-[M::mm_idx_stat::0.002*1.51] distinct minimizers: 193 (1.55% are singletons); average occurrences: 13.622; average spacing: 5.510; total length: 14485
-[M::worker_pipeline::0.084*1.01] mapped 25 sequences
+[M::mm_idx_stat::0.001*1.47] distinct minimizers: 193 (1.55% are singletons); average occurrences: 13.622; average spacing: 5.510; total length: 14485
+[M::worker_pipeline::0.075*1.01] mapped 25 sequences
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/TH01_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/TH01.fa /data/out/IntersectedRegions/input.bam_TH01.bed.bam.fq
-[M::main] Real time: 0.085 sec; CPU: 0.086 sec; Peak RSS: 0.008 GB
+[M::main] Real time: 0.075 sec; CPU: 0.076 sec; Peak RSS: 0.007 GB
 #Done.
 
 #sam to bam + sort + index...
@@ -6699,15 +6699,15 @@ Working for: input.bam Y-GATA-H4.bed
 
 #Mapping fastq to motif fasta...
 
-[M::mm_idx_gen::0.001*1.75] collected minimizers
-[M::mm_idx_gen::0.002*1.59] sorted minimizers
-[M::main::0.002*1.58] loaded/built the index for 7 target sequence(s)
-[M::mm_mapopt_update::0.002*1.55] mid_occ = 71
+[M::mm_idx_gen::0.001*1.64] collected minimizers
+[M::mm_idx_gen::0.001*1.51] sorted minimizers
+[M::main::0.001*1.50] loaded/built the index for 7 target sequence(s)
+[M::mm_mapopt_update::0.001*1.48] mid_occ = 71
 [M::mm_idx_stat] kmer size: 15; skip: 10; is_hpc: 0; #seq: 7
-[M::mm_idx_stat::0.002*1.53] distinct minimizers: 192 (2.08% are singletons); average occurrences: 7.188; average spacing: 5.306; total length: 7322
+[M::mm_idx_stat::0.001*1.47] distinct minimizers: 192 (2.08% are singletons); average occurrences: 7.188; average spacing: 5.306; total length: 7322
 [M::main] Version: 2.28-r1209
 [M::main] CMD: /opt/conda/envs/strspy_env/bin/minimap2 -t 1 --MD -L -ax map-ont -o /data/out/IntersectMappedReads/Y-GATA-H4_input.bam_alignment.sam /opt/strspy/db/STRspy2.0-DB/Y-GATA-H4.fa /data/out/IntersectedRegions/input.bam_Y-GATA-H4.bed.bam.fq
-[M::main] Real time: 0.002 sec; CPU: 0.003 sec; Peak RSS: 0.003 GB
+[M::main] Real time: 0.002 sec; CPU: 0.002 sec; Peak RSS: 0.003 GB
 #Done.
 
 #sam to bam + sort + index...
