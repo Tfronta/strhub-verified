@@ -172,6 +172,8 @@ def _summary_md(report: dict, slug: str) -> str:
         for e in errs:
             items = ", ".join(e["items"]) if e["items"] else "—"
             lines.append(f"| {e['title']} | {e['count']} | {items} |")
+        for note in diagnose_log.external_leg_notes(report.get("diagnostics") or {}):
+            lines += ["", note]
 
     # README minimum-to-run checklist (advisory).
     rc = report.get("readme_check")
@@ -296,13 +298,17 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<td>{esc(', '.join(e['items']) if e['items'] else '—')}</td></tr>"
             for e in errs
         )
+        notes = "".join(
+            f"<p>{esc(n)}</p>"
+            for n in diagnose_log.external_leg_notes(all_diags)
+        )
         errors_block = (
             "<h2>Errors reported during the run</h2>"
             f"<p>The tool reported errors on {n_items} item(s) during the run. "
             "This does not assess whether the results produced are correct.</p>"
             "<table><thead><tr><th>What happened</th><th>Times</th>"
             "<th>Affected</th></tr></thead>"
-            f"<tbody>{erows}</tbody></table>"
+            f"<tbody>{erows}</tbody></table>{notes}"
         )
 
     # README minimum-to-run checklist (advisory).
