@@ -483,8 +483,27 @@ def main() -> int:
     color = "brightgreen" if level == "content" \
         else "green" if level in ("io", "runs") \
         else "yellow" if level in ("installs", "available") else "red"
+    message = LABELS.get(level, "not run")
+
+    # A run can clear its gates and still have reported errors: a tool that fails
+    # on some loci, writes a partial file and exits 0 clears "Expected IO" on the
+    # strength of what did come out. The badge is the most-seen artifact, so an
+    # unqualified green there hides that. Saying so is descriptive — the tool's own
+    # log emitted the errors — and stays clear of judging genotype correctness,
+    # which needs a truth set we do not have. Warnings never count: benign stderr
+    # noise is common and marking it would be unfair.
+    n_errors = sum(
+        issue.get("count", 1)
+        for leg_issues in diagnostics.values()
+        for issue in leg_issues
+        if issue.get("severity") == "error"
+    )
+    if n_errors and color in ("brightgreen", "green"):
+        color = "yellow"
+        message = f"{message} (errors reported)"
+
     badge = {"schemaVersion": 1, "label": "STRhub Verified",
-             "message": LABELS.get(level, "not run"), "color": color}
+             "message": message, "color": color}
     (reports / f"{slug}.badge.json").write_text(json.dumps(badge, indent=2))
 
     (reports / f"{slug}.summary.md").write_text(_summary_md(report, slug))
