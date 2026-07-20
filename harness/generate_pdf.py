@@ -680,6 +680,9 @@ def build_body(cfg):
             ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
         ]))
         els.append(et)
+        for note in diagnose_log.external_leg_notes(cfg.get("diagnostics") or {}):
+            els.append(vspace(3))
+            els.append(Paragraph(note, ST["body"]))
 
     # Limitations
     els.append(section_num(str(sec), "Limitations"))
