@@ -350,7 +350,7 @@ def build_cover(cfg):
     els.append(HR(spaceB=10, spaceA=10))
 
     scope_text = (
-        "Independent automated verification of reproducible execution — "
+        "Independent automated verification of reproducible execution. It "
         "confirms the tool installs, runs end-to-end, and produces "
         "structurally valid output in a standardized environment.<br/><br/>"
         "This is <b>not</b> an analytical validation. Genotype accuracy, "
@@ -413,7 +413,7 @@ def build_body(cfg):
     els.append(section_num("1", "Executive Summary"))
     exec_rows = [
         ("PURPOSE",           "Verify that the tool installs, runs end-to-end, and produces structurally valid output."),
-        ("RESULT",            f'<font color="#00909c"><b>{n_pass}/{n_total} gates passed — {attest_label}</b></font>'),
+        ("RESULT",            f'<font color="#00909c"><b>{n_pass}/{n_total} gates passed. {attest_label}</b></font>'),
         ("ATTESTATION LEVEL", f'<font color="#00909c"><b>{attest_label}</b></font>'),
         ("SCOPE",             "Installation, execution, and output structure verification."),
         ("NOT EVALUATED",     "Genotype accuracy · Concordance · Forensic validity · Regulatory compliance"),
@@ -578,7 +578,7 @@ def build_body(cfg):
     rg = cfg.get("regions", {})
     if rg.get("source") == "tool":
         covered, total = rg.get("covered_loci"), rg.get("panel_size")
-        detail = (f" — covers {covered} of {total} supported loci"
+        detail = (f" (covers {covered} of {total} supported loci)"
                   if covered and total else "")
         ds_rows.append(("Regions BED", f"Provided by the tool author{detail}"))
     elif rg.get("source") == "strhub":
@@ -606,7 +606,7 @@ def build_body(cfg):
     matrix_rows = [
         ("PASS", "Reference dataset",          ds.get("name", "—")),
         ("",     f"README check ({rc_score}/{rc_max})",
-                 "Advisory — all items present" if rc_score == rc_max else f"{rc_score}/{rc_max} items present"),
+                 "Advisory: all items present" if rc_score == rc_max else f"{rc_score}/{rc_max} items present"),
         ("",     "Install / environment setup", "Present"),
         ("",     "Run command",                 "Present"),
         ("",     "Expected input format",       "Present"),
@@ -782,7 +782,7 @@ def build_appendix(cfg):
     els = []
     els.append(build_header_inner(cfg))
     els.append(HR(TEAL, thickness=1.2, spaceB=4, spaceA=8))
-    els.append(Paragraph("Appendix — Detected Markers with Read Depth",
+    els.append(Paragraph("Appendix: Detected Markers with Read Depth",
                           ST["appendix_title"]))
     subtitle = f"{cfg['tool_display']} · verified {cfg['ver_date']}"
     if truncated:

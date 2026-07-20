@@ -341,8 +341,8 @@ def external_leg_notes(diagnostics: dict[str, list[dict]]) -> list[str]:
         return []
     return [
         "Some of these errors occurred on STRhub's reference sample, which is a "
-        "slice around the panel loci, not a whole genome — they may reflect the "
-        "sample's coverage rather than the tool.",
+        "slice around the panel loci rather than a whole genome, so they may "
+        "reflect the sample's coverage rather than the tool.",
         "For this reason we strongly recommend the tool ship its own demo or test "
         "data in its official repository, so it can be evaluated against complete "
         "data rather than a coverage-limited slice.",
