@@ -1,0 +1,24 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: Strspy
+  version: v2.0
+source:
+  repo: "https://github.com/unique379r/strspy"
+  ref: dafdee7e7e5672c8dc732e8577dbe153f53a12f5
+report:
+  slug: "strspy-v2-0-ont"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /opt/strspy/db/STRspy2.0-DB -b /opt/strspy/db/STRspy2.0-DB -l /opt/strspy/db-v2/STRspy_v2.DB.sort.bed -k 0.4 -o /data/out -c /opt/strspy/config/ToolsConfig.txt -d 1"
+  timeout_minutes: 20
+inputs:
+  type: "ont-bam-hg38"
+outputs:
+- path: "**/*.txt"
+  format: tsv
+  min_records: 1
