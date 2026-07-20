@@ -327,6 +327,28 @@ REVIEW_LABELS = {
 }
 
 
+def external_leg_notes(diagnostics: dict[str, list[dict]]) -> list[str]:
+    """Review notes to append when errors landed on STRhub's reference leg.
+
+    The 'own' leg runs the author's own fixture (their data, presumably complete);
+    the 'external' leg runs STRhub's reference sample, which is a SLICE. An error
+    on the external leg may therefore reflect the slice's coverage rather than the
+    tool — we cannot prove which, so we say so instead of silently blaming either.
+    The closing line turns that limitation into the actionable ask: ship demo data.
+    """
+    external = diagnostics.get("external", [])
+    if not any(i.get("severity") == "error" for i in external):
+        return []
+    return [
+        "Some of these errors occurred on STRhub's reference sample, which is a "
+        "slice around the panel loci, not a whole genome — they may reflect the "
+        "sample's coverage rather than the tool.",
+        "For this reason we strongly recommend the tool ship its own demo or test "
+        "data in its official repository, so it can be evaluated against complete "
+        "data rather than a coverage-limited slice.",
+    ]
+
+
 def summarize(diagnostics: dict[str, list[dict]]) -> list[dict]:
     """Flatten per-leg diagnostics into one review-facing list of error entries.
 
