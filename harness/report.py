@@ -129,17 +129,25 @@ def _summary_md(report: dict, slug: str) -> str:
     # Verification matrix (own / external legs), if present.
     # Legs where fixture_source=="strhub" are omitted: both legs run on the same
     # STRhub data, so showing them separately would be misleading.
+    # Which legs reported errors — the matrix flags THAT, the section below says what.
+    legs_with_errors = {
+        leg for leg, issues in (report.get("diagnostics") or {}).items()
+        if any(i.get("severity") == "error" for i in issues)
+    }
+
     datasets = report.get("datasets") or []
     visible = [leg for leg in datasets if leg.get("fixture_source") != "strhub"]
     if visible:
         lines += ["", "## Verification matrix", "",
-                  "| Leg | Available | Result | Dataset |", "|---|---|---|---|"]
+                  "| Leg | Available | Result | Errors reported | Dataset |",
+                  "|---|---|---|---|---|"]
         for leg in visible:
             avail = leg.get("available", True)
             status = "N/A" if not avail else ("PASS" if leg.get("passed") else "—")
+            err = "yes" if leg.get("leg") in legs_with_errors else "—"
             lines.append(
                 f"| {leg.get('label', leg.get('leg', '?'))} | "
-                f"{'yes' if avail else 'N/A'} | {status} | "
+                f"{'yes' if avail else 'N/A'} | {status} | {err} | "
                 f"{leg.get('dataset', leg.get('type', '—'))} |"
             )
 
@@ -150,6 +158,20 @@ def _summary_md(report: dict, slug: str) -> str:
         note = _regions_note(rg)
         if note:
             lines += ["", "## Regions", "", note]
+
+    # Errors the tool itself reported. Its own section: the matrix says whether a
+    # leg passed, this says what went wrong, and a reviewer should not have to open
+    # a container log to find out.
+    errs = diagnose_log.summarize(report.get("diagnostics") or {})
+    if errs:
+        n_items = sum(len(e["items"]) for e in errs) or sum(1 for _ in errs)
+        lines += ["", "## Errors reported during the run", "",
+                  f"The tool reported errors on {n_items} item(s) during the run.",
+                  "This does not assess whether the results produced are correct.",
+                  "", "| What happened | Times | Affected |", "|---|---|---|"]
+        for e in errs:
+            items = ", ".join(e["items"]) if e["items"] else "—"
+            lines.append(f"| {e['title']} | {e['count']} | {items} |")
 
     # README minimum-to-run checklist (advisory).
     rc = report.get("readme_check")
@@ -223,6 +245,13 @@ def _summary_html(report: dict, slug: str) -> str:
     # Legs where fixture_source=="strhub" are omitted: both legs run on the same
     # STRhub data, so showing them separately would be misleading.
     matrix_block = ""
+    # Which legs reported errors — the matrix flags THAT, the section below says what.
+    all_diags = report.get("diagnostics") or {}
+    legs_with_errors = {
+        leg for leg, issues in all_diags.items()
+        if any(i.get("severity") == "error" for i in issues)
+    }
+
     datasets = report.get("datasets") or []
     visible_ds = [leg for leg in datasets if leg.get("fixture_source") != "strhub"]
     if visible_ds:
@@ -235,14 +264,18 @@ def _summary_html(report: dict, slug: str) -> str:
                 chip = '<span class="ok">PASS</span>'
             else:
                 chip = '<span class="no">—</span>'
+            err = ('<span class="warn">yes</span>'
+                   if leg.get("leg") in legs_with_errors else '<span class="no">—</span>')
             mrows.append(
                 f"<tr><td>{esc(leg.get('label', leg.get('leg', '?')))}</td>"
                 f"<td>{chip}</td>"
+                f"<td>{err}</td>"
                 f"<td>{esc(leg.get('dataset', leg.get('type', '—')))}</td></tr>"
             )
         matrix_block = (
             "<h2>Verification matrix</h2>"
-            "<table><thead><tr><th>Leg</th><th>Result</th><th>Dataset</th></tr></thead>"
+            "<table><thead><tr><th>Leg</th><th>Result</th><th>Errors reported</th>"
+            "<th>Dataset</th></tr></thead>"
             f"<tbody>{''.join(mrows)}</tbody></table>"
         )
 
@@ -251,6 +284,26 @@ def _summary_html(report: dict, slug: str) -> str:
     regions_block = (
         f"<h2>Regions</h2><p>{esc(regions_note)}</p>" if regions_note else ""
     )
+
+    # Errors the tool reported, in its own section: the matrix says a leg had them,
+    # this says what they were, so a reviewer never has to open a container log.
+    errors_block = ""
+    errs = diagnose_log.summarize(all_diags)
+    if errs:
+        n_items = sum(len(e["items"]) for e in errs) or len(errs)
+        erows = "".join(
+            f"<tr><td>{esc(e['title'])}</td><td>{e['count']}</td>"
+            f"<td>{esc(', '.join(e['items']) if e['items'] else '—')}</td></tr>"
+            for e in errs
+        )
+        errors_block = (
+            "<h2>Errors reported during the run</h2>"
+            f"<p>The tool reported errors on {n_items} item(s) during the run. "
+            "This does not assess whether the results produced are correct.</p>"
+            "<table><thead><tr><th>What happened</th><th>Times</th>"
+            "<th>Affected</th></tr></thead>"
+            f"<tbody>{erows}</tbody></table>"
+        )
 
     # README minimum-to-run checklist (advisory).
     readme_block = ""
@@ -282,6 +335,7 @@ def _summary_html(report: dict, slug: str) -> str:
   th, td {{ text-align: left; padding: .5rem .6rem; border-bottom: 1px solid #ddd; }}
   .ok {{ color:#16a34a; font-weight:700; }}
   .no {{ color:#999; }}
+  .warn {{ color:#b45309; font-weight:700; }}
   .meta li, .stats li {{ margin:.15rem 0; }}
   .scope {{ background:#f3f4f6; border-left:4px solid {badge}; padding:.8rem 1rem; border-radius:6px; }}
   code {{ background:#eef0f2; padding:.1rem .3rem; border-radius:4px; }}
@@ -311,6 +365,7 @@ def _summary_html(report: dict, slug: str) -> str:
 {content_block}
 {matrix_block}
 {regions_block}
+{errors_block}
 {readme_block}
 <h2>Scope</h2>
 <p class="scope">{esc(report['scope'])}<br><br>
@@ -483,8 +538,27 @@ def main() -> int:
     color = "brightgreen" if level == "content" \
         else "green" if level in ("io", "runs") \
         else "yellow" if level in ("installs", "available") else "red"
+    message = LABELS.get(level, "not run")
+
+    # A run can clear its gates and still have reported errors: a tool that fails
+    # on some loci, writes a partial file and exits 0 clears "Expected IO" on the
+    # strength of what did come out. The badge is the most-seen artifact, so an
+    # unqualified green there hides that. Saying so is descriptive — the tool's own
+    # log emitted the errors — and stays clear of judging genotype correctness,
+    # which needs a truth set we do not have. Warnings never count: benign stderr
+    # noise is common and marking it would be unfair.
+    n_errors = sum(
+        issue.get("count", 1)
+        for leg_issues in diagnostics.values()
+        for issue in leg_issues
+        if issue.get("severity") == "error"
+    )
+    if n_errors and color in ("brightgreen", "green"):
+        color = "yellow"
+        message = f"{message} (errors reported)"
+
     badge = {"schemaVersion": 1, "label": "STRhub Verified",
-             "message": LABELS.get(level, "not run"), "color": color}
+             "message": message, "color": color}
     (reports / f"{slug}.badge.json").write_text(json.dumps(badge, indent=2))
 
     (reports / f"{slug}.summary.md").write_text(_summary_md(report, slug))

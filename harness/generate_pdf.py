@@ -23,6 +23,9 @@ import re
 import sys
 import tempfile
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import diagnose_log  # noqa: E402
+
 import yaml
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
@@ -633,8 +636,54 @@ def build_body(cfg):
     ]))
     els.append(keep_section(section_num("8", "Verification Matrix"), mt))
 
-    # §9 Limitations
-    els.append(section_num("9", "Limitations"))
+    # §9 Errors reported — only when the tool actually reported any, so the
+    # remaining sections are numbered from a counter rather than hard-coded.
+    #
+    # The matrix above says WHICH leg hit errors; this says WHAT they were. It
+    # exists because the reader is a forensic reviewer, not a programmer: without
+    # it the only record of a failure is a container log they have no way to open.
+    # It reports what the tool's own log said and stops there — no claim about
+    # whether the results produced are correct.
+    sec = 9
+    errs = diagnose_log.summarize(cfg.get("diagnostics") or {})
+    if errs:
+        n_items = sum(len(e["items"]) for e in errs) or len(errs)
+        els.append(section_num(str(sec), "Errors Reported During the Run"))
+        sec += 1
+        els.append(Paragraph(
+            f"The tool reported errors on {n_items} item(s) during the run. "
+            "This does not assess whether the results produced are correct.",
+            ST["body"]))
+        els.append(vspace(3))
+
+        head = [Paragraph(f"<b>{h}</b>", ST["tbl_cell"])
+                for h in ("What happened", "Times", "Affected")]
+        erows = [head]
+        for e in errs:
+            items = ", ".join(e["items"]) if e["items"] else "—"
+            erows.append([
+                Paragraph(e["title"], ST["tbl_cell"]),
+                Paragraph(str(e["count"]), ST["tbl_cell"]),
+                Paragraph(items, S("erritems", fontSize=8, textColor=GRAY, leading=12)),
+            ])
+        C1 = CW * 0.34
+        C2 = CW * 0.10
+        et = Table(erows, colWidths=[C1, C2, CW - C1 - C2])
+        et.setStyle(TableStyle([
+            ("VALIGN",        (0,0),(-1,-1), "TOP"),
+            ("LEFTPADDING",   (0,0),(-1,-1), 10),
+            ("RIGHTPADDING",  (0,0),(-1,-1), 10),
+            ("TOPPADDING",    (0,0),(-1,-1), 5),
+            ("BOTTOMPADDING", (0,0),(-1,-1), 5),
+            ("ROWBACKGROUNDS",(0,1),(-1,-1), [WHITE, GRAY_LIGHT]),
+            ("LINEBELOW",     (0,0),(-1,0), 0.5, BORDER),
+            ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
+        ]))
+        els.append(et)
+
+    # Limitations
+    els.append(section_num(str(sec), "Limitations"))
+    sec += 1
     lim_items = [
         "Single reference dataset per input type",
         "Single containerized environment (Docker / ubuntu-22.04)",
@@ -649,8 +698,9 @@ def build_body(cfg):
           leftIndent=10, spaceAfter=1)) for item in lim_items]
     els.append(boxed(lim))
 
-    # §10 Disclaimers
-    els.append(section_num("10", "Scope and Disclaimers"))
+    # Disclaimers
+    els.append(section_num(str(sec), "Scope and Disclaimers"))
+    sec += 1
     disc = (
         "Executed end-to-end in the stated environment with output in the expected format. "
         "Concerns reproducible execution only; no claim of accuracy, casework fitness, "
@@ -708,7 +758,7 @@ def build_body(cfg):
         ("LEFTPADDING",   (0,0),(-1,-1), 16),
         ("RIGHTPADDING",  (0,0),(-1,-1), 16),
     ]))
-    els.append(keep_section(section_num("11", "Conclusion"), con_box))
+    els.append(keep_section(section_num(str(sec), "Conclusion"), con_box))
     return els
 
 # ── Appendix ──────────────────────────────────────────────────────────────────
@@ -909,6 +959,7 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         "dataset":        dataset,
         "regions":        report.get("regions") or {},
         "readme_check":   report.get("readme_check") or {},
+        "diagnostics":    report.get("diagnostics") or {},
         "log_filename":   (report.get("logs") or {}).get("external")
                           or (report.get("logs") or {}).get("own", ""),
     }
