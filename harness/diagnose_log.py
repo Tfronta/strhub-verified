@@ -271,6 +271,93 @@ def diagnose_file(path: str | pathlib.Path) -> list[dict]:
     return diagnose(p.read_text(errors="replace"))
 
 
+def _common_suffix(values: list[str]) -> str:
+    if len(values) < 2:
+        return ""
+    first = values[0]
+    for i in range(len(first)):
+        suffix = first[i:]
+        if all(v.endswith(suffix) for v in values):
+            return suffix
+    return ""
+
+
+def short_items(examples: list[str]) -> list[str]:
+    """Reduce captured paths to the part that actually varies between them.
+
+    Diagnostics capture whole container paths, which say nothing to the forensic
+    reviewer this report is for. Taking the basename and dropping the suffix every
+    example shares leaves only the distinguishing token — for a tool that names
+    per-locus files, that is the locus:
+
+        /data/out/IntersectMappedReads/vWA_input.bam_alignment.sorted.bam  ->  vWA
+
+    Pure string work, no assumption about any tool's naming convention: if the
+    examples share no suffix the basenames are returned untouched.
+    """
+    if not examples:
+        return []
+    bases = [pathlib.PurePosixPath(e).name or e for e in examples]
+    suffix = _common_suffix(bases)
+    if suffix:
+        trimmed = [b[: -len(suffix)] for b in bases]
+        if all(t.strip() for t in trimmed):
+            bases = trimmed
+    return sorted(dict.fromkeys(bases))
+
+
+#: Review-facing phrasing, one short clause per rule. The stored title carries the
+#: captured path ("Cannot open file: /data/out/.../vWA_input.bam..."), which is
+#: noise to the forensic reviewer the report is written for: the affected items are
+#: listed separately, so this column only needs to say what kind of failure it was.
+REVIEW_LABELS = {
+    "bad_option": "Unrecognized command-line option",
+    "file_not_found": "Expected file not found",
+    "cannot_open": "Could not open expected files",
+    "no_read_groups": "Input BAM/CRAM missing read groups (@RG)",
+    "bad_bam": "Invalid or truncated BAM file",
+    "vcf_gz_required": "Output path must end in .gz",
+    "segfault": "Tool crashed (segmentation fault)",
+    "oom": "Ran out of memory",
+    "permission_denied": "Permission denied",
+    "cmd_not_found": "Command not found",
+    "missing_module": "Required Python module not found",
+    "import_error": "Import error",
+    "zero_genotyped": "No loci were genotyped",
+}
+
+
+def summarize(diagnostics: dict[str, list[dict]]) -> list[dict]:
+    """Flatten per-leg diagnostics into one review-facing list of error entries.
+
+    Both legs run the same tool on comparable data, so the same fault shows up
+    twice; reporting it once with the wider evidence is what a reviewer needs.
+    Errors only — warnings are normal tool chatter and would bury the signal.
+    """
+    merged: dict[str, dict] = {}
+    for issues in diagnostics.values():
+        for issue in issues:
+            if issue.get("severity") != "error":
+                continue
+            entry = merged.setdefault(issue["id"], {
+                "id": issue["id"],
+                "title": REVIEW_LABELS.get(
+                    issue["id"], issue.get("title", issue["id"]).split(":")[0]
+                ),
+                "count": 0,
+                "examples": [],
+            })
+            entry["count"] += issue.get("count", 1)
+            for ex in issue.get("examples", []):
+                if ex not in entry["examples"]:
+                    entry["examples"].append(ex)
+    out = []
+    for entry in merged.values():
+        entry["items"] = short_items(entry["examples"])
+        out.append(entry)
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("log", help="path to captured log file")
