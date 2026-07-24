@@ -162,6 +162,57 @@ _rule(
 )
 
 _rule(
+    r"No space left on device|[Dd]isk quota exceeded",
+    "error", "disk_full",
+    "Ran out of disk space",
+    "The run filled the CI runner's disk. Public runners cap disk space, so a "
+    "tool with large intermediate files may not fit the automated environment.",
+)
+
+# --- Environment ceilings the author cannot lift from the form ---------------
+# These are what separate "fix your submission and re-run for free" from "the
+# automated path structurally cannot express this tool". See HARNESS_INCOMPATIBLE.
+
+_rule(
+    r"[Tt]emporary failure in name resolution|[Cc]ould not resolve host"
+    r"|[Nn]ame or service not known|[Nn]etwork is unreachable"
+    r"|Failed to establish a new connection|getaddrinfo failed",
+    "error", "runtime_network",
+    "Network access attempted during the run",
+    "The tool tried to reach the network while running. Verification is a pinned "
+    "snapshot, so anything fetched at run time cannot be recorded or reproduced. "
+    "Vendor the data into the image at build time, or request manual verification.",
+)
+
+_rule(
+    r"cannot connect to X server|[Nn]o display name and no \$DISPLAY"
+    r"|QXcbConnection|[Cc]annot open display|GtkWindow|TclError: no display",
+    "error", "requires_gui",
+    "Tool requires a graphical display",
+    "The tool tried to open a GUI. The automated runner is headless, so an "
+    "interactive step cannot be executed or evidenced. Request manual verification.",
+)
+
+_rule(
+    r"no CUDA-capable device|libcuda\.so.*(?:cannot open|not found)"
+    r"|CUDA driver version is insufficient|nvidia-smi.*not found"
+    r"|torch\.cuda\.is_available\(\) *(?:is |== *)?False|Found no NVIDIA driver",
+    "error", "requires_gpu",
+    "Tool requires a GPU",
+    "The tool needs CUDA hardware. Public CI runners are CPU-only, so this cannot "
+    "run on the automated path. Request manual verification.",
+)
+
+_rule(
+    r"[Ll]icense (?:file )?(?:not found|is invalid|has expired|expired)"
+    r"|[Nn]o valid license|FLEXlm|FlexNet|LM_LICENSE_FILE",
+    "error", "requires_license",
+    "Tool requires a license or licensed data",
+    "The tool needs a license or licensed reference data that cannot be published "
+    "in a public verification run. Request manual verification.",
+)
+
+_rule(
     r"[Pp]ermission denied",
     "error", "permission_denied",
     "Permission denied",
@@ -324,6 +375,11 @@ REVIEW_LABELS = {
     "missing_module": "Required Python module not found",
     "import_error": "Import error",
     "zero_genotyped": "No loci were genotyped",
+    "disk_full": "Ran out of disk space",
+    "runtime_network": "Network access attempted during the run",
+    "requires_gui": "Requires a graphical display",
+    "requires_gpu": "Requires a GPU",
+    "requires_license": "Requires a license or licensed data",
 }
 
 
@@ -339,6 +395,136 @@ SAMPLE_ATTRIBUTABLE = {"zero_genotyped", "bad_bam", "no_read_groups"}
 # staging, could be the tool) and get no note: the error table stands on its own.
 STRUCTURAL = {"cannot_open", "bad_option", "vcf_gz_required",
               "cmd_not_found", "missing_module", "import_error"}
+
+
+# --------------------------------------------------------------------------
+# Manual-verification eligibility (STRhub Verified level 2)
+# --------------------------------------------------------------------------
+# Level 2 is a PAID, human-run verification, so who qualifies for it must never
+# be a judgement call. The rule is therefore mechanical: eligibility is a code
+# emitted by this module from the run's own evidence, and the web can only offer
+# level 2 on a report that carries one. Two sets do the separating.
+
+# Fixable by the author, for free, by correcting the submission and re-running.
+# The auto-run works fine for these tools — the manifest or Dockerfile is simply
+# wrong, and every one of these ids already ships a `suggestion` saying how to fix
+# it. Routing them to a paid tier would be monetising our own form's friction, so
+# they are named here explicitly and can never trigger level 2.
+AUTHOR_FIXABLE = {"bad_option", "cmd_not_found", "missing_module", "import_error",
+                  "vcf_gz_required", "file_not_found"}
+
+# Ceilings of the free automated environment. No amount of care with the form
+# lifts these: a public runner has no GPU, no display, a fixed memory and disk
+# budget, and a pinned snapshot cannot depend on a network fetch at run time.
+# A tool that hits one of these is not failing verification — verification, as
+# designed, cannot express it. That is what level 2 exists for.
+HARNESS_INCOMPATIBLE = {"oom", "disk_full", "runtime_network",
+                        "requires_gui", "requires_gpu", "requires_license"}
+
+# The whole guarantee rests on an id never being both, so state it as an invariant
+# rather than trusting two hand-maintained sets to stay apart.
+assert not (AUTHOR_FIXABLE & HARNESS_INCOMPATIBLE), \
+    "an error class cannot be both author-fixable and harness-incompatible"
+
+# Author-declared incompatibilities (the pre-flight, "trigger A"). Same ceilings,
+# stated up front so a tool that plainly cannot run is not made to burn a CI run
+# to discover it. Keys mirror the manifest's `compatibility` block.
+DECLARED_INCOMPAT = {
+    "requires_gui":
+        "The tool declares an interactive or graphical step. The automated "
+        "runner is headless and cannot execute or evidence it.",
+    "requires_gpu":
+        "The tool declares it needs GPU hardware. Public CI runners are CPU-only.",
+    "requires_runtime_network":
+        "The tool declares it fetches data over the network while running. A "
+        "pinned snapshot cannot record or reproduce what was fetched.",
+    "requires_licensed_reference":
+        "The tool declares it needs licensed or restricted reference data that "
+        "cannot be published in a public verification run.",
+    "requires_unsupported_os":
+        "The tool declares it needs an OS the automated runner does not provide.",
+    "opaque_output_format":
+        "The tool declares a binary or proprietary output with no text or tabular "
+        "export, so the IO and content gates cannot inspect it.",
+}
+
+_DETECTED_REASONS = {
+    "oom": "The run exhausted the CI runner's memory. The automated environment "
+           "has a fixed memory budget the author cannot raise.",
+    "disk_full": "The run filled the CI runner's disk. The automated environment "
+                 "has a fixed disk budget the author cannot raise.",
+    "runtime_network": "The tool reached for the network while running. A pinned "
+                       "snapshot cannot record or reproduce what was fetched.",
+    "requires_gui": "The tool tried to open a graphical display. The automated "
+                    "runner is headless.",
+    "requires_gpu": "The tool needs CUDA hardware. Public CI runners are CPU-only.",
+    "requires_license": "The tool needs a license or licensed data that cannot be "
+                        "published in a public verification run.",
+}
+
+
+def manual_eligibility(diagnostics: dict[str, list[dict]],
+                       gates: dict[str, bool],
+                       declared: dict | None = None) -> dict:
+    """Decide, mechanically, whether this run may be offered manual verification.
+
+    Returns a record that always states the outcome, so a report can distinguish
+    "checked, not eligible" from an older report that never checked at all:
+
+        {"eligible": bool, "basis": "declared"|"detected"|None,
+         "reason_code": str|None, "reason": str|None}
+
+    The order of the checks is the policy:
+
+    1. A run that produced its expected output has nothing to escalate. Level 2
+       cannot be offered over a working free path, whatever the tool declared —
+       this is what stops the paid tier from becoming a queue-jump.
+    2. A declared ceiling (trigger A) qualifies even without a run: a GUI tool
+       should not have to burn CI to be told the runner is headless.
+    3. A detected ceiling (trigger B) qualifies on the evidence of the log.
+    4. Everything else does not. In particular a run that failed only on
+       AUTHOR_FIXABLE errors stays on the free path, where the diagnostics
+       already carry the fix.
+    """
+    none = {"eligible": False, "basis": None, "reason_code": None, "reason": None}
+
+    # 1. The free path delivered: gates through IO cleared, so a file in the
+    #    declared format actually came out. Nothing here needs a human.
+    if gates.get("io") or gates.get("content"):
+        return none
+
+    # 2. Declared (trigger A) — checked before the log so a tool that never got
+    #    to run is still routed correctly.
+    for flag, reason in DECLARED_INCOMPAT.items():
+        if (declared or {}).get(flag):
+            return {"eligible": True, "basis": "declared",
+                    "reason_code": f"declared_incompat:{flag}", "reason": reason}
+
+    # 3. Detected (trigger B) — an environment ceiling the log proves we hit.
+    #    Scanned in HARNESS_INCOMPATIBLE order so the reason is stable across
+    #    runs rather than dependent on which leg happened to log first.
+    hit_ids = {issue["id"] for issues in diagnostics.values() for issue in issues
+               if issue.get("severity") == "error"}
+    for rid in sorted(HARNESS_INCOMPATIBLE & hit_ids):
+        return {"eligible": True, "basis": "detected",
+                "reason_code": f"detected_incompat:{rid}",
+                "reason": _DETECTED_REASONS.get(rid, REVIEW_LABELS.get(rid, rid))}
+
+    # 4. Failed, but on something the author can fix and re-run for free.
+    return none
+
+
+def author_fixable_ids(diagnostics: dict[str, list[dict]]) -> list[str]:
+    """Error classes in this run the author can correct themselves, for free.
+
+    The counterpart to `manual_eligibility`: when a run fails on these, the
+    honest answer is "fix the submission and re-run at no cost", and the report
+    should say so plainly rather than leaving a dead end that reads like a reason
+    to pay for help.
+    """
+    hit = {issue["id"] for issues in diagnostics.values() for issue in issues
+           if issue.get("severity") == "error"}
+    return sorted(AUTHOR_FIXABLE & hit)
 
 
 def external_leg_notes(diagnostics: dict[str, list[dict]]) -> list[str]:
