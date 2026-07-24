@@ -1,0 +1,59 @@
+{
+  "approvedRepos": [
+    "https://github.com/ahhgust/straitrazor",
+    "https://github.com/tfwillems/hipstr"
+  ],
+  "submissions": [
+    {
+      "slug": "auditprobe-v0-1",
+      "repo": "https://github.com/Tfronta/strhub-web",
+      "ref": "main",
+      "dispatchId": "sv_mrzcopot_jkfeopc5",
+      "createdAt": "2026-07-24T19:45:57.773Z",
+      "clientHash": "87f9c185d4f28bad9216ef245e9550e1",
+      "status": "approved-pending",
+      "toolName": "AuditProbe",
+      "payload": "{\"tool\":{\"name\":\"AuditProbe\",\"version\":\"v0.1\"},\"source\":{\"repo\":\"https://github.com/Tfronta/strhub-web\",\"ref\":\"main\"},\"docker\":{\"mode\":\"generated\",\"language\":\"python\",\"build_cmd\":\"pip install .\"},\"run\":{\"cmd\":\"mytool /data/in/sample.fastq --out /data/out/r.tsv\",\"timeout_minutes\":15},\"inputs\":{\"type\":\"illumina-str-fastq\"},\"outputs\":[{\"path\":\"*.tsv\",\"format\":\"tsv\",\"min_records\":1}],\"os\":[\"ubuntu-22.04\"]}"
+    },
+    {
+      "slug": "hipstr-v0-7",
+      "repo": "https://github.com/tfwillems/HipSTR",
+      "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "dispatchId": "sv_mqnt6v7l_lhl1uav4",
+      "createdAt": "2026-06-21T13:15:06.805Z",
+      "status": "dispatched"
+    },
+    {
+      "slug": "hipstr-v0-7",
+      "repo": "https://github.com/tfwillems/HipSTR",
+      "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "dispatchId": "sv_mqmsy2bd_3dctc6py",
+      "createdAt": "2026-06-20T20:20:29.582Z",
+      "status": "dispatched"
+    },
+    {
+      "slug": "hipstr-v0-7",
+      "repo": "https://github.com/tfwillems/HipSTR",
+      "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "dispatchId": "sv_mqmspzv1_ksdms6vz",
+      "createdAt": "2026-06-20T20:14:13.301Z",
+      "status": "dispatched"
+    },
+    {
+      "slug": "straitrazor-v1-0-5",
+      "repo": "https://github.com/Ahhgust/STRaitRazor",
+      "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+      "dispatchId": "sv_mqfk9n43_rfn4jwo4",
+      "createdAt": "2026-06-15T18:43:10.191Z",
+      "status": "dispatched"
+    },
+    {
+      "slug": "straitrazor-v1-0-4",
+      "repo": "https://github.com/Ahhgust/STRaitRazor",
+      "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+      "dispatchId": "sv_mqfk4i5z_ln16k09h",
+      "createdAt": "2026-06-15T18:39:09.847Z",
+      "status": "dispatched"
+    }
+  ]
+}
