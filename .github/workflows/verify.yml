@@ -64,14 +64,24 @@ jobs:
       # Every reporting step below is additionally guarded on this step's
       # conclusion: they run `if: always()`, which by itself would survive this
       # abort and emit a red "not run" badge for a tool that never ran.
+      # Every manifest-derived value below reaches the shell through `env:`, never
+      # through `${{ }}` inside a `run:` block. The manifest is author-supplied, and
+      # `${{ }}` is a TEXT substitution performed before bash sees the script: a
+      # value containing $(...), a backtick or a quote would run on the RUNNER, which
+      # holds a `contents: write` token. Referenced as "$VAR", bash expands the value
+      # without re-parsing it, so it stays data. `if:` and `timeout-minutes:` are
+      # GitHub expression contexts, not shell, and are safe as they are.
       - id: preflight
         name: "Pre-flight · Regions within panel"
         if: steps.m.outputs.regions_source == 'tool' && steps.m.outputs.supported_loci != ''
+        env:
+          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
+          MIN_LOCI: ${{ steps.m.outputs.min_loci || '5' }}
         run: |
           python harness/validate_bed.py \
             --bed work/in_external/regions.bed \
-            --supported "${{ steps.m.outputs.supported_loci }}" \
-            --min-loci "${{ steps.m.outputs.min_loci || '5' }}" \
+            --supported "$SUPPORTED_LOCI" \
+            --min-loci "$MIN_LOCI" \
             --json regions_validation.json
 
       # --- Reference genome (for BAM-based tools needing --fasta) -------------
@@ -85,14 +95,17 @@ jobs:
 
       - name: Download + index reference genome
         if: steps.m.outputs.ref_genome_url != '' && steps.ref-cache.outputs.cache-hit != 'true'
+        env:
+          REF_GENOME_URL: ${{ steps.m.outputs.ref_genome_url }}
+          REF_GENOME_FILE: ${{ steps.m.outputs.ref_genome_filename }}
         run: |
           mkdir -p work/ref
-          echo "::group::Downloading ${{ steps.m.outputs.ref_genome_filename }}"
-          curl -fsSL "${{ steps.m.outputs.ref_genome_url }}" | gunzip > "work/ref/${{ steps.m.outputs.ref_genome_filename }}"
+          echo "::group::Downloading $REF_GENOME_FILE"
+          curl -fsSL "$REF_GENOME_URL" | gunzip > "work/ref/$REF_GENOME_FILE"
           echo "::endgroup::"
           echo "::group::Indexing with samtools faidx"
           sudo apt-get install -y -qq samtools >/dev/null 2>&1
-          samtools faidx "work/ref/${{ steps.m.outputs.ref_genome_filename }}"
+          samtools faidx "work/ref/$REF_GENOME_FILE"
           echo "::endgroup::"
           ls -lh work/ref/
 
@@ -100,19 +113,25 @@ jobs:
       - id: available
         name: "Gate · Available"
         continue-on-error: true
-        run: git ls-remote "${{ steps.m.outputs.repo }}" >/dev/null
+        env:
+          TOOL_REPO: ${{ steps.m.outputs.repo }}
+        run: git ls-remote "$TOOL_REPO" >/dev/null
 
       # --- Gate: Installs (docker build) -------------------------------------
       - id: installs
         name: "Gate · Installs"
         continue-on-error: true
+        env:
+          TOOL_REF: ${{ steps.m.outputs.ref }}
+          DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
+          DOCKER_FILE: ${{ steps.m.outputs.dockerfile }}
         run: |
           docker build \
-            --build-arg STRAITRAZOR_REF=${{ steps.m.outputs.ref }} \
-            --build-arg TOOL_REF=${{ steps.m.outputs.ref }} \
-            -f ${{ steps.m.outputs.dockerdir }}/${{ steps.m.outputs.dockerfile }} \
+            --build-arg "STRAITRAZOR_REF=$TOOL_REF" \
+            --build-arg "TOOL_REF=$TOOL_REF" \
+            -f "$DOCKER_DIR/$DOCKER_FILE" \
             -t toolimg:ci \
-            ${{ steps.m.outputs.dockerdir }}
+            "$DOCKER_DIR"
 
       # --- Matrix leg: own data (the badge ladder uses THIS leg) -------------
       - id: runs
@@ -120,6 +139,11 @@ jobs:
         if: steps.m.outputs.own_ready == '1'
         continue-on-error: true
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
+        env:
+          # The author's own command. It is meant to run INSIDE the container (the
+          # image entrypoint is `bash -lc`), so it is passed as a single argument
+          # here and never evaluated by the runner's shell.
+          TOOL_CMD: ${{ steps.m.outputs.cmd }}
         run: |
           set -o pipefail
           mkdir -p work/out_own
@@ -130,19 +154,23 @@ jobs:
             -v "$PWD/work/out_own:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            "${{ steps.m.outputs.cmd }}" 2>&1 | tee work/log_own.txt
+            "$TOOL_CMD" 2>&1 | tee work/log_own.txt
 
       - id: io
         name: "Gate · Expected IO (own)"
         if: steps.m.outputs.own_ready == '1'
         continue-on-error: true
-        run: python harness/check_io.py "${{ steps.m.outputs.manifest }}" work/out_own --json io_own.json
+        env:
+          MANIFEST: ${{ steps.m.outputs.manifest }}
+        run: python harness/check_io.py "$MANIFEST" work/out_own --json io_own.json
 
       - id: content
         name: "Gate · Content (own)"
         if: steps.m.outputs.own_ready == '1'
         continue-on-error: true
-        run: python harness/check_content.py "${{ steps.m.outputs.manifest }}" work/out_own --json content_own.json
+        env:
+          MANIFEST: ${{ steps.m.outputs.manifest }}
+        run: python harness/check_content.py "$MANIFEST" work/out_own --json content_own.json
 
       # --- Matrix leg: external typed dataset (N/A if no compatible dataset) --
       - id: runs_ext
@@ -150,6 +178,8 @@ jobs:
         if: steps.m.outputs.external_ready == '1'
         continue-on-error: true
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
+        env:
+          TOOL_CMD: ${{ steps.m.outputs.cmd }}
         run: |
           set -o pipefail
           mkdir -p work/out_external
@@ -160,26 +190,33 @@ jobs:
             -v "$PWD/work/out_external:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            "${{ steps.m.outputs.cmd }}" 2>&1 | tee work/log_external.txt
+            "$TOOL_CMD" 2>&1 | tee work/log_external.txt
 
       - id: io_ext
         name: "Expected IO (external)"
         if: steps.m.outputs.external_ready == '1'
         continue-on-error: true
-        run: python harness/check_io.py "${{ steps.m.outputs.manifest }}" work/out_external --json io_external.json
+        env:
+          MANIFEST: ${{ steps.m.outputs.manifest }}
+        run: python harness/check_io.py "$MANIFEST" work/out_external --json io_external.json
 
       - id: content_ext
         name: "Content (external)"
         if: steps.m.outputs.external_ready == '1'
         continue-on-error: true
-        run: python harness/check_content.py "${{ steps.m.outputs.manifest }}" work/out_external --json content_external.json
+        env:
+          MANIFEST: ${{ steps.m.outputs.manifest }}
+        run: python harness/check_content.py "$MANIFEST" work/out_external --json content_external.json
 
       # --- README minimum-to-run check (advisory; never gates the badge) ------
       - name: "README check (advisory)"
         if: always() && steps.preflight.conclusion != 'failure'
         continue-on-error: true
+        env:
+          TOOL_REPO: ${{ steps.m.outputs.repo }}
+          TOOL_REF: ${{ steps.m.outputs.ref }}
         run: |
-          repo="${{ steps.m.outputs.repo }}"; ref="${{ steps.m.outputs.ref }}"
+          repo="$TOOL_REPO"; ref="$TOOL_REF"
           slug="${repo#https://github.com/}"; slug="${slug%.git}"
           rm -f readme.md
           for name in README.md readme.md README.MD README.rst README.txt README; do
@@ -235,20 +272,33 @@ jobs:
       # --- Assemble attestation (always runs) --------------------------------
       - name: Build attestation + badge
         if: always() && steps.preflight.conclusion != 'failure'
+        env:
+          MANIFEST: ${{ steps.m.outputs.manifest }}
+          TOOL_REF: ${{ steps.m.outputs.ref }}
+          OWN_READY: ${{ steps.m.outputs.own_ready }}
+          REGIONS_SOURCE: ${{ steps.m.outputs.regions_source }}
+          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
+          # Step outcomes come from GitHub, not the manifest, so they are a closed
+          # vocabulary (success/failure/cancelled/skipped) rather than author input.
+          AVAILABLE_OUTCOME: ${{ steps.available.outcome }}
+          INSTALLS_OUTCOME: ${{ steps.installs.outcome }}
+          RUNS_OUTCOME: ${{ steps.runs.outcome }}
+          RUNS_EXT_OUTCOME: ${{ steps.runs_ext.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           # The badge ladder follows the author's BYOR "own" leg when present;
           # otherwise it rests on the external typed-dataset leg (chosen by
           # inputs.type), which is where the real data ran for form submissions
           # that don't supply a fixture.
-          if [ "${{ steps.m.outputs.own_ready }}" = "1" ]; then
-            LADDER_RUNS="${{ steps.runs.outcome }}"; LADDER_IO=io_own.json; LADDER_CT=content_own.json
+          if [ "$OWN_READY" = "1" ]; then
+            LADDER_RUNS="$RUNS_OUTCOME"; LADDER_IO=io_own.json; LADDER_CT=content_own.json
           else
-            LADDER_RUNS="${{ steps.runs_ext.outcome }}"; LADDER_IO=io_external.json; LADDER_CT=content_external.json
+            LADDER_RUNS="$RUNS_EXT_OUTCOME"; LADDER_IO=io_external.json; LADDER_CT=content_external.json
           fi
           python harness/report.py \
-            --manifest "${{ steps.m.outputs.manifest }}" \
-            --available ${{ steps.available.outcome }} \
-            --installs ${{ steps.installs.outcome }} \
+            --manifest "$MANIFEST" \
+            --available "$AVAILABLE_OUTCOME" \
+            --installs "$INSTALLS_OUTCOME" \
             --runs "$LADDER_RUNS" \
             --io "$LADDER_IO" \
             --content "$LADDER_CT" \
@@ -256,17 +306,19 @@ jobs:
             --readme readme_result.json \
             --log-own work/log_own.txt \
             --log-external work/log_external.txt \
-            --ref ${{ steps.m.outputs.ref }} \
-            --regions-source "${{ steps.m.outputs.regions_source }}" \
+            --ref "$TOOL_REF" \
+            --regions-source "$REGIONS_SOURCE" \
             --regions-validation regions_validation.json \
-            --supported-loci "${{ steps.m.outputs.supported_loci }}" \
-            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            --supported-loci "$SUPPORTED_LOCI" \
+            --run-url "$RUN_URL"
 
       - name: Generate PDF report
         if: always() && steps.preflight.conclusion != 'failure'
+        env:
+          MANIFEST: ${{ steps.m.outputs.manifest }}
         run: |
           python harness/generate_pdf.py \
-            --manifest "${{ steps.m.outputs.manifest }}"
+            --manifest "$MANIFEST"
 
       # Render the human-readable summary on the run's "Summary" page (no download
       # needed). $GITHUB_STEP_SUMMARY accepts Markdown.
