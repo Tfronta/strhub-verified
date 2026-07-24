@@ -1,0 +1,11 @@
+{
+  "slug": "auditprobe-v0-1",
+  "repo": "https://github.com/Tfronta/strhub-web",
+  "ref": "main",
+  "dispatchId": "sv_mrzcopot_jkfeopc5",
+  "createdAt": "2026-07-24T19:45:57.773Z",
+  "clientHash": "87f9c185d4f28bad9216ef245e9550e1",
+  "status": "approved-pending",
+  "toolName": "AuditProbe",
+  "payload": "{\"tool\":{\"name\":\"AuditProbe\",\"version\":\"v0.1\"},\"source\":{\"repo\":\"https://github.com/Tfronta/strhub-web\",\"ref\":\"main\"},\"docker\":{\"mode\":\"generated\",\"language\":\"python\",\"build_cmd\":\"pip install .\"},\"run\":{\"cmd\":\"mytool /data/in/sample.fastq --out /data/out/r.tsv\",\"timeout_minutes\":15},\"inputs\":{\"type\":\"illumina-str-fastq\"},\"outputs\":[{\"path\":\"*.tsv\",\"format\":\"tsv\",\"min_records\":1}],\"os\":[\"ubuntu-22.04\"]}"
+}
