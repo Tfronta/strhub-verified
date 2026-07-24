@@ -1,0 +1,24 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: AuditProbe
+  version: v0.1
+source:
+  repo: "https://github.com/Tfronta/strhub-web"
+  ref: main
+report:
+  slug: "auditprobe-v0-1"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "mytool /data/in/sample.fastq --out /data/out/r.tsv"
+  timeout_minutes: 15
+inputs:
+  type: "illumina-str-fastq"
+outputs:
+- path: "*.tsv"
+  format: tsv
+  min_records: 1
