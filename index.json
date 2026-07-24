@@ -1,31 +1,8 @@
 {
   "schema": "strhub-verified/index/1",
   "generated": "2026-07-24T19:47:22+00:00",
-  "count": 13,
+  "count": 12,
   "tools": [
-    {
-      "slug": "auditprobe-v0-1",
-      "name": "AuditProbe",
-      "level": "available",
-      "label": "Available",
-      "errors_reported": false,
-      "generated": "2026-07-24T19:47:21+00:00",
-      "source_repo": "https://github.com/Tfronta/strhub-web",
-      "source_ref": "main",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/30121607886",
-      "distinct_str_loci": null,
-      "distinct_snp_markers": null,
-      "total_reads": null,
-      "own_state": "na",
-      "external_state": "fail",
-      "readme_score": 2,
-      "readme_max": 5,
-      "dataset_types": [
-        "illumina-str-fastq"
-      ],
-      "report": "auditprobe-v0-1.json",
-      "page": "auditprobe-v0-1.html"
-    },
     {
       "slug": "gangstr-2-5",
       "name": "GangSTR",
