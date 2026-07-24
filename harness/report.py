@@ -175,6 +175,30 @@ def _summary_md(report: dict, slug: str) -> str:
         for note in diagnose_log.external_leg_notes(report.get("diagnostics") or {}):
             lines += ["", note]
 
+        # A failure the author can fix costs nothing to re-run. Saying so here is
+        # what keeps the paid tier from looking like the way out of a dead end.
+        fixable = diagnose_log.author_fixable_ids(report.get("diagnostics") or {})
+        if fixable and not (report.get("manual_verification") or {}).get("eligible"):
+            lines += ["", "These are corrections to the submission, not limits of "
+                          "the automated environment: fix them and re-verify at no "
+                          "cost. Each row above carries its suggested fix."]
+
+    # Manual verification (level 2), when the automated path structurally cannot
+    # run this tool. Never offered over a run that produced its expected output.
+    mv = report.get("manual_verification") or {}
+    if mv.get("eligible"):
+        lines += ["", "## Manual verification available", "",
+                  mv["reason"],
+                  "",
+                  "This is a limitation of the automated environment, not a fault "
+                  "found in the tool. STRhub can run it by hand and issue a "
+                  "certificate labelled **manual verification**: a separate, paid "
+                  "service, distinct from this automated attestation.",
+                  "",
+                  f"Eligibility reason code: `{mv['reason_code']}` "
+                  f"({mv['basis']}).",
+                  ]
+
     # README minimum-to-run checklist (advisory).
     rc = report.get("readme_check")
     if rc:
@@ -302,13 +326,37 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<p>{esc(n)}</p>"
             for n in diagnose_log.external_leg_notes(all_diags)
         )
+        mv_eligible = bool((report.get("manual_verification") or {}).get("eligible"))
+        fixable = diagnose_log.author_fixable_ids(all_diags)
+        free_note = (
+            "<p>These are corrections to the submission, not limits of the "
+            "automated environment: fix them and re-verify at no cost. Each row "
+            "above carries its suggested fix.</p>"
+            if fixable and not mv_eligible else ""
+        )
         errors_block = (
             "<h2>Errors reported during the run</h2>"
             f"<p>The tool reported errors on {n_items} item(s) during the run. "
             "This does not assess whether the results produced are correct.</p>"
             "<table><thead><tr><th>What happened</th><th>Times</th>"
             "<th>Affected</th></tr></thead>"
-            f"<tbody>{erows}</tbody></table>{notes}"
+            f"<tbody>{erows}</tbody></table>{notes}{free_note}"
+        )
+
+    # Manual verification (level 2). Only rendered when the engine itself marked
+    # the run eligible, so the offer can never appear on a run that worked.
+    manual_block = ""
+    mv = report.get("manual_verification") or {}
+    if mv.get("eligible"):
+        manual_block = (
+            "<h2>Manual verification available</h2>"
+            f"<div class='scope'><p>{esc(mv['reason'])}</p>"
+            "<p>This is a limitation of the automated environment, not a fault "
+            "found in the tool. STRhub can run it by hand and issue a certificate "
+            "labelled <b>manual verification</b>: a separate, paid service, "
+            "distinct from this automated attestation.</p>"
+            f"<p style='color:#888;font-size:.85rem'>Eligibility reason code: "
+            f"<code>{esc(mv['reason_code'])}</code> ({esc(mv['basis'])}).</p></div>"
         )
 
     # README minimum-to-run checklist (advisory).
@@ -372,6 +420,7 @@ def _summary_html(report: dict, slug: str) -> str:
 {matrix_block}
 {regions_block}
 {errors_block}
+{manual_block}
 {readme_block}
 <h2>Scope</h2>
 <p class="scope">{esc(report['scope'])}<br><br>
@@ -538,6 +587,15 @@ def main() -> int:
             diagnostics[leg] = issues
     if diagnostics:
         report["diagnostics"] = diagnostics
+
+    # Whether this run may be offered the paid, human-run verification (level 2).
+    # Emitted unconditionally — including `eligible: false` — so the web can tell a
+    # report that was checked and did not qualify from an older one that predates
+    # the check. The decision is entirely mechanical (see diagnose_log): a declared
+    # environment ceiling, or one the log proves we hit. Nobody grants it by hand.
+    report["manual_verification"] = diagnose_log.manual_eligibility(
+        diagnostics, gates, m.get("compatibility"),
+    )
 
     (reports / f"{slug}.json").write_text(json.dumps(report, indent=2))
 
