@@ -17,8 +17,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-07-01T09:47:42+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28508688098",
+  "generated": "2026-08-01T08:20:43+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/30691557482",
   "gates": {
     "available": true,
     "installs": true,
@@ -363,12 +363,13 @@
       "label": "External data",
       "available": true,
       "type": "illumina-str-fastq",
-      "dataset": "NIST mds2-2157 \u2014 Illumina STR (ForenSeq slice, donor NTD01)",
+      "dataset": "NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01)",
       "io": true,
       "content": false,
       "passed": true
     }
   ],
+  "regions": null,
   "readme_check": {
     "gate": "readme",
     "advisory": true,
@@ -398,5 +399,11 @@
     },
     "empty": false
   },
-  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation."
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  }
 }

@@ -1,11 +1,11 @@
-# STRhub Verified — STRait Razor (strait-razor-PowerSeqv2.31)
+# STRhub Verified: STRait Razor (strait-razor-PowerSeqv2.31)
 
-**Result: Runs + Plausible output** — its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+**Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-07-01T09:47:42+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/28508688098
+- Generated: 2026-08-01T08:20:43+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/30691557482
 
 ## Gates
 
@@ -27,13 +27,13 @@
 
 ## Verification matrix
 
-| Leg | Available | Result | Dataset |
-|---|---|---|---|
-| External data | yes | PASS | NIST mds2-2157 — Illumina STR (ForenSeq slice, donor NTD01) |
+| Leg | Available | Result | Errors reported | Dataset |
+|---|---|---|---|---|
+| External data | yes | PASS | — | NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01) |
 
 ## README check (advisory)
 
-Score: **5/5** — advisory only, does not affect the execution badge.
+Score: **5/5**. Advisory only; does not affect the execution badge.
 
 - PASS install
 - PASS command
