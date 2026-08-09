@@ -17,6 +17,6 @@ WORKDIR /opt/tool
 
 ENV PATH="/opt/tool:$PATH"
 
-# Execution contract: the manifest cmd runs via bash -lc.
+# Execution contract: the manifest cmd runs via bash -c.
 WORKDIR /work
-ENTRYPOINT ["/bin/bash", "-lc"]
+ENTRYPOINT ["/bin/bash", "-c"]
