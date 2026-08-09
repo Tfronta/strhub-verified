@@ -1,0 +1,161 @@
+{
+  "schema": "strhub-verified/1",
+  "tool": {
+    "name": "STRait Razor",
+    "version": "b618e93",
+    "maintainer": "Woerner AE, King JL (UNT Center for Human Identification)",
+    "contact": "https://github.com/Ahhgust/STRaitRazor/issues"
+  },
+  "source": {
+    "repo": "https://github.com/Ahhgust/STRaitRazor",
+    "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+    "ref_resolved": "b618e9345ab40f348b504083ae8de2b39abb60fa"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ]
+  },
+  "generated": "2026-08-09T22:39:25+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31339909338",
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": false,
+    "io": false,
+    "content": false
+  },
+  "level": "installs",
+  "io_detail": {
+    "gate": "io",
+    "passed": false,
+    "outputs": [
+      {
+        "path": "allsequences.txt",
+        "format": "tsv",
+        "checks": {
+          "exists": true,
+          "non_empty": false,
+          "parses_as_tsv": true,
+          "min_records": false
+        },
+        "resolved": "allsequences.txt",
+        "records": 0,
+        "passed": false
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": false,
+    "outputs": [
+      {
+        "path": "allsequences.txt",
+        "resolved": "allsequences.txt",
+        "checks": {
+          "columns_consistent": true,
+          "dna_is_acgtn": true,
+          "counts_are_integers": true,
+          "min_distinct_loci": false,
+          "expect_loci": false
+        },
+        "stats": {
+          "rows": 0,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 0,
+          "distinct_str_loci": 0,
+          "distinct_snp_markers": 0,
+          "loci": [],
+          "str_loci": [],
+          "snp_markers": [],
+          "total_reads": 0,
+          "max_sequence_depth": 0,
+          "top_loci_by_depth": []
+        },
+        "passed": false,
+        "missing_loci": [
+          "CSF1PO"
+        ]
+      }
+    ]
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-str-fastq",
+      "dataset": "NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01)",
+      "io": false,
+      "content": false,
+      "passed": false
+    }
+  ],
+  "regions": null,
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\bfastq\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "requirements"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "logs": {
+    "external": "strait-razor-b618e93.log-external.txt"
+  },
+  "diagnostics": {
+    "external": [
+      {
+        "id": "cmd_not_found",
+        "severity": "error",
+        "title": "Command not found: str8rzr",
+        "count": 1,
+        "examples": [
+          "str8rzr"
+        ],
+        "suggestion": "The binary 'str8rzr' was not found in the container. Check the Dockerfile installs it and that the PATH includes its location."
+      }
+    ]
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  }
+}

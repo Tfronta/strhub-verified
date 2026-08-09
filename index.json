@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-08-01T08:20:45+00:00",
-  "count": 12,
+  "generated": "2026-08-09T22:39:27+00:00",
+  "count": 13,
   "tools": [
     {
       "slug": "gangstr-2-5",
@@ -138,6 +138,29 @@
       ],
       "report": "strait-razor-PowerSeqv2.31.json",
       "page": "strait-razor-PowerSeqv2.31.html"
+    },
+    {
+      "slug": "strait-razor-b618e93",
+      "name": "STRait Razor",
+      "level": "installs",
+      "label": "Installs",
+      "errors_reported": true,
+      "generated": "2026-08-09T22:39:25+00:00",
+      "source_repo": "https://github.com/Ahhgust/STRaitRazor",
+      "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31339909338",
+      "distinct_str_loci": 0,
+      "distinct_snp_markers": 0,
+      "total_reads": 0,
+      "own_state": "na",
+      "external_state": "fail",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-str-fastq"
+      ],
+      "report": "strait-razor-b618e93.json",
+      "page": "strait-razor-b618e93.html"
     },
     {
       "slug": "straitrazor-v1-0-2",
