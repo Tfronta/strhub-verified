@@ -1,0 +1,33 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: STRait Razor
+  version: b618e93
+  maintainer: "Woerner AE, King JL (UNT Center for Human Identification)"
+  contact: "https://github.com/Ahhgust/STRaitRazor/issues"
+source:
+  repo: "https://github.com/Ahhgust/STRaitRazor"
+  ref: b618e9345ab40f348b504083ae8de2b39abb60fa
+report:
+  slug: "strait-razor-b618e93"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "str8rzr -c https://github.com/Ahhgust/STRaitRazor/blob/master/ForenSeqv1.27.config /data/in/sample.fastq > /data/out/allsequences.txt"
+  timeout_minutes: 15
+inputs:
+  type: "illumina-str-fastq"
+outputs:
+- path: allsequences.txt
+  format: tsv
+  min_records: 1
+  content:
+    columns: 5
+    dna_column: 2
+    count_columns: [3, 4]
+    locus_column: 0
+    min_distinct_loci: 3
+    expect_loci: [CSF1PO]
