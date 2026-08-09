@@ -5,6 +5,15 @@
   ],
   "submissions": [
     {
+      "slug": "strait-razor-b618e93",
+      "repo": "https://github.com/Ahhgust/STRaitRazor",
+      "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+      "dispatchId": "sv_msmdwcxc_iib9zx1f",
+      "createdAt": "2026-08-09T22:38:41.069Z",
+      "clientHash": "5d978ccda5e2519962c5eedb6e46e481",
+      "status": "dispatched"
+    },
+    {
       "slug": "hipstr-v0-7",
       "repo": "https://github.com/tfwillems/HipSTR",
       "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
