@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-08-09T22:41:41+00:00",
+  "generated": "2026-08-09T22:56:37+00:00",
   "count": 13,
   "tools": [
     {
@@ -142,18 +142,18 @@
     {
       "slug": "strait-razor-b618e93",
       "name": "STRait Razor",
-      "level": "installs",
-      "label": "Installs",
+      "level": "content",
+      "label": "Runs + Plausible output",
       "errors_reported": false,
-      "generated": "2026-08-09T22:41:38+00:00",
+      "generated": "2026-08-09T22:56:35+00:00",
       "source_repo": "https://github.com/Ahhgust/STRaitRazor",
       "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31340014066",
-      "distinct_str_loci": 0,
-      "distinct_snp_markers": 0,
-      "total_reads": 0,
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31340636268",
+      "distinct_str_loci": 63,
+      "distinct_snp_markers": 157,
+      "total_reads": 3967,
       "own_state": "na",
-      "external_state": "fail",
+      "external_state": "pass",
       "readme_score": 5,
       "readme_max": 5,
       "dataset_types": [
