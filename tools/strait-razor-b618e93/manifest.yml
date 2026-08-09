@@ -16,7 +16,7 @@ environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]
 run:
-  cmd: "str8rzr -c https://github.com/Ahhgust/STRaitRazor/blob/master/ForenSeqv1.27.config /data/in/sample.fastq > /data/out/allsequences.txt"
+  cmd: "./str8rzr -c https://github.com/Ahhgust/STRaitRazor/blob/master/ForenSeqv1.27.config /data/in/sample.fastq > /data/out/allsequences.txt"
   timeout_minutes: 15
 inputs:
   type: "illumina-str-fastq"
