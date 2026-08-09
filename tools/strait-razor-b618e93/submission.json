@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/submission/1",
-  "saved": "2026-08-09T22:41:03.649Z",
+  "saved": "2026-08-09T22:56:00.368Z",
   "tool": {
     "name": "STRait Razor",
     "version": "b618e93",
@@ -16,7 +16,7 @@
     "language": "python"
   },
   "run": {
-    "cmd": "./str8rzr -c https://github.com/Ahhgust/STRaitRazor/blob/master/ForenSeqv1.27.config /data/in/sample.fastq > /data/out/allsequences.txt",
+    "cmd": "/opt/tool/str8rzr -c /opt/tool/ForenSeqv1.27.config /data/in/sample.fastq > /data/out/allsequences.txt",
     "timeout_minutes": 15
   },
   "outputs": [
