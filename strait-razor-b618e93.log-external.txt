@@ -1,1 +1,1 @@
-/bin/bash: line 1: str8rzr: command not found
+/bin/bash: line 1: ./str8rzr: No such file or directory

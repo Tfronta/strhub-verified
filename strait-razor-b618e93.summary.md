@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-09T22:39:25+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31339909338
+- Generated: 2026-08-09T22:41:38+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31340014066
 
 ## Gates
 
@@ -30,22 +30,7 @@
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
 | STRhub fixture | N/A | N/A | — | — |
-| External data | yes | — | yes | NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01) |
-
-## Errors reported during the run
-
-The tool reported errors on 1 item(s) during the run.
-This does not assess whether the results produced are correct.
-
-| What happened | Times | Affected |
-|---|---|---|
-| Command not found | 1 | str8rzr |
-
-Structural errors, such as a file that will not open, an unrecognized command-line flag, or an incomplete build, do not depend on the sample: a coverage-limited slice yields fewer reads, but it cannot cause them. These are not attributable to STRhub's reference sample.
-
-We recommend the tool ship its own demo or test data in its official repository, so it can be evaluated against the author's complete data as well as STRhub's slice.
-
-These are corrections to the submission, not limits of the automated environment: fix them and re-verify at no cost. Each row above carries its suggested fix.
+| External data | yes | — | — | NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01) |
 
 ## README check (advisory)
 

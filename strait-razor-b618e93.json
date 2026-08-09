@@ -17,8 +17,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-09T22:39:25+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31339909338",
+  "generated": "2026-08-09T22:41:38+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31340014066",
   "gates": {
     "available": true,
     "installs": true,
@@ -137,20 +137,6 @@
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "logs": {
     "external": "strait-razor-b618e93.log-external.txt"
-  },
-  "diagnostics": {
-    "external": [
-      {
-        "id": "cmd_not_found",
-        "severity": "error",
-        "title": "Command not found: str8rzr",
-        "count": 1,
-        "examples": [
-          "str8rzr"
-        ],
-        "suggestion": "The binary 'str8rzr' was not found in the container. Check the Dockerfile installs it and that the PATH includes its location."
-      }
-    ]
   },
   "manual_verification": {
     "eligible": false,
