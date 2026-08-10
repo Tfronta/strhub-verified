@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-08-10T19:09:44+00:00",
+  "generated": "2026-08-10T19:23:38+00:00",
   "count": 14,
   "tools": [
     {
@@ -276,14 +276,14 @@
     {
       "slug": "strsearch-c70179b",
       "name": "STRsearch",
-      "level": "io",
-      "label": "Runs + Expected IO",
+      "level": "content",
+      "label": "Runs + Plausible output",
       "errors_reported": false,
-      "generated": "2026-08-10T19:09:41+00:00",
+      "generated": "2026-08-10T19:23:36+00:00",
       "source_repo": "https://github.com/AnJingwd/STRsearch",
       "source_ref": "c70179b3b175adc82a7314409af06900b3861d61",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31422635470",
-      "distinct_str_loci": 2,
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31423760082",
+      "distinct_str_loci": 25,
       "distinct_snp_markers": 0,
       "total_reads": 0,
       "own_state": "na",

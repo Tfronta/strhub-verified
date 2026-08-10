@@ -17,16 +17,16 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-10T19:09:41+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31422635470",
+  "generated": "2026-08-10T19:23:36+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31423760082",
   "gates": {
     "available": true,
     "installs": true,
     "runs": true,
     "io": true,
-    "content": false
+    "content": true
   },
-  "level": "io",
+  "level": "content",
   "io_detail": {
     "gate": "io",
     "passed": true,
@@ -41,7 +41,7 @@
           "min_records": true
         },
         "resolved": "multiple_alleles.txt",
-        "records": 14,
+        "records": 388,
         "passed": true
       }
     ]
@@ -49,30 +49,76 @@
   "content_detail": {
     "gate": "content",
     "applicable": true,
-    "passed": false,
+    "passed": true,
     "outputs": [
       {
         "path": "multiple_alleles.txt",
         "resolved": "multiple_alleles.txt",
         "checks": {
-          "min_distinct_loci": false,
-          "expect_loci": false
+          "min_distinct_loci": true,
+          "expect_loci": true
         },
         "stats": {
-          "rows": 15,
+          "rows": 389,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
-          "distinct_loci": 2,
-          "distinct_str_loci": 2,
+          "distinct_loci": 25,
+          "distinct_str_loci": 25,
           "distinct_snp_markers": 0,
           "loci": [
+            "CSF1PO",
+            "D10S1248",
+            "D12S391",
+            "D13S317",
+            "D16S539",
+            "D18S51",
+            "D19S433",
+            "D1S1656",
             "D21S11",
-            "STR"
+            "D22S1045",
+            "D2S1338",
+            "D2S441",
+            "D3S1358",
+            "D5S818",
+            "D6S1043",
+            "D7S820",
+            "D8S1179",
+            "FGA",
+            "PentaD",
+            "PentaE",
+            "SE33",
+            "STR",
+            "TH01",
+            "TPOX",
+            "vWA"
           ],
           "str_loci": [
+            "CSF1PO",
+            "D10S1248",
+            "D12S391",
+            "D13S317",
+            "D16S539",
+            "D18S51",
+            "D19S433",
+            "D1S1656",
             "D21S11",
-            "STR"
+            "D22S1045",
+            "D2S1338",
+            "D2S441",
+            "D3S1358",
+            "D5S818",
+            "D6S1043",
+            "D7S820",
+            "D8S1179",
+            "FGA",
+            "PentaD",
+            "PentaE",
+            "SE33",
+            "STR",
+            "TH01",
+            "TPOX",
+            "vWA"
           ],
           "snp_markers": [],
           "total_reads": 0,
@@ -83,19 +129,104 @@
               0
             ],
             [
+              "D1S1656",
+              0
+            ],
+            [
+              "TPOX",
+              0
+            ],
+            [
+              "D2S441",
+              0
+            ],
+            [
+              "D2S1338",
+              0
+            ],
+            [
+              "D3S1358",
+              0
+            ],
+            [
+              "FGA",
+              0
+            ],
+            [
+              "D5S818",
+              0
+            ],
+            [
+              "CSF1PO",
+              0
+            ],
+            [
+              "SE33",
+              0
+            ],
+            [
+              "D6S1043",
+              0
+            ],
+            [
+              "D7S820",
+              0
+            ],
+            [
+              "D8S1179",
+              0
+            ],
+            [
+              "D10S1248",
+              0
+            ],
+            [
+              "TH01",
+              0
+            ],
+            [
+              "vWA",
+              0
+            ],
+            [
+              "D12S391",
+              0
+            ],
+            [
+              "D13S317",
+              0
+            ],
+            [
+              "PentaE",
+              0
+            ],
+            [
+              "D16S539",
+              0
+            ],
+            [
+              "D18S51",
+              0
+            ],
+            [
+              "D19S433",
+              0
+            ],
+            [
               "D21S11",
+              0
+            ],
+            [
+              "PentaD",
+              0
+            ],
+            [
+              "D22S1045",
               0
             ]
           ]
         },
-        "passed": false,
-        "missing_loci": [
-          "CSF1PO",
-          "TH01",
-          "TPOX",
-          "vWA",
-          "FGA"
-        ]
+        "passed": true
       }
     ]
   },
@@ -116,7 +247,7 @@
       "type": "illumina-bam-hg38",
       "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
       "io": true,
-      "content": false,
+      "content": true,
       "passed": true
     }
   ],
