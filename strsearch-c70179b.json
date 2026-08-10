@@ -17,8 +17,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-10T18:56:02+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31421500682",
+  "generated": "2026-08-10T19:09:41+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31422635470",
   "gates": {
     "available": true,
     "installs": true,
@@ -67,23 +67,23 @@
           "distinct_str_loci": 2,
           "distinct_snp_markers": 0,
           "loci": [
-            "Sample",
-            "sample"
+            "D21S11",
+            "STR"
           ],
           "str_loci": [
-            "Sample",
-            "sample"
+            "D21S11",
+            "STR"
           ],
           "snp_markers": [],
           "total_reads": 0,
           "max_sequence_depth": 0,
           "top_loci_by_depth": [
             [
-              "Sample",
+              "STR",
               0
             ],
             [
-              "sample",
+              "D21S11",
               0
             ]
           ]

@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-10T18:56:02+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31421500682
+- Generated: 2026-08-10T19:09:41+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31422635470
 
 ## Gates
 
@@ -22,8 +22,8 @@
 - Sequence records: **15** (malformed: 0)
 - STR loci detected: **2**
 - Total reads across calls: **0** (deepest single sequence: 0)
-- STR loci: Sample, sample
-- Top markers by read depth: Sample (0), sample (0)
+- STR loci: D21S11, STR
+- Top markers by read depth: STR (0), D21S11 (0)
 
 ## Verification matrix
 
