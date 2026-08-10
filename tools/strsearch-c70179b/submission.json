@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/submission/1",
-  "saved": "2026-08-10T18:55:09.359Z",
+  "saved": "2026-08-10T19:08:36.829Z",
   "tool": {
     "name": "STRsearch",
     "version": "c70179b",
@@ -25,7 +25,7 @@
       "format": "tsv",
       "min_records": 1,
       "content": {
-        "locus_column": 0,
+        "locus_column": 2,
         "min_distinct_loci": 8,
         "expect_loci": [
           "CSF1PO",
