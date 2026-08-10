@@ -1,0 +1,90 @@
+{
+  "repo": "https://github.com/anjingwd/strsearch",
+  "entries": [
+    {
+      "ref": "c70179b3b175adc82a7314409af06900b3861d61",
+      "createdAt": "2026-08-10T20:31:42.496Z",
+      "config": {
+        "tool": {
+          "name": {
+            "value": "STRsearch",
+            "confidence": "high",
+            "evidence": "README.md Overview: \"STRsearch is an end-to-end pipeline for targeted profiling of short tandem repeats (STRs) in massively parallel sequencing data.\""
+          },
+          "maintainer": {
+            "value": "AnJingwd",
+            "confidence": "high",
+            "evidence": "README.md Installation: \"git clone https://github.com/AnJingwd/STRsearch.git\" (GitHub owner AnJingwd)"
+          },
+          "contact": {
+            "value": "Dong Wang",
+            "confidence": "high",
+            "evidence": "README.md Contact section: \"Developer:  Dong Wang\" (no email address given)"
+          }
+        },
+        "docker": {
+          "language": {
+            "value": "conda",
+            "confidence": "high",
+            "evidence": "Dockerfile: \"wget ... Miniconda3-4.3.31-Linux-x86_64.sh\" then \"RUN conda install -c bioconda samtools==1.7\"; README Prerequisite lists bwa/samtools/bedtools/seqtk plus Python modules numpy, argparse, pathlib."
+          },
+          "needs_build": {
+            "value": true,
+            "confidence": "high",
+            "evidence": "Dockerfile rewrites the config after install: \"RUN sed -i 's$YOUR PATH/bwa$/opt/conda/bin/bwa$g' /STRsearch/conf.py\" (and same for samtools, bamToFastq, seqtk, usearch); README: \"the full path of them on your local machine should be provided in conf.py file\"."
+          },
+          "build_cmd": {
+            "value": "conda install -y -c anaconda numpy && conda install -y -c bioconda bwa samtools==1.7 bedtools==2.17.0 seqtk && conda install -y -c conda-forge pathlib && chmod +x /opt/tool/pipeline.py && sed -i 's$YOUR PATH/bwa$/opt/conda/bin/bwa$g; s$YOUR PATH/samtools$/opt/conda/bin/samtools$g; s$YOUR PATH/bamToFastq$/opt/conda/bin/bamToFastq$g; s$YOUR PATH/seqtk$/opt/conda/bin/seqtk$g; s$YOUR PATH/usearch$/usr/bin/usearch$g' /opt/tool/conf.py",
+            "confidence": "low",
+            "evidence": "Adapted from Dockerfile: \"RUN conda install -c bioconda bedtools==2.17.0\", \"RUN chmod +x /STRsearch/pipeline.py\", \"RUN sed -i 's$YOUR PATH/seqtk$/opt/conda/bin/seqtk$g' /STRsearch/conf.py\"; paths changed from /STRsearch to /opt/tool, and usearch must be supplied separately."
+          },
+          "check_cmd": {
+            "value": "python3 /opt/tool/pipeline.py -h",
+            "confidence": "high",
+            "evidence": "Dockerfile: ENTRYPOINT [\"python3\",\"/STRsearch/pipeline.py\"] with CMD [\"-h\"]; README Options: \"--help  display the help message\"."
+          }
+        },
+        "run": {
+          "cmd": {
+            "value": "mkdir -p /data/out && python3 /opt/tool/pipeline.py from_bam --working_path /data/out --sample sample --sex male --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/sample_genotypes.txt --multiple_alleles /data/out/sample_multiple_alleles.txt --qc_matrix /data/out/sample_qc_matrix.txt",
+            "confidence": "high",
+            "evidence": "README Usage examples: \"python3 pipeline.py from_bam --working_path example/test_results --sample test --sex male --bam example/test_results/alignments/test.bam --ref_bed example/ref_test.bed --genotypes ... --multiple_alleles ... --qc_matrix ...\" (paths rewritten to canonical mounts)"
+          },
+          "timeout_minutes": {
+            "value": null,
+            "confidence": "low",
+            "evidence": "No runtime figures given in README.md or Dockerfile."
+          }
+        },
+        "inputs": {
+          "type": {
+            "value": "illumina-bam-hg38",
+            "confidence": "low",
+            "evidence": "README Inputs: \"FASTQ file or BAM-file from singe-end or paird-end sequencing platforms\"; from_bam sub-command takes \"--bam\" plus an STR config bed. README examples use ucsc.hg19.fasta, so the reference build differs from hg38."
+          },
+          "fixture_path": {
+            "value": "example/test_data/test.bam",
+            "confidence": "high",
+            "evidence": "File tree contains example/test_data/test.bam; README example: \"--bam example/test_results/alignments/test.bam\"."
+          }
+        },
+        "compatibility": [],
+        "caveats": [
+          "--ref_bed expects an 11-column STR configuration file (chr/start/end/period/.../flanking sequences), not a plain BED; /data/in/regions.bed must be in that format. example/ref_test.bed is the in-repo template.",
+          "Example coordinates/reference are hg19 (ucsc.hg19.fasta, ref_test.bed); a hg38-aligned BAM needs an hg38 STR config file or results will be wrong.",
+          "usearch is required but is licensed; the Dockerfile fetches it from a personal license URL (\"drive5.com/cgi-bin/upload3.py?license=...\") which will likely fail. Supply the usearch binary at /usr/bin/usearch during image build.",
+          "The from_fastq mode needs a bwa-indexed reference (.amb/.ann/.bwt/.pac/.sa); only hg38.fa + .fai are mounted, so index at build time or use from_bam.",
+          "Dockerfile assumes code lives in a ./STRsearch subdirectory (COPY ./STRsearch /STRsearch), but conf.py, pipeline.py and scripts/ are at the repository root; adjust paths for the /opt/tool checkout.",
+          "Dockerfile pins ubuntu:16.04, Miniconda 4.3.31 and old bioconda builds (samtools 1.7, bedtools 2.17.0); these pins may not resolve on a modern Ubuntu 22.04 base and may need updating.",
+          "--sex is a required argument for from_bam; the example uses male, which affects Y-locus handling."
+        ]
+      },
+      "model": "claude-opus-5",
+      "promptVersion": 1,
+      "manifestFingerprint": "e30c967679af57c81f0a6e3de02a7693"
+    }
+  ],
+  "generations": [
+    "2026-08-10T20:31:42.496Z"
+  ]
+}
