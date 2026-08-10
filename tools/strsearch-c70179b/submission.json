@@ -1,0 +1,47 @@
+{
+  "schema": "strhub-verified/submission/1",
+  "saved": "2026-08-10T18:55:09.359Z",
+  "tool": {
+    "name": "STRsearch",
+    "version": "c70179b",
+    "maintainer": "AnJingwd",
+    "contact": "https://github.com/AnJingwd/STRsearch/issues"
+  },
+  "source": {
+    "repo": "https://github.com/AnJingwd/STRsearch",
+    "ref": "c70179b3b175adc82a7314409af06900b3861d61"
+  },
+  "docker": {
+    "mode": "provided",
+    "dockerfile": "FROM ubuntu:22.04\nRUN apt-get update && apt-get install -y --no-install-recommends \\\n        git ca-certificates python3 python3-numpy \\\n        samtools bedtools seqtk \\\n    && rm -rf /var/lib/apt/lists/*\n\nARG STRSEARCH_REF=c70179b3b175adc82a7314409af06900b3861d61\nWORKDIR /opt\nRUN git clone https://github.com/AnJingwd/STRsearch.git STRsearch \\\n    && cd STRsearch && git checkout \"${STRSEARCH_REF}\"\n\n# conf.py se publica con marcadores \"YOUR PATH/...\". command -v en vez de which\n# a proposito: con set -e, un binario ausente aborta el build en vez de escribir\n# una ruta vacia que solo fallaria a mitad de la corrida.\nRUN set -eux; \\\n    S=\"$(command -v samtools)\"; B=\"$(command -v bamToFastq)\"; Q=\"$(command -v seqtk)\"; \\\n    printf '[softwares]\\nmybwa=\"bwa\"\\nmysamtools=\"%s\"\\nmybamToFastq=\"%s\"\\nmyseqtk=\"%s\"\\nmyusearch=\"usearch\"\\n' \\\n      \"$S\" \"$B\" \"$Q\" > /opt/STRsearch/conf.py; \\\n    cat /opt/STRsearch/conf.py\n\n# Import smoke test: convierte una dependencia que falte en un fallo de Installs,\n# que es donde pertenece, y no en un fallo de Runs.\nRUN python3 -c \"import sys; sys.path.insert(0,'/opt/STRsearch'); import scripts.STR_search, scripts.STR_parse\"\n\nENTRYPOINT [\"/bin/bash\", \"-lc\"]"
+  },
+  "run": {
+    "cmd": "python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt",
+    "timeout_minutes": 15
+  },
+  "outputs": [
+    {
+      "path": "multiple_alleles.txt",
+      "format": "tsv",
+      "min_records": 1,
+      "content": {
+        "locus_column": 0,
+        "min_distinct_loci": 8,
+        "expect_loci": [
+          "CSF1PO",
+          "TH01",
+          "TPOX",
+          "vWA",
+          "FGA"
+        ]
+      }
+    }
+  ],
+  "os": [
+    "ubuntu-22.04"
+  ],
+  "inputs": {
+    "type": "illumina-bam-hg38"
+  },
+  "regions_asset": true
+}
