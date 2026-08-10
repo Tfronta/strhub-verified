@@ -1,0 +1,33 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: STRsearch
+  version: c70179b
+  maintainer: AnJingwd
+  contact: "https://github.com/AnJingwd/STRsearch/issues"
+source:
+  repo: "https://github.com/AnJingwd/STRsearch"
+  ref: c70179b3b175adc82a7314409af06900b3861d61
+report:
+  slug: "strsearch-c70179b"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt"
+  timeout_minutes: 15
+inputs:
+  type: "illumina-bam-hg38"
+  regions:
+    path: "tools/strsearch-c70179b/assets/regions.bed"
+    provided_by: author
+outputs:
+- path: multiple_alleles.txt
+  format: tsv
+  min_records: 1
+  content:
+    locus_column: 0
+    min_distinct_loci: 8
+    expect_loci: [CSF1PO, TH01, TPOX, vWA, FGA]
