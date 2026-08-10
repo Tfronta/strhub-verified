@@ -32,6 +32,33 @@ _DNA_RE = re.compile(r"^[ACGTN]+$", re.IGNORECASE)
 _SNP_RE = re.compile(r"^rs\d+$", re.IGNORECASE)
 
 
+def _is_header_row(fields: list[str], count_cols: list, dna_col) -> bool:
+    """True when row 0 fails a type every data row must satisfy.
+
+    Deliberately conservative: it only fires on a column the author DECLARED as
+    numeric or as DNA, so a real data row can never be mistaken for a header. A
+    label in the locus column is indistinguishable from a locus name and is left
+    alone.
+
+    Without this, a tool whose TSV carries a header could not declare its
+    read-count columns at all: `counts_are_integers` compares invalid rows
+    against zero, and the header's own word ("Supporting reads", "Depth", ...)
+    is one. The cost of that was silent — authors dropped the field and the
+    report showed `0 reads` for a run with hundreds per locus, which reads as an
+    empty result rather than an undeclared one.
+    """
+    for c in count_cols or []:
+        if c < len(fields):
+            try:
+                int(fields[c])
+            except ValueError:
+                return True
+    if dna_col is not None and dna_col < len(fields):
+        if not _DNA_RE.match(fields[dna_col]):
+            return True
+    return False
+
+
 def _analyze(path: pathlib.Path, spec: dict) -> dict:
     """Parse a TSV-ish output and compute structural + locus statistics."""
     cols = spec.get("columns")
@@ -46,6 +73,13 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
         text = path.read_text(errors="replace")
     rows = [r for r in text.splitlines()
             if r.strip() and not r.startswith("#")]
+
+    # Drop a leading header row, but only when a declared typed column proves it
+    # is one, and never the file's only row.
+    header_dropped = False
+    if len(rows) > 1 and _is_header_row(rows[0].split("\t"), count_cols, dna_col):
+        rows = rows[1:]
+        header_dropped = True
 
     malformed = 0
     dna_bad = 0
@@ -103,6 +137,9 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
 
     return {
         "rows": len(rows),
+        # Recorded, not silent: a row we removed from the author's file is a
+        # decision the report has to own.
+        "header_row_dropped": header_dropped,
         "malformed_rows": malformed,
         "dna_invalid_rows": dna_bad,
         "count_invalid_rows": counts_bad,
