@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-10T19:23:36+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31423760082
+- Generated: 2026-08-10T20:01:29+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31426877452
 
 ## Gates
 
@@ -19,11 +19,11 @@
 
 ## Output content (plausibility evidence)
 
-- Sequence records: **389** (malformed: 0)
-- STR loci detected: **25**
-- Total reads across calls: **0** (deepest single sequence: 0)
+- Sequence records: **388** (malformed: 0)
+- STR loci detected: **24**
+- Total reads across calls: **2401** (deepest single sequence: 51)
 - STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA …
-- Top markers by read depth: STR (0), D1S1656 (0), TPOX (0), D2S441 (0), D2S1338 (0), D3S1358 (0)
+- Top markers by read depth: vWA (241), D21S11 (187), FGA (164), D19S433 (131), SE33 (125), D18S51 (123)
 
 ## Verification matrix
 

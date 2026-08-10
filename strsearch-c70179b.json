@@ -17,8 +17,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-10T19:23:36+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31423760082",
+  "generated": "2026-08-10T20:01:29+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31426877452",
   "gates": {
     "available": true,
     "installs": true,
@@ -55,16 +55,18 @@
         "path": "multiple_alleles.txt",
         "resolved": "multiple_alleles.txt",
         "checks": {
+          "counts_are_integers": true,
           "min_distinct_loci": true,
           "expect_loci": true
         },
         "stats": {
-          "rows": 389,
+          "rows": 388,
+          "header_row_dropped": true,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
-          "distinct_loci": 25,
-          "distinct_str_loci": 25,
+          "distinct_loci": 24,
+          "distinct_str_loci": 24,
           "distinct_snp_markers": 0,
           "loci": [
             "CSF1PO",
@@ -88,7 +90,6 @@
             "PentaD",
             "PentaE",
             "SE33",
-            "STR",
             "TH01",
             "TPOX",
             "vWA"
@@ -115,114 +116,109 @@
             "PentaD",
             "PentaE",
             "SE33",
-            "STR",
             "TH01",
             "TPOX",
             "vWA"
           ],
           "snp_markers": [],
-          "total_reads": 0,
-          "max_sequence_depth": 0,
+          "total_reads": 2401,
+          "max_sequence_depth": 51,
           "top_loci_by_depth": [
             [
-              "STR",
-              0
-            ],
-            [
-              "D1S1656",
-              0
-            ],
-            [
-              "TPOX",
-              0
-            ],
-            [
-              "D2S441",
-              0
-            ],
-            [
-              "D2S1338",
-              0
-            ],
-            [
-              "D3S1358",
-              0
-            ],
-            [
-              "FGA",
-              0
-            ],
-            [
-              "D5S818",
-              0
-            ],
-            [
-              "CSF1PO",
-              0
-            ],
-            [
-              "SE33",
-              0
-            ],
-            [
-              "D6S1043",
-              0
-            ],
-            [
-              "D7S820",
-              0
-            ],
-            [
-              "D8S1179",
-              0
-            ],
-            [
-              "D10S1248",
-              0
-            ],
-            [
-              "TH01",
-              0
-            ],
-            [
               "vWA",
-              0
-            ],
-            [
-              "D12S391",
-              0
-            ],
-            [
-              "D13S317",
-              0
-            ],
-            [
-              "PentaE",
-              0
-            ],
-            [
-              "D16S539",
-              0
-            ],
-            [
-              "D18S51",
-              0
-            ],
-            [
-              "D19S433",
-              0
+              241
             ],
             [
               "D21S11",
-              0
+              187
+            ],
+            [
+              "FGA",
+              164
+            ],
+            [
+              "D19S433",
+              131
+            ],
+            [
+              "SE33",
+              125
+            ],
+            [
+              "D18S51",
+              123
+            ],
+            [
+              "D16S539",
+              105
+            ],
+            [
+              "D3S1358",
+              99
             ],
             [
               "PentaD",
-              0
+              99
+            ],
+            [
+              "D7S820",
+              96
             ],
             [
               "D22S1045",
-              0
+              95
+            ],
+            [
+              "D5S818",
+              94
+            ],
+            [
+              "CSF1PO",
+              92
+            ],
+            [
+              "D6S1043",
+              92
+            ],
+            [
+              "D2S441",
+              88
+            ],
+            [
+              "D1S1656",
+              81
+            ],
+            [
+              "PentaE",
+              78
+            ],
+            [
+              "D13S317",
+              66
+            ],
+            [
+              "D10S1248",
+              65
+            ],
+            [
+              "D2S1338",
+              62
+            ],
+            [
+              "D8S1179",
+              62
+            ],
+            [
+              "TPOX",
+              55
+            ],
+            [
+              "D12S391",
+              55
+            ],
+            [
+              "TH01",
+              46
             ]
           ]
         },
