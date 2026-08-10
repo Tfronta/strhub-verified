@@ -54,6 +54,31 @@ jobs:
         name: Prepare run (manifest + dataset matrix)
         run: python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
 
+      # --- Pre-flight: the BED the manifest names must actually be here --------
+      # STRhub's fault, not the author's, and it must STOP the run.
+      #
+      # This used to pass silently. The pre-flight below is conditioned on a BED
+      # having been staged, so a missing one left it SKIPPED rather than failed;
+      # the guard on every reporting step tests for 'failure', so the whole run
+      # continued. The tool then ran with no BED, targeted nothing, failed its
+      # gates, and was published at `installs` with a diagnostics line telling the
+      # author to "check the manifest inputs" — for a file they had uploaded
+      # correctly and we had not committed. Failing here is what keeps a fault in
+      # our pipeline from being published as a finding about someone's software.
+      - id: regions_guard
+        name: "Pre-flight · Regions BED staged"
+        if: steps.m.outputs.regions_missing == '1'
+        env:
+          REGIONS_DECLARED: ${{ steps.m.outputs.regions_declared }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python harness/rejection.py \
+            --tool "$TOOL" \
+            --reason regions_not_staged \
+            --detail "$REGIONS_DECLARED" \
+            --run-url "$RUN_URL"
+          exit 1
+
       # --- Pre-flight: author-supplied regions BED must fit the slice's panel --
       # NOT a gate. STRhub's reference BAMs are slices; a BED targeting loci the
       # slice doesn't cover would make a healthy tool look broken. So an invalid
@@ -83,6 +108,44 @@ jobs:
             --supported "$SUPPORTED_LOCI" \
             --min-loci "$MIN_LOCI" \
             --json regions_validation.json
+
+      # The author's counterpart to the guard above: their BED is here, it just
+      # does not fit the slice. Same obligation — say what happened and who can
+      # fix it — but this one IS actionable by them, and free to correct.
+      - name: "Rejection notice · regions outside panel"
+        if: always() && steps.preflight.conclusion == 'failure'
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python harness/rejection.py \
+            --tool "$TOOL" \
+            --reason regions_outside_panel \
+            --validation regions_validation.json \
+            --run-url "$RUN_URL"
+
+      # A stopped run publishes no attestation, so the notice is the only thing
+      # the submitter can be shown. Commit it on main and always upload it, or
+      # the explanation dies with the runner.
+      - name: "Publish rejection notice"
+        if: always() && (steps.regions_guard.conclusion == 'failure' || steps.preflight.conclusion == 'failure')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          if [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add "state/rejections/$TOOL.json"
+            git commit -m "verified: rejection notice $TOOL" || exit 0
+            git push origin HEAD:main
+          fi
+
+      - name: "Upload rejection notice"
+        if: always() && (steps.regions_guard.conclusion == 'failure' || steps.preflight.conclusion == 'failure')
+        uses: actions/upload-artifact@v7
+        with:
+          name: rejection-${{ env.TOOL }}
+          path: state/rejections/
 
       # --- Reference genome (for BAM-based tools needing --fasta) -------------
       - name: Cache reference genome
@@ -210,7 +273,7 @@ jobs:
 
       # --- README minimum-to-run check (advisory; never gates the badge) ------
       - name: "README check (advisory)"
-        if: always() && steps.preflight.conclusion != 'failure'
+        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         continue-on-error: true
         env:
           TOOL_REPO: ${{ steps.m.outputs.repo }}
@@ -227,7 +290,7 @@ jobs:
 
       # --- Assemble the matrix (own + external legs) -------------------------
       - name: Assemble matrix
-        if: always() && steps.preflight.conclusion != 'failure'
+        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         env:
           OWN_READY: ${{ steps.m.outputs.own_ready }}
           EXT_READY: ${{ steps.m.outputs.external_ready }}
@@ -271,7 +334,7 @@ jobs:
 
       # --- Assemble attestation (always runs) --------------------------------
       - name: Build attestation + badge
-        if: always() && steps.preflight.conclusion != 'failure'
+        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
           TOOL_REF: ${{ steps.m.outputs.ref }}
@@ -313,7 +376,7 @@ jobs:
             --run-url "$RUN_URL"
 
       - name: Generate PDF report
-        if: always() && steps.preflight.conclusion != 'failure'
+        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
         run: |
@@ -323,14 +386,14 @@ jobs:
       # Render the human-readable summary on the run's "Summary" page (no download
       # needed). $GITHUB_STEP_SUMMARY accepts Markdown.
       - name: Publish summary to run page
-        if: always() && steps.preflight.conclusion != 'failure'
+        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         run: |
           for f in reports/*.summary.md; do
             [ -f "$f" ] && cat "$f" >> "$GITHUB_STEP_SUMMARY"
           done
 
       - name: Upload attestation
-        if: always() && steps.preflight.conclusion != 'failure'
+        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         uses: actions/upload-artifact@v7
         with:
           name: attestation-${{ env.TOOL }}
@@ -344,7 +407,7 @@ jobs:
       # dispatches with ref=main (VERIFIED_ENGINE_BRANCH), so real submissions are
       # unaffected; only branch-based testing is held back.
       - name: Deploy reports to GitHub Pages
-        if: always() && steps.preflight.conclusion != 'failure' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
