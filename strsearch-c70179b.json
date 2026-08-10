@@ -1,0 +1,131 @@
+{
+  "schema": "strhub-verified/1",
+  "tool": {
+    "name": "STRsearch",
+    "version": "c70179b",
+    "maintainer": "AnJingwd",
+    "contact": "https://github.com/AnJingwd/STRsearch/issues"
+  },
+  "source": {
+    "repo": "https://github.com/AnJingwd/STRsearch",
+    "ref": "c70179b3b175adc82a7314409af06900b3861d61",
+    "ref_resolved": "c70179b3b175adc82a7314409af06900b3861d61"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ]
+  },
+  "generated": "2026-08-10T14:36:19+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31398932102",
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": false,
+    "io": false,
+    "content": false
+  },
+  "level": "installs",
+  "io_detail": {
+    "gate": "io",
+    "passed": false,
+    "outputs": [
+      {
+        "path": "multiple_alleles.txt",
+        "format": "tsv",
+        "checks": {
+          "exists": false
+        },
+        "passed": false
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": false,
+    "outputs": [
+      {
+        "path": "multiple_alleles.txt",
+        "passed": false,
+        "error": "output not found"
+      }
+    ]
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-bam-hg38",
+      "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
+      "io": false,
+      "content": false,
+      "passed": false
+    }
+  ],
+  "regions": null,
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bversions?\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "logs": {
+    "external": "strsearch-c70179b.log-external.txt"
+  },
+  "diagnostics": {
+    "external": [
+      {
+        "id": "file_not_found",
+        "severity": "error",
+        "title": "File not found: /data/in/regions.bed",
+        "count": 1,
+        "examples": [
+          "/data/in/regions.bed"
+        ],
+        "suggestion": "Check that the input path '/data/in/regions.bed' matches the manifest and that the fixture was staged correctly."
+      }
+    ]
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  }
+}

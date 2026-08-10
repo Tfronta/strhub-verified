@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-08-09T22:56:37+00:00",
-  "count": 13,
+  "generated": "2026-08-10T14:36:23+00:00",
+  "count": 14,
   "tools": [
     {
       "slug": "gangstr-2-5",
@@ -272,6 +272,29 @@
       ],
       "report": "straitrazor-v3-0.json",
       "page": "straitrazor-v3-0.html"
+    },
+    {
+      "slug": "strsearch-c70179b",
+      "name": "STRsearch",
+      "level": "installs",
+      "label": "Installs",
+      "errors_reported": true,
+      "generated": "2026-08-10T14:36:19+00:00",
+      "source_repo": "https://github.com/AnJingwd/STRsearch",
+      "source_ref": "c70179b3b175adc82a7314409af06900b3861d61",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31398932102",
+      "distinct_str_loci": null,
+      "distinct_snp_markers": null,
+      "total_reads": null,
+      "own_state": "na",
+      "external_state": "fail",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-bam-hg38"
+      ],
+      "report": "strsearch-c70179b.json",
+      "page": "strsearch-c70179b.html"
     },
     {
       "slug": "strspy-v2-0-ont",

@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/opt/STRsearch/pipeline.py", line 61, in <module>
+    get_STR_fastq(args.sample,bam_file,args.working_path,args.ref_bed,args.type,args.assemble_pairs,args.num_processors)
+  File "/opt/STRsearch/scripts/get_STR_fastq.py", line 112, in main
+    bed = open(ref_bed,"r")
+FileNotFoundError: [Errno 2] No such file or directory: '/data/in/regions.bed'
