@@ -28,6 +28,7 @@ outputs:
   format: tsv
   min_records: 1
   content:
+    count_columns: [5]
     locus_column: 2
     min_distinct_loci: 8
     expect_loci: [CSF1PO, TH01, TPOX, vWA, FGA]
