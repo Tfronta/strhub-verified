@@ -17,27 +17,32 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-10T14:36:19+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31398932102",
+  "generated": "2026-08-10T18:56:02+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31421500682",
   "gates": {
     "available": true,
     "installs": true,
-    "runs": false,
-    "io": false,
+    "runs": true,
+    "io": true,
     "content": false
   },
-  "level": "installs",
+  "level": "io",
   "io_detail": {
     "gate": "io",
-    "passed": false,
+    "passed": true,
     "outputs": [
       {
         "path": "multiple_alleles.txt",
         "format": "tsv",
         "checks": {
-          "exists": false
+          "exists": true,
+          "non_empty": true,
+          "parses_as_tsv": true,
+          "min_records": true
         },
-        "passed": false
+        "resolved": "multiple_alleles.txt",
+        "records": 14,
+        "passed": true
       }
     ]
   },
@@ -48,8 +53,49 @@
     "outputs": [
       {
         "path": "multiple_alleles.txt",
+        "resolved": "multiple_alleles.txt",
+        "checks": {
+          "min_distinct_loci": false,
+          "expect_loci": false
+        },
+        "stats": {
+          "rows": 15,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 2,
+          "distinct_str_loci": 2,
+          "distinct_snp_markers": 0,
+          "loci": [
+            "Sample",
+            "sample"
+          ],
+          "str_loci": [
+            "Sample",
+            "sample"
+          ],
+          "snp_markers": [],
+          "total_reads": 0,
+          "max_sequence_depth": 0,
+          "top_loci_by_depth": [
+            [
+              "Sample",
+              0
+            ],
+            [
+              "sample",
+              0
+            ]
+          ]
+        },
         "passed": false,
-        "error": "output not found"
+        "missing_loci": [
+          "CSF1PO",
+          "TH01",
+          "TPOX",
+          "vWA",
+          "FGA"
+        ]
       }
     ]
   },
@@ -69,12 +115,16 @@
       "available": true,
       "type": "illumina-bam-hg38",
       "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
-      "io": false,
+      "io": true,
       "content": false,
-      "passed": false
+      "passed": true
     }
   ],
-  "regions": null,
+  "regions": {
+    "source": "tool",
+    "covered_loci": 24,
+    "panel_size": 24
+  },
   "readme_check": {
     "gate": "readme",
     "advisory": true,
@@ -107,20 +157,6 @@
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "logs": {
     "external": "strsearch-c70179b.log-external.txt"
-  },
-  "diagnostics": {
-    "external": [
-      {
-        "id": "file_not_found",
-        "severity": "error",
-        "title": "File not found: /data/in/regions.bed",
-        "count": 1,
-        "examples": [
-          "/data/in/regions.bed"
-        ],
-        "suggestion": "Check that the input path '/data/in/regions.bed' matches the manifest and that the fixture was staged correctly."
-      }
-    ]
   },
   "manual_verification": {
     "eligible": false,

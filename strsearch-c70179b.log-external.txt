@@ -1,6 +1,53 @@
-Traceback (most recent call last):
-  File "/opt/STRsearch/pipeline.py", line 61, in <module>
-    get_STR_fastq(args.sample,bam_file,args.working_path,args.ref_bed,args.type,args.assemble_pairs,args.num_processors)
-  File "/opt/STRsearch/scripts/get_STR_fastq.py", line 112, in main
-    bed = open(ref_bed,"r")
-FileNotFoundError: [Errno 2] No such file or directory: '/data/in/regions.bed'
+D2S441: finished getting STR fq from bam!
+D5S818: finished getting STR fq from bam!
+SE33: finished getting STR fq from bam!
+D10S1248: finished getting STR fq from bam!
+D13S317: finished getting STR fq from bam!
+D19S433: finished getting STR fq from bam!
+D1S1656: finished getting STR fq from bam!
+FGA: finished getting STR fq from bam!
+D7S820: finished getting STR fq from bam!
+D12S391: finished getting STR fq from bam!
+D16S539: finished getting STR fq from bam!
+PentaD: finished getting STR fq from bam!
+TPOX: finished getting STR fq from bam!
+CSF1PO: finished getting STR fq from bam!
+D6S1043: finished getting STR fq from bam!
+TH01: finished getting STR fq from bam!
+PentaE: finished getting STR fq from bam!
+D21S11: finished getting STR fq from bam!
+D2S1338: finished getting STR fq from bam!
+D3S1358: finished getting STR fq from bam!
+D8S1179: finished getting STR fq from bam!
+vWA: finished getting STR fq from bam!
+D18S51: finished getting STR fq from bam!
+D22S1045: finished getting STR fq from bam!
+Finished getting STR fq from bam for total 24 markers!
+D1S1656 has been decoded completely!
+TPOX has been decoded completely!
+D2S441 has been decoded completely!
+D2S1338 has been decoded completely!
+D3S1358 has been decoded completely!
+FGA has been decoded completely!
+D5S818 has been decoded completely!
+CSF1PO has been decoded completely!
+SE33 has been decoded completely!
+D6S1043 has been decoded completely!
+D7S820 has been decoded completely!
+D8S1179 has been decoded completely!
+D10S1248 has been decoded completely!
+TH01 has been decoded completely!
+vWA has been decoded completely!
+D12S391 has been decoded completely!
+D13S317 has been decoded completely!
+PentaE has been decoded completely!
+D16S539 has been decoded completely!
+D18S51 has been decoded completely!
+D19S433 has been decoded completely!
+PentaD has been decoded completely!
+D22S1045 has been decoded completely!
+/opt/STRsearch/scripts/STR_search.py:27: FutureWarning: Possible nested set at position 1
+  repetitive_motifs = [1 if re.findall(r'[[](.*?)[]]',i) else 0 for i in STR_Repeat_Motif.split(" ")]
+D21S11 has been decoded completely! 
+Finished searching for total 24 STR locus
+STR parse finished !
