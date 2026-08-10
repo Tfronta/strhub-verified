@@ -271,6 +271,14 @@ def main() -> int:
     # Regions BED (coordinate-based tools). Precedence over the asset above.
     regions_source = stage_regions(regions, legs)
 
+    # The manifest names a regions BED and nothing staged one: the path it points
+    # at does not exist in this repo. That is always a STRhub-side fault — the
+    # author's BED reached us (the submit endpoint validated it against the panel
+    # before accepting) and we failed to commit it. It must stop the run rather
+    # than let it continue, because a coordinate-based tool with no BED targets
+    # nothing, fails its gates, and earns a badge that reads as its own defect.
+    regions_missing = 1 if regions is not None and regions_source == "none" else 0
+
     # Supported-loci panel for this input type — the validator's reference. Emitted
     # so the workflow can pre-flight the author's BED before any gate runs.
     supported_loci = ""
@@ -306,6 +314,8 @@ def main() -> int:
         f"ref_genome_filename={ref_genome_filename}",
         f"fixture_source={fixture_source}",
         f"regions_source={regions_source}",
+        f"regions_missing={regions_missing}",
+        f"regions_declared={regions['path'] if isinstance(regions, dict) and 'path' in regions else (regions or '')}",
         f"supported_loci={supported_loci}",
         f"min_loci={min_loci}",
     ]
