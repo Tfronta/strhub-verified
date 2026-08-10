@@ -514,6 +514,20 @@ def manual_eligibility(diagnostics: dict[str, list[dict]],
     return none
 
 
+def _is_strhub_staged(path: str) -> bool:
+    """True for the inputs STRhub puts in the container, not the author.
+
+    `/data/in` and `/data/ref` are populated by harness/prepare.py under names the
+    harness chooses (input.bam, sample.fastq, regions.bed, the reference genome).
+    The author names none of them, so when one is missing the fault is ours.
+    """
+    p = path.strip().strip("'\"")
+    return p.startswith("/data/ref/") or p in {
+        "/data/in/regions.bed", "/data/in/input.bam", "/data/in/input.bam.bai",
+        "/data/in/sample.fastq",
+    }
+
+
 def author_fixable_ids(diagnostics: dict[str, list[dict]]) -> list[str]:
     """Error classes in this run the author can correct themselves, for free.
 
@@ -521,9 +535,23 @@ def author_fixable_ids(diagnostics: dict[str, list[dict]]) -> list[str]:
     honest answer is "fix the submission and re-run at no cost", and the report
     should say so plainly rather than leaving a dead end that reads like a reason
     to pay for help.
+
+    A missing file is the one class that can belong to either side. Everything
+    under `/data/in` and `/data/ref` is staged by us under names we choose, so a
+    file error there is OURS and must not be dressed as a correction the author
+    can make — telling someone to fix a path they never wrote sends them to edit
+    something that was already right.
     """
-    hit = {issue["id"] for issues in diagnostics.values() for issue in issues
-           if issue.get("severity") == "error"}
+    hit: set[str] = set()
+    for issues in diagnostics.values():
+        for issue in issues:
+            if issue.get("severity") != "error":
+                continue
+            examples = issue.get("examples") or []
+            if (issue["id"] in {"file_not_found", "cannot_open"}
+                    and examples and all(_is_strhub_staged(e) for e in examples)):
+                continue
+            hit.add(issue["id"])
     return sorted(AUTHOR_FIXABLE & hit)
 
 
