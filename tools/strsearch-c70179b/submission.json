@@ -1,11 +1,11 @@
 {
   "schema": "strhub-verified/submission/1",
-  "saved": "2026-08-11T12:33:01.147Z",
+  "saved": "2026-08-11T14:03:42.978Z",
   "tool": {
     "name": "STRsearch",
     "version": "c70179b",
     "maintainer": "AnJingwd",
-    "contact": "https://github.com/AnJingwd/STRsearch/issues"
+    "contact": "Dong Wang"
   },
   "source": {
     "repo": "https://github.com/AnJingwd/STRsearch",
@@ -13,7 +13,7 @@
   },
   "docker": {
     "mode": "generated",
-    "language": "python",
+    "language": "conda",
     "build_cmd": "conda install -y -c anaconda numpy && conda install -y -c bioconda bwa samtools==1.7 bedtools==2.17.0 seqtk && conda install -y -c conda-forge pathlib && chmod +x /opt/tool/pipeline.py && sed -i 's$YOUR PATH/bwa$/opt/conda/bin/bwa$g; s$YOUR PATH/samtools$/opt/conda/bin/samtools$g; s$YOUR PATH/bamToFastq$/opt/conda/bin/bamToFastq$g; s$YOUR PATH/seqtk$/opt/conda/bin/seqtk$g; s$YOUR PATH/usearch$/usr/bin/usearch$g' /opt/tool/conf.py",
     "check_cmd": "python3 /opt/tool/pipeline.py -h"
   },
