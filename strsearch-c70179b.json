@@ -17,224 +17,51 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-10T20:01:29+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31426877452",
+  "generated": "2026-08-11T12:39:10+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31491770503",
   "gates": {
     "available": true,
-    "installs": true,
-    "runs": true,
-    "io": true,
-    "content": true
+    "installs": false,
+    "runs": false,
+    "io": false,
+    "content": false
   },
-  "level": "content",
+  "level": "available",
   "io_detail": {
     "gate": "io",
-    "passed": true,
+    "passed": false,
     "outputs": [
       {
-        "path": "multiple_alleles.txt",
+        "path": "sample_genotypes.txt",
         "format": "tsv",
         "checks": {
-          "exists": true,
-          "non_empty": true,
-          "parses_as_tsv": true,
-          "min_records": true
+          "exists": false
         },
-        "resolved": "multiple_alleles.txt",
-        "records": 388,
-        "passed": true
+        "passed": false
       }
     ]
   },
   "content_detail": {
     "gate": "content",
     "applicable": true,
-    "passed": true,
+    "passed": false,
     "outputs": [
       {
-        "path": "multiple_alleles.txt",
-        "resolved": "multiple_alleles.txt",
-        "checks": {
-          "counts_are_integers": true,
-          "min_distinct_loci": true,
-          "expect_loci": true
-        },
-        "stats": {
-          "rows": 388,
-          "header_row_dropped": true,
-          "malformed_rows": 0,
-          "dna_invalid_rows": 0,
-          "count_invalid_rows": 0,
-          "distinct_loci": 24,
-          "distinct_str_loci": 24,
-          "distinct_snp_markers": 0,
-          "loci": [
-            "CSF1PO",
-            "D10S1248",
-            "D12S391",
-            "D13S317",
-            "D16S539",
-            "D18S51",
-            "D19S433",
-            "D1S1656",
-            "D21S11",
-            "D22S1045",
-            "D2S1338",
-            "D2S441",
-            "D3S1358",
-            "D5S818",
-            "D6S1043",
-            "D7S820",
-            "D8S1179",
-            "FGA",
-            "PentaD",
-            "PentaE",
-            "SE33",
-            "TH01",
-            "TPOX",
-            "vWA"
-          ],
-          "str_loci": [
-            "CSF1PO",
-            "D10S1248",
-            "D12S391",
-            "D13S317",
-            "D16S539",
-            "D18S51",
-            "D19S433",
-            "D1S1656",
-            "D21S11",
-            "D22S1045",
-            "D2S1338",
-            "D2S441",
-            "D3S1358",
-            "D5S818",
-            "D6S1043",
-            "D7S820",
-            "D8S1179",
-            "FGA",
-            "PentaD",
-            "PentaE",
-            "SE33",
-            "TH01",
-            "TPOX",
-            "vWA"
-          ],
-          "snp_markers": [],
-          "total_reads": 2401,
-          "max_sequence_depth": 51,
-          "top_loci_by_depth": [
-            [
-              "vWA",
-              241
-            ],
-            [
-              "D21S11",
-              187
-            ],
-            [
-              "FGA",
-              164
-            ],
-            [
-              "D19S433",
-              131
-            ],
-            [
-              "SE33",
-              125
-            ],
-            [
-              "D18S51",
-              123
-            ],
-            [
-              "D16S539",
-              105
-            ],
-            [
-              "D3S1358",
-              99
-            ],
-            [
-              "PentaD",
-              99
-            ],
-            [
-              "D7S820",
-              96
-            ],
-            [
-              "D22S1045",
-              95
-            ],
-            [
-              "D5S818",
-              94
-            ],
-            [
-              "CSF1PO",
-              92
-            ],
-            [
-              "D6S1043",
-              92
-            ],
-            [
-              "D2S441",
-              88
-            ],
-            [
-              "D1S1656",
-              81
-            ],
-            [
-              "PentaE",
-              78
-            ],
-            [
-              "D13S317",
-              66
-            ],
-            [
-              "D10S1248",
-              65
-            ],
-            [
-              "D2S1338",
-              62
-            ],
-            [
-              "D8S1179",
-              62
-            ],
-            [
-              "TPOX",
-              55
-            ],
-            [
-              "D12S391",
-              55
-            ],
-            [
-              "TH01",
-              46
-            ]
-          ]
-        },
-        "passed": true
+        "path": "sample_genotypes.txt",
+        "passed": false,
+        "error": "output not found"
       }
     ]
   },
   "datasets": [
     {
       "leg": "own",
-      "label": "STRhub fixture",
-      "available": false,
+      "label": "Your data",
+      "available": true,
       "io": false,
       "content": false,
       "passed": false,
-      "fixture_source": "none"
+      "fixture_source": "tool"
     },
     {
       "leg": "external",
@@ -242,9 +69,9 @@
       "available": true,
       "type": "illumina-bam-hg38",
       "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
-      "io": true,
-      "content": true,
-      "passed": true
+      "io": false,
+      "content": false,
+      "passed": false
     }
   ],
   "regions": {
@@ -283,6 +110,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "logs": {
+    "own": "strsearch-c70179b.log-own.txt",
     "external": "strsearch-c70179b.log-external.txt"
   },
   "manual_verification": {

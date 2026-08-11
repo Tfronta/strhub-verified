@@ -1,36 +1,28 @@
 # STRhub Verified: STRsearch (strsearch-c70179b)
 
-**Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+**Result: Available.** the pinned public source exists.
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-10T20:01:29+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31426877452
+- Generated: 2026-08-11T12:39:10+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31491770503
 
 ## Gates
 
 | Gate | Status | Meaning |
 |---|---|---|
 | Available | PASS | the pinned public source exists |
-| Installs | PASS | the environment builds from source |
-| Runs | PASS | it executes end-to-end without crashing |
-| Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
-| Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
-
-## Output content (plausibility evidence)
-
-- Sequence records: **388** (malformed: 0)
-- STR loci detected: **24**
-- Total reads across calls: **2401** (deepest single sequence: 51)
-- STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA …
-- Top markers by read depth: vWA (241), D21S11 (187), FGA (164), D19S433 (131), SE33 (125), D18S51 (123)
+| Installs | — | the environment builds from source |
+| Runs | — | it executes end-to-end without crashing |
+| Runs + Expected IO | — | it produces a non-empty file in the declared format |
+| Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
 
 ## Verification matrix
 
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
-| STRhub fixture | N/A | N/A | — | — |
-| External data | yes | PASS | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
+| Your data | yes | — | — | — |
+| External data | yes | — | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
 
 ## Regions
 
