@@ -33,6 +33,19 @@ permissions:
   contents: write   # deploy step pushes reports to the gh-pages branch
 
 jobs:
+  # Seconds, and it gates the thing most likely to break quietly: the BED parser
+  # is mirrored in the web form, and a divergence between the two is only ever
+  # discovered by an author whose run aborts in pre-flight with no report.
+  harness-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Shared BED cases
+        run: python harness/test_validate_bed.py
+
   verify:
     runs-on: ubuntu-22.04   # free, unlimited on public repos
     env:
