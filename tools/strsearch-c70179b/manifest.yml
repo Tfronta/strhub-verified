@@ -6,7 +6,7 @@ tool:
   name: STRsearch
   version: c70179b
   maintainer: AnJingwd
-  contact: "https://github.com/AnJingwd/STRsearch/issues"
+  contact: Dong Wang
 source:
   repo: "https://github.com/AnJingwd/STRsearch"
   ref: c70179b3b175adc82a7314409af06900b3861d61
