@@ -16,19 +16,23 @@ environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]
 run:
-  cmd: "python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt"
+  cmd: "mkdir -p /data/out && python3 /opt/tool/pipeline.py from_bam --working_path /data/out --sample sample --sex male --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/sample_genotypes.txt --multiple_alleles /data/out/sample_multiple_alleles.txt --qc_matrix /data/out/sample_qc_matrix.txt"
   timeout_minutes: 15
 inputs:
   type: "illumina-bam-hg38"
+  fixture:
+    repo: "https://github.com/AnJingwd/STRsearch"
+    ref: c70179b3b175adc82a7314409af06900b3861d61
+    path: example/test_data/test.bam
   regions:
     path: "tools/strsearch-c70179b/assets/regions.bed"
     provided_by: author
 outputs:
-- path: multiple_alleles.txt
+- path: sample_genotypes.txt
   format: tsv
   min_records: 1
   content:
-    count_columns: [5]
-    locus_column: 2
-    min_distinct_loci: 8
-    expect_loci: [CSF1PO, TH01, TPOX, vWA, FGA]
+    columns: 9
+    locus_column: 0
+    min_distinct_loci: 2
+    expect_loci: [CSF1PO, FGA]
