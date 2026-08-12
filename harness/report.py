@@ -213,6 +213,20 @@ def _summary_md(report: dict, slug: str) -> str:
         for name, c in (rc.get("checks") or {}).items():
             lines.append(f"- {'PASS' if c.get('present') else '—'} {name}")
 
+    # Notes from reading the repository. Last before the scope statement, and
+    # labelled for what they are: nothing here was established by running the
+    # tool, so it must not be read alongside the gates as though it had been.
+    cav = report.get("caveats") or {}
+    if cav.get("items"):
+        origin = cav.get("model") or cav.get("source", "automated reading")
+        lines += ["", "## Notes from reading the repository", "",
+                  "Recorded automatically when this run was configured, by "
+                  f"`{origin}` reading the tool's public files. **Not verified by "
+                  "execution**, and not part of the gates above. Useful for what to "
+                  "check by hand.", ""]
+        for item in cav["items"]:
+            lines.append(f"- {item}")
+
     lines += [
         "",
         "## Scope (read this)",
@@ -560,6 +574,14 @@ def main() -> int:
         "readme_check": readme_check,
         "scope": SCOPE,
     }
+
+    # Notes taken while reading the repository, carried straight from the manifest
+    # and kept OUT of "gates" and "diagnostics" on purpose. Those two are what
+    # running the tool established; this is what somebody read beforehand, and a
+    # reader has to be able to tell the difference. The provenance travels with
+    # the text so they can weigh it.
+    if m.get("caveats", {}).get("items"):
+        report["caveats"] = m["caveats"]
 
     # Prefer an explicit per-variant slug from the manifest (e.g. so the PowerSeq
     # and ForenSeq variants of the same tool get distinct badges); otherwise fall
