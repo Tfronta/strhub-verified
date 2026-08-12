@@ -73,16 +73,20 @@ GATE_DISPLAY = [
     ("installs",  "Installs",                    "The environment builds from source"),
     ("runs",      "Runs",                        "Executes end-to-end without crashing"),
     ("io",        "Expected IO",                 "Produces a non-empty file in the declared format"),
-    ("content",   "Output Structure Validation", "Output structure matches expected genotype-bearing format"),
+    ("content",   "Plausible Output",            "Output structure matches expected genotype-bearing format"),
 ]
 
+# Must match LABELS in harness/report.py, which is what reaches badge.json,
+# index.json and the site. The PDF said "Runs + Output Structure Validation"
+# where everything else said "Runs + Plausible output", so the same result had
+# two names depending on which document a reviewer happened to be holding.
 LEVEL_LABEL = {
-    "none":      "Not verified",
+    "none":      "Not run",
     "available": "Available",
     "installs":  "Installs",
     "runs":      "Runs",
     "io":        "Runs + Expected IO",
-    "content":   "Runs + Output Structure Validation",
+    "content":   "Runs + Plausible output",
 }
 
 PANEL_MAP = {
@@ -132,17 +136,21 @@ def link(url, text=None, color="#00909c"):
     label = text or url
     return f'<a href="{url}" color="{color}">{label}</a>'
 
+# keepWithNext drags the heading onto the next page rather than leaving it
+# stranded at the foot of the previous one. Section 5 landed as the last line of
+# page 3 with its content on page 4, which reads as a printing fault in a
+# document whose whole purpose is to be attached to a review.
 def section_num(num, title):
     return Paragraph(
         f'<font name="Helvetica-Bold">{num}.  {title}</font>',
         S("sn", fontSize=10.5, textColor=TEAL, leading=15,
-          spaceAfter=6, spaceBefore=10))
+          spaceAfter=6, spaceBefore=10, keepWithNext=1))
 
 def section_title(title):
     return Paragraph(
         f'<font name="Helvetica-Bold">{title}</font>',
         S("st", fontSize=10.5, textColor=TEAL, leading=15,
-          spaceAfter=6, spaceBefore=10))
+          spaceAfter=6, spaceBefore=10, keepWithNext=1))
 
 def keep_section(title_el, *content_els):
     return KeepTogether([title_el, *content_els])
@@ -450,10 +458,12 @@ def build_body(cfg):
 
     # §3 Run command
     els.append(section_num("3", "Exact Run Command"))
+    # One claim only. The second sentence used to invite the reader to swap the
+    # input paths for their own, which left it ambiguous whether what follows is
+    # what ran or a template to adapt. It is what ran, verbatim, and that is the
+    # whole point of the section.
     els.append(Paragraph(
-        "The following command was executed verbatim in the CI environment. "
-        "Replacing the input paths under /data/in with your own inputs "
-        "reproduces the verified run.",
+        "This is the command that was executed, verbatim, in the CI environment.",
         ST["body"]))
     els.append(vspace(3))
     cmd_content = [Paragraph(line, ST["mono"]) for line in cfg.get("cmd_lines", ["# Command not available"])]
@@ -496,6 +506,23 @@ def build_body(cfg):
         ("LINEABOVE",     (0,-1),(-1,-1), 0.3, BORDER),
     ]))
     els.append(gt)
+
+    # A run that stopped short says nothing here unless we say it. The ladder is
+    # the first thing a reviewer reads and, unqualified, it reads as a verdict on
+    # the software. It is not one: it records how far this attempt got. Kept to
+    # one paragraph inside this section on purpose — the report already carries
+    # Out of Scope, Limitations, Scope and Disclaimers, and Conclusion, and
+    # another standalone section would bury the point it is making.
+    if not all(gates_dict.get(key, False) for key, _, _ in GATE_DISPLAY):
+        els.append(boxed([Paragraph(
+            "Stopping at a step is not a finding that the software is faulty. It "
+            "records how far this particular attempt got. Software can stop early "
+            "because a dependency it names is no longer available, because it "
+            "expects input arranged differently from the reference sample, or "
+            "because the automated environment cannot supply something it needs, "
+            "such as commercially licensed components. The messages on screen when "
+            "it stopped are reported below.",
+            ST["body"])]))
 
     # §5 Out of Scope
     els.append(section_num("5", "Out of Scope"))
@@ -556,6 +583,17 @@ def build_body(cfg):
     if panel_size:
         intro += (f" That dataset is a slice around {panel_size} forensic STR loci, "
                   "not a whole genome: it carries reads only at the loci listed below.")
+    # Last, so the sentence above stays next to the dataset it refers to. The
+    # recommendation leads with what a test file gives the tool's own users,
+    # because that is the larger reason and the one an author acts on; being
+    # easier to verify is the smaller, second benefit and reads badly first.
+    intro += (" A small test file in the repository lets a new user run the tool "
+              "on their first day and see it working before trusting it with their "
+              "own data, and it lets a verification run against the author's own "
+              "sample as well as this one. Publishing the output that file should "
+              "produce helps just as much: it shows what the results are meant to "
+              "look like, which is what a reader needs to tell a correct run from "
+              "one that merely finished.")
     els.append(Paragraph(intro, ST["body"]))
     els.append(vspace(3))
 
@@ -580,7 +618,8 @@ def build_body(cfg):
         covered, total = rg.get("covered_loci"), rg.get("panel_size")
         detail = (f" (covers {covered} of {total} supported loci)"
                   if covered and total else "")
-        ds_rows.append(("Regions BED", f"Provided by the tool author{detail}"))
+        # "submitter", not "tool author" — see the note in report.py::_regions_note.
+        ds_rows.append(("Regions BED", f"Provided by the submitter{detail}"))
     elif rg.get("source") == "strhub":
         ds_rows.append(("Regions BED", "Provided by STRhub"))
     tdata = [[Paragraph(k, ST["meta_label"]),
@@ -859,14 +898,48 @@ def build_appendix(cfg):
     return els
 
 # ── Config loader ─────────────────────────────────────────────────────────────
+_CHAIN_OPS = {"&&", "||", "|", ";"}
+
+
 def _format_cmd(raw_cmd: str) -> list[str]:
+    """Lay the command out one flag per line, with its value beside it.
+
+    Splitting on whitespace put every token on its own line, so `--type` and
+    `paired` landed on separate rows. That roughly doubled the height of the one
+    block in the report meant to be copied and re-run, and the extra height was
+    pushing later sections onto pages of their own.
+    """
     parts = raw_cmd.split()
     if not parts:
         return ["# (no command)"]
-    lines = [f"$ {parts[0]} \\"]
-    for i, p in enumerate(parts[1:], 1):
-        suffix = "" if i == len(parts) - 1 else " \\"
-        lines.append(f"    {p}{suffix}")
+
+    groups: list[list[str]] = [[parts[0]]]
+    for tok in parts[1:]:
+        current = groups[-1]
+        if not current:                 # line just opened by a chain operator
+            current.append(tok)
+        elif tok in _CHAIN_OPS:         # the operator closes its line
+            current.append(tok)
+            groups.append([])
+        elif tok.startswith("-"):       # a flag starts a line and keeps its value
+            groups.append([tok])
+        elif current[0].startswith("-") and len(current) >= 2:
+            # The flag on this line already has its value, so this token is the
+            # next thing in its own right (a subcommand such as `from_bam`), not
+            # a second value.
+            groups.append([tok])
+        else:
+            current.append(tok)
+    groups = [g for g in groups if g]
+
+    lines = []
+    for i, group in enumerate(groups):
+        text = " ".join(group)
+        text = f"$ {text}" if i == 0 else f"    {text}"
+        # A line already ended by && or | continues on its own.
+        if i != len(groups) - 1 and group[-1] not in _CHAIN_OPS:
+            text += " \\"
+        lines.append(text)
     return lines
 
 
