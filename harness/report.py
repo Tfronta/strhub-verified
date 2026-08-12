@@ -213,6 +213,34 @@ def _summary_md(report: dict, slug: str) -> str:
         for name, c in (rc.get("checks") or {}).items():
             lines.append(f"- {'PASS' if c.get('present') else '—'} {name}")
 
+    # Notes from reading the repository. Last before the scope statement, and
+    # labelled for what they are: nothing here was established by running the
+    # tool, so it must not be read alongside the gates as though it had been.
+    # Before the notes and the scope: what the reader needs to hold the ladder
+    # against. Phrased as requirements, not as a shortfall — every tool needs
+    # something, and the useful question is what.
+    needed = report.get("needed_beyond_repo") or []
+    if needed:
+        lines += ["", "## What this run needed beyond the repository", "",
+                  "The result above describes a run configured as follows. Anyone "
+                  "repeating it needs the same things.", ""]
+        for item in needed:
+            lines.append(f"- {item}")
+
+    cav = report.get("caveats") or {}
+    if cav.get("items"):
+        # The model id stays in the JSON for auditing and out of the prose. A
+        # reviewer reading a forensic report has no use for it, and naming it here
+        # invites the impression that the report was written by one, when the gates
+        # above were measured by running the tool. What matters to the reader is
+        # that this was read rather than executed, which the sentence already says.
+        lines += ["", "## Notes from reading the repository", "",
+                  "Recorded automatically from the tool's public files when this run "
+                  "was configured. **Not verified by execution**, and not part of the "
+                  "gates above. Useful for what to check by hand.", ""]
+        for item in cav["items"]:
+            lines.append(f"- {item}")
+
     lines += [
         "",
         "## Scope (read this)",
@@ -560,6 +588,48 @@ def main() -> int:
         "readme_check": readme_check,
         "scope": SCOPE,
     }
+
+    # What the run needed that the repository does not provide.
+    #
+    # A green ladder reads as a property of the software, and quietly folds in
+    # whatever it took to get there. For STRsearch that was an 11-column hg38
+    # configuration file with flanking sequences, built by hand over half a day,
+    # against a repository whose only example is hg19 and covers five markers.
+    # None of that appeared anywhere, so the badge claimed more than the run
+    # measured. Stating the requirements is stronger than hedging the badge: each
+    # line is a checkable fact, and for a reader deciding whether to adopt the
+    # tool it is the practical question — what will this cost me to run.
+    needed = []
+    if (regions or {}).get("source") == "tool":
+        needed.append(
+            "A regions configuration file, supplied with the submission rather "
+            "than taken from the repository."
+        )
+    if not any(d.get("leg") == "own" and d.get("available") for d in (datasets or [])):
+        needed.append(
+            "Test data: the repository ships none, so a public reference sample "
+            "was used instead."
+        )
+    env_source = (m.get("environment") or {}).get("source")
+    if env_source == "generated":
+        needed.append(
+            "A container environment, built from the tool's declared install "
+            "steps rather than from a recipe the repository ships."
+        )
+    elif env_source == "submitted":
+        needed.append(
+            "A container environment, supplied with the submission."
+        )
+    if needed:
+        report["needed_beyond_repo"] = needed
+
+    # Notes taken while reading the repository, carried straight from the manifest
+    # and kept OUT of "gates" and "diagnostics" on purpose. Those two are what
+    # running the tool established; this is what somebody read beforehand, and a
+    # reader has to be able to tell the difference. The provenance travels with
+    # the text so they can weigh it.
+    if m.get("caveats", {}).get("items"):
+        report["caveats"] = m["caveats"]
 
     # Prefer an explicit per-variant slug from the manifest (e.g. so the PowerSeq
     # and ForenSeq variants of the same tool get distinct badges); otherwise fall
