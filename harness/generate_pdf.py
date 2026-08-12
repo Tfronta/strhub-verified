@@ -723,6 +723,23 @@ def build_body(cfg):
             els.append(vspace(3))
             els.append(Paragraph(note, ST["body"]))
 
+    # What the run needed beyond the repository. Immediately before the notes and
+    # after everything the run established, so a reader meets it holding the
+    # ladder: the result above describes a run configured this way, and a green
+    # ladder should not quietly absorb the work it took to get there.
+    needed = cfg.get("needed_beyond_repo") or []
+    if needed:
+        need_els = [Paragraph(
+            "The result above describes a run configured as follows. Anyone "
+            "repeating it needs the same things.", ST["body"]), vspace(2)]
+        need_els += [Paragraph(
+            f'<font color="#9ca3af">–</font>  {item}',
+            S("nb", fontSize=8.5, textColor=GRAY, leading=14,
+              leftIndent=10, spaceAfter=1)) for item in needed]
+        els.append(section_num(str(sec), "What This Run Needed Beyond the Repository"))
+        sec += 1
+        els.append(boxed(need_els))
+
     # Notes from reading the repository. A section of its own because the label
     # is the point: nothing here was established by running the tool, so it must
     # not sit inside Verification Gates or Errors Reported, where everything else
@@ -730,12 +747,11 @@ def build_body(cfg):
     # came from rather than what it says.
     cav = cfg.get("caveats") or {}
     if cav.get("items"):
-        origin = cav.get("model") or cav.get("source") or "automated reading"
+        # Model id stays in the JSON, out of the prose — see report.py.
         note_els = [Paragraph(
-            f"Recorded automatically when this run was configured, by "
-            f"<font name='Helvetica-Bold'>{origin}</font> reading the tool's public "
-            "files. Not verified by execution, and not part of the gates above. "
-            "Useful for what to check by hand.",
+            "Recorded automatically from the tool's public files when this run was "
+            "configured. Not verified by execution, and not part of the gates "
+            "above. Useful for what to check by hand.",
             ST["body"])]
         note_els.append(vspace(2))
         note_els += [Paragraph(
@@ -1061,6 +1077,7 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         "diagnostics":    report.get("diagnostics") or {},
         # Read off the repository when the run was configured, not produced by it.
         "caveats":        report.get("caveats") or {},
+        "needed_beyond_repo": report.get("needed_beyond_repo") or [],
         "log_filename":   (report.get("logs") or {}).get("external")
                           or (report.get("logs") or {}).get("own", ""),
     }
