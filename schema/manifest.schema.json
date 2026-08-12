@@ -37,7 +37,8 @@
           "type": "array",
           "items": { "type": "string" },
           "description": "OS targets the attestation is scoped to, e.g. ['ubuntu-22.04']. Honesty matters: only claim what you test."
-        }
+        },
+        "source": { "type": "string", "enum": ["submitted", "generated"], "description": "Where the container definition came from: 'submitted' if it arrived with the submission, 'generated' if built from declared install steps. STRhub commits a Dockerfile for every tool, so without this a report cannot say what the run needed beyond the repository." }
       }
     },
     "run": {
