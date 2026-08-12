@@ -66,7 +66,12 @@ def _regions_note(rg: dict) -> str:
         covered = rg.get("covered_loci")
         detail = (f", covering {covered} of {total} supported loci"
                   if covered and total else "")
-        return (f"The tool author supplied the regions BED{detail}.{slice_note}")
+        # "submitter", not "tool author". `provided_by` records that the BED came
+        # through the form, not who wrote it, and the two are the same person only
+        # when a tool's own author submits it. STRhub verifying somebody else's
+        # tool is the other case, and there this claimed authorship that the tool's
+        # developer never had — over a file that materially changes the result.
+        return (f"The submitter supplied the regions BED{detail}.{slice_note}")
     if rg.get("source") == "strhub":
         return f"STRhub supplied the regions BED.{slice_note}"
     return ""
