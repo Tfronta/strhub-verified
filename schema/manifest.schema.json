@@ -173,6 +173,18 @@
         "expected": { "type": "string", "description": "Path to the golden file shipped by the author, relative to manifest" },
         "produced": { "type": "string", "description": "Glob of the produced file to compare, relative to /data/out" }
       }
+    },
+    "caveats": {
+      "type": "object",
+      "description": "OPTIONAL. What reading the repository turned up while the configuration was worked out: an ambiguous entry point, a licensed dependency, pinned versions that may no longer resolve. Read OFF the repository, never established by running anything, so a report must present these apart from the gates and label them unverified. The provenance fields are not decoration — they say what produced the text, which is what lets a reader weigh it.",
+      "required": ["source", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "source": { "type": "string", "enum": ["autoconfig"], "description": "How the notes were produced." },
+        "model": { "type": "string", "description": "Model that read the repository." },
+        "prompt_version": { "type": "integer", "minimum": 1, "description": "Version of the instructions it was given." },
+        "items": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "type": "string", "maxLength": 300 } }
+      }
     }
   }
 }
