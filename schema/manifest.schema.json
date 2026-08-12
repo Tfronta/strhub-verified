@@ -85,12 +85,12 @@
             },
             {
               "type": "object",
-              "description": "A BED the author uploaded through the submit form. STRhub commits it under the tool's assets/ and records that the author, not STRhub, chose the regions — the report must not credit us for their choice.",
+              "description": "A BED uploaded through the submit form. STRhub commits it under the tool's assets/ and records that the SUBMITTER, not STRhub's own committed panel, chose the regions. Note the value says nothing about who wrote the file: the submitter is the tool's author only when a tool's own author submits it, and reports must not claim authorship this does not establish.",
               "required": ["path", "provided_by"],
               "additionalProperties": false,
               "properties": {
                 "path": { "type": "string", "description": "Path relative to the repo root, e.g. tools/<slug>/assets/regions.bed" },
-                "provided_by": { "type": "string", "enum": ["author"], "description": "Who chose the regions" }
+                "provided_by": { "type": "string", "enum": ["author"], "description": "Records that the regions came from the submission rather than from a panel STRhub committed. The single allowed value predates STRhub submitting third-party tools and is kept for compatibility; it does not assert who authored the file." }
               }
             },
             {
