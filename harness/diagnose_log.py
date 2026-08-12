@@ -587,9 +587,12 @@ def external_leg_notes(diagnostics: dict[str, list[dict]]) -> list[str]:
         )
     if notes:
         notes.append(
-            "We recommend the tool ship its own demo or test data in its official "
-            "repository, so it can be evaluated against the author's complete data "
-            "as well as STRhub's slice."
+            "A small test file in the tool's own repository lets a new user run it "
+            "on their first day and see it working before trusting it with their own "
+            "data, and it lets a verification run against the author's sample as well "
+            "as STRhub's slice. Publishing the output that file should produce helps "
+            "just as much: it shows what the results are meant to look like, which is "
+            "what a reader needs to tell a correct run from one that merely finished."
         )
     return notes
 
