@@ -4,8 +4,8 @@
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-11T14:05:11+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31499510302
+- Generated: 2026-08-12T15:52:39+00:00
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31614551539
 
 ## Gates
 
@@ -26,7 +26,7 @@
 
 ## Regions
 
-The tool author supplied the regions BED, covering 24 of 24 supported loci. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
+The submitter supplied the regions BED, covering 24 of 24 supported loci. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
 
 ## README check (advisory)
 
