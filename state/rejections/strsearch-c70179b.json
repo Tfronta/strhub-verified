@@ -1,0 +1,21 @@
+{
+  "schema": "strhub-verified/rejection/1",
+  "slug": "strsearch-c70179b",
+  "fault": "author",
+  "reason": "regions_outside_panel",
+  "title": "The regions BED targets coordinates the reference slice does not cover",
+  "detail": "",
+  "next_step": "STRhub's reference BAM is a slice over forensic STR loci, not a whole genome, so a tool aimed outside it would find no reads and look broken through no fault of its own. Download the supported-loci panel for your input type and rebuild your BED within those windows, then re-submit. Re-verification is free.",
+  "gates_run": false,
+  "run_url": "https://github.com/Tfronta/strhub-verified/actions/runs/31837733172",
+  "created_at": "2026-08-14T20:24:37+00:00",
+  "validation": {
+    "pass": false,
+    "covered_loci": [],
+    "covered_count": 0,
+    "out_of_panel": [],
+    "min_loci": 5,
+    "panel_size": 0,
+    "reason": "malformed regions BED: line 1: non-integer coordinates: \"Chr\\tStart\\tEnd\\tPeriod\\tReference allele\\tMarker\\tOfficial name\\tSTR sequence structure\\tStrand\\t5' Flanking sequence\\t3' Flanking sequence\""
+  }
+}
