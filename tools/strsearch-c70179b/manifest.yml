@@ -35,3 +35,4 @@ outputs:
     count_columns: [5]
     locus_column: 2
     min_distinct_loci: 8
+    expect_loci: [TH01, TPOX, CSF1PO, D5S818, D13S317, D16S539, D7S820, D8S1179]
