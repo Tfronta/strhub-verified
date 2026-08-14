@@ -512,7 +512,8 @@ assert not (STRHUB_FIXABLE & (AUTHOR_FIXABLE | HARNESS_INCOMPATIBLE)), \
     "a fault of ours cannot also be theirs, or a ceiling of the environment"
 
 
-def install_fault_sentence(faults: list[str]) -> str:
+def install_fault_sentence(faults: list[str],
+                           submitted_by: str | None = None) -> str:
     """One sentence naming whose side a failed build falls on.
 
     Ours is said first and unhedged wherever it applies: a reader who has just
@@ -528,11 +529,43 @@ def install_fault_sentence(faults: list[str]) -> str:
         return ("At least one cause is a ceiling of the free automated "
                 "environment rather than a fault in the tool.")
     if "author" in faults:
+        if submitted_by == "third_party":
+            return ("Every cause identified sits in what the submission "
+                    "declared — its pinned versions, package names or build "
+                    "steps — and that submission came from a third party, not "
+                    "from the tool's maintainer. They are faults in how the tool "
+                    "was set up here rather than in the software. Re-verifying "
+                    "after correcting them is free.")
         return ("Every cause identified sits in what the submission declared — "
                 "its pinned versions, package names or build steps. These are "
                 "correctable, and re-verifying afterwards is free.")
     return ("The cause could not be classified automatically. The full build "
             "output is linked below.")
+
+
+def configuration_fault_sentence(submitted_by: str | None = None) -> str:
+    """Whom the "fix the submission" advice is actually addressed to.
+
+    "Corrections to the submission" is the right sentence only when the tool's
+    own maintainer submitted it. When somebody else did — which is every tool
+    STRhub submits — the submission is OURS, and a reader takes that sentence to
+    mean the software's authors sent something wrong. It publishes our
+    configuration mistake as a finding about their code, under their name, on a
+    page with a red badge.
+
+    The asymmetry is what makes this urgent rather than pedantic: a bad
+    configuration produces false negatives, almost never false positives. A green
+    result is sound whoever configured it; a red one is not.
+    """
+    if submitted_by == "third_party":
+        return ("These are corrections to the CONFIGURATION this run used, which "
+                "a third party supplied — not the tool's maintainer. They are "
+                "faults in how the tool was set up here, not in the software, and "
+                "a result that stops for one of them says less about the tool "
+                "than about the setup. Re-verifying after correcting them is free.")
+    return ("These are corrections to the submission, not limits of the "
+            "automated environment: fix them and re-verify at no cost. Each row "
+            "above carries its suggested fix.")
 
 
 def fault_of(issue_id: str) -> str | None:
