@@ -96,6 +96,30 @@ PANEL_MAP = {
     "illumina-str-fastq":  "STR / SNP panel",
 }
 
+# How the submission's origin is named on the certificate. Absent (an older run,
+# from before the form asked) means the rows are simply not printed: there is
+# nothing to say, and "unknown" would read as a finding.
+SUBMITTED_BY_LABEL = {
+    "maintainer": "The tool's maintainer",
+    "third_party": "A third party (not the tool's maintainer)",
+}
+# The same fact inside a sentence about the regions BED.
+REGIONS_PROVIDER = {
+    "maintainer": "the tool's maintainer",
+    "third_party": "a third party, not the tool's maintainer",
+}
+# Printed only for a third-party submission. A maintainer verifying their own
+# tool is what a reader of a certificate already assumes; the other case
+# contradicts that assumption, and everything configured in this document is
+# then somebody else's choice. Wording kept in step with report.py.
+THIRD_PARTY_NOTE = (
+    "This tool was submitted for verification by somebody other than its "
+    "maintainer. The maintainer took no part in the run and supplied none of "
+    "what it used: the command, the environment, and any target regions were "
+    "chosen by the submitter. This certificate records a run; it is not an "
+    "endorsement by the tool's maintainer, and does not imply their involvement."
+)
+
 # ── Style helpers ─────────────────────────────────────────────────────────────
 def S(name, **kw):
     base = dict(fontName="Helvetica", fontSize=9, leading=13,
@@ -454,7 +478,17 @@ def build_body(cfg):
         ("Verified on",     (cfg["ver_date"] + ("  " + ver_time if ver_time else "")).strip()),
         ("CI run",          link(cfg["ci_run"]) if cfg.get("ci_run") else "—"),
     ]
+    # Who asked for this report. A certificate that names a tool and a repository
+    # reads as having come from the people behind them; it did not, whenever
+    # somebody else submitted it, and that has to be on the same table as the
+    # rest of the identification rather than a footnote further down.
+    submitted_by = cfg.get("submitted_by", "")
+    if submitted_by in SUBMITTED_BY_LABEL:
+        meta_rows.append(("Submitted by", SUBMITTED_BY_LABEL[submitted_by]))
     els.append(kv_table(meta_rows))
+    if submitted_by == "third_party":
+        els.append(vspace(3))
+        els.append(Paragraph(THIRD_PARTY_NOTE, ST["body"]))
 
     # §3 Run command
     els.append(section_num("3", "Exact Run Command"))
@@ -618,8 +652,10 @@ def build_body(cfg):
         covered, total = rg.get("covered_loci"), rg.get("panel_size")
         detail = (f" (covers {covered} of {total} supported loci)"
                   if covered and total else "")
-        # "submitter", not "tool author" — see the note in report.py::_regions_note.
-        ds_rows.append(("Regions BED", f"Provided by the submitter{detail}"))
+        # Never "the tool's author" unless the submission said so — see the note
+        # in report.py::_regions_note.
+        who = REGIONS_PROVIDER.get(cfg.get("submitted_by", ""), "the submitter")
+        ds_rows.append(("Regions BED", f"Provided by {who}{detail}"))
     elif rg.get("source") == "strhub":
         ds_rows.append(("Regions BED", "Provided by STRhub"))
     tdata = [[Paragraph(k, ST["meta_label"]),
@@ -1073,6 +1109,11 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         "loci_list":      stats.get("str_loci", []),
         "dataset":        dataset,
         "regions":        report.get("regions") or {},
+        # "maintainer" | "third_party" | "" — who filled in the submission. Kept
+        # apart from the maintainer named in the manifest, who answers for the
+        # software: the two are the same person only when a tool's own maintainer
+        # submits it. Empty on runs from before the form asked.
+        "submitted_by":   (report.get("submission") or {}).get("by") or "",
         "readme_check":   report.get("readme_check") or {},
         "diagnostics":    report.get("diagnostics") or {},
         # Read off the repository when the run was configured, not produced by it.

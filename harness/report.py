@@ -50,7 +50,26 @@ def _status(flag: str) -> bool:
     return str(flag).lower() in ("pass", "true", "ok", "1", "success")
 
 
-def _regions_note(rg: dict) -> str:
+# How the submitter is named in prose, by what the manifest declares. `None` is
+# not a third state to describe but an absence: manifests written before the form
+# asked carry no answer, and the reports fall back to "the submitter", which is
+# true of everyone and claims nothing.
+SUBMITTER_SHORT = {
+    "maintainer": "the tool's maintainer",
+    "third_party": "a third party — not the tool's maintainer",
+}
+
+
+def _submitter_phrase(by: str | None) -> str:
+    """Noun phrase for whoever supplied the submission, for use mid-sentence."""
+    if by == "maintainer":
+        return "The tool's maintainer"
+    if by == "third_party":
+        return "A third party, not the tool's maintainer,"
+    return "The submitter"
+
+
+def _regions_note(rg: dict, submitted_by: str | None = None) -> str:
     """One sentence on who defined the target regions, and that the data is a slice.
 
     Shared by the markdown and HTML renders so the two cannot drift. Returns "" for
@@ -66,15 +85,30 @@ def _regions_note(rg: dict) -> str:
         covered = rg.get("covered_loci")
         detail = (f", covering {covered} of {total} supported loci"
                   if covered and total else "")
-        # "submitter", not "tool author". `provided_by` records that the BED came
-        # through the form, not who wrote it, and the two are the same person only
-        # when a tool's own author submits it. STRhub verifying somebody else's
-        # tool is the other case, and there this claimed authorship that the tool's
-        # developer never had — over a file that materially changes the result.
-        return (f"The submitter supplied the regions BED{detail}.{slice_note}")
+        # Never "the tool's author" unless the manifest says so. `provided_by`
+        # records that the BED came through the form, not who wrote it, and the
+        # two are the same person only when a tool's own maintainer submits it.
+        # STRhub verifying somebody else's tool is the other case, and there this
+        # claimed authorship that the tool's developer never had — over a file
+        # that materially changes the result.
+        return f"{_submitter_phrase(submitted_by)} supplied the regions BED{detail}.{slice_note}"
     if rg.get("source") == "strhub":
         return f"STRhub supplied the regions BED.{slice_note}"
     return ""
+
+
+# Said in full only for a third-party submission. A maintainer submitting their
+# own tool is what a reader already assumes, so it needs one line and no more;
+# the other case contradicts that assumption and has to say so plainly, because
+# every configured choice in this report is then somebody else's.
+THIRD_PARTY_NOTE = (
+    "This tool was submitted for verification by somebody other than its "
+    "maintainer. The maintainer took no part in the run and supplied none of "
+    "what it used: the command, the environment, and any target regions were "
+    "chosen by the submitter. Where a maintainer is named above, that names who "
+    "answers for the software — not who asked for this report, and not an "
+    "endorsement of it."
+)
 
 
 def _summary_md(report: dict, slug: str) -> str:
@@ -93,6 +127,9 @@ def _summary_md(report: dict, slug: str) -> str:
         f"(`{report['environment']['dockerfile']}`)",
         f"- Generated: {report['generated']}",
     ]
+    submitted_by = (report.get("submission") or {}).get("by")
+    if submitted_by in SUBMITTER_SHORT:
+        lines.append(f"- Submitted by: {SUBMITTER_SHORT[submitted_by]}")
     if report.get("ci_run"):
         lines.append(f"- CI run: {report['ci_run']}")
     lines += [
@@ -160,9 +197,15 @@ def _summary_md(report: dict, slug: str) -> str:
     # coordinate-based tool only calls where its BED points, so both are material.
     rg = report.get("regions") or {}
     if rg.get("source") in ("tool", "strhub"):
-        note = _regions_note(rg)
+        note = _regions_note(rg, submitted_by)
         if note:
             lines += ["", "## Regions", "", note]
+
+    # Placed after the evidence and before the caveats: a reader who has just
+    # seen a green ladder needs to know whose run produced it before they decide
+    # what it says about the tool.
+    if submitted_by == "third_party":
+        lines += ["", "## Who submitted this", "", THIRD_PARTY_NOTE]
 
     # Errors the tool itself reported. Its own section: the matrix says whether a
     # leg passed, this says what went wrong, and a reviewer should not have to open
@@ -339,9 +382,20 @@ def _summary_html(report: dict, slug: str) -> str:
         )
 
     # Who chose the regions + the slice caveat (see _regions_note).
-    regions_note = _regions_note(report.get("regions") or {})
+    submitted_by = (report.get("submission") or {}).get("by")
+    regions_note = _regions_note(report.get("regions") or {}, submitted_by)
     regions_block = (
         f"<h2>Regions</h2><p>{esc(regions_note)}</p>" if regions_note else ""
+    )
+
+    # Only for a third-party submission — see THIRD_PARTY_NOTE.
+    submitter_block = (
+        f"<h2>Who submitted this</h2><p>{esc(THIRD_PARTY_NOTE)}</p>"
+        if submitted_by == "third_party" else ""
+    )
+    submitted_li = (
+        f"<li>Submitted by: {esc(SUBMITTER_SHORT[submitted_by])}</li>"
+        if submitted_by in SUBMITTER_SHORT else ""
     )
 
     # Errors the tool reported, in its own section: the matrix says a leg had them,
@@ -444,6 +498,7 @@ def _summary_html(report: dict, slug: str) -> str:
   <li>Source: <code>{esc(report['source']['repo'])}</code> @ <code>{esc(report['source']['ref_resolved'])}</code></li>
   <li>Environment: {esc(', '.join(report['environment'].get('os', [])))} (<code>{esc(report['environment']['dockerfile'])}</code>)</li>
   <li>Generated: {esc(report['generated'])}</li>
+  {submitted_li}
   {f'<li>{ci}</li>' if ci else ''}
 </ul>
 <h2>Gates</h2>
@@ -452,6 +507,7 @@ def _summary_html(report: dict, slug: str) -> str:
 {content_block}
 {matrix_block}
 {regions_block}
+{submitter_block}
 {errors_block}
 {manual_block}
 {readme_block}
@@ -575,6 +631,12 @@ def main() -> int:
     report = {
         "schema": "strhub-verified/1",
         "tool": m["tool"],
+        # Who filled in the submission, straight from the manifest. `tool` names
+        # whoever answers for the software; this names whoever asked for the run,
+        # and the report must not let a reader read the first as the second.
+        # None on manifests written before the form asked — an absence the prose
+        # handles by naming nobody.
+        "submission": m.get("submission"),
         "source": {**m["source"], "ref_resolved": args.ref or m["source"]["ref"]},
         "environment": m["environment"],
         "generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
