@@ -4,8 +4,9 @@
 
 - Source: `https://github.com/unique379r/strspy` @ `dafdee7e7e5672c8dc732e8577dbe153f53a12f5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-07-20T19:38:55+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/29772391083
+- Generated: 2026-08-14T12:27:32+00:00
+- Submitted by: a third party — not the tool's maintainer
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31799929032
 
 ## Gates
 
@@ -24,6 +25,10 @@
 | STRhub fixture | N/A | N/A | — | — |
 | External data | yes | PASS | yes | 1000 Genomes ONT, hg38 CODIS slice (R10 SUP) |
 
+## Who submitted this
+
+This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.
+
 ## Errors reported during the run
 
 The tool reported errors on 9 item(s) during the run.
@@ -35,7 +40,7 @@ This does not assess whether the results produced are correct.
 
 Structural errors, such as a file that will not open, an unrecognized command-line flag, or an incomplete build, do not depend on the sample: a coverage-limited slice yields fewer reads, but it cannot cause them. These are not attributable to STRhub's reference sample.
 
-We recommend the tool ship its own demo or test data in its official repository, so it can be evaluated against the author's complete data as well as STRhub's slice.
+A small test file in the tool's own repository lets a new user run it on their first day and see it working before trusting it with their own data, and it lets a verification run against the author's sample as well as STRhub's slice. Publishing the output that file should produce helps just as much: it shows what the results are meant to look like, which is what a reader needs to tell a correct run from one that merely finished.
 
 ## README check (advisory)
 
@@ -46,6 +51,12 @@ Score: **5/5**. Advisory only; does not affect the execution badge.
 - PASS input
 - PASS output
 - PASS dependencies
+
+## What this run needed beyond the repository
+
+The result above describes a run configured as follows. Anyone repeating it needs the same things.
+
+- Test data: no sample from the repository was used, so a public reference sample stood in.
 
 ## Scope (read this)
 

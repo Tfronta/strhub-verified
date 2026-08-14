@@ -4,6 +4,9 @@
     "name": "Strspy",
     "version": "v2.0"
   },
+  "submission": {
+    "by": "third_party"
+  },
   "source": {
     "repo": "https://github.com/unique379r/strspy",
     "ref": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
@@ -15,8 +18,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-07-20T19:38:55+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29772391083",
+  "generated": "2026-08-14T12:27:32+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31799929032",
   "gates": {
     "available": true,
     "installs": true,
@@ -102,6 +105,9 @@
     "empty": false
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "needed_beyond_repo": [
+    "Test data: no sample from the repository was used, so a public reference sample stood in."
+  ],
   "logs": {
     "external": "strspy-v2-0-ont.log-external.txt"
   },
@@ -126,5 +132,11 @@
         "suggestion": "The tool could not open '/data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam'. Verify the path exists and the file format is correct."
       }
     ]
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
   }
 }
