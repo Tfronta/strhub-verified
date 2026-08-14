@@ -276,12 +276,17 @@ jobs:
           DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
           DOCKER_FILE: ${{ steps.m.outputs.dockerfile }}
         run: |
+          # pipefail, or `tee` would swallow docker's exit status and a failed
+          # build would be recorded as a passed gate — the one bug this step
+          # must not have.
+          set -o pipefail
+          mkdir -p work
           docker build \
             --build-arg "STRAITRAZOR_REF=$TOOL_REF" \
             --build-arg "TOOL_REF=$TOOL_REF" \
             -f "$DOCKER_DIR/$DOCKER_FILE" \
             -t toolimg:ci \
-            "$DOCKER_DIR"
+            "$DOCKER_DIR" 2>&1 | tee work/log_build.txt
 
       # --- Matrix leg: own data (the badge ladder uses THIS leg) -------------
       - id: runs
@@ -456,6 +461,7 @@ jobs:
             --readme readme_result.json \
             --log-own work/log_own.txt \
             --log-external work/log_external.txt \
+            --log-build work/log_build.txt \
             --ref "$TOOL_REF" \
             --regions-source "$REGIONS_SOURCE" \
             --regions-validation regions_validation.json \

@@ -254,6 +254,77 @@ _rule(
 )
 
 
+# --- Build failures (the Installs gate) -------------------------------------
+# The build log used to be thrown away, so a tool that failed to build was
+# published as "Installs — did not pass" and nothing else: no cause, no side.
+# A reader could not tell a dependency that no longer resolves from a base image
+# we chose badly, and neither could its author.
+#
+# These patterns are specific to package managers and compilers, so they do not
+# fire on a normal execution log; the same diagnoser reads both.
+
+_rule(
+    r"(?:No matching distribution found for|Could not find a version that "
+    r"satisfies the requirement)\s+(\S+)",
+    "error", "pip_unresolvable",
+    "pip cannot resolve a pinned dependency: {0}",
+    "The version of '{0}' named in the build no longer exists on PyPI, or is "
+    "incompatible with this base image's Python. Relax the pin or pin a version "
+    "that is still published.",
+)
+
+_rule(
+    r"E: Unable to locate package (\S+)",
+    "error", "apt_no_package",
+    "apt cannot find a package: {0}",
+    "The Debian/Ubuntu package '{0}' does not exist in this base image's "
+    "repositories. Check the name, or install it another way.",
+)
+
+_rule(
+    r"(?:ResolvePackageNotFound|PackagesNotFoundError|UnsatisfiableError)",
+    "error", "conda_unsatisfiable",
+    "conda could not solve the environment",
+    "The declared conda dependencies cannot be satisfied together on this base "
+    "image. Bioconda builds trail the newest Python by months, so an environment "
+    "that solved when it was written may not solve now.",
+)
+
+_rule(
+    r"fatal error:\s+(\S+\.h(?:pp)?):\s+No such file or directory",
+    "error", "missing_header",
+    "A C/C++ header is missing at build time: {0}",
+    "The build needs the development package that provides '{0}'. Add it to the "
+    "build step (for example the -dev package for that library).",
+)
+
+_rule(
+    r"(?:COPY failed|ADD failed)[^\n]*|failed to compute cache key[^\n]*not found",
+    "error", "build_file_missing",
+    "The build referenced a file that is not in the build context",
+    "A COPY/ADD line names a file the build cannot see. The container is built "
+    "from the tool's directory, and the repository is cloned inside the image — "
+    "so paths from your own machine are not available.",
+)
+
+_rule(
+    r"(?:manifest for \S+ not found|manifest unknown|pull access denied for)",
+    "error", "base_image_missing",
+    "The base image could not be pulled",
+    "STRhub chooses the base image for a generated container, so this is ours to "
+    "fix, not the tool's. Nothing to change on the submission.",
+)
+
+_rule(
+    r"fatal: (?:reference is not a tree|couldn't find remote ref|"
+    r"repository '[^']+' not found)[^\n]*",
+    "error", "checkout_failed",
+    "The pinned commit could not be checked out",
+    "The container clones the public repository at the pinned ref. Check that "
+    "the commit or tag still exists and is reachable — a force-push or a deleted "
+    "branch can strand a ref that once resolved.",
+)
+
 #: How many distinct examples to keep per rule. Enough to show the scale and the
 #: pattern (e.g. which loci broke) without pasting a whole log into the report.
 MAX_EXAMPLES = 12
@@ -411,7 +482,19 @@ STRUCTURAL = {"cannot_open", "bad_option", "vcf_gz_required",
 # it. Routing them to a paid tier would be monetising our own form's friction, so
 # they are named here explicitly and can never trigger level 2.
 AUTHOR_FIXABLE = {"bad_option", "cmd_not_found", "missing_module", "import_error",
-                  "vcf_gz_required", "file_not_found"}
+                  "vcf_gz_required", "file_not_found",
+                  # Build failures that live in what the submission declared:
+                  # its pins, its package names, its own Dockerfile lines.
+                  "pip_unresolvable", "apt_no_package", "conda_unsatisfiable",
+                  "missing_header", "build_file_missing", "checkout_failed"}
+
+# Ours. Not a fault of the tool or of the submission, and never something to ask
+# its author to fix — STRhub picks the base image for a generated container, so
+# an image that cannot be pulled is a fault in our pipeline. This set exists
+# because the report has to be able to say "this one is on us": every other set
+# here answers a different question (can they fix it? is it a ceiling?), and
+# without this one a fault of ours reads as a finding about their software.
+STRHUB_FIXABLE = {"base_image_missing"}
 
 # Ceilings of the free automated environment. No amount of care with the form
 # lifts these: a public runner has no GPU, no display, a fixed memory and disk
@@ -425,6 +508,47 @@ HARNESS_INCOMPATIBLE = {"oom", "disk_full", "runtime_network",
 # rather than trusting two hand-maintained sets to stay apart.
 assert not (AUTHOR_FIXABLE & HARNESS_INCOMPATIBLE), \
     "an error class cannot be both author-fixable and harness-incompatible"
+assert not (STRHUB_FIXABLE & (AUTHOR_FIXABLE | HARNESS_INCOMPATIBLE)), \
+    "a fault of ours cannot also be theirs, or a ceiling of the environment"
+
+
+def install_fault_sentence(faults: list[str]) -> str:
+    """One sentence naming whose side a failed build falls on.
+
+    Ours is said first and unhedged wherever it applies: a reader who has just
+    been told a tool did not build will otherwise take it as a fact about the
+    software, and the one thing worse than no explanation is the wrong one.
+    """
+    if "strhub" in faults:
+        return ("At least one cause is STRhub's, not the tool's: the container "
+                "recipe for a generated environment is ours. Nothing here is a "
+                "finding about the software, and nothing needs fixing on the "
+                "author's side.")
+    if "harness" in faults:
+        return ("At least one cause is a ceiling of the free automated "
+                "environment rather than a fault in the tool.")
+    if "author" in faults:
+        return ("Every cause identified sits in what the submission declared — "
+                "its pinned versions, package names or build steps. These are "
+                "correctable, and re-verifying afterwards is free.")
+    return ("The cause could not be classified automatically. The full build "
+            "output is linked below.")
+
+
+def fault_of(issue_id: str) -> str | None:
+    """Whose side an error class falls on: 'author', 'strhub', 'harness', or None.
+
+    None is a real answer and the most common one — plenty of failures are
+    genuinely ambiguous from a log alone, and guessing a side there would put a
+    name to something we do not know.
+    """
+    if issue_id in STRHUB_FIXABLE:
+        return "strhub"
+    if issue_id in AUTHOR_FIXABLE:
+        return "author"
+    if issue_id in HARNESS_INCOMPATIBLE:
+        return "harness"
+    return None
 
 # Author-declared incompatibilities (the pre-flight, "trigger A"). Same ceilings,
 # stated up front so a tool that plainly cannot run is not made to burn a CI run
