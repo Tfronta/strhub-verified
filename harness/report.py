@@ -142,6 +142,26 @@ def _summary_md(report: dict, slug: str) -> str:
     for g in LADDER:
         lines.append(f"| {LABELS[g]} | {mark[gates.get(g, False)]} | {MEANING.get(g, '')} |")
 
+    # Why the build failed, immediately after the ladder that says it did.
+    # Nothing below this point ran, so the reader needs the reason here rather
+    # than at the foot of a report about a run that never happened.
+    inst = report.get("install_detail") or {}
+    if inst.get("diagnostics"):
+        lines += ["", "## Why the environment did not build", "",
+                  "The container could not be built from the declared install "
+                  "steps, so nothing below the Installs gate ran.",
+                  "",
+                  diagnose_log.install_fault_sentence(inst.get("faults") or []),
+                  "",
+                  "| What happened | Times | Suggested fix |",
+                  "|---|---|---|"]
+        for issue in inst["diagnostics"]:
+            fix = issue.get("suggestion", "—").replace("\n", " ")
+            lines.append(f"| {issue['title']} | {issue.get('count', 1)} | {fix} |")
+        build_log = (report.get("logs") or {}).get("build")
+        if build_log:
+            lines += ["", f"Full build output: [`{build_log}`]({build_log})"]
+
     # Content highlights (the genotype-plausibility evidence), if available.
     outs = report.get("content_detail", {}).get("outputs", [])
     stats = outs[0].get("stats") if outs and isinstance(outs[0], dict) else None
@@ -318,6 +338,28 @@ def _summary_html(report: dict, slug: str) -> str:
                 else '<span class="no">—</span>')
         rows.append(f"<tr><td>{esc(LABELS[g])}</td><td>{chip}</td>"
                     f"<td>{esc(MEANING.get(g, ''))}</td></tr>")
+
+    # Why the build failed — see the markdown render for why it sits this high.
+    install_block = ""
+    inst = report.get("install_detail") or {}
+    if inst.get("diagnostics"):
+        irows = "".join(
+            f"<tr><td>{esc(i['title'])}</td><td>{esc(i.get('count', 1))}</td>"
+            f"<td>{esc(i.get('suggestion', '—'))}</td></tr>"
+            for i in inst["diagnostics"]
+        )
+        build_log = (report.get("logs") or {}).get("build")
+        log_link = (f'<p><a href="{esc(build_log)}">Full build output</a></p>'
+                    if build_log else "")
+        install_block = (
+            "<h2>Why the environment did not build</h2>"
+            "<p>The container could not be built from the declared install steps, "
+            "so nothing below the Installs gate ran.</p>"
+            f"<p>{esc(diagnose_log.install_fault_sentence(inst.get('faults') or []))}</p>"
+            "<table><thead><tr><th>What happened</th><th>Times</th>"
+            "<th>Suggested fix</th></tr></thead>"
+            f"<tbody>{irows}</tbody></table>{log_link}"
+        )
 
     content_block = ""
     outs = report.get("content_detail", {}).get("outputs", [])
@@ -504,6 +546,7 @@ def _summary_html(report: dict, slug: str) -> str:
 <h2>Gates</h2>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table>
+{install_block}
 {content_block}
 {matrix_block}
 {regions_block}
@@ -542,6 +585,8 @@ def main() -> int:
                     help="path to captured stdout+stderr from own-data run")
     ap.add_argument("--log-external", default="",
                     help="path to captured stdout+stderr from external-data run")
+    ap.add_argument("--log-build", default="",
+                    help="path to captured output from the docker build (Installs)")
     ap.add_argument("--ref", default="")
     ap.add_argument("--run-url", default="")
     ap.add_argument("--regions-source", default="",
@@ -709,7 +754,10 @@ def main() -> int:
 
     import shutil
     logs = {}
-    for leg, flag in [("own", args.log_own), ("external", args.log_external)]:
+    # The build log rides along with the run logs. A reader told the build failed
+    # will want the same thing a reader told a run failed wants: the output.
+    for leg, flag in [("own", args.log_own), ("external", args.log_external),
+                      ("build", args.log_build)]:
         if not flag:
             continue
         lp = pathlib.Path(flag)
@@ -719,6 +767,29 @@ def main() -> int:
             logs[leg] = dest
     if logs:
         report["logs"] = logs
+
+    # Why the environment did not build.
+    #
+    # Kept out of `diagnostics`, which is keyed by verification leg and means
+    # "errors the tool reported while running". A build failure happens before
+    # any run, so folding it in there would put it under a heading that says
+    # "during the run" and count it toward a badge suffix about a run that never
+    # happened. It is its own thing, and only meaningful when Installs failed:
+    # a warning in a build that succeeded is not news.
+    install_detail = None
+    if args.log_build and not gates["installs"]:
+        issues = diagnose_log.diagnose_file(args.log_build)
+        install_detail = {
+            "passed": False,
+            "diagnostics": issues,
+            # The side each cause falls on, decided by class rather than by
+            # reading the text — so a fault of ours can never be published as a
+            # finding about somebody's software.
+            "faults": sorted({
+                f for f in (diagnose_log.fault_of(i["id"]) for i in issues) if f
+            }),
+        }
+        report["install_detail"] = install_detail
 
     diagnostics = {}
     for leg, flag in [("own", args.log_own), ("external", args.log_external)]:
