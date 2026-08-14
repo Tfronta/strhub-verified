@@ -4,6 +4,9 @@
     "name": "GangSTR",
     "version": "2.5"
   },
+  "submission": {
+    "by": "third_party"
+  },
   "source": {
     "repo": "https://github.com/gymreklab/gangstr",
     "ref": "v2.5",
@@ -15,8 +18,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-24T21:37:46+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28131196560",
+  "generated": "2026-08-14T12:38:15+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31801052296",
   "gates": {
     "available": true,
     "installs": true,
@@ -66,12 +69,16 @@
       "label": "External data",
       "available": true,
       "type": "illumina-bam-hg38",
-      "dataset": "Illumina BAM (hg38) \u2014 NA12878 (autosomal, female)",
+      "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
       "io": false,
       "content": false,
       "passed": false
     }
   ],
+  "regions": {
+    "source": "strhub",
+    "panel_size": 24
+  },
   "readme_check": {
     "gate": "readme",
     "advisory": true,
@@ -105,5 +112,11 @@
   "logs": {
     "own": "gangstr-2-5.log-own.txt",
     "external": "gangstr-2-5.log-external.txt"
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
   }
 }

@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-08-14T12:37:35+00:00",
+  "generated": "2026-08-14T12:38:18+00:00",
   "count": 14,
   "tools": [
     {
@@ -9,10 +9,10 @@
       "level": "installs",
       "label": "Installs",
       "errors_reported": false,
-      "generated": "2026-06-24T21:37:46+00:00",
+      "generated": "2026-08-14T12:38:15+00:00",
       "source_repo": "https://github.com/gymreklab/gangstr",
       "source_ref": "v2.5",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28131196560",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31801052296",
       "distinct_str_loci": null,
       "distinct_snp_markers": null,
       "total_reads": null,
