@@ -21,6 +21,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
 import diagnose_log  # noqa: E402
+import upstream  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCOPE = ("Executed end-to-end in the stated environment with output in the "
@@ -130,6 +131,9 @@ def _summary_md(report: dict, slug: str) -> str:
     submitted_by = (report.get("submission") or {}).get("by")
     if submitted_by in SUBMITTER_SHORT:
         lines.append(f"- Submitted by: {SUBMITTER_SHORT[submitted_by]}")
+    up_note = upstream.note(report.get("upstream"))
+    if up_note:
+        lines.append(f"- Upstream: {up_note}")
     if report.get("ci_run"):
         lines.append(f"- CI run: {report['ci_run']}")
     lines += [
@@ -439,6 +443,8 @@ def _summary_html(report: dict, slug: str) -> str:
         f"<li>Submitted by: {esc(SUBMITTER_SHORT[submitted_by])}</li>"
         if submitted_by in SUBMITTER_SHORT else ""
     )
+    _up_note = upstream.note(report.get("upstream"))
+    upstream_li = f"<li>Upstream: {esc(_up_note)}</li>" if _up_note else ""
 
     # Errors the tool reported, in its own section: the matrix says a leg had them,
     # this says what they were, so a reviewer never has to open a container log.
@@ -539,6 +545,7 @@ def _summary_html(report: dict, slug: str) -> str:
   <li>Environment: {esc(', '.join(report['environment'].get('os', [])))} (<code>{esc(report['environment']['dockerfile'])}</code>)</li>
   <li>Generated: {esc(report['generated'])}</li>
   {submitted_li}
+  {upstream_li}
   {f'<li>{ci}</li>' if ci else ''}
 </ul>
 <h2>Gates</h2>
@@ -585,6 +592,9 @@ def main() -> int:
                     help="path to captured stdout+stderr from external-data run")
     ap.add_argument("--log-build", default="",
                     help="path to captured output from the docker build (Installs)")
+    ap.add_argument("--check-upstream", action="store_true",
+                    help="ask GitHub how far the pinned ref has fallen behind the "
+                         "repository's default branch, and whether it still exists")
     ap.add_argument("--ref", default="")
     ap.add_argument("--run-url", default="")
     ap.add_argument("--regions-source", default="",
@@ -693,6 +703,16 @@ def main() -> int:
         "readme_check": readme_check,
         "scope": SCOPE,
     }
+
+    # Where the pinned commit sits now. One or two API calls, no CI: it answers
+    # the question a reviewer actually has — is what was verified the version I
+    # am looking at — and catches the case that matters, a ref nobody can fetch
+    # any more. Omitted entirely when the check could not be made: silence beats
+    # a guess about how current somebody's software is.
+    if args.check_upstream:
+        up = upstream.check(m["source"]["repo"], args.ref or m["source"]["ref"])
+        if up:
+            report["upstream"] = up
 
     # What the run needed that the repository does not provide.
     #
