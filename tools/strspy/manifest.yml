@@ -13,6 +13,12 @@ source:
   repo: "https://github.com/unique379r/strspy"
   ref: "dafdee7e7e5672c8dc732e8577dbe153f53a12f5"   # frozen commit of branch STRspy2.0
 
+# STRhub submitted this tool for verification; its maintainer did not. Any
+# maintainer named above answers for the software, not for this run: the
+# command, the environment and the regions below are STRhub's configuration,
+# and the report has to attribute them that way.
+submission:
+  by: third_party
 environment:
   dockerfile: "Dockerfile"
   os:

@@ -8,6 +8,12 @@ tool:
 source:
   repo: "https://github.com/gymreklab/gangstr"
   ref: "6ea9b2b8daca51dcab1f0e46210622b94b52ff17"
+# STRhub submitted this tool for verification; its maintainer did not. Any
+# maintainer named above answers for the software, not for this run: the
+# command, the environment and the regions below are STRhub's configuration,
+# and the report has to attribute them that way.
+submission:
+  by: third_party
 report:
   slug: "gangstr-v2-5"
 environment:
