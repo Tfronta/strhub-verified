@@ -8,7 +8,9 @@ The check was green by construction and told nobody anything.
 
 This picks the tools from the change itself:
 
-  dispatch / schedule   the requested tool (or the default), as before
+  dispatch              the requested tool
+  schedule              the SCHEDULE_BATCH least recently verified, so every
+                        tool comes round without running all of them monthly
   pull request          every tools/<slug>/ the PR touches, up to MAX_TOOLS
   pull request, none    the default tool, as a canary for a harness, schema or
                         workflow change that no manifest accompanies
@@ -39,6 +41,42 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 # in particular is not evidence about the sweep, but it reads like it.
 MAX_TOOLS = 6
 
+# How many tools the monthly re-verification refreshes.
+#
+# The point of re-verifying an UNCHANGED commit is that the commit is the only
+# thing that does not change: a pip pin stops resolving, an apt package leaves
+# the base image's repositories, a bioconda build is withdrawn, a repository is
+# archived. STRsearch's Dockerfile pinned ubuntu 16.04 and old bioconda builds,
+# and stopped building at a commit nobody had touched — which is exactly what a
+# badge dated last June would otherwise keep asserting.
+#
+# So the schedule re-runs whether or not anything upstream moved. What it does
+# not do is run everything every month: it takes the few whose published result
+# is oldest, so each tool comes round every few months at a bounded cost, and a
+# tool verified by hand last week goes to the back of the queue by itself.
+#
+# It never adds a card to the catalogue. Reports are written per slug and the
+# index is rebuilt from the files present, so a re-run replaces a result rather
+# than accumulating one.
+SCHEDULE_BATCH = 5
+
+
+def stalest(published: list[dict], root: pathlib.Path, limit: int) -> list[str]:
+    """The `limit` published tools whose attestation is oldest, oldest first.
+
+    Reads the catalogue STRhub itself publishes. Entries whose manifest is gone
+    are skipped — a slug can outlive the directory that produced it, and there is
+    nothing to re-run for those. An entry with no date sorts first: never having
+    recorded when it ran is the strongest reason to run it again.
+    """
+    live = [
+        e for e in published
+        if isinstance(e, dict) and e.get("slug")
+        and (root / "tools" / str(e["slug"]) / "manifest.yml").is_file()
+    ]
+    live.sort(key=lambda e: (e.get("generated") or ""))
+    return [str(e["slug"]) for e in live[:limit]]
+
 
 def tools_from_paths(paths: list[str], root: pathlib.Path) -> list[str]:
     """Tool slugs whose directory a change touches, in first-seen order.
@@ -62,11 +100,24 @@ def tools_from_paths(paths: list[str], root: pathlib.Path) -> list[str]:
 
 
 def pick(event: str, input_tool: str, changed: list[str], default: str,
-         root: pathlib.Path = ROOT) -> tuple[list[str], list[str], str]:
+         root: pathlib.Path = ROOT,
+         published: list[dict] | None = None) -> tuple[list[str], list[str], str]:
     """Return (tools to verify, touched tools left unverified, why)."""
+    # A dispatch always wins: somebody asked for a specific tool by name.
+    if input_tool.strip():
+        return ([input_tool.strip()], [], "requested")
+
+    if event == "schedule":
+        batch = stalest(published or [], root, SCHEDULE_BATCH)
+        if batch:
+            return (batch, [],
+                    f"monthly refresh of the {len(batch)} least recently verified")
+        # No catalogue to read (first run, or the fetch failed). The default
+        # canary is what this event did before, so nothing gets worse.
+        return ([default], [], "monthly refresh; no published catalogue to rank")
+
     if event != "pull_request":
-        return ([input_tool.strip() or default], [],
-                "requested" if input_tool.strip() else "default")
+        return ([default], [], "default")
 
     found = tools_from_paths(changed, root)
     if not found:
@@ -104,11 +155,29 @@ def selftest() -> int:
                       file=sys.stderr)
                 raise SystemExit(1)
 
-        # A dispatch names its tool; a schedule names none and gets the default.
+        # A dispatch names its tool, whatever the event says.
         check("dispatch",
               pick("workflow_dispatch", "beta", [], "canary", root)[0], ["beta"])
-        check("schedule",
+
+        # The monthly refresh takes the least recently verified, oldest first —
+        # the reason it exists is commits that have not changed while the world
+        # under them has, so it must never be conditioned on a new commit.
+        catalogue = [
+            {"slug": "alpha", "generated": "2026-08-01T00:00:00+00:00"},
+            {"slug": "c1", "generated": "2026-01-01T00:00:00+00:00"},
+            {"slug": "beta", "generated": "2026-05-01T00:00:00+00:00"},
+            {"slug": "c2", "generated": None},
+            {"slug": "gone", "generated": "2025-01-01T00:00:00+00:00"},
+        ]
+        got = pick("schedule", "", [], "canary", root, catalogue)[0]
+        check("schedule takes the stalest, oldest first, capped",
+              got, ["c2", "c1", "beta", "alpha"])
+        check("schedule skips a slug whose manifest is gone",
+              "gone" in got, False)
+        check("schedule with no catalogue falls back to the canary",
               pick("schedule", "", [], "canary", root)[0], ["canary"])
+        check("a dispatch still wins over the refresh",
+              pick("schedule", "beta", [], "canary", root, catalogue)[0], ["beta"])
 
         # A PR is answered by what it touches — the whole point of this file.
         check("pr picks the changed tools",
@@ -152,6 +221,9 @@ def main() -> int:
                     help="github.event.inputs.tool; empty for non-dispatch events")
     ap.add_argument("--changed", default="",
                     help="file listing the paths a pull request changed, one per line")
+    ap.add_argument("--published", default="",
+                    help="gh-pages index.json, used by the monthly refresh to rank "
+                         "tools by how long ago they were last verified")
     ap.add_argument("--default", required=False,
                     help="tool to fall back on when the event names none")
     ap.add_argument("--root", default=str(ROOT))
@@ -168,8 +240,21 @@ def main() -> int:
         if p.exists():
             changed = [ln for ln in p.read_text().splitlines() if ln.strip()]
 
+    published: list[dict] = []
+    if args.published:
+        pp = pathlib.Path(args.published)
+        if pp.exists():
+            try:
+                data = json.loads(pp.read_text())
+                published = data.get("tools") or []
+            except (OSError, json.JSONDecodeError, AttributeError):
+                # Optional input: an unreadable catalogue must not stop a run,
+                # it only costs the ranking (see pick()).
+                published = []
+
     tools, dropped, why = pick(
         args.event, args.input_tool, changed, args.default, pathlib.Path(args.root),
+        published,
     )
 
     print(f"tools={json.dumps(tools)}")
