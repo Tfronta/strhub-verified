@@ -21,6 +21,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
 import diagnose_log  # noqa: E402
+import upstream  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCOPE = ("Executed end-to-end in the stated environment with output in the "
@@ -130,6 +131,9 @@ def _summary_md(report: dict, slug: str) -> str:
     submitted_by = (report.get("submission") or {}).get("by")
     if submitted_by in SUBMITTER_SHORT:
         lines.append(f"- Submitted by: {SUBMITTER_SHORT[submitted_by]}")
+    up_note = upstream.note(report.get("upstream"))
+    if up_note:
+        lines.append(f"- Upstream: {up_note}")
     if report.get("ci_run"):
         lines.append(f"- CI run: {report['ci_run']}")
     lines += [
@@ -141,6 +145,26 @@ def _summary_md(report: dict, slug: str) -> str:
     ]
     for g in LADDER:
         lines.append(f"| {LABELS[g]} | {mark[gates.get(g, False)]} | {MEANING.get(g, '')} |")
+
+    # Why the build failed, immediately after the ladder that says it did.
+    # Nothing below this point ran, so the reader needs the reason here rather
+    # than at the foot of a report about a run that never happened.
+    inst = report.get("install_detail") or {}
+    if inst.get("diagnostics"):
+        lines += ["", "## Why the environment did not build", "",
+                  "The container could not be built from the declared install "
+                  "steps, so nothing below the Installs gate ran.",
+                  "",
+                  diagnose_log.install_fault_sentence(inst.get("faults") or [], submitted_by),
+                  "",
+                  "| What happened | Times | Suggested fix |",
+                  "|---|---|---|"]
+        for issue in inst["diagnostics"]:
+            fix = issue.get("suggestion", "—").replace("\n", " ")
+            lines.append(f"| {issue['title']} | {issue.get('count', 1)} | {fix} |")
+        build_log = (report.get("logs") or {}).get("build")
+        if build_log:
+            lines += ["", f"Full build output: [`{build_log}`]({build_log})"]
 
     # Content highlights (the genotype-plausibility evidence), if available.
     outs = report.get("content_detail", {}).get("outputs", [])
@@ -227,9 +251,7 @@ def _summary_md(report: dict, slug: str) -> str:
         # what keeps the paid tier from looking like the way out of a dead end.
         fixable = diagnose_log.author_fixable_ids(report.get("diagnostics") or {})
         if fixable and not (report.get("manual_verification") or {}).get("eligible"):
-            lines += ["", "These are corrections to the submission, not limits of "
-                          "the automated environment: fix them and re-verify at no "
-                          "cost. Each row above carries its suggested fix."]
+            lines += ["", diagnose_log.configuration_fault_sentence(submitted_by)]
 
     # Manual verification (level 2), when the automated path structurally cannot
     # run this tool. Never offered over a run that produced its expected output.
@@ -305,6 +327,9 @@ def _summary_html(report: dict, slug: str) -> str:
     tool = report["tool"]
     level = report["level"]
     gates = report["gates"]
+    # Read once, up here: several blocks below phrase themselves differently
+    # depending on whether the tool's own maintainer submitted it.
+    submitted_by = (report.get("submission") or {}).get("by")
     badge = {"content": "#16a34a", "io": "#22a722", "runs": "#22a722",
              "installs": "#d4a017", "available": "#d4a017"}.get(level, "#c33")
 
@@ -318,6 +343,28 @@ def _summary_html(report: dict, slug: str) -> str:
                 else '<span class="no">—</span>')
         rows.append(f"<tr><td>{esc(LABELS[g])}</td><td>{chip}</td>"
                     f"<td>{esc(MEANING.get(g, ''))}</td></tr>")
+
+    # Why the build failed — see the markdown render for why it sits this high.
+    install_block = ""
+    inst = report.get("install_detail") or {}
+    if inst.get("diagnostics"):
+        irows = "".join(
+            f"<tr><td>{esc(i['title'])}</td><td>{esc(i.get('count', 1))}</td>"
+            f"<td>{esc(i.get('suggestion', '—'))}</td></tr>"
+            for i in inst["diagnostics"]
+        )
+        build_log = (report.get("logs") or {}).get("build")
+        log_link = (f'<p><a href="{esc(build_log)}">Full build output</a></p>'
+                    if build_log else "")
+        install_block = (
+            "<h2>Why the environment did not build</h2>"
+            "<p>The container could not be built from the declared install steps, "
+            "so nothing below the Installs gate ran.</p>"
+            f"<p>{esc(diagnose_log.install_fault_sentence(inst.get('faults') or [], submitted_by))}</p>"
+            "<table><thead><tr><th>What happened</th><th>Times</th>"
+            "<th>Suggested fix</th></tr></thead>"
+            f"<tbody>{irows}</tbody></table>{log_link}"
+        )
 
     content_block = ""
     outs = report.get("content_detail", {}).get("outputs", [])
@@ -382,7 +429,6 @@ def _summary_html(report: dict, slug: str) -> str:
         )
 
     # Who chose the regions + the slice caveat (see _regions_note).
-    submitted_by = (report.get("submission") or {}).get("by")
     regions_note = _regions_note(report.get("regions") or {}, submitted_by)
     regions_block = (
         f"<h2>Regions</h2><p>{esc(regions_note)}</p>" if regions_note else ""
@@ -397,6 +443,8 @@ def _summary_html(report: dict, slug: str) -> str:
         f"<li>Submitted by: {esc(SUBMITTER_SHORT[submitted_by])}</li>"
         if submitted_by in SUBMITTER_SHORT else ""
     )
+    _up_note = upstream.note(report.get("upstream"))
+    upstream_li = f"<li>Upstream: {esc(_up_note)}</li>" if _up_note else ""
 
     # Errors the tool reported, in its own section: the matrix says a leg had them,
     # this says what they were, so a reviewer never has to open a container log.
@@ -416,9 +464,7 @@ def _summary_html(report: dict, slug: str) -> str:
         mv_eligible = bool((report.get("manual_verification") or {}).get("eligible"))
         fixable = diagnose_log.author_fixable_ids(all_diags)
         free_note = (
-            "<p>These are corrections to the submission, not limits of the "
-            "automated environment: fix them and re-verify at no cost. Each row "
-            "above carries its suggested fix.</p>"
+            f"<p>{esc(diagnose_log.configuration_fault_sentence(submitted_by))}</p>"
             if fixable and not mv_eligible else ""
         )
         errors_block = (
@@ -499,11 +545,13 @@ def _summary_html(report: dict, slug: str) -> str:
   <li>Environment: {esc(', '.join(report['environment'].get('os', [])))} (<code>{esc(report['environment']['dockerfile'])}</code>)</li>
   <li>Generated: {esc(report['generated'])}</li>
   {submitted_li}
+  {upstream_li}
   {f'<li>{ci}</li>' if ci else ''}
 </ul>
 <h2>Gates</h2>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table>
+{install_block}
 {content_block}
 {matrix_block}
 {regions_block}
@@ -542,6 +590,11 @@ def main() -> int:
                     help="path to captured stdout+stderr from own-data run")
     ap.add_argument("--log-external", default="",
                     help="path to captured stdout+stderr from external-data run")
+    ap.add_argument("--log-build", default="",
+                    help="path to captured output from the docker build (Installs)")
+    ap.add_argument("--check-upstream", action="store_true",
+                    help="ask GitHub how far the pinned ref has fallen behind the "
+                         "repository's default branch, and whether it still exists")
     ap.add_argument("--ref", default="")
     ap.add_argument("--run-url", default="")
     ap.add_argument("--regions-source", default="",
@@ -651,6 +704,16 @@ def main() -> int:
         "scope": SCOPE,
     }
 
+    # Where the pinned commit sits now. One or two API calls, no CI: it answers
+    # the question a reviewer actually has — is what was verified the version I
+    # am looking at — and catches the case that matters, a ref nobody can fetch
+    # any more. Omitted entirely when the check could not be made: silence beats
+    # a guess about how current somebody's software is.
+    if args.check_upstream:
+        up = upstream.check(m["source"]["repo"], args.ref or m["source"]["ref"])
+        if up:
+            report["upstream"] = up
+
     # What the run needed that the repository does not provide.
     #
     # A green ladder reads as a property of the software, and quietly folds in
@@ -709,7 +772,10 @@ def main() -> int:
 
     import shutil
     logs = {}
-    for leg, flag in [("own", args.log_own), ("external", args.log_external)]:
+    # The build log rides along with the run logs. A reader told the build failed
+    # will want the same thing a reader told a run failed wants: the output.
+    for leg, flag in [("own", args.log_own), ("external", args.log_external),
+                      ("build", args.log_build)]:
         if not flag:
             continue
         lp = pathlib.Path(flag)
@@ -719,6 +785,29 @@ def main() -> int:
             logs[leg] = dest
     if logs:
         report["logs"] = logs
+
+    # Why the environment did not build.
+    #
+    # Kept out of `diagnostics`, which is keyed by verification leg and means
+    # "errors the tool reported while running". A build failure happens before
+    # any run, so folding it in there would put it under a heading that says
+    # "during the run" and count it toward a badge suffix about a run that never
+    # happened. It is its own thing, and only meaningful when Installs failed:
+    # a warning in a build that succeeded is not news.
+    install_detail = None
+    if args.log_build and not gates["installs"]:
+        issues = diagnose_log.diagnose_file(args.log_build)
+        install_detail = {
+            "passed": False,
+            "diagnostics": issues,
+            # The side each cause falls on, decided by class rather than by
+            # reading the text — so a fault of ours can never be published as a
+            # finding about somebody's software.
+            "faults": sorted({
+                f for f in (diagnose_log.fault_of(i["id"]) for i in issues) if f
+            }),
+        }
+        report["install_detail"] = install_detail
 
     diagnostics = {}
     for leg, flag in [("own", args.log_own), ("external", args.log_external)]:
