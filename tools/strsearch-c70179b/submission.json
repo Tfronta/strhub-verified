@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/submission/1",
-  "saved": "2026-08-14T20:49:22.105Z",
+  "saved": "2026-08-14T21:29:12.968Z",
   "tool": {
     "name": "STRsearch",
     "version": "c70179b",
@@ -33,7 +33,17 @@
           5
         ],
         "locus_column": 2,
-        "min_distinct_loci": 8
+        "min_distinct_loci": 8,
+        "expect_loci": [
+          "TH01",
+          "TPOX",
+          "CSF1PO",
+          "D5S818",
+          "D13S317",
+          "D16S539",
+          "D7S820",
+          "D8S1179"
+        ]
       }
     }
   ],
