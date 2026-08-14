@@ -72,14 +72,24 @@ jobs:
         run: |
           set -euo pipefail
           : > changed.txt
+          : > published.json
           if [ "$EVENT_NAME" = "pull_request" ]; then
             gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" \
               --jq '.[].filename' > changed.txt
+          fi
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            # What is already published, so the refresh can take the tools whose
+            # result is oldest. Best effort: without it the picker falls back to
+            # the canary rather than failing the run.
+            curl -fsSL -o published.json \
+              "https://raw.githubusercontent.com/$GITHUB_REPOSITORY/gh-pages/index.json" \
+              || echo "::warning::could not read the published catalogue; refreshing the default only"
           fi
           python3 harness/pick_tools.py \
             --event "$EVENT_NAME" \
             --input-tool "$INPUT_TOOL" \
             --changed changed.txt \
+            --published published.json \
             --default "strait-razor-PowerSeqv2.31" \
             >> "$GITHUB_OUTPUT"
 
@@ -440,6 +450,10 @@ jobs:
           RUNS_OUTCOME: ${{ steps.runs.outcome }}
           RUNS_EXT_OUTCOME: ${{ steps.runs_ext.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # Read-only, for the upstream check below. Raises the API allowance
+          # from 60/hour per runner IP to 5,000, which matters because public
+          # runners share addresses.
+          GH_TOKEN: ${{ github.token }}
         run: |
           # The badge ladder follows the author's BYOR "own" leg when present;
           # otherwise it rests on the external typed-dataset leg (chosen by
@@ -466,6 +480,7 @@ jobs:
             --regions-source "$REGIONS_SOURCE" \
             --regions-validation regions_validation.json \
             --supported-loci "$SUPPORTED_LOCI" \
+            --check-upstream \
             --run-url "$RUN_URL"
 
       - name: Generate PDF report
