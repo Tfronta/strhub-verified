@@ -6,6 +6,15 @@
   ],
   "submissions": [
     {
+      "slug": "hipstr-b2033bf",
+      "repo": "https://github.com/tfwillems/HipSTR",
+      "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "dispatchId": "sv_mst9lvaf_wzlfeiid",
+      "createdAt": "2026-08-14T18:12:58.036Z",
+      "clientHash": "e4b38a2082ad4980ca58a6670b89ec40",
+      "status": "dispatched"
+    },
+    {
       "slug": "strsearch-c70179b",
       "repo": "https://github.com/AnJingwd/STRsearch",
       "ref": "c70179b3b175adc82a7314409af06900b3861d61",
