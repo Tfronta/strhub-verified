@@ -2,8 +2,11 @@ name: STRhub Verified
 
 # Surface the dispatch id in the run name so the web backend can correlate a
 # workflow_dispatch (which returns no run id, §10) back to its run.
+#
+# A pull request names no tool — the job works that out from what the PR touches
+# — so it says which PR instead of a tool it might not be running.
 run-name: >-
-  Verify ${{ github.event.inputs.tool || 'strait-razor-PowerSeqv2.31' }}${{ github.event.inputs.dispatch_id && format(' [{0}]', github.event.inputs.dispatch_id) || '' }}
+  Verify ${{ github.event.inputs.tool || (github.event_name == 'pull_request' && format('what PR #{0} changed', github.event.pull_request.number)) || 'strait-razor-PowerSeqv2.31' }}${{ github.event.inputs.dispatch_id && format(' [{0}]', github.event.inputs.dispatch_id) || '' }}
 
 # The engine. Each gate is a CI step; failures are captured (continue-on-error)
 # so the report is always produced and reflects the furthest gate cleared.
@@ -26,17 +29,95 @@ on:
     paths:
       - "tools/**"
       - "harness/**"
+      # The schema every manifest is validated against, and the workflow that
+      # does the validating. A change to either can break every tool here, and
+      # neither used to run this workflow at all.
+      - "schema/**"
+      - ".github/workflows/verify.yml"
   schedule:
     - cron: "0 6 1 * *"   # monthly re-verification so badges never go stale
 
 permissions:
-  contents: write   # deploy step pushes reports to the gh-pages branch
+  contents: write        # deploy step pushes reports to the gh-pages branch
+  pull-requests: read    # resolve job reads the files a PR changed
 
 jobs:
+  # Which tool(s) this run is about. A dispatch says; a pull request does not,
+  # and the answer used to be the default one — so a PR editing a manifest was
+  # checked by running an unrelated tool. See harness/pick_tools.py.
+  resolve:
+    runs-on: ubuntu-22.04
+    outputs:
+      tools: ${{ steps.pick.outputs.tools }}
+      count: ${{ steps.pick.outputs.count }}
+      dropped: ${{ steps.pick.outputs.dropped }}
+    steps:
+      - uses: actions/checkout@v6
+
+      # Before it is trusted to say what this run examines. A picker that quietly
+      # went back to answering "the default" would turn every PR green again, and
+      # nothing downstream would notice — the whole check would just stop meaning
+      # anything, exactly as it did before.
+      - name: Check the picker against its own rules
+        run: python3 harness/pick_tools.py --selftest
+
+      - id: pick
+        name: Pick the tools this run is about
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          # Empty for pull_request and schedule; only a dispatch sets it.
+          INPUT_TOOL: ${{ github.event.inputs.tool }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          : > changed.txt
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" \
+              --jq '.[].filename' > changed.txt
+          fi
+          python3 harness/pick_tools.py \
+            --event "$EVENT_NAME" \
+            --input-tool "$INPUT_TOOL" \
+            --changed changed.txt \
+            --default "strait-razor-PowerSeqv2.31" \
+            >> "$GITHUB_OUTPUT"
+
+      # Only set when the change is a sweep, and then it is the whole list. Said
+      # on the run's summary page because that is where a reviewer decides the
+      # check means something: a green tick over an unstated gap reads as
+      # coverage, and this is the gap.
+      - name: Say what was left unverified
+        if: steps.pick.outputs.dropped != '[]'
+        env:
+          DROPPED: ${{ steps.pick.outputs.dropped }}
+          RAN: ${{ steps.pick.outputs.tools }}
+        run: |
+          {
+            echo "### Tools this run did NOT verify"
+            echo
+            echo "This change touches more tools than one run verifies, so it ran the"
+            echo "canary \`$RAN\` instead. A green result below is evidence about that"
+            echo "tool, and about the harness — not about these:"
+            echo
+            echo '```json'
+            echo "$DROPPED"
+            echo '```'
+            echo
+            echo "Verify any of them with a manual dispatch of this workflow."
+          } >> "$GITHUB_STEP_SUMMARY"
+
   verify:
+    needs: resolve
     runs-on: ubuntu-22.04   # free, unlimited on public repos
+    strategy:
+      # One tool failing its gates says nothing about the next: a matrix leg is a
+      # separate attestation, not a stage of one build.
+      fail-fast: false
+      matrix:
+        tool: ${{ fromJSON(needs.resolve.outputs.tools) }}
     env:
-      TOOL: ${{ github.event.inputs.tool || 'strait-razor-PowerSeqv2.31' }}
+      TOOL: ${{ matrix.tool }}
     steps:
       - uses: actions/checkout@v6
         with:
