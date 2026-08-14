@@ -606,9 +606,14 @@ def main() -> int:
             "than taken from the repository."
         )
     if not any(d.get("leg") == "own" and d.get("available") for d in (datasets or [])):
+        # Says what we know, not what we would have to have checked. An absent own
+        # leg means no repository test data was USED; it does not establish that
+        # the repository ships none. STRsearch ships some — for hg19, against an
+        # hg38 dataset — so the stronger sentence would have been false exactly
+        # where it was about to be published.
         needed.append(
-            "Test data: the repository ships none, so a public reference sample "
-            "was used instead."
+            "Test data: no sample from the repository was used, so a public "
+            "reference sample stood in."
         )
     env_source = (m.get("environment") or {}).get("source")
     if env_source == "generated":
