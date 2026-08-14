@@ -4,7 +4,7 @@
     "name": "STRsearch",
     "version": "c70179b",
     "maintainer": "AnJingwd",
-    "contact": "https://github.com/AnJingwd/STRsearch/issues"
+    "contact": "Dong Wang"
   },
   "submission": {
     "by": "third_party"
@@ -21,16 +21,16 @@
     ],
     "source": "submitted"
   },
-  "generated": "2026-08-14T12:22:21+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31799926807",
+  "generated": "2026-08-14T20:34:00+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31838377419",
   "gates": {
     "available": true,
     "installs": true,
     "runs": true,
     "io": true,
-    "content": true
+    "content": false
   },
-  "level": "content",
+  "level": "io",
   "io_detail": {
     "gate": "io",
     "passed": true,
@@ -53,22 +53,22 @@
   "content_detail": {
     "gate": "content",
     "applicable": true,
-    "passed": true,
+    "passed": false,
     "outputs": [
       {
         "path": "multiple_alleles.txt",
         "resolved": "multiple_alleles.txt",
         "checks": {
           "columns_consistent": true,
+          "dna_is_acgtn": false,
           "counts_are_integers": true,
-          "min_distinct_loci": true,
-          "expect_loci": true
+          "min_distinct_loci": true
         },
         "stats": {
           "rows": 388,
           "header_row_dropped": true,
           "malformed_rows": 0,
-          "dna_invalid_rows": 0,
+          "dna_invalid_rows": 388,
           "count_invalid_rows": 0,
           "distinct_loci": 24,
           "distinct_str_loci": 24,
@@ -227,7 +227,7 @@
             ]
           ]
         },
-        "passed": true
+        "passed": false
       }
     ]
   },
@@ -248,7 +248,7 @@
       "type": "illumina-bam-hg38",
       "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
       "io": true,
-      "content": true,
+      "content": false,
       "passed": true
     }
   ],
@@ -287,27 +287,22 @@
     "empty": false
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "upstream": {
+    "checked": "2026-08-14T20:34:00+00:00",
+    "repo_exists": true,
+    "ref_exists": true,
+    "default_branch": "master",
+    "status": "identical",
+    "behind_by": 0
+  },
   "needed_beyond_repo": [
     "A regions configuration file, supplied with the submission rather than taken from the repository.",
     "Test data: no sample from the repository was used, so a public reference sample stood in.",
     "A container environment, supplied with the submission."
   ],
-  "caveats": {
-    "source": "autoconfig",
-    "model": "claude-opus-5",
-    "prompt_version": 2,
-    "items": [
-      "--ref_bed expects an 11-column STR configuration file (chr/start/end/period/.../flanking sequences), not a plain BED.",
-      "Example coordinates and reference are hg19 (ucsc.hg19.fasta, ref_test.bed); an hg38-aligned BAM needs an hg38 STR config file.",
-      "usearch is required but licensed; the Dockerfile fetches it from a personal license URL, which no other user can reach.",
-      "The from_fastq mode needs a bwa-indexed reference (.amb/.ann/.bwt/.pac/.sa); only hg38.fa and .fai are mounted, so use from_bam.",
-      "The Dockerfile assumes code lives in a ./STRsearch subdirectory, but conf.py, pipeline.py and scripts/ are at the repository root.",
-      "The Dockerfile pins ubuntu:16.04, Miniconda 4.3.31 and old bioconda builds (samtools 1.7, bedtools 2.17.0); these pins no longer resolve.",
-      "--sex is required by from_bam; the example uses male, which affects Y-locus handling."
-    ]
-  },
   "logs": {
-    "external": "strsearch-c70179b.log-external.txt"
+    "external": "strsearch-c70179b.log-external.txt",
+    "build": "strsearch-c70179b.log-build.txt"
   },
   "manual_verification": {
     "eligible": false,

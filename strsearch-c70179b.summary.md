@@ -1,12 +1,13 @@
 # STRhub Verified: STRsearch (strsearch-c70179b)
 
-**Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+**Result: Runs + Expected IO.** it produces a non-empty file in the declared format.
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-14T12:22:21+00:00
+- Generated: 2026-08-14T20:34:00+00:00
 - Submitted by: a third party — not the tool's maintainer
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31799926807
+- Upstream: The verified commit is the head of `master`.
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31838377419
 
 ## Gates
 
@@ -16,7 +17,7 @@
 | Installs | PASS | the environment builds from source |
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
-| Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
 
 ## Output content (plausibility evidence)
 
@@ -58,18 +59,6 @@ The result above describes a run configured as follows. Anyone repeating it need
 - A regions configuration file, supplied with the submission rather than taken from the repository.
 - Test data: no sample from the repository was used, so a public reference sample stood in.
 - A container environment, supplied with the submission.
-
-## Notes from reading the repository
-
-Recorded automatically from the tool's public files when this run was configured. **Not verified by execution**, and not part of the gates above. Useful for what to check by hand.
-
-- --ref_bed expects an 11-column STR configuration file (chr/start/end/period/.../flanking sequences), not a plain BED.
-- Example coordinates and reference are hg19 (ucsc.hg19.fasta, ref_test.bed); an hg38-aligned BAM needs an hg38 STR config file.
-- usearch is required but licensed; the Dockerfile fetches it from a personal license URL, which no other user can reach.
-- The from_fastq mode needs a bwa-indexed reference (.amb/.ann/.bwt/.pac/.sa); only hg38.fa and .fai are mounted, so use from_bam.
-- The Dockerfile assumes code lives in a ./STRsearch subdirectory, but conf.py, pipeline.py and scripts/ are at the repository root.
-- The Dockerfile pins ubuntu:16.04, Miniconda 4.3.31 and old bioconda builds (samtools 1.7, bedtools 2.17.0); these pins no longer resolve.
-- --sex is required by from_bam; the example uses male, which affects Y-locus handling.
 
 ## Scope (read this)
 
