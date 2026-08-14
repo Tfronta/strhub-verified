@@ -99,7 +99,20 @@ Luego: workflow **STRhub Verified** (panel izquierdo) → botón **Run workflow*
 en el campo `tool` escribí **`strspy`** → **Run workflow**.
 
 (Esto es el modo `workflow_dispatch`. También se dispara solo cuando abrís un PR
-que toca `tools/**`.)
+que toca `tools/**`, `harness/**`, `schema/**` o el propio `verify.yml`.)
+
+En un PR el workflow verifica **las herramientas que el PR toca**, una por cada
+`tools/<slug>/` modificado. Antes verificaba siempre `strait-razor-PowerSeqv2.31`
+sin importar qué hubieras cambiado, así que el check daba verde por construcción
+y no decía nada sobre el PR. Quién decide está en `harness/pick_tools.py`:
+
+- PR que no toca ninguna herramienta (solo `harness/`, `schema/`, el workflow):
+  corre la herramienta por defecto como canario.
+- PR que toca más de 6: también corre solo el canario, y lista en el resumen del
+  run **todas** las herramientas que quedaron sin verificar. Un barrido —una
+  migración de schema, un campo agregado a todos los manifiestos— no se verifica
+  corriendo seis de dieciséis elegidas por nada en particular. Las que importen,
+  verificalas a mano con un dispatch.
 
 ---
 
