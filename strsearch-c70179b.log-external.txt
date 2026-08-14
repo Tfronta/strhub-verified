@@ -1,24 +1,24 @@
-TPOX: finished getting STR fq from bam!
+D2S1338: finished getting STR fq from bam!
 D3S1358: finished getting STR fq from bam!
 SE33: finished getting STR fq from bam!
 D10S1248: finished getting STR fq from bam!
 D13S317: finished getting STR fq from bam!
 D19S433: finished getting STR fq from bam!
+TPOX: finished getting STR fq from bam!
+FGA: finished getting STR fq from bam!
+D6S1043: finished getting STR fq from bam!
+TH01: finished getting STR fq from bam!
+PentaE: finished getting STR fq from bam!
+D21S11: finished getting STR fq from bam!
 D2S441: finished getting STR fq from bam!
 D5S818: finished getting STR fq from bam!
-D7S820: finished getting STR fq from bam!
+D8S1179: finished getting STR fq from bam!
 D12S391: finished getting STR fq from bam!
 D16S539: finished getting STR fq from bam!
 PentaD: finished getting STR fq from bam!
 D1S1656: finished getting STR fq from bam!
 CSF1PO: finished getting STR fq from bam!
-D6S1043: finished getting STR fq from bam!
-TH01: finished getting STR fq from bam!
-PentaE: finished getting STR fq from bam!
-D21S11: finished getting STR fq from bam!
-D2S1338: finished getting STR fq from bam!
-FGA: finished getting STR fq from bam!
-D8S1179: finished getting STR fq from bam!
+D7S820: finished getting STR fq from bam!
 vWA: finished getting STR fq from bam!
 D18S51: finished getting STR fq from bam!
 D22S1045: finished getting STR fq from bam!
@@ -37,12 +37,6 @@ SE33 has been decoded completely!
 D10S1248 has been decoded completely! 
 D13S317 has been decoded completely! 
 D18S51 has been decoded completely! 
-D2S1338 has been decoded completely! 
-FGA has been decoded completely! 
-D7S820 has been decoded completely! 
-vWA has been decoded completely! 
-D19S433 has been decoded completely! 
-D22S1045 has been decoded completely! 
 D1S1656 has been decoded completely! 
 CSF1PO has been decoded completely! 
 D6S1043 has been decoded completely! 
@@ -55,5 +49,11 @@ D8S1179 has been decoded completely!
 D12S391 has been decoded completely! 
 D16S539 has been decoded completely! 
 PentaD has been decoded completely! 
+D2S1338 has been decoded completely! 
+FGA has been decoded completely! 
+D7S820 has been decoded completely! 
+vWA has been decoded completely! 
+D19S433 has been decoded completely! 
+D22S1045 has been decoded completely! 
 Finished searching for total 24 STR locus
 STR parse finished !

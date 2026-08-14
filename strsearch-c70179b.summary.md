@@ -4,10 +4,10 @@
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-14T20:50:49+00:00
+- Generated: 2026-08-14T21:30:22+00:00
 - Submitted by: a third party — not the tool's maintainer
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31839669462
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31842630521
 
 ## Gates
 
