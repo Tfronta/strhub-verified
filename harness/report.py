@@ -151,7 +151,7 @@ def _summary_md(report: dict, slug: str) -> str:
                   "The container could not be built from the declared install "
                   "steps, so nothing below the Installs gate ran.",
                   "",
-                  diagnose_log.install_fault_sentence(inst.get("faults") or []),
+                  diagnose_log.install_fault_sentence(inst.get("faults") or [], submitted_by),
                   "",
                   "| What happened | Times | Suggested fix |",
                   "|---|---|---|"]
@@ -247,9 +247,7 @@ def _summary_md(report: dict, slug: str) -> str:
         # what keeps the paid tier from looking like the way out of a dead end.
         fixable = diagnose_log.author_fixable_ids(report.get("diagnostics") or {})
         if fixable and not (report.get("manual_verification") or {}).get("eligible"):
-            lines += ["", "These are corrections to the submission, not limits of "
-                          "the automated environment: fix them and re-verify at no "
-                          "cost. Each row above carries its suggested fix."]
+            lines += ["", diagnose_log.configuration_fault_sentence(submitted_by)]
 
     # Manual verification (level 2), when the automated path structurally cannot
     # run this tool. Never offered over a run that produced its expected output.
@@ -325,6 +323,9 @@ def _summary_html(report: dict, slug: str) -> str:
     tool = report["tool"]
     level = report["level"]
     gates = report["gates"]
+    # Read once, up here: several blocks below phrase themselves differently
+    # depending on whether the tool's own maintainer submitted it.
+    submitted_by = (report.get("submission") or {}).get("by")
     badge = {"content": "#16a34a", "io": "#22a722", "runs": "#22a722",
              "installs": "#d4a017", "available": "#d4a017"}.get(level, "#c33")
 
@@ -355,7 +356,7 @@ def _summary_html(report: dict, slug: str) -> str:
             "<h2>Why the environment did not build</h2>"
             "<p>The container could not be built from the declared install steps, "
             "so nothing below the Installs gate ran.</p>"
-            f"<p>{esc(diagnose_log.install_fault_sentence(inst.get('faults') or []))}</p>"
+            f"<p>{esc(diagnose_log.install_fault_sentence(inst.get('faults') or [], submitted_by))}</p>"
             "<table><thead><tr><th>What happened</th><th>Times</th>"
             "<th>Suggested fix</th></tr></thead>"
             f"<tbody>{irows}</tbody></table>{log_link}"
@@ -424,7 +425,6 @@ def _summary_html(report: dict, slug: str) -> str:
         )
 
     # Who chose the regions + the slice caveat (see _regions_note).
-    submitted_by = (report.get("submission") or {}).get("by")
     regions_note = _regions_note(report.get("regions") or {}, submitted_by)
     regions_block = (
         f"<h2>Regions</h2><p>{esc(regions_note)}</p>" if regions_note else ""
@@ -458,9 +458,7 @@ def _summary_html(report: dict, slug: str) -> str:
         mv_eligible = bool((report.get("manual_verification") or {}).get("eligible"))
         fixable = diagnose_log.author_fixable_ids(all_diags)
         free_note = (
-            "<p>These are corrections to the submission, not limits of the "
-            "automated environment: fix them and re-verify at no cost. Each row "
-            "above carries its suggested fix.</p>"
+            f"<p>{esc(diagnose_log.configuration_fault_sentence(submitted_by))}</p>"
             if fixable and not mv_eligible else ""
         )
         errors_block = (
