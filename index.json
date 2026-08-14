@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-08-14T12:31:08+00:00",
+  "generated": "2026-08-14T12:37:12+00:00",
   "count": 14,
   "tools": [
     {
@@ -192,11 +192,11 @@
       "name": "StraitRazor",
       "level": "installs",
       "label": "Installs",
-      "errors_reported": false,
-      "generated": "2026-06-15T18:31:28+00:00",
+      "errors_reported": true,
+      "generated": "2026-08-14T12:37:10+00:00",
       "source_repo": "https://github.com/Ahhgust/STRaitRazor",
       "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27567640615",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31801045598",
       "distinct_str_loci": null,
       "distinct_snp_markers": null,
       "total_reads": null,

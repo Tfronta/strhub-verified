@@ -1,0 +1,1 @@
+Failed to open /opt/strait-razor/ForenSeqv1.27.config/data/in/sample.fastq for reading

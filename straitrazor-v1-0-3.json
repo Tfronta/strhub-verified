@@ -4,6 +4,9 @@
     "name": "StraitRazor",
     "version": "v1.0-3"
   },
+  "submission": {
+    "by": "third_party"
+  },
   "source": {
     "repo": "https://github.com/Ahhgust/STRaitRazor",
     "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
@@ -15,8 +18,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-15T18:31:28+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27567640615",
+  "generated": "2026-08-14T12:37:10+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31801045598",
   "gates": {
     "available": true,
     "installs": true,
@@ -53,23 +56,25 @@
   "datasets": [
     {
       "leg": "own",
-      "label": "Your data",
+      "label": "STRhub fixture",
       "available": true,
       "io": false,
       "content": false,
-      "passed": false
+      "passed": false,
+      "fixture_source": "strhub"
     },
     {
       "leg": "external",
       "label": "External data",
       "available": true,
       "type": "illumina-str-fastq",
-      "dataset": "NIST mds2-2157 \u2014 Verogen ForenSeq single-source (NTD01)",
+      "dataset": "NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01)",
       "io": false,
       "content": false,
       "passed": false
     }
   ],
+  "regions": null,
   "readme_check": {
     "gate": "readme",
     "advisory": true,
@@ -99,5 +104,41 @@
     },
     "empty": false
   },
-  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation."
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "logs": {
+    "own": "straitrazor-v1-0-3.log-own.txt",
+    "external": "straitrazor-v1-0-3.log-external.txt"
+  },
+  "diagnostics": {
+    "own": [
+      {
+        "id": "cannot_open",
+        "severity": "error",
+        "title": "Cannot open file: /opt/strait-razor/ForenSeqv1.27.config/data/in/sample.fastq",
+        "count": 1,
+        "examples": [
+          "/opt/strait-razor/ForenSeqv1.27.config/data/in/sample.fastq"
+        ],
+        "suggestion": "The tool could not open '/opt/strait-razor/ForenSeqv1.27.config/data/in/sample.fastq'. Verify the path exists and the file format is correct."
+      }
+    ],
+    "external": [
+      {
+        "id": "cannot_open",
+        "severity": "error",
+        "title": "Cannot open file: /opt/strait-razor/ForenSeqv1.27.config/data/in/sample.fastq",
+        "count": 1,
+        "examples": [
+          "/opt/strait-razor/ForenSeqv1.27.config/data/in/sample.fastq"
+        ],
+        "suggestion": "The tool could not open '/opt/strait-razor/ForenSeqv1.27.config/data/in/sample.fastq'. Verify the path exists and the file format is correct."
+      }
+    ]
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  }
 }
