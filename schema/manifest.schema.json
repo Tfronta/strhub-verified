@@ -14,6 +14,7 @@
       "properties": {
         "name": { "type": "string" },
         "version": { "type": "string", "description": "Human-readable version, e.g. v3.0" },
+        "variant": { "type": "string", "description": "Which kit or configuration this attestation is about, when one tool has several. STRait Razor reads the same input type at the same commit for ForenSeq and for PowerSeq: same software, different claims, and each needs its own attestation. The submit form folds this into the slug, so the two get separate permanent links instead of the second overwriting the first." },
         "maintainer": { "type": "string" },
         "contact": { "type": "string", "description": "Issue tracker or email for failure reports" }
       }
