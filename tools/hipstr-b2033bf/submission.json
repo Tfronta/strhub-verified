@@ -1,0 +1,44 @@
+{
+  "schema": "strhub-verified/submission/1",
+  "saved": "2026-08-14T18:12:51.495Z",
+  "tool": {
+    "name": "hipstr",
+    "version": "b2033bf",
+    "maintainer": "tfwillems",
+    "contact": "https://github.com/tfwillems/HipSTR/issues"
+  },
+  "submitter": {
+    "role": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/tfwillems/HipSTR",
+    "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be"
+  },
+  "docker": {
+    "mode": "generated",
+    "language": "c-cpp",
+    "build_cmd": "make"
+  },
+  "run": {
+    "cmd": "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250",
+    "timeout_minutes": 15
+  },
+  "outputs": [
+    {
+      "path": "result.vcf.gz",
+      "format": "vcf",
+      "min_records": 1,
+      "content": {
+        "dna_column": 3,
+        "locus_column": 2
+      }
+    }
+  ],
+  "os": [
+    "ubuntu-22.04"
+  ],
+  "inputs": {
+    "type": "illumina-bam-hg38"
+  },
+  "regions_asset": true
+}
