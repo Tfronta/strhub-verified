@@ -1,11 +1,12 @@
-# STRhub Verified — hipstr (hipstr-v0-7-y)
+# STRhub Verified: hipstr (hipstr-v0-7-y)
 
-**Result: Runs + Plausible output** — its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+**Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-07-16T17:41:24+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/29520559534
+- Generated: 2026-08-14T12:40:02+00:00
+- Submitted by: a third party — not the tool's maintainer
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31801058679
 
 ## Gates
 
@@ -27,17 +28,21 @@
 
 ## Verification matrix
 
-| Leg | Available | Result | Dataset |
-|---|---|---|---|
-| External data | yes | PASS | Illumina BAM (hg38) — HG002 (Y-STR, male) |
+| Leg | Available | Result | Errors reported | Dataset |
+|---|---|---|---|---|
+| External data | yes | PASS | — | Illumina BAM (hg38), HG002 (Y-STR, male) |
 
 ## Regions
 
 STRhub supplied the regions BED. The reference dataset is a slice around 14 forensic STR loci, not a whole genome: it carries reads only at those loci.
 
+## Who submitted this
+
+This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.
+
 ## README check (advisory)
 
-Score: **5/5** — advisory only, does not affect the execution badge.
+Score: **5/5**. Advisory only; does not affect the execution badge.
 
 - PASS install
 - PASS command
