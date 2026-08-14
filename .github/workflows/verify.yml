@@ -218,7 +218,13 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add "state/rejections/$TOOL.json"
             git commit -m "verified: rejection notice $TOOL" || exit 0
-            git push origin HEAD:main
+            # Retried like the gh-pages deploy below. A push that loses a race
+            # with another run used to end here, and the notice — the only thing
+            # a stopped run leaves the submitter — would never exist. Losing the
+            # explanation to a concurrent commit is the worst way to lose it.
+            for i in 1 2 3; do
+              git push origin HEAD:main && break || { git pull --rebase origin main || true; sleep 3; }
+            done
           fi
 
       - name: "Upload rejection notice"
