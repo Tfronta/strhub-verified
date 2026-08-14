@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-08-14T18:16:45+00:00",
-  "count": 15,
+  "generated": "2026-08-14T20:01:58+00:00",
+  "count": 16,
   "tools": [
     {
       "slug": "gangstr-2-5",
@@ -48,6 +48,29 @@
       ],
       "report": "gangstr-v2-5.json",
       "page": "gangstr-v2-5.html"
+    },
+    {
+      "slug": "hipstr-b2033bf-y",
+      "name": "hipstr",
+      "level": "content",
+      "label": "Runs + Plausible output",
+      "errors_reported": false,
+      "generated": "2026-08-14T20:01:55+00:00",
+      "source_repo": "https://github.com/tfwillems/HipSTR",
+      "source_ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31835727476",
+      "distinct_str_loci": 13,
+      "distinct_snp_markers": 0,
+      "total_reads": 2912,
+      "own_state": "na",
+      "external_state": "pass",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-bam-hg38-y"
+      ],
+      "report": "hipstr-b2033bf-y.json",
+      "page": "hipstr-b2033bf-y.html"
     },
     {
       "slug": "hipstr-b2033bf",
