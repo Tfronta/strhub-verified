@@ -720,6 +720,47 @@ def build_body(cfg):
     # It reports what the tool's own log said and stops there — no claim about
     # whether the results produced are correct.
     sec = 9
+
+    # Why the build failed, when it did. A certificate that says "Installs — not
+    # passed" and stops there tells a reviewer nothing they can act on, and tells
+    # the tool's author nothing they can fix. It also has to name the side: the
+    # base image of a generated container is our choice, so a failure there is
+    # ours, and printing it without saying so turns our bug into a finding about
+    # their software.
+    inst = cfg.get("install_detail") or {}
+    if inst.get("diagnostics"):
+        els.append(section_num(str(sec), "Why the Environment Did Not Build"))
+        sec += 1
+        els.append(Paragraph(
+            "The container could not be built from the declared install steps, "
+            "so nothing below the Installs gate ran.", ST["body"]))
+        els.append(vspace(2))
+        els.append(Paragraph(_install_fault_sentence(inst.get("faults") or []),
+                             ST["body"]))
+        els.append(vspace(3))
+        ihead = [Paragraph(f"<b>{h}</b>", ST["tbl_cell"])
+                 for h in ("What happened", "Suggested fix")]
+        irows = [ihead]
+        for issue in inst["diagnostics"]:
+            irows.append([
+                Paragraph(issue["title"], ST["tbl_cell"]),
+                Paragraph(issue.get("suggestion", "—"),
+                          S("ifix", fontSize=8, textColor=GRAY, leading=12)),
+            ])
+        IC = CW * 0.38
+        it = Table(irows, colWidths=[IC, CW - IC])
+        it.setStyle(TableStyle([
+            ("VALIGN",        (0,0),(-1,-1), "TOP"),
+            ("LEFTPADDING",   (0,0),(-1,-1), 10),
+            ("RIGHTPADDING",  (0,0),(-1,-1), 10),
+            ("TOPPADDING",    (0,0),(-1,-1), 5),
+            ("BOTTOMPADDING", (0,0),(-1,-1), 5),
+            ("ROWBACKGROUNDS",(0,1),(-1,-1), [WHITE, GRAY_LIGHT]),
+            ("LINEBELOW",     (0,0),(-1,0), 0.5, BORDER),
+            ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
+        ]))
+        els.append(it)
+
     errs = diagnose_log.summarize(cfg.get("diagnostics") or {})
     if errs:
         n_items = sum(len(e["items"]) for e in errs) or len(errs)
@@ -1109,6 +1150,9 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         "loci_list":      stats.get("str_loci", []),
         "dataset":        dataset,
         "regions":        report.get("regions") or {},
+        # Why the build failed, with the side it falls on. Absent unless the
+        # Installs gate failed and the build log named a cause.
+        "install_detail": report.get("install_detail") or {},
         # "maintainer" | "third_party" | "" — who filled in the submission. Kept
         # apart from the maintainer named in the manifest, who answers for the
         # software: the two are the same person only when a tool's own maintainer
