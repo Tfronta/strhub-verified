@@ -4,6 +4,9 @@
     "name": "hipstr",
     "version": "v0.7"
   },
+  "submission": {
+    "by": "third_party"
+  },
   "source": {
     "repo": "https://github.com/tfwillems/HipSTR",
     "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
@@ -15,8 +18,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-24T20:32:25+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/28127542389",
+  "generated": "2026-08-14T12:40:21+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31801056413",
   "gates": {
     "available": true,
     "installs": true,
@@ -58,6 +61,7 @@
         },
         "stats": {
           "rows": 23,
+          "header_row_dropped": false,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
@@ -231,12 +235,16 @@
       "label": "External data",
       "available": true,
       "type": "illumina-bam-hg38",
-      "dataset": "Illumina BAM (hg38) \u2014 NA12878 (autosomal, female)",
+      "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
       "io": true,
       "content": true,
       "passed": true
     }
   ],
+  "regions": {
+    "source": "strhub",
+    "panel_size": 24
+  },
   "readme_check": {
     "gate": "readme",
     "advisory": true,
@@ -277,12 +285,29 @@
         "id": "low_bq_reads",
         "severity": "info",
         "title": "Reads filtered by base quality",
+        "count": 24,
+        "examples": [
+          "4",
+          "3",
+          "5",
+          "9",
+          "1",
+          "7",
+          "10",
+          "6",
+          "8",
+          "2"
+        ],
         "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
       },
       {
         "id": "genotyping_summary",
         "severity": "info",
-        "title": "Genotyping: 23/24 loci succeeded"
+        "title": "Genotyping: 23/24 loci succeeded",
+        "count": 1,
+        "examples": [
+          "23"
+        ]
       }
     ],
     "external": [
@@ -290,13 +315,36 @@
         "id": "low_bq_reads",
         "severity": "info",
         "title": "Reads filtered by base quality",
+        "count": 24,
+        "examples": [
+          "4",
+          "3",
+          "5",
+          "9",
+          "1",
+          "7",
+          "10",
+          "6",
+          "8",
+          "2"
+        ],
         "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
       },
       {
         "id": "genotyping_summary",
         "severity": "info",
-        "title": "Genotyping: 23/24 loci succeeded"
+        "title": "Genotyping: 23/24 loci succeeded",
+        "count": 1,
+        "examples": [
+          "23"
+        ]
       }
     ]
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
   }
 }
