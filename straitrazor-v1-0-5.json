@@ -4,6 +4,9 @@
     "name": "StraitRazor",
     "version": "v1.0-5"
   },
+  "submission": {
+    "by": "third_party"
+  },
   "source": {
     "repo": "https://github.com/Ahhgust/STRaitRazor",
     "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
@@ -15,8 +18,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-06-15T18:43:53+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/27568371876",
+  "generated": "2026-08-14T12:37:33+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31801050173",
   "gates": {
     "available": true,
     "installs": true,
@@ -53,11 +56,12 @@
   "datasets": [
     {
       "leg": "own",
-      "label": "Your data",
+      "label": "STRhub fixture",
       "available": true,
       "io": true,
       "content": false,
-      "passed": true
+      "passed": true,
+      "fixture_source": "strhub"
     },
     {
       "leg": "external",
@@ -70,6 +74,7 @@
       "passed": false
     }
   ],
+  "regions": null,
   "readme_check": {
     "gate": "readme",
     "advisory": true,
@@ -99,5 +104,11 @@
     },
     "empty": false
   },
-  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation."
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  }
 }
