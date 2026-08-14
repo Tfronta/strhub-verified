@@ -1,11 +1,12 @@
-# STRhub Verified — GangSTR (gangstr-v2-5)
+# STRhub Verified: GangSTR (gangstr-v2-5)
 
-**Result: Runs + Expected IO** — it produces a non-empty file in the declared format.
+**Result: Runs + Expected IO.** it produces a non-empty file in the declared format.
 
 - Source: `https://github.com/gymreklab/gangstr` @ `6ea9b2b8daca51dcab1f0e46210622b94b52ff17`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-06-26T19:04:03+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/28259271718
+- Generated: 2026-08-14T12:38:19+00:00
+- Submitted by: a third party — not the tool's maintainer
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31801054390
 
 ## Gates
 
@@ -19,13 +20,21 @@
 
 ## Verification matrix
 
-| Leg | Available | Result | Dataset |
-|---|---|---|---|
-| External data | yes | PASS | Illumina BAM (hg38) — NA12878 (autosomal, female) |
+| Leg | Available | Result | Errors reported | Dataset |
+|---|---|---|---|---|
+| External data | yes | PASS | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
+
+## Regions
+
+STRhub supplied the regions BED. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
+
+## Who submitted this
+
+This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.
 
 ## README check (advisory)
 
-Score: **5/5** — advisory only, does not affect the execution badge.
+Score: **5/5**. Advisory only; does not affect the execution badge.
 
 - PASS install
 - PASS command
