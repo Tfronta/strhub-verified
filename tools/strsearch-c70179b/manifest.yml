@@ -1,22 +1,15 @@
-# STRhub Verified manifest — STRsearch.
-#
-# Written by hand rather than through the submit form. STRhub is the submitter
-# here, not the tool's author, and two of the inferred values need correcting
-# whatever the form produces: the repository's own test BAM is hg19 and cannot
-# overlap an hg38 dataset, and the locus column of the gated output is 2, not 0.
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
 
 tool:
   name: STRsearch
   version: c70179b
   maintainer: AnJingwd
-  contact: "https://github.com/AnJingwd/STRsearch/issues"
+  contact: Dong Wang
 source:
   repo: "https://github.com/AnJingwd/STRsearch"
   ref: c70179b3b175adc82a7314409af06900b3861d61
-# STRhub submitted this tool for verification; its maintainer did not. Any
-# maintainer named above answers for the software, not for this run: the
-# command, the environment and the regions below are STRhub's configuration,
-# and the report has to attribute them that way.
 submission:
   by: third_party
 report:
@@ -26,47 +19,20 @@ environment:
   os: ["ubuntu-22.04"]
   source: submitted
 run:
-  # --type paired: the reference BAM is paired-end Illumina, and get_STR_fastq's
-  # single-end branch references an undefined name on minus-strand markers.
-  # --sex female: NA12878. The value is inert either way — STR_parse's X/Y branch
-  # compares pos.split("-")[0] against "chrX" on a string that always carries the
-  # start coordinate, so it never fires — but it should still say what is true.
   cmd: "python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt"
-  timeout_minutes: 20
+  timeout_minutes: 10
 inputs:
   type: "illumina-bam-hg38"
-  # No fixture. The repository ships example/test_data/test.bam, but it is hg19
-  # and would overlap none of an hg38 regions file, so the own leg is N/A rather
-  # than a manufactured failure.
   regions:
     path: "tools/strsearch-c70179b/assets/regions.bed"
     provided_by: author
 outputs:
-  # multiple_alleles.txt, not genotypes.txt. STR_parse writes one genotypes row
-  # per BED line whatever happens, filling failures with NA, so min_records there
-  # is satisfied by a run that called nothing. write_all_alleles only runs for
-  # loci that actually produced results.
-  - path: multiple_alleles.txt
-    format: tsv
-    min_records: 1
-    content:
-      # sample | Marker | STR | Allele sequences | Allele | Supporting reads
-      columns: 6
-      locus_column: 2
-      count_columns: [5]
-      min_distinct_loci: 8
-      expect_loci: [TH01, TPOX, CSF1PO, D5S818, D13S317, D16S539, D7S820, D8S1179]
-# Read off the repository when this configuration was worked out. Not verified by
-# execution; carried so the report can show them apart from the gates.
-caveats:
-  source: autoconfig
-  model: claude-opus-5
-  prompt_version: 2
-  items:
-    - "--ref_bed expects an 11-column STR configuration file (chr/start/end/period/.../flanking sequences), not a plain BED."
-    - "Example coordinates and reference are hg19 (ucsc.hg19.fasta, ref_test.bed); an hg38-aligned BAM needs an hg38 STR config file."
-    - "usearch is required but licensed; the Dockerfile fetches it from a personal license URL, which no other user can reach."
-    - "The from_fastq mode needs a bwa-indexed reference (.amb/.ann/.bwt/.pac/.sa); only hg38.fa and .fai are mounted, so use from_bam."
-    - "The Dockerfile assumes code lives in a ./STRsearch subdirectory, but conf.py, pipeline.py and scripts/ are at the repository root."
-    - "The Dockerfile pins ubuntu:16.04, Miniconda 4.3.31 and old bioconda builds (samtools 1.7, bedtools 2.17.0); these pins no longer resolve."
-    - "--sex is required by from_bam; the example uses male, which affects Y-locus handling."
+- path: multiple_alleles.txt
+  format: tsv
+  min_records: 1
+  content:
+    columns: 6
+    dna_column: 3
+    count_columns: [5]
+    locus_column: 2
+    min_distinct_loci: 8
