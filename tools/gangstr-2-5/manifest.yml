@@ -4,6 +4,12 @@ tool:
 source:
   repo: "https://github.com/gymreklab/gangstr"
   ref: "v2.5"
+# STRhub submitted this tool for verification; its maintainer did not. Any
+# maintainer named above answers for the software, not for this run: the
+# command, the environment and the regions below are STRhub's configuration,
+# and the report has to attribute them that way.
+submission:
+  by: third_party
 report:
   slug: "gangstr-2-5"
 environment:

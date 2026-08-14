@@ -27,6 +27,19 @@
         "ref": { "type": "string", "description": "Pinned commit SHA or release tag. MUST be immutable." }
       }
     },
+    "submission": {
+      "type": "object",
+      "required": ["by"],
+      "additionalProperties": false,
+      "description": "Who submitted this tool for verification. Distinct from tool.maintainer, which names whoever answers for the software: the two are the same person only when a tool's own maintainer submits it. Without this the engine could not tell those cases apart, and a report credited a repository's owner with a regions BED that STRhub had written. Absent on manifests written before the submission form asked.",
+      "properties": {
+        "by": {
+          "type": "string",
+          "enum": ["maintainer", "third_party"],
+          "description": "'maintainer' if the tool's own maintainer submitted it; 'third_party' if somebody else did, in which case the maintainer took no part in the run and supplied none of its configuration."
+        }
+      }
+    },
     "environment": {
       "type": "object",
       "required": ["dockerfile"],
