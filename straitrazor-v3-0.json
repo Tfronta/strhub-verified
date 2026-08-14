@@ -4,6 +4,9 @@
     "name": "STRaitRazor",
     "version": "v3.0"
   },
+  "submission": {
+    "by": "third_party"
+  },
   "source": {
     "repo": "https://github.com/Ahhgust/STRaitRazor",
     "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
@@ -15,8 +18,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-07-13T13:14:08+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/29252914145",
+  "generated": "2026-08-14T12:30:44+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31800574322",
   "gates": {
     "available": true,
     "installs": true,
@@ -62,6 +65,7 @@
         },
         "stats": {
           "rows": 816,
+          "header_row_dropped": false,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
@@ -1418,12 +1422,13 @@
       "label": "External data",
       "available": true,
       "type": "illumina-str-fastq",
-      "dataset": "NIST mds2-2157 \u2014 Illumina STR (ForenSeq slice, donor NTD01)",
+      "dataset": "NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01)",
       "io": true,
       "content": true,
       "passed": true
     }
   ],
+  "regions": null,
   "readme_check": {
     "gate": "readme",
     "advisory": true,
@@ -1453,5 +1458,14 @@
     },
     "empty": false
   },
-  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation."
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "needed_beyond_repo": [
+    "Test data: no sample from the repository was used, so a public reference sample stood in."
+  ],
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  }
 }
