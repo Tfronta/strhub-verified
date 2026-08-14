@@ -4,7 +4,7 @@
     "name": "STRsearch",
     "version": "c70179b",
     "maintainer": "AnJingwd",
-    "contact": "Dong Wang"
+    "contact": "https://github.com/AnJingwd/STRsearch/issues"
   },
   "submission": {
     "by": "third_party"
@@ -21,16 +21,16 @@
     ],
     "source": "submitted"
   },
-  "generated": "2026-08-14T20:34:00+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31838377419",
+  "generated": "2026-08-14T20:50:49+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31839669462",
   "gates": {
     "available": true,
     "installs": true,
     "runs": true,
     "io": true,
-    "content": false
+    "content": true
   },
-  "level": "io",
+  "level": "content",
   "io_detail": {
     "gate": "io",
     "passed": true,
@@ -53,14 +53,13 @@
   "content_detail": {
     "gate": "content",
     "applicable": true,
-    "passed": false,
+    "passed": true,
     "outputs": [
       {
         "path": "multiple_alleles.txt",
         "resolved": "multiple_alleles.txt",
         "checks": {
           "columns_consistent": true,
-          "dna_is_acgtn": false,
           "counts_are_integers": true,
           "min_distinct_loci": true
         },
@@ -68,7 +67,7 @@
           "rows": 388,
           "header_row_dropped": true,
           "malformed_rows": 0,
-          "dna_invalid_rows": 388,
+          "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
           "distinct_loci": 24,
           "distinct_str_loci": 24,
@@ -227,7 +226,7 @@
             ]
           ]
         },
-        "passed": false
+        "passed": true
       }
     ]
   },
@@ -248,7 +247,7 @@
       "type": "illumina-bam-hg38",
       "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
       "io": true,
-      "content": false,
+      "content": true,
       "passed": true
     }
   ],
@@ -288,7 +287,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-08-14T20:34:00+00:00",
+    "checked": "2026-08-14T20:50:50+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",

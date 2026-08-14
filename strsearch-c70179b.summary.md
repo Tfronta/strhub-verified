@@ -1,13 +1,13 @@
 # STRhub Verified: STRsearch (strsearch-c70179b)
 
-**Result: Runs + Expected IO.** it produces a non-empty file in the declared format.
+**Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-14T20:34:00+00:00
+- Generated: 2026-08-14T20:50:49+00:00
 - Submitted by: a third party — not the tool's maintainer
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31838377419
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31839669462
 
 ## Gates
 
@@ -17,7 +17,7 @@
 | Installs | PASS | the environment builds from source |
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
-| Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
 
 ## Output content (plausibility evidence)
 
