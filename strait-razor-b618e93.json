@@ -6,6 +6,9 @@
     "maintainer": "Woerner AE, King JL (UNT Center for Human Identification)",
     "contact": "https://github.com/Ahhgust/STRaitRazor/issues"
   },
+  "submission": {
+    "by": "third_party"
+  },
   "source": {
     "repo": "https://github.com/Ahhgust/STRaitRazor",
     "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
@@ -17,8 +20,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-09T22:56:35+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31340636268",
+  "generated": "2026-08-14T12:30:37+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31800572221",
   "gates": {
     "available": true,
     "installs": true,
@@ -63,6 +66,7 @@
         },
         "stats": {
           "rows": 816,
+          "header_row_dropped": false,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
@@ -1456,6 +1460,9 @@
     "empty": false
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "needed_beyond_repo": [
+    "Test data: no sample from the repository was used, so a public reference sample stood in."
+  ],
   "manual_verification": {
     "eligible": false,
     "basis": null,

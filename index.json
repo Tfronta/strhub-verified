@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-08-14T12:27:34+00:00",
+  "generated": "2026-08-14T12:30:38+00:00",
   "count": 14,
   "tools": [
     {
@@ -145,10 +145,10 @@
       "level": "content",
       "label": "Runs + Plausible output",
       "errors_reported": false,
-      "generated": "2026-08-09T22:56:35+00:00",
+      "generated": "2026-08-14T12:30:37+00:00",
       "source_repo": "https://github.com/Ahhgust/STRaitRazor",
       "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31340636268",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31800572221",
       "distinct_str_loci": 63,
       "distinct_snp_markers": 157,
       "total_reads": 3967,
