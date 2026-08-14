@@ -6,6 +6,9 @@
     "maintainer": "Woerner AE, King JL (UNT Center for Human Identification)",
     "contact": "https://github.com/Ahhgust/STRaitRazor/issues"
   },
+  "submission": {
+    "by": "third_party"
+  },
   "source": {
     "repo": "https://github.com/Ahhgust/STRaitRazor",
     "ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
@@ -17,8 +20,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-01T08:20:43+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/30691557482",
+  "generated": "2026-08-14T12:30:41+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31800569977",
   "gates": {
     "available": true,
     "installs": true,
@@ -64,6 +67,7 @@
         },
         "stats": {
           "rows": 1172,
+          "header_row_dropped": false,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
