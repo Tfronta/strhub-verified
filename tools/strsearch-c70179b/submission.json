@@ -1,11 +1,11 @@
 {
   "schema": "strhub-verified/submission/1",
-  "saved": "2026-08-14T20:32:28.718Z",
+  "saved": "2026-08-14T20:49:22.105Z",
   "tool": {
     "name": "STRsearch",
     "version": "c70179b",
     "maintainer": "AnJingwd",
-    "contact": "Dong Wang"
+    "contact": "https://github.com/AnJingwd/STRsearch/issues"
   },
   "submitter": {
     "role": "third_party"
@@ -20,7 +20,7 @@
   },
   "run": {
     "cmd": "python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt",
-    "timeout_minutes": 10
+    "timeout_minutes": 20
   },
   "outputs": [
     {
@@ -29,7 +29,6 @@
       "min_records": 1,
       "content": {
         "columns": 6,
-        "dna_column": 3,
         "count_columns": [
           5
         ],
