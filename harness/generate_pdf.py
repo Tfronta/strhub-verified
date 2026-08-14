@@ -89,6 +89,13 @@ LEVEL_LABEL = {
     "content":   "Runs + Plausible output",
 }
 
+# Where the published reports and their logs live. The PDF is read away from the
+# site, so a filename alone reaches nobody: every reference has to carry a URL.
+REPORTS_BASE = os.environ.get(
+    "VERIFIED_REPORTS_BASE",
+    "https://raw.githubusercontent.com/Tfronta/strhub-verified/gh-pages",
+).rstrip("/")
+
 PANEL_MAP = {
     "illumina-bam-hg38":   "Autosomal STR",
     "illumina-bam-hg38-y": "Y-STR",
@@ -520,11 +527,14 @@ def build_body(cfg):
         gdata.append([Paragraph(gate_name, ST["gate_name"]),
                       Paragraph(gate_desc, ST["gate_desc"]),
                       pass_badge(ok)])
+    # A real link, not teal text that looks like one. This row was styled as a
+    # link and wasn't clickable — in a document whose whole purpose is to be
+    # attached to a review, where the reader cannot reach the log any other way.
     log_fname = cfg.get("log_filename", "")
+    log_url = f"{REPORTS_BASE}/{log_fname}" if log_fname else ""
     gdata.append([
         Paragraph("Execution log", ST["meta_label"]),
-        Paragraph(f'<font color="#00909c">{log_fname}</font>' if log_fname else "—",
-                  ST["tbl_cell"]),
+        Paragraph(link(log_url, log_fname) if log_fname else "—", ST["tbl_cell"]),
         ""])
     gt = Table(gdata, colWidths=[52*mm, CW - 52*mm - 18*mm, 18*mm])
     gt.setStyle(TableStyle([
