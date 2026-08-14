@@ -1,0 +1,35 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: hipstr
+  version: b2033bf
+  maintainer: tfwillems
+  contact: "https://github.com/tfwillems/HipSTR/issues"
+source:
+  repo: "https://github.com/tfwillems/HipSTR"
+  ref: b2033bfbb5cf55496b776463bdf2993fa763a4be
+submission:
+  by: third_party
+report:
+  slug: "hipstr-b2033bf"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+  source: generated
+run:
+  cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250"
+  timeout_minutes: 15
+inputs:
+  type: "illumina-bam-hg38"
+  regions:
+    path: "tools/hipstr-b2033bf/assets/regions.bed"
+    provided_by: author
+outputs:
+- path: result.vcf.gz
+  format: vcf
+  min_records: 1
+  content:
+    dna_column: 3
+    locus_column: 2
