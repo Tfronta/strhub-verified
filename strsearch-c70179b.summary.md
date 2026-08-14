@@ -4,8 +4,9 @@
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-14T11:39:58+00:00
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31797047624
+- Generated: 2026-08-14T12:22:21+00:00
+- Submitted by: a third party — not the tool's maintainer
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31799926807
 
 ## Gates
 
@@ -34,7 +35,11 @@
 
 ## Regions
 
-The submitter supplied the regions BED, covering 24 of 24 supported loci. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
+A third party, not the tool's maintainer, supplied the regions BED, covering 24 of 24 supported loci. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
+
+## Who submitted this
+
+This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.
 
 ## README check (advisory)
 
