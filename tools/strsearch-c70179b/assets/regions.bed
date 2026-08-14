@@ -1,4 +1,4 @@
-Chr	Start	End	Period	Reference allele	Marker	Official name	STR sequence structure	Strand	5' Flanking sequence	3' Flanking sequence
+#Chr	Start	End	Period	Reference allele	Marker	Official name	STR sequence structure	Strand	5' Flanking sequence	3' Flanking sequence
 chr1	230769316	230769983	4	17	D1S1656	D1S1656	[CTAT]n	+	TTAAACACACACACA	CATCACACAGTTGAC
 chr2	1489353	1489984	4	8	TPOX	TPOX	[AATG]n	+	AGGGAACCCTCACTG	TTTGGGCAAATAAAC
 chr2	68011647	68012294	4	12	D2S441	D2S441	[TCTA]n	+	TCATCTATGAAAACT	TATCATAACACCACA
