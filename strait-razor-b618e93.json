@@ -20,8 +20,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-14T12:30:37+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31800572221",
+  "generated": "2026-09-01T11:12:11+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/33501209177",
   "gates": {
     "available": true,
     "installs": true,
@@ -1460,9 +1460,20 @@
     "empty": false
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "upstream": {
+    "checked": "2026-09-01T11:12:11+00:00",
+    "repo_exists": true,
+    "ref_exists": true,
+    "default_branch": "master",
+    "status": "identical",
+    "behind_by": 0
+  },
   "needed_beyond_repo": [
     "Test data: no sample from the repository was used, so a public reference sample stood in."
   ],
+  "logs": {
+    "build": "strait-razor-b618e93.log-build.txt"
+  },
   "manual_verification": {
     "eligible": false,
     "basis": null,

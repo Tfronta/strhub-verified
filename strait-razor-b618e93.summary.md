@@ -4,9 +4,10 @@
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-14T12:30:37+00:00
+- Generated: 2026-09-01T11:12:11+00:00
 - Submitted by: a third party — not the tool's maintainer
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31800572221
+- Upstream: The verified commit is the head of `master`.
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/33501209177
 
 ## Gates
 
