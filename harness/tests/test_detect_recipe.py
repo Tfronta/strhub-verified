@@ -26,6 +26,7 @@ def test_hipstr_builds_with_make_takes_bam_writes_vcf():
     # htslib's test files are vendored, not HipSTR's examples.
     assert all("htslib" not in e["path"] for e in r["example_data"])
     assert r["commands"][0]["invokes"] == "HipSTR"
+    assert "--regions" in r["commands"][0]["cmd"] and "--str-vcf" in r["commands"][0]["cmd"]
     assert r["readme"]["gaps"] == []
     assert "FROM ubuntu:22.04" in r["dockerfile"]
 
@@ -55,10 +56,15 @@ def test_strsearch_ships_dockerfile_and_examples_and_warns_about_hg19():
     assert any("try both" in w for w in r["input_type"]["warnings"])
 
 
-def test_gangstr_builds_with_cmake_and_names_its_binary():
+def test_gangstr_installs_from_bioconda_and_reads_the_full_command():
     r = _detect("gangstr")
-    assert r["build"]["method"] == "cmake"
+    # The README says `conda install -c bioconda -c conda-forge gangstr`; that
+    # outranks compiling the CMake tree, which needs autoreconf for htslib.
+    assert r["build"]["method"] == "bioconda" and r["build"]["package"] == "gangstr"
+    assert "micromamba install" in r["dockerfile"]
     assert r["commands"][0]["invokes"] == "GangSTR"
+    # One option per line in the README, no backslashes: all of them are kept.
+    assert "--regions" in r["commands"][0]["cmd"] and "--out" in r["commands"][0]["cmd"]
     assert r["input_type"]["best"] == "illumina-bam-hg38"
     assert r["output"]["format"] == "vcf"
 
