@@ -499,7 +499,8 @@ jobs:
         continue-on-error: true
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
-        run: python harness/check_content.py "$MANIFEST" work/out_own --json content_own.json
+          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
+        run: python harness/check_content.py "$MANIFEST" work/out_own --json content_own.json --regions work/in_own/regions.bed --panel "$SUPPORTED_LOCI"
 
       # --- Leg: the tool's OWN example (the reviewer's gate) ------------------
       # The README's command on the repository's data, inside the image, with
@@ -582,7 +583,8 @@ jobs:
         continue-on-error: true
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
-        run: python harness/check_content.py "$MANIFEST" work/out_external --json content_external.json
+          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
+        run: python harness/check_content.py "$MANIFEST" work/out_external --json content_external.json --regions work/in_external/regions.bed --panel "$SUPPORTED_LOCI"
 
       # --- README minimum-to-run check (advisory; never gates the badge) ------
       - name: "README check (advisory)"
