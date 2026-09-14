@@ -43,14 +43,119 @@ LIMITATION_TEXT = {
                               "does not yet generate for it",
 }
 
+#: What stopped the run, as something a person can act on. Each blocker names
+#: the thing that was missing, what the person looking at the report can do
+#: about it right now (`self_fix`: which part of the recipe to supply and retry),
+#: and what to ask the tool's owner for (`ask_owner`: the issue to open). The
+#: web renders these as two buttons; the codes are the contract.
+BLOCKERS = {
+    "regions_format_unknown": {
+        "what": "The tool needs a regions file (BED) in its own format, and the repository "
+                "does not ship one for hg38 that covers forensic STR loci.",
+        "self_fix": "upload_regions",
+        "self_fix_text": "Provide the regions file for the tool and try again.",
+        "ask_owner": {
+            "title": "Publish a regions file (hg38) for forensic STR loci",
+            "body": "STRhub Verified tried to run the tool in a clean environment on a public hg38 "
+                    "reference sample, but could not: the tool needs a regions file in its own "
+                    "format and the repository does not ship one for hg38 covering forensic STR "
+                    "loci (CODIS and the usual expanded panel). Publishing one in the repository "
+                    "would let anyone run the documented example and let STRhub verify the tool "
+                    "automatically.",
+        },
+    },
+    "no_command": {
+        "what": "No command line invoking the tool was found in the README.",
+        "self_fix": "edit_command",
+        "self_fix_text": "Write the command that runs the tool and try again.",
+        "ask_owner": {
+            "title": "Document the command that runs the tool",
+            "body": "STRhub Verified could not find, in the README, a command line that invokes the "
+                    "tool. A one-line example with an input file and the output it writes would let "
+                    "a new user run it and let STRhub verify it automatically.",
+        },
+    },
+    "install_method_unknown": {
+        "what": "No way to install the tool was found: no Dockerfile, environment file, "
+                "requirements, setup script, Makefile or CMake, and no install command in the README.",
+        "self_fix": "choose_install",
+        "self_fix_text": "Say how the tool is installed and try again.",
+        "ask_owner": {
+            "title": "Document how to install the tool",
+            "body": "STRhub Verified could not work out how to install the tool from the repository: "
+                    "no Dockerfile, environment.yml, requirements.txt, setup script, Makefile or "
+                    "CMakeLists, and no install command in the README. Any one of those would let a "
+                    "stranger build it and let STRhub verify it automatically.",
+        },
+    },
+    "build_failed": {
+        "what": "The environment did not build from the install steps found in the repository.",
+        "self_fix": "edit_install",
+        "self_fix_text": "Adjust the install steps (or provide a Dockerfile) and try again.",
+        "ask_owner": {
+            "title": "Build fails from a clean checkout",
+            "body": "STRhub Verified tried to build the tool from a clean checkout at the pinned "
+                    "commit, following the repository's own install steps, and the build failed. "
+                    "The build log is linked from the run.",
+        },
+    },
+    "run_failed": {
+        "what": "The tool was installed but exited with an error when run.",
+        "self_fix": "edit_command",
+        "self_fix_text": "Adjust the command and try again.",
+        "ask_owner": {
+            "title": "Documented command fails on a public reference sample",
+            "body": "STRhub Verified installed the tool from a clean checkout at the pinned commit "
+                    "and ran the command the README documents on a public hg38 reference sample; "
+                    "it exited with an error. The log is linked from the run.",
+        },
+    },
+    "no_output": {
+        "what": "The tool ran to completion but produced no output file in the documented format.",
+        "self_fix": "edit_output",
+        "self_fix_text": "Say which file the tool writes and try again.",
+        "ask_owner": {
+            "title": "Document the output the tool writes",
+            "body": "STRhub Verified ran the tool to completion in a clean environment, but no output "
+                    "file in the documented format appeared. Documenting the output file name and "
+                    "format would let a user find the result and let STRhub verify it automatically.",
+        },
+    },
+}
+
+
+def blockers_for(gates: dict, limits: list[str], gaps: list[dict], ids: set[str]) -> list[dict]:
+    """The blockers that apply, most actionable first, at most three."""
+    out: list[str] = []
+    for l in limits:
+        if l in BLOCKERS:
+            out.append(l)
+    gap_items = {g.get("item") for g in gaps}
+    if "install" in gap_items and "install_method_unknown" not in out:
+        out.append("install_method_unknown")
+    if "command" in gap_items and "no_command" not in out:
+        out.append("no_command")
+    if gates.get("available") and not gates.get("installs") and "install_method_unknown" not in out:
+        out.append("build_failed")
+    elif gates.get("installs") and not gates.get("runs") and "no_command" not in out \
+            and "regions_format_unknown" not in out:
+        out.append("run_failed")
+    elif gates.get("runs") and not gates.get("io"):
+        out.append("no_output")
+    seen: list[str] = []
+    for code in out:
+        if code not in seen:
+            seen.append(code)
+    return [{"code": c, **BLOCKERS[c]} for c in seen[:3]]
+
 
 def _ids(diagnostics: dict[str, list[dict]] | None) -> set[str]:
     return {i.get("id") for issues in (diagnostics or {}).values() for i in issues}
 
 
-def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
-           manual_verification: dict | None = None, recipe_proposal: dict | None = None,
-           declared_compatibility: dict | None = None) -> dict:
+def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
+            manual_verification: dict | None = None, recipe_proposal: dict | None = None,
+            declared_compatibility: dict | None = None) -> dict:
     """Return {code, title, reason, readme_gaps, basis}."""
     gates = gates or {}
     mv = manual_verification or {}
@@ -114,3 +219,18 @@ def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
         reason = "The tool ran to completion but produced no output in the documented format."
     return {"code": "fails", "title": TITLES["fails"], "basis": "gates", "reason": reason,
             "readme_gaps": gaps}
+
+
+def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
+           manual_verification: dict | None = None, recipe_proposal: dict | None = None,
+           declared_compatibility: dict | None = None) -> dict:
+    """The verdict, plus the blockers a reader can act on when it is not 'runs'."""
+    v = _decide(gates, diagnostics, manual_verification, recipe_proposal, declared_compatibility)
+    if v["code"] in ("runs", "out_of_scope"):
+        v["blockers"] = []
+        return v
+    proposal = recipe_proposal or {}
+    limits = [l for l in proposal.get("limitations", []) if l in LIMITATION_TEXT]
+    gaps = [g for g in (proposal.get("readme") or {}).get("gaps", []) if g.get("item") != "example_data"]
+    v["blockers"] = blockers_for(gates or {}, limits, gaps, _ids(diagnostics))
+    return v
