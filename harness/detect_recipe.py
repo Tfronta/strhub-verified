@@ -173,8 +173,26 @@ def bioconda_package(readme: str) -> str | None:
     return None
 
 
+DOCKER_IMAGE_RE = re.compile(
+    r"docker\s+(?:pull|run)\s+(?:--?\S+\s+)*([a-z0-9][a-z0-9._/-]*(?::[\w.-]+)?)\b"
+    r"|hub\.docker\.com/r/([a-z0-9][a-z0-9._-]*/[a-z0-9][a-z0-9._-]*)", re.I)
+
+
+def docker_image(readme: str) -> str | None:
+    """A Docker image the README tells users to pull. The author's own
+    environment, published: as trustworthy as a Dockerfile in the tree."""
+    for m in DOCKER_IMAGE_RE.finditer(readme):
+        img = m.group(1) or m.group(2)
+        if img and "/" in img and not img.startswith(("http", "docker.")):
+            return img
+    return None
+
+
 def detect_build(paths: list[str], readme: str) -> dict:
     found = []
+    img = docker_image(readme)
+    if img:
+        found.append({"method": "docker_image", "file": None, "image": img})
     # A published Bioconda package is the maintainer's own tested install and
     # needs no toolchain we have to guess; it outranks compiling from source.
     pkg = bioconda_package(readme)
@@ -183,9 +201,12 @@ def detect_build(paths: list[str], readme: str) -> dict:
     for path, method in BUILD_FILES:
         if path in paths:
             found.append({"method": method, "file": path})
-    # The repository's own Dockerfile still wins over everything: it is the
-    # author's statement of the environment.
-    found.sort(key=lambda f: 0 if f["method"] == "dockerfile" else 1)
+    # The repository's own Dockerfile wins over everything, then a published
+    # image the README points at, then a Bioconda package: each is the author's
+    # own statement of the environment, in decreasing order of being tied to
+    # the pinned commit.
+    rank = {"dockerfile": 0, "docker_image": 1, "bioconda": 2}
+    found.sort(key=lambda f: rank.get(f["method"], 3))
     # A conda environment file under another name or one directory down
     # (setup/STRspy_2.0.yml) still says how the tool is installed.
     if not any(f["method"] == "conda" for f in found):
@@ -202,6 +223,7 @@ def detect_build(paths: list[str], readme: str) -> dict:
         "method": method,
         "file": chosen["file"] if chosen else None,
         "package": chosen.get("package") if chosen else None,
+        "image": chosen.get("image") if chosen else None,
         "candidates": found,
         "readme_install_lines": install_lines[:12],
     }
@@ -466,6 +488,13 @@ def generate_dockerfile(slug: str, ref: str, build: dict) -> str | None:
     m = build["method"]
     if m == "dockerfile":
         return None
+    if m == "docker_image":
+        # The image already holds the tool; the clone rides along so the
+        # example leg can find the repository's own data.
+        return (head + f"FROM {build['image']}\nUSER root\n"
+                + "RUN (apt-get update && apt-get install -y --no-install-recommends git ca-certificates "
+                "&& rm -rf /var/lib/apt/lists/*) || (apk add --no-cache git ca-certificates) || true\n"
+                + clone + "WORKDIR /work\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n")
     if m == "bioconda":
         return (head + "FROM mambaorg/micromamba:1.5.8\nUSER root\n"
                 + apt.format(pkgs="git ca-certificates") + clone
@@ -487,7 +516,8 @@ def generate_dockerfile(slug: str, ref: str, build: dict) -> str | None:
     if m in ("make", "cmake"):
         cmd = "RUN make\n" if m == "make" else "RUN cmake . && make\n"
         return (head + "FROM ubuntu:22.04\n"
-                + apt.format(pkgs="build-essential cmake git ca-certificates zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev")
+                + apt.format(pkgs="build-essential cmake git ca-certificates autoconf automake libtool pkg-config "
+                                  "zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev libssl-dev libncurses-dev")
                 + clone + cmd + tail)
     if m == "cargo":
         return (head + "FROM rust:1.80-slim\n" + apt.format(pkgs="git ca-certificates") + clone
