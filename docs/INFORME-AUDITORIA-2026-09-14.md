@@ -173,7 +173,21 @@ El formulario queda en un campo obligatorio (URL), un ref opcional (por defecto 
 
 Lo que se conserva de la propuesta anterior, ahora acotado al dueño: receta en el repo de la tool (`strhub-verified.yml`, que además prueba control y cierra S1 para publicaciones) y runner local para iterar en minutos. Ninguno de los dos se le pide a un revisor ni a un usuario.
 
-### 4.6 Cómo se vería el lanzamiento
+### 4.6 Los datos: la biblioteca de STRhub es la pieza central
+
+Los repos casi nunca traen datos de prueba, y con razón: un BAM de ejemplo pesa, y el autor no tiene un dato open-access a mano. Por eso hoy el formulario pregunta "¿qué tipo de dato toma tu tool?" y STRhub pone el dato. Eso es correcto y se mantiene. Lo que cambia es **quién elige el tipo** y **qué más viaja con el dato**.
+
+**Quién elige.** El tipo de entrada se infiere del repo, como el resto de la receta: extensiones y flags en el README y en el código (`.bam`, `--fastq`, `pysam`, `samtools`, `minimap2`, `hg38`, `nanopore`), el lenguaje de los ejemplos, y el modelo cuando la señal es débil. Si la inferencia queda entre dos tipos, el ensayo prueba los dos: correr es gratis, y una tool que espera FASTQ y recibe un BAM falla en segundos con un error inconfundible. Si aun así no se resuelve, se hace **una** pregunta al que envía, "¿tu tool toma FASTQ o BAM?", que un revisor puede contestar leyendo el paper. Una pregunta, no 53.
+
+**Qué viaja con el dato.** Hoy un dataset es un archivo. Tiene que ser un archivo más su contrato: referencia y nomenclatura de cromosomas (`chr1` vs `1`), longitud de lectura, y sobre todo el panel de loci que cubre (`loci.bed`, que ya existe para los BAM Illumina). Con eso el motor sabe, sin que nadie lo declare, qué nombres de loci pueden aparecer en la salida y cuántos. Eso cierra S6 sin pedirle nada al autor: "salida plausible" pasa a significar "menciona loci que el dato de entrada contiene". No es exactitud, sigue siendo ejecución.
+
+**El BED de regiones lo genera STRhub.** Es el punto donde más duele "cada tool es un mundo": HipSTR quiere 5 columnas, GangSTR 5 con motivo, STRsearch 11 con flancos de secuencia. Hoy el autor lo sube. Pasa a generarse desde `str_candidates.bed` con un conversor por familia de formato; `harness/build_strsearch_bed.py` ya es el primero. El autor, si quiere, sube el suyo como opción avanzada.
+
+**Ampliar la biblioteca.** Los cuatro tipos de hoy (FASTQ Illumina NIST, BAM ONT 1KGP, BAM Illumina autosómico y Y de GIAB) cubren la mayoría. Falta ONT FASTQ crudo, que es viable porque el runner ya descarga y cachea hg38 para los BAM. SNP y electroforesis capilar no tienen dato open-access razonable: ahí el veredicto honesto es "necesita datos del autor", y se dice así.
+
+**La recomendación de incluir datos de prueba se mantiene**, pero como lo que es: un consejo al autor sobre reproducibilidad de su repo, no una condición del ensayo. Y cuando corre sobre datos de STRhub el reporte lo dice en el idioma del revisor: "corrió sobre una muestra de referencia pública; el repo no trae muestra propia".
+
+### 4.7 Cómo se vería el lanzamiento
 
 Tres páginas de entrada con un campo cada una, un catálogo curado con 5 herramientas consolidadas, y el caso STRspy como demostración: corre, pero falla en 9 loci, y la página lo dice. El mensaje para revisores es "pegá el link y en diez minutos sabés si el Quick Start del paper funciona". El mensaje para el usuario perdido es "compará con un entorno limpio". El mensaje para el dueño es "un badge que se re-verifica solo cada mes".
 
@@ -196,29 +210,30 @@ Tres páginas de entrada con un campo cada una, un catálogo curado con 5 herram
 
 9. Modo ensayo en `verify.yml` (`publish: false`): receta como inputs del dispatch, sin commit a `main`, sin deploy, resultado como artifact con link privado de 30 días.
 10. Detección determinista de receta (`harness/detect_recipe.py`): método de instalación, datos de ejemplo, comando del README, Bioconda. Con tests sobre los 5 repos reales del catálogo.
-11. Compuerta `reproduces_own_example` implementada: correr el ejemplo documentado con los datos del repo y comparar con la salida documentada si existe.
-12. Los cuatro veredictos en `report.py` y en la web, con la lista de huecos del README cuando el veredicto es "no se pudo determinar" (reemplaza el checklist por palabras clave, que hoy da 5/5 a una línea de texto).
-13. **Re-verificar cuando la tool cambia**: `upstream.py` ya detecta "N commits desde el ref"; falta que un release o tag nuevo en el repo dispare un ensayo con el ref nuevo y avise al dueño (así se atrapa el caso STRspy: la v2 publicada seguía llamando código de la v1). Publicar solo si el dueño confirma.
-14. Tests del motor: mergear `fix/bed-header-and-shared-cases`; pytest para `check_io`, `check_content`, `diagnose_log`, `prepare`, `report`; correrlos en el job `resolve`. Arreglar conteo TSV, falsos positivos, aviso obsoleto, `$GITHUB_OUTPUT`, `git ls-remote --`, `ref` como SHA.
+11. Inferencia del tipo de entrada desde el repo, con ensayo de dos tipos cuando hay duda y una sola pregunta al que envía como último recurso; cada `dataset.yml` lleva su contrato (referencia, nomenclatura de cromosomas, panel de loci) y el motor deriva de ahí el vocabulario de loci esperado; conversores de BED por familia de formato desde `str_candidates.bed` (el de STRsearch ya existe).
+12. Compuerta `reproduces_own_example` implementada: correr el ejemplo documentado con los datos del repo y comparar con la salida documentada si existe.
+13. Los cuatro veredictos en `report.py` y en la web, con la lista de huecos del README cuando el veredicto es "no se pudo determinar" (reemplaza el checklist por palabras clave, que hoy da 5/5 a una línea de texto).
+14. **Re-verificar cuando la tool cambia**: `upstream.py` ya detecta "N commits desde el ref"; falta que un release o tag nuevo en el repo dispare un ensayo con el ref nuevo y avise al dueño (así se atrapa el caso STRspy: la v2 publicada seguía llamando código de la v1). Publicar solo si el dueño confirma.
+15. Tests del motor: mergear `fix/bed-header-and-shared-cases`; pytest para `check_io`, `check_content`, `diagnose_log`, `prepare`, `report`; correrlos en el job `resolve`. Arreglar conteo TSV, falsos positivos, aviso obsoleto, `$GITHUB_OUTPUT`, `git ls-remote --`, `ref` como SHA.
 
 ### Fase 2. Las tres entradas (3 a 4 semanas)
 
-15. Página "Revisar para un paper": URL + tag, sin aprobación, informe privado compartible.
-16. Página "¿Es mi entorno o la tool?": búsqueda en catálogo, entorno y comando exactos, "pegá tu error" con `diagnose_log` (la web ya tiene el espejo `diagnostics.ts`).
-17. "Verificar mi tool" reducido a URL + ref + panel avanzado; "Publicar" solo tras ensayo verde; soporte de `strhub-verified.yml` en el repo del dueño como prueba de control (reemplaza la aprobación manual).
-18. Runner local `harness/run_local.py` para dueños.
+16. Página "Revisar para un paper": URL + tag, sin aprobación, informe privado compartible.
+17. Página "¿Es mi entorno o la tool?": búsqueda en catálogo, entorno y comando exactos, "pegá tu error" con `diagnose_log` (la web ya tiene el espejo `diagnostics.ts`).
+18. "Verificar mi tool" reducido a URL + ref + panel avanzado; "Publicar" solo tras ensayo verde; soporte de `strhub-verified.yml` en el repo del dueño como prueba de control (reemplaza la aprobación manual).
+19. Runner local `harness/run_local.py` para dueños.
 
 ### Fase 3. El bucle con el modelo y la deuda (2 a 3 semanas)
 
-19. Bucle autoconfig → ensayo → diagnóstico → corrección, hasta 5 intentos, solo sobre la receta; el humano ve la que funcionó.
-20. Un solo origen para las constantes espejo motor ↔ web, con test de igualdad.
-21. Partir `verified-submit-form.tsx`; polling con tope; borrar código muerto; consolidar renders y etiquetas del motor; README, RUNBOOK, `datasets/README.md` y `download.sh` al día.
+20. Bucle autoconfig → ensayo → diagnóstico → corrección, hasta 5 intentos, solo sobre la receta; el humano ve la que funcionó.
+21. Un solo origen para las constantes espejo motor ↔ web, con test de igualdad.
+22. Partir `verified-submit-form.tsx`; polling con tope; borrar código muerto; consolidar renders y etiquetas del motor; README, RUNBOOK, `datasets/README.md` y `download.sh` al día.
 
 ### Fase 4. Lanzamiento público
 
-22. Catálogo consolidado: una entrada por herramienta, variantes por kit con `tool.variant`; `maintainer` y `contact` completos.
-23. `VERIFIED_PUBLIC = true`; anuncio con las tres entradas y el caso STRspy.
-24. Invitar a 5 a 10 mantenedores con la receta ya armada para que solo confirmen, y a 2 o 3 editores de revistas del área para probar la entrada de revisores.
+23. Catálogo consolidado: una entrada por herramienta, variantes por kit con `tool.variant`; `maintainer` y `contact` completos.
+24. `VERIFIED_PUBLIC = true`; anuncio con las tres entradas y el caso STRspy.
+25. Invitar a 5 a 10 mantenedores con la receta ya armada para que solo confirmen, y a 2 o 3 editores de revistas del área para probar la entrada de revisores.
 
 ### Después
 
