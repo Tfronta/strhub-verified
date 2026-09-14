@@ -81,3 +81,12 @@ def test_empty_repository_reports_every_gap():
 
 def test_proposal_is_json_serialisable():
     json.dumps(_detect("hipstr"))
+
+
+def test_example_is_proposed_only_when_the_command_runs_on_shipped_data():
+    strsearch = _detect("strsearch")["example"]
+    assert strsearch and strsearch["source"] == "detected"
+    assert any(p.startswith("example/test_data/") for p in strsearch["inputs_in_repo"])
+    # Placeholders like run1.bam / file.bam are not files in the tree.
+    assert _detect("hipstr")["example"] is None
+    assert _detect("gangstr")["example"] is None
