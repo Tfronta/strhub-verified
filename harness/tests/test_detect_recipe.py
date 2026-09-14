@@ -90,3 +90,14 @@ def test_example_is_proposed_only_when_the_command_runs_on_shipped_data():
     # Placeholders like run1.bam / file.bam are not files in the tree.
     assert _detect("hipstr")["example"] is None
     assert _detect("gangstr")["example"] is None
+
+
+def test_generated_dockerfiles_never_mask_a_failed_clone():
+    import re
+    for name in ("hipstr", "straitrazor", "gangstr", "strspy"):
+        df = _detect(name)["dockerfile"]
+        assert df, name
+        for line in df.splitlines():
+            # A bare `|| true` at the end of a RUN chain hides every earlier
+            # failure in the chain. Only a parenthesised step may be tolerated.
+            assert not re.search(r"&&\s+[^()\n]*\|\|\s*true\s*$", line), (name, line)

@@ -48,7 +48,11 @@ def test_straitrazor_fastq_is_pointed_at_the_nist_sample(tmp_path):
     r = pm.build(_proposal("straitrazor"), "straitrazor-trial")
     m = _valid(r["manifest_yml"], tmp_path)
     assert m["inputs"]["type"] == "illumina-str-fastq"
-    assert "/data/in/sample.fastq" in m["run"]["cmd"]
+    # README placeholders resolved: the kit-matched config from the tree, and
+    # `fastqfile` pointed at the NIST sample. The un-piped form is chosen.
+    assert "str8rzr -c ForenSeqv1.27.config /data/in/sample.fastq > allsequences.txt" in m["run"]["cmd"]
+    assert "zcat" not in m["run"]["cmd"]
+    assert any("ForenSeq kit" in c for c in m["caveats"]["items"])
     assert m["outputs"][0]["path"] == "**/*.t[sx][vt]"
     assert r["limitations"] == []
 
