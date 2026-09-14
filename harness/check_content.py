@@ -194,8 +194,14 @@ def check(manifest_path: str, out_dir: str) -> dict:
         if not content_spec:
             continue
         any_content = True
-        matches = sorted(out.glob(spec["path"]))
+        matches, refused = _manifest.safe_glob(out, spec["path"])
         entry = {"path": spec["path"]}
+        if refused is not None:
+            entry["passed"] = False
+            entry["error"] = refused
+            ok = False
+            results.append(entry)
+            continue
         if not matches:
             entry["passed"] = False
             entry["error"] = "output not found"

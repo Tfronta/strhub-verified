@@ -1,0 +1,212 @@
+{
+"repo": "https://github.com/unique379r/strspy",
+"ref": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
+"truncated": false,
+"tree": [
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 6
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 13780
+},
+{
+"path": "STRspy_run_v2.0_Args.sh",
+"type": "blob",
+"size": 8860
+},
+{
+"path": "cluster-example-scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "cluster-example-scripts/submit_strspy_Normal.pbs",
+"type": "blob",
+"size": 413
+},
+{
+"path": "cluster-example-scripts/submit_strspy_Normal.slurm",
+"type": "blob",
+"size": 942
+},
+{
+"path": "config",
+"type": "tree",
+"size": 0
+},
+{
+"path": "config/InputConfig.txt",
+"type": "blob",
+"size": 296
+},
+{
+"path": "config/UserToolsConfig.txt",
+"type": "blob",
+"size": 261
+},
+{
+"path": "db-v2",
+"type": "tree",
+"size": 0
+},
+{
+"path": "db-v2/.DS_Store",
+"type": "blob",
+"size": 6148
+},
+{
+"path": "db-v2/STRspy2.0-DB.zip",
+"type": "blob",
+"size": 205044
+},
+{
+"path": "db-v2/STRspy_v2.DB.sort.bed",
+"type": "blob",
+"size": 1572
+},
+{
+"path": "db-v2/optional-create-custom-db",
+"type": "tree",
+"size": 0
+},
+{
+"path": "db-v2/optional-create-custom-db/.DS_Store",
+"type": "blob",
+"size": 6148
+},
+{
+"path": "db-v2/optional-create-custom-db/BuildDB_From_GeneBank.V1.sh",
+"type": "blob",
+"size": 28381
+},
+{
+"path": "db-v2/optional-create-custom-db/refFasta",
+"type": "tree",
+"size": 0
+},
+{
+"path": "db-v2/optional-create-custom-db/refFasta/README",
+"type": "blob",
+"size": 382
+},
+{
+"path": "db-v2/optional-create-custom-db/testTwofa",
+"type": "tree",
+"size": 0
+},
+{
+"path": "db-v2/optional-create-custom-db/testTwofa/TPOX.fa",
+"type": "blob",
+"size": 5043
+},
+{
+"path": "db-v2/optional-create-custom-db/testTwofa/vWA.fa",
+"type": "blob",
+"size": 15424
+},
+{
+"path": "db-v2/optional-create-custom-db/testTwogb",
+"type": "tree",
+"size": 0
+},
+{
+"path": "db-v2/optional-create-custom-db/testTwogb/TPOX.gb",
+"type": "blob",
+"size": 81892
+},
+{
+"path": "db-v2/optional-create-custom-db/testTwogb/vWA.gb",
+"type": "blob",
+"size": 246043
+},
+{
+"path": "figs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "figs/.DS_Store",
+"type": "blob",
+"size": 6148
+},
+{
+"path": "figs/fig1.pdf",
+"type": "blob",
+"size": 2820546
+},
+{
+"path": "figs/fig1.png",
+"type": "blob",
+"size": 521700
+},
+{
+"path": "figs/fig2.pdf",
+"type": "blob",
+"size": 190695
+},
+{
+"path": "figs/fig2.png",
+"type": "blob",
+"size": 200872
+},
+{
+"path": "figs/fig3.pdf",
+"type": "blob",
+"size": 199295
+},
+{
+"path": "figs/fig3.png",
+"type": "blob",
+"size": 411245
+},
+{
+"path": "figs/fig4.pdf",
+"type": "blob",
+"size": 192885
+},
+{
+"path": "figs/fig4.png",
+"type": "blob",
+"size": 447338
+},
+{
+"path": "setup",
+"type": "tree",
+"size": 0
+},
+{
+"path": "setup/GenerateToolConfig.sh",
+"type": "blob",
+"size": 574
+},
+{
+"path": "setup/STRspy_2.0.setup.sh",
+"type": "blob",
+"size": 3583
+},
+{
+"path": "setup/STRspy_2.0_env.yml",
+"type": "blob",
+"size": 234
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/STRspy_Normal_v2.0_Args.sh",
+"type": "blob",
+"size": 19973
+},
+{
+"path": "src/STRspy_Parallel_v2.0_Args.sh",
+"type": "blob",
+"size": 19035
+}
+]
+}
