@@ -1,5 +1,6 @@
 {
   "schema": "strhub-verified/1",
+  "mode": "publish",
   "tool": {
     "name": "hipstr",
     "version": "b2033bf",
@@ -21,8 +22,8 @@
     ],
     "source": "generated"
   },
-  "generated": "2026-08-14T20:01:55+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31835727476",
+  "generated": "2026-09-14T20:34:40+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/34893416022",
   "gates": {
     "available": true,
     "installs": true,
@@ -39,6 +40,7 @@
         "path": "result.vcf.gz",
         "format": "vcf",
         "checks": {
+          "confined": true,
           "exists": true,
           "non_empty": true,
           "parses_as_vcf": true,
@@ -58,8 +60,11 @@
       {
         "path": "result.vcf.gz",
         "resolved": "result.vcf.gz",
+        "mode": "auto",
         "checks": {
-          "dna_is_acgtn": true
+          "records_present": true,
+          "genotypes_called": true,
+          "given_loci_recognised": true
         },
         "stats": {
           "rows": 13,
@@ -156,12 +161,16 @@
               "DYS393",
               161
             ]
-          ]
+          ],
+          "called_genotypes": 13,
+          "regions_given": 17,
+          "regions_hit": 13
         },
         "passed": true
       }
     ]
   },
+  "example_detail": null,
   "datasets": [
     {
       "leg": "own",
@@ -181,11 +190,20 @@
       "io": true,
       "content": true,
       "passed": true
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": false,
+      "io": false,
+      "content": null,
+      "passed": false,
+      "matches_expected": null,
+      "produced_count": null
     }
   ],
   "regions": {
-    "source": "tool",
-    "covered_loci": 14,
+    "source": "strhub",
     "panel_size": 14
   },
   "readme_check": {
@@ -219,7 +237,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-08-14T20:01:55+00:00",
+    "checked": "2026-09-14T20:34:40+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -227,7 +245,6 @@
     "behind_by": 0
   },
   "needed_beyond_repo": [
-    "A regions configuration file, supplied with the submission rather than taken from the repository.",
     "Test data: no sample from the repository was used, so a public reference sample stood in.",
     "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships."
   ],
@@ -270,5 +287,13 @@
     "basis": null,
     "reason_code": null,
     "reason": null
+  },
+  "verdict": {
+    "code": "runs",
+    "title": "Runs",
+    "basis": "gates",
+    "reason": "The tool installed and its run produced its documented output.",
+    "readme_gaps": [],
+    "blockers": []
   }
 }
