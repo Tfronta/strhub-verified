@@ -1,5 +1,6 @@
 {
   "schema": "strhub-verified/1",
+  "mode": "publish",
   "tool": {
     "name": "hipstr",
     "version": "v0.7"
@@ -18,8 +19,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-08-14T12:40:02+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/31801058679",
+  "generated": "2026-09-14T20:34:43+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/34893423576",
   "gates": {
     "available": true,
     "installs": true,
@@ -36,6 +37,7 @@
         "path": "result.vcf.gz",
         "format": "vcf",
         "checks": {
+          "confined": true,
           "exists": true,
           "non_empty": true,
           "parses_as_vcf": true,
@@ -55,8 +57,11 @@
       {
         "path": "result.vcf.gz",
         "resolved": "result.vcf.gz",
+        "mode": "auto",
         "checks": {
-          "dna_is_acgtn": true,
+          "records_present": true,
+          "genotypes_called": true,
+          "given_loci_recognised": true,
           "min_distinct_loci": true
         },
         "stats": {
@@ -154,12 +159,16 @@
               "DYS393",
               161
             ]
-          ]
+          ],
+          "called_genotypes": 13,
+          "regions_given": 17,
+          "regions_hit": 13
         },
         "passed": true
       }
     ]
   },
+  "example_detail": null,
   "datasets": [
     {
       "leg": "own",
@@ -179,6 +188,16 @@
       "io": true,
       "content": true,
       "passed": true
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": false,
+      "io": false,
+      "content": null,
+      "passed": false,
+      "matches_expected": null,
+      "produced_count": null
     }
   ],
   "regions": {
@@ -215,9 +234,18 @@
     "empty": false
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "upstream": {
+    "checked": "2026-09-14T20:34:44+00:00",
+    "repo_exists": true,
+    "ref_exists": true,
+    "default_branch": "master",
+    "status": "identical",
+    "behind_by": 0
+  },
   "logs": {
     "own": "hipstr-v0-7-y.log-own.txt",
-    "external": "hipstr-v0-7-y.log-external.txt"
+    "external": "hipstr-v0-7-y.log-external.txt",
+    "build": "hipstr-v0-7-y.log-build.txt"
   },
   "diagnostics": {
     "own": [
@@ -282,5 +310,13 @@
     "basis": null,
     "reason_code": null,
     "reason": null
+  },
+  "verdict": {
+    "code": "runs",
+    "title": "Runs",
+    "basis": "gates",
+    "reason": "The tool installed and its run produced its documented output.",
+    "readme_gaps": [],
+    "blockers": []
   }
 }

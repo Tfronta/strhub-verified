@@ -2,11 +2,14 @@
 
 **Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
+**Verdict: Runs.** The tool installed and its run produced its documented output.
+
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-14T12:40:02+00:00
+- Generated: 2026-09-14T20:34:43+00:00
 - Submitted by: a third party — not the tool's maintainer
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31801058679
+- Upstream: The verified commit is the head of `master`.
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/34893423576
 
 ## Gates
 
@@ -31,6 +34,7 @@
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
 | External data | yes | PASS | — | Illumina BAM (hg38), HG002 (Y-STR, male) |
+| Tool's own example | N/A | N/A | — | — |
 
 ## Regions
 

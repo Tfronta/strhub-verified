@@ -25,17 +25,17 @@ Reassembling flanking sequences
 Allele counts
 	AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGAT 2
 Locus timing:
- BAM seek time       = 6e-06 seconds
- Read filtering      = 0.007844 seconds
- SNP info extraction = 0.000156 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.025407 seconds
-	 Left alignment        = 0.00077 seconds
-	 Haplotype generation  = 0.000542 seconds
-	 Haplotype alignment   = 0.010528 seconds
-	 Flank assembly        = 0.000688 seconds
+ BAM seek time       = 4e-06 seconds
+ Read filtering      = 0.008412 seconds
+ SNP info extraction = 0.000109 seconds
+ Stutter estimation  = 5e-06 seconds
+ Genotyping          = 0.021984 seconds
+	 Left alignment        = 0.00066 seconds
+	 Haplotype generation  = 0.000428 seconds
+	 Haplotype alignment   = 0.009281 seconds
+	 Flank assembly        = 0.000568 seconds
 	 Posterior computation = 4e-06 seconds
-	 Alignment traceback   = 0.01178 seconds
+	 Alignment traceback   = 0.010248 seconds
 
 Processing region chrY 4402918 4402978
 Adapter trimming removed
@@ -61,17 +61,17 @@ Allele counts
 	AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGAT 0
 	AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGAT 2
 Locus timing:
- BAM seek time       = 3e-06 seconds
- Read filtering      = 0.007555 seconds
- SNP info extraction = 0.0002 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.084322 seconds
-	 Left alignment        = 0.036688 seconds
-	 Haplotype generation  = 0.001118 seconds
-	 Haplotype alignment   = 0.026712 seconds
-	 Flank assembly        = 0.000711 seconds
-	 Posterior computation = 1.5e-05 seconds
-	 Alignment traceback   = 0.017598 seconds
+ BAM seek time       = 2e-06 seconds
+ Read filtering      = 0.007274 seconds
+ SNP info extraction = 0.000164 seconds
+ Stutter estimation  = 2e-06 seconds
+ Genotyping          = 0.065674 seconds
+	 Left alignment        = 0.024705 seconds
+	 Haplotype generation  = 0.000728 seconds
+	 Haplotype alignment   = 0.023671 seconds
+	 Flank assembly        = 0.000584 seconds
+	 Posterior computation = 1.1e-05 seconds
+	 Alignment traceback   = 0.014881 seconds
 
 Processing region chrY 7999838 7999902
 Adapter trimming removed
@@ -98,16 +98,16 @@ Allele counts
 	GAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAAAGAAAGAAA 2
 Locus timing:
  BAM seek time       = 2e-06 seconds
- Read filtering      = 0.007656 seconds
- SNP info extraction = 0.000229 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.084106 seconds
-	 Left alignment        = 0.032085 seconds
-	 Haplotype generation  = 0.000593 seconds
-	 Haplotype alignment   = 0.028767 seconds
-	 Flank assembly        = 0.000771 seconds
-	 Posterior computation = 1.3e-05 seconds
-	 Alignment traceback   = 0.020482 seconds
+ Read filtering      = 0.007147 seconds
+ SNP info extraction = 0.000153 seconds
+ Stutter estimation  = 3e-06 seconds
+ Genotyping          = 0.072823 seconds
+	 Left alignment        = 0.023456 seconds
+	 Haplotype generation  = 0.000467 seconds
+	 Haplotype alignment   = 0.027869 seconds
+	 Flank assembly        = 0.000651 seconds
+	 Posterior computation = 9e-06 seconds
+	 Alignment traceback   = 0.019315 seconds
 
 Processing region chrY 9684379 9684443
 Adapter trimming removed
@@ -131,12 +131,12 @@ Aborting genotyping of the locus as the sequence downstream of the repeat is too
 	Flanking sequence = AAACACTATATATATATAACACTATATATATAATA
 Locus timing:
  BAM seek time       = 2e-06 seconds
- Read filtering      = 0.008821 seconds
- SNP info extraction = 0.000126 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.040099 seconds
-	 Left alignment        = 0.038836 seconds
-	 Haplotype generation  = 0.00085 seconds
+ Read filtering      = 0.008541 seconds
+ SNP info extraction = 8.3e-05 seconds
+ Stutter estimation  = 2e-06 seconds
+ Genotyping          = 0.027346 seconds
+	 Left alignment        = 0.02645 seconds
+	 Haplotype generation  = 0.000581 seconds
 	 Haplotype alignment   = 0 seconds
 	 Flank assembly        = 0 seconds
 	 Posterior computation = 0 seconds
@@ -166,17 +166,17 @@ Allele counts
 	TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 0
 	TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 2
 Locus timing:
- BAM seek time       = 2e-06 seconds
- Read filtering      = 0.008356 seconds
- SNP info extraction = 0.000186 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.069086 seconds
-	 Left alignment        = 0.030843 seconds
-	 Haplotype generation  = 0.000639 seconds
-	 Haplotype alignment   = 0.02102 seconds
-	 Flank assembly        = 0.000975 seconds
-	 Posterior computation = 1.5e-05 seconds
-	 Alignment traceback   = 0.014019 seconds
+ BAM seek time       = 1e-06 seconds
+ Read filtering      = 0.007935 seconds
+ SNP info extraction = 0.000144 seconds
+ Stutter estimation  = 3e-06 seconds
+ Genotyping          = 0.054416 seconds
+	 Left alignment        = 0.021519 seconds
+	 Haplotype generation  = 0.00051 seconds
+	 Haplotype alignment   = 0.018547 seconds
+	 Flank assembly        = 0.000797 seconds
+	 Posterior computation = 1.1e-05 seconds
+	 Alignment traceback   = 0.01201 seconds
 
 Processing region chrY 12258859 12258951
 Adapter trimming removed
@@ -202,17 +202,17 @@ Allele counts
 	TAGATAGATAGATAGATAGATAGATAGATAGATAGATACATACATAGATAGATACATACATAGATAGATACATACATAGATAGATAGATAGA 0
 	TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATACATACATAGATAGATACATACATAGATAGATAGATAGA 2
 Locus timing:
- BAM seek time       = 2e-06 seconds
- Read filtering      = 0.008971 seconds
- SNP info extraction = 0.00025 seconds
- Stutter estimation  = 6e-06 seconds
- Genotyping          = 0.140267 seconds
-	 Left alignment        = 0.052345 seconds
-	 Haplotype generation  = 0.001295 seconds
-	 Haplotype alignment   = 0.051609 seconds
-	 Flank assembly        = 0.000816 seconds
-	 Posterior computation = 1.7e-05 seconds
-	 Alignment traceback   = 0.032379 seconds
+ BAM seek time       = 1e-06 seconds
+ Read filtering      = 0.008222 seconds
+ SNP info extraction = 0.000177 seconds
+ Stutter estimation  = 2e-06 seconds
+ Genotyping          = 0.117594 seconds
+	 Left alignment        = 0.037631 seconds
+	 Haplotype generation  = 0.000947 seconds
+	 Haplotype alignment   = 0.048254 seconds
+	 Flank assembly        = 0.000764 seconds
+	 Posterior computation = 1.3e-05 seconds
+	 Alignment traceback   = 0.028429 seconds
 
 Processing region chrY 12500447 12500495
 Adapter trimming removed
@@ -238,17 +238,17 @@ Allele counts
 	TAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGA 0
 	TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGA 2
 Locus timing:
- BAM seek time       = 2e-06 seconds
- Read filtering      = 0.016297 seconds
- SNP info extraction = 0.000238 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.070452 seconds
-	 Left alignment        = 0.019725 seconds
-	 Haplotype generation  = 0.000712 seconds
-	 Haplotype alignment   = 0.028512 seconds
-	 Flank assembly        = 0.001072 seconds
-	 Posterior computation = 2e-05 seconds
-	 Alignment traceback   = 0.018737 seconds
+ BAM seek time       = 1e-06 seconds
+ Read filtering      = 0.015113 seconds
+ SNP info extraction = 0.000164 seconds
+ Stutter estimation  = 2e-06 seconds
+ Genotyping          = 0.062868 seconds
+	 Left alignment        = 0.017401 seconds
+	 Haplotype generation  = 0.000572 seconds
+	 Haplotype alignment   = 0.026233 seconds
+	 Flank assembly        = 0.000894 seconds
+	 Posterior computation = 1.4e-05 seconds
+	 Alignment traceback   = 0.016594 seconds
 
 Processing region chrY 12500447 12500516
 Adapter trimming removed
@@ -274,17 +274,17 @@ Allele counts
 	TAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATACATAGATAATACAGATGAG 0
 	TAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATACATAGATAATACAGATGAG 2
 Locus timing:
- BAM seek time       = 3e-06 seconds
- Read filtering      = 0.016624 seconds
- SNP info extraction = 0.000237 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.163165 seconds
-	 Left alignment        = 0.042692 seconds
-	 Haplotype generation  = 0.000766 seconds
-	 Haplotype alignment   = 0.072468 seconds
-	 Flank assembly        = 0.001005 seconds
-	 Posterior computation = 2.1e-05 seconds
-	 Alignment traceback   = 0.044181 seconds
+ BAM seek time       = 1e-06 seconds
+ Read filtering      = 0.015217 seconds
+ SNP info extraction = 0.000215 seconds
+ Stutter estimation  = 3e-06 seconds
+ Genotyping          = 0.160915 seconds
+	 Left alignment        = 0.03167 seconds
+	 Haplotype generation  = 0.000617 seconds
+	 Haplotype alignment   = 0.081294 seconds
+	 Flank assembly        = 0.000806 seconds
+	 Posterior computation = 1.5e-05 seconds
+	 Alignment traceback   = 0.044931 seconds
 
 Processing region chrY 12500563 12500611
 Adapter trimming removed
@@ -307,12 +307,12 @@ Aborting genotyping of the locus as the sequence upstream of the repeat is too r
 	Flanking sequence = AAGTAGGTATAATGATAGATAGATAGATAGATAGA
 Locus timing:
  BAM seek time       = 2e-06 seconds
- Read filtering      = 0.01622 seconds
- SNP info extraction = 0.000217 seconds
- Stutter estimation  = 8e-06 seconds
- Genotyping          = 0.015059 seconds
-	 Left alignment        = 0.014199 seconds
-	 Haplotype generation  = 0.000497 seconds
+ Read filtering      = 0.014901 seconds
+ SNP info extraction = 0.00018 seconds
+ Stutter estimation  = 3e-06 seconds
+ Genotyping          = 0.012733 seconds
+	 Left alignment        = 0.012008 seconds
+	 Haplotype generation  = 0.000425 seconds
 	 Haplotype alignment   = 0 seconds
 	 Flank assembly        = 0 seconds
 	 Posterior computation = 0 seconds
@@ -348,17 +348,17 @@ Allele counts
 	TTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTC 0
 	TTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTC 2
 Locus timing:
- BAM seek time       = 2e-06 seconds
- Read filtering      = 0.008023 seconds
- SNP info extraction = 0.000107 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.099608 seconds
-	 Left alignment        = 0.01163 seconds
-	 Haplotype generation  = 0.000355 seconds
-	 Haplotype alignment   = 0.044345 seconds
-	 Flank assembly        = 0.000882 seconds
-	 Posterior computation = 6e-05 seconds
-	 Alignment traceback   = 0.039807 seconds
+ BAM seek time       = 1e-06 seconds
+ Read filtering      = 0.007791 seconds
+ SNP info extraction = 7e-05 seconds
+ Stutter estimation  = 3e-06 seconds
+ Genotyping          = 0.08787 seconds
+	 Left alignment        = 0.009982 seconds
+	 Haplotype generation  = 0.000299 seconds
+	 Haplotype alignment   = 0.039514 seconds
+	 Flank assembly        = 0.000693 seconds
+	 Posterior computation = 4.4e-05 seconds
+	 Alignment traceback   = 0.035492 seconds
 
 Processing region chrY 15163066 15163162
 Adapter trimming removed
@@ -384,17 +384,17 @@ Allele counts
 	TAGATAGATAGATAGACAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGA 0
 	TAGATAGATAGATAGACAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGACAGA 2
 Locus timing:
- BAM seek time       = 3e-06 seconds
- Read filtering      = 0.007748 seconds
- SNP info extraction = 0.00021 seconds
- Stutter estimation  = 2.3e-05 seconds
- Genotyping          = 0.09905 seconds
-	 Left alignment        = 0.025244 seconds
-	 Haplotype generation  = 0.000781 seconds
-	 Haplotype alignment   = 0.042987 seconds
-	 Flank assembly        = 0.000682 seconds
-	 Posterior computation = 1.6e-05 seconds
-	 Alignment traceback   = 0.027624 seconds
+ BAM seek time       = 1e-06 seconds
+ Read filtering      = 0.007454 seconds
+ SNP info extraction = 0.000196 seconds
+ Stutter estimation  = 2e-06 seconds
+ Genotyping          = 0.087081 seconds
+	 Left alignment        = 0.018758 seconds
+	 Haplotype generation  = 0.000558 seconds
+	 Haplotype alignment   = 0.040763 seconds
+	 Flank assembly        = 0.000575 seconds
+	 Posterior computation = 1.1e-05 seconds
+	 Alignment traceback   = 0.025202 seconds
 
 Processing region chrY 16607008 16607060
 Adapter trimming removed
@@ -418,17 +418,17 @@ Reassembling flanking sequences
 Allele counts
 	TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 2
 Locus timing:
- BAM seek time       = 3e-06 seconds
- Read filtering      = 0.008173 seconds
- SNP info extraction = 0.000208 seconds
- Stutter estimation  = 2.1e-05 seconds
- Genotyping          = 0.031683 seconds
-	 Left alignment        = 0.00149 seconds
-	 Haplotype generation  = 0.000473 seconds
-	 Haplotype alignment   = 0.012882 seconds
-	 Flank assembly        = 0.000795 seconds
-	 Posterior computation = 5e-06 seconds
-	 Alignment traceback   = 0.014848 seconds
+ BAM seek time       = 2e-06 seconds
+ Read filtering      = 0.007935 seconds
+ SNP info extraction = 0.000164 seconds
+ Stutter estimation  = 7e-06 seconds
+ Genotyping          = 0.027635 seconds
+	 Left alignment        = 0.001375 seconds
+	 Haplotype generation  = 0.000398 seconds
+	 Haplotype alignment   = 0.011534 seconds
+	 Flank assembly        = 0.000669 seconds
+	 Posterior computation = 3e-06 seconds
+	 Alignment traceback   = 0.012749 seconds
 
 Processing region chrY 16631634 16631756
 Adapter trimming removed
@@ -454,17 +454,17 @@ Allele counts
 	TCTATCTATCTATCTATTCATCCATCTAATCTATCCATTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACCTACCTACCTATCTATCTATAGATCTATCTATCTA 0
 	TCTATCTATCTATCTATTCATCCATCTAATCTATCCATTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTACCTACCTACCTATCTATCTATAGATCTATCTATCTA 2
 Locus timing:
- BAM seek time       = 3e-06 seconds
- Read filtering      = 0.010792 seconds
- SNP info extraction = 0.000278 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.299623 seconds
-	 Left alignment        = 0.061747 seconds
-	 Haplotype generation  = 0.001278 seconds
-	 Haplotype alignment   = 0.138563 seconds
-	 Flank assembly        = 0.000842 seconds
-	 Posterior computation = 2.3e-05 seconds
-	 Alignment traceback   = 0.093634 seconds
+ BAM seek time       = 2e-06 seconds
+ Read filtering      = 0.010094 seconds
+ SNP info extraction = 0.000253 seconds
+ Stutter estimation  = 3e-06 seconds
+ Genotyping          = 0.287109 seconds
+	 Left alignment        = 0.043438 seconds
+	 Haplotype generation  = 0.000902 seconds
+	 Haplotype alignment   = 0.149921 seconds
+	 Flank assembly        = 0.000754 seconds
+	 Posterior computation = 1.6e-05 seconds
+	 Alignment traceback   = 0.089479 seconds
 
 Processing region chrY 18680512 18680687
 Adapter trimming removed
@@ -489,16 +489,16 @@ Allele counts
 	AAGGAAGGAAGGAAGGAGAAAGAAAGTAAAAAAGAAAGAAAGAGAAAAAGAGAAAAAGAAAGAAAGAGAAGAAAGAGAAAGAGGAAAGAGAAAGAAAGGAAGGAAGGAAGGAAGGAAGGGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAA 2
 Locus timing:
  BAM seek time       = 2e-06 seconds
- Read filtering      = 0.008099 seconds
- SNP info extraction = 0.000259 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.233315 seconds
-	 Left alignment        = 0.083248 seconds
-	 Haplotype generation  = 0.001401 seconds
-	 Haplotype alignment   = 0.069135 seconds
-	 Flank assembly        = 0.000623 seconds
-	 Posterior computation = 8e-06 seconds
-	 Alignment traceback   = 0.075845 seconds
+ Read filtering      = 0.007304 seconds
+ SNP info extraction = 0.000232 seconds
+ Stutter estimation  = 4e-06 seconds
+ Genotyping          = 0.19101 seconds
+	 Left alignment        = 0.057772 seconds
+	 Haplotype generation  = 0.001003 seconds
+	 Haplotype alignment   = 0.062597 seconds
+	 Flank assembly        = 0.000583 seconds
+	 Posterior computation = 5e-06 seconds
+	 Alignment traceback   = 0.066872 seconds
 
 Processing region chrY 20471986 20472025
 Adapter trimming removed
@@ -522,17 +522,17 @@ Reassembling flanking sequences
 Allele counts
 	ATAATAATAATAATAATAATAATAATAATAATAATAATA 2
 Locus timing:
- BAM seek time       = 3e-06 seconds
- Read filtering      = 0.008599 seconds
- SNP info extraction = 0.000208 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.027317 seconds
-	 Left alignment        = 0.001856 seconds
-	 Haplotype generation  = 0.000387 seconds
-	 Haplotype alignment   = 0.010766 seconds
-	 Flank assembly        = 0.000847 seconds
-	 Posterior computation = 5e-06 seconds
-	 Alignment traceback   = 0.012374 seconds
+ BAM seek time       = 2e-06 seconds
+ Read filtering      = 0.008296 seconds
+ SNP info extraction = 0.000158 seconds
+ Stutter estimation  = 4e-06 seconds
+ Genotyping          = 0.023524 seconds
+	 Left alignment        = 0.001532 seconds
+	 Haplotype generation  = 0.000361 seconds
+	 Haplotype alignment   = 0.009399 seconds
+	 Flank assembly        = 0.000749 seconds
+	 Posterior computation = 4e-06 seconds
+	 Alignment traceback   = 0.010606 seconds
 
 Processing region chrY 22218922 22218996
 Adapter trimming removed
@@ -557,13 +557,13 @@ Generating candidate haplotypes
 Aborting genotyping of the locus as the sequence downstream of the repeat is too repetitive for accurate genotyping
 	Flanking sequence = AGAGATAGAGATAGAGATAGATAGATAGAGAAAGA
 Locus timing:
- BAM seek time       = 3e-06 seconds
- Read filtering      = 0.010928 seconds
- SNP info extraction = 0.000184 seconds
- Stutter estimation  = 7e-06 seconds
- Genotyping          = 0.019992 seconds
-	 Left alignment        = 0.018406 seconds
-	 Haplotype generation  = 0.001254 seconds
+ BAM seek time       = 1e-06 seconds
+ Read filtering      = 0.010089 seconds
+ SNP info extraction = 0.000159 seconds
+ Stutter estimation  = 3e-06 seconds
+ Genotyping          = 0.016693 seconds
+	 Left alignment        = 0.015529 seconds
+	 Haplotype generation  = 0.000879 seconds
 	 Haplotype alignment   = 0 seconds
 	 Flank assembly        = 0 seconds
 	 Posterior computation = 0 seconds
@@ -589,13 +589,13 @@ Generating candidate haplotypes
 Aborting genotyping of the locus as the sequence upstream of the repeat is too repetitive for accurate genotyping
 	Flanking sequence = TAGAGAGATAGAGATAGAGATAGATAGATAGAGAA
 Locus timing:
- BAM seek time       = 2e-06 seconds
- Read filtering      = 0.011365 seconds
- SNP info extraction = 0.000181 seconds
- Stutter estimation  = 6e-06 seconds
- Genotyping          = 0.002093 seconds
-	 Left alignment        = 0.00142 seconds
-	 Haplotype generation  = 0.000399 seconds
+ BAM seek time       = 1e-06 seconds
+ Read filtering      = 0.010538 seconds
+ SNP info extraction = 0.000141 seconds
+ Stutter estimation  = 2e-06 seconds
+ Genotyping          = 0.00179 seconds
+	 Left alignment        = 0.001196 seconds
+	 Haplotype generation  = 0.000348 seconds
 	 Haplotype alignment   = 0 seconds
 	 Flank assembly        = 0 seconds
 	 Posterior computation = 0 seconds
@@ -608,18 +608,18 @@ Locus timing:
 Genotyping succeeded for 13/17 loci
 
 Approximate timing breakdown
- BAM seek time       = 4.5e-05 seconds
- Read filtering      = 0.172071 seconds
- SNP info extraction = 0.003474 seconds
- Stutter estimation  = 0.000148 seconds
- Genotyping          = 1.50464 seconds
-	 Left alignment        = 0.473224 seconds
-	 Haplotype generation  = 0.01334 seconds
-	 Haplotype alignment   = 0.558294 seconds
-	 Flank assembly        = 0.010709 seconds
-	 Posterior computation = 0.000222 seconds
-	 Alignment traceback   = 0.423308 seconds
-HipSTR execution finished: Total runtime = 2.11208 sec
+ BAM seek time       = 2.8e-05 seconds
+ Read filtering      = 0.162263 seconds
+ SNP info extraction = 0.002762 seconds
+ Stutter estimation  = 5.3e-05 seconds
+ Genotyping          = 1.31906 seconds
+	 Left alignment        = 0.345082 seconds
+	 Haplotype generation  = 0.010023 seconds
+	 Haplotype alignment   = 0.548877 seconds
+	 Flank assembly        = 0.009087 seconds
+	 Posterior computation = 0.00016 seconds
+	 Alignment traceback   = 0.386808 seconds
+HipSTR execution finished: Total runtime = 1.78703 sec
 -----------------
 
 
