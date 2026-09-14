@@ -1,12 +1,15 @@
 # STRhub Verified: GangSTR (gangstr-v2-5)
 
-**Result: Runs + Expected IO.** it produces a non-empty file in the declared format.
+**Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+
+**Verdict: Runs.** The tool installed and its run produced its documented output.
 
 - Source: `https://github.com/gymreklab/gangstr` @ `6ea9b2b8daca51dcab1f0e46210622b94b52ff17`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-14T12:38:19+00:00
+- Generated: 2026-09-14T20:12:55+00:00
 - Submitted by: a third party — not the tool's maintainer
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31801054390
+- Upstream: The verified commit is the head of `master`.
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/34891329012
 
 ## Gates
 
@@ -16,13 +19,22 @@
 | Installs | PASS | the environment builds from source |
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
-| Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+
+## Output content (plausibility evidence)
+
+- Sequence records: **24** (malformed: 0)
+- STR loci detected: **24**
+- Total reads across calls: **10738** (deepest single sequence: 757)
+- STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA …
+- Top markers by read depth: D18S51 (757), D16S539 (618), PentaD (613), D5S818 (589), D6S1043 (585), D7S820 (579)
 
 ## Verification matrix
 
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
 | External data | yes | PASS | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
+| Tool's own example | N/A | N/A | — | — |
 
 ## Regions
 
