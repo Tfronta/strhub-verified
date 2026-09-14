@@ -24,8 +24,7 @@ run:
 inputs:
   type: "illumina-bam-hg38"
   regions:
-    path: "tools/hipstr-b2033bf/assets/regions.bed"
-    provided_by: author
+    library: hipstr   # STRhub's ready-made file; byte-identical to the assets/regions.bed it replaces
 outputs:
 - path: result.vcf.gz
   format: vcf

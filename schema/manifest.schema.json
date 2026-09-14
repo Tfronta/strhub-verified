@@ -96,6 +96,15 @@
           "description": "Regions BED for coordinate-based tools (HipSTR, GangSTR, ...). STRhub's reference BAMs are SLICES, not whole genomes: this BED's intervals must overlap the dataset's supported-loci panel (datasets/<type>/loci.bed). A BED outside the panel is a rejected submission, NOT a failed tool — it is validated before any gate runs. Only columns 1-3 (chrom, start, end) are read, so any tool's column layout is accepted: STRhub supplies the coordinates, the author supplies the format.",
           "oneOf": [
             {
+              "type": "object",
+              "required": ["library"],
+              "additionalProperties": false,
+              "description": "A ready-made regions file from STRhub's library for the dataset (datasets/<type>/regions/<format>.bed): the panel's loci in the format the tool reads. Provenance is STRhub; nobody wrote a file for this tool.",
+              "properties": {
+                "library": { "type": "string", "enum": ["hipstr", "gangstr", "strsearch", "bed4"], "description": "Which format: HipSTR (7 columns), GangSTR (5), STRsearch (11 with flanks), or plain chrom/start/end/name." }
+              }
+            },
+            {
               "type": "string",
               "description": "Path to a regions BED committed in THIS repo, relative to the repo root. Provenance is STRhub."
             },
