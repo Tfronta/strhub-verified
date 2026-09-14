@@ -41,6 +41,8 @@ def main() -> int:
         "manifest_yml": manifest_yml,
         "dockerfile": (d / "Dockerfile").read_text() if (d / "Dockerfile").is_file() else "",
     }
+    if (d / "Dockerfile.fallback").is_file():
+        recipe["dockerfile_fallback"] = (d / "Dockerfile.fallback").read_text()
     bed = d / "assets" / "regions.bed"
     if bed.is_file():
         recipe["regions_bed"] = bed.read_text()

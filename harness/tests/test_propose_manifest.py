@@ -83,3 +83,25 @@ def test_recipe_round_trips_through_json():
 def test_a_list_of_input_files_becomes_one_canonical_input(tmp_path):
     cmd, _ = pm.rewrite_for_strhub("./HipSTR --bams run1.bam,run2.bam,run3.bam --fasta g.fa", "illumina-bam-hg38")
     assert cmd == "./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa"
+
+
+def test_gangstr_recipe_declares_the_published_image_as_plan_b(tmp_path):
+    r = pm.build(_proposal("gangstr"), "gangstr-trial")
+    m = _valid(r["manifest_yml"], tmp_path)  # environment.fallback is schema-valid
+    assert m["environment"]["source"] == "generated"
+    assert m["environment"]["fallback"] == {
+        "dockerfile": "Dockerfile.fallback",
+        "reason": "the published image gymreklab/str-toolkit the README points at",
+    }
+    assert "FROM ubuntu:22.04" in r["dockerfile"]
+    assert "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
+    env_caveat = next(c for c in m["caveats"]["items"] if c.startswith("Environment:"))
+    assert "at the pinned commit" in env_caveat and "If that build fails" in env_caveat
+
+
+def test_a_recipe_without_a_plan_b_declares_none(tmp_path):
+    r = pm.build(_proposal("hipstr"), "hipstr-trial")
+    m = _valid(r["manifest_yml"], tmp_path)
+    assert "fallback" not in m["environment"]
+    assert r["dockerfile_fallback"] is None
+

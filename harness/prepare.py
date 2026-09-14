@@ -254,9 +254,10 @@ def materialise_recipe(tool: str, recipe_b64: str, work: pathlib.Path) -> pathli
     """Write a dispatched recipe to <work>/recipe/<tool>/ and return that dir.
 
     The recipe is a base64 JSON object: {"manifest_yml": str, "dockerfile": str,
-    "regions_bed": str?}. It is laid out exactly as tools/<tool>/ would be, so
-    every later step (docker build context, the BED under assets/) works the
-    same for a trial as for a committed tool.
+    "dockerfile_fallback": str?, "regions_bed": str?}. It is laid out exactly as
+    tools/<tool>/ would be, so every later step (docker build context, the BED
+    under assets/, the plan-B Dockerfile) works the same for a trial as for a
+    committed tool.
     """
     if len(recipe_b64) > RECIPE_MAX_BYTES * 4 // 3 + 4:
         raise SystemExit(f"::error::trial recipe exceeds {RECIPE_MAX_BYTES} bytes")
@@ -272,6 +273,8 @@ def materialise_recipe(tool: str, recipe_b64: str, work: pathlib.Path) -> pathli
     d.mkdir(parents=True)
     (d / "manifest.yml").write_text(recipe["manifest_yml"])
     (d / "Dockerfile").write_text(recipe["dockerfile"])
+    if recipe.get("dockerfile_fallback"):
+        (d / "Dockerfile.fallback").write_text(recipe["dockerfile_fallback"])
     if recipe.get("regions_bed"):
         (d / "assets").mkdir()
         (d / "assets" / REGIONS_CANONICAL).write_text(recipe["regions_bed"])
@@ -405,6 +408,16 @@ def main() -> int:
     example_ready = bool(example.get("cmd"))
     example_cwd = example.get("cwd") or "/opt/tool"
 
+    # Plan B for the Installs gate: built only if the first Dockerfile fails.
+    # Declared in the manifest, so it works the same for a committed tool and
+    # for a trial recipe. A declared file that is not here is our fault, not
+    # the author's, and must not become a silent "no plan B": say so.
+    fallback = (m["environment"].get("fallback") or {}).get("dockerfile", "")
+    if fallback and not (tool_dir / fallback).is_file():
+        print(f"::warning::fallback Dockerfile declared but not found: {tool_dir / fallback}",
+              file=sys.stderr)
+        fallback = ""
+
     values = {
         "ref": m["source"]["ref"],
         "example_ready": "1" if example_ready else "0",
@@ -416,6 +429,7 @@ def main() -> int:
         # clones the repository and builds that file with the clone as context,
         # and the run legs use the image's own entrypoint.
         "dockerfile_from_repo": (m["environment"].get("from_repo") or "") if m["environment"].get("source") == "repository" else "",
+        "dockerfile_fallback": fallback,
         "timeout": min(int(m["run"].get("timeout_minutes", 30)), 120),
         "manifest": mf,
         "repo": m["source"]["repo"],

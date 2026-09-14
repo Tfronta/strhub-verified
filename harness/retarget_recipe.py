@@ -43,6 +43,9 @@ def retarget(slug: str, new_ref: str) -> dict:
     dockerfile = (d / "Dockerfile").read_text()
     dockerfile, _ = ARG_LINE.subn(rf"\g<1>{new_ref}", dockerfile)
     recipe = {"manifest_yml": manifest, "dockerfile": dockerfile}
+    if (d / "Dockerfile.fallback").is_file():
+        fb = (d / "Dockerfile.fallback").read_text()
+        recipe["dockerfile_fallback"], _ = ARG_LINE.subn(rf"\g<1>{new_ref}", fb)
     bed = d / "assets" / "regions.bed"
     if bed.is_file():
         recipe["regions_bed"] = bed.read_text()

@@ -739,11 +739,20 @@ def build_body(cfg):
     # their software.
     inst = cfg.get("install_detail") or {}
     if inst.get("diagnostics"):
-        els.append(section_num(str(sec), "Why the Environment Did Not Build"))
+        # Plan B: the gate passed on the published environment the README
+        # points at, and this section explains the build that failed before it.
+        if inst.get("fallback_used"):
+            els.append(section_num(str(sec), "Why the Pinned Commit Did Not Build"))
+            lead = ("The container could not be built from the declared install steps at "
+                    f"the pinned commit; {cfg.get('fallback_reason') or 'the fallback environment'} "
+                    "was built instead, and every gate below ran on it. What ran is the "
+                    "version that environment holds, not necessarily the pinned commit.")
+        else:
+            els.append(section_num(str(sec), "Why the Environment Did Not Build"))
+            lead = ("The container could not be built from the declared install steps, "
+                    "so nothing below the Installs gate ran.")
         sec += 1
-        els.append(Paragraph(
-            "The container could not be built from the declared install steps, "
-            "so nothing below the Installs gate ran.", ST["body"]))
+        els.append(Paragraph(lead, ST["body"]))
         els.append(vspace(2))
         els.append(Paragraph(_install_fault_sentence(inst.get("faults") or []),
                              ST["body"]))
@@ -889,11 +898,14 @@ def build_body(cfg):
     fmt_label = f"{fmt} " if fmt and fmt != "—" else ""
     ds_name = cfg.get("dataset", {}).get("name") or "a public reference dataset"
 
+    where = (f"an environment built from {cfg['fallback_reason']}, after the build "
+             "from the pinned commit failed"
+             if cfg.get("fallback_used") else
+             "a clean ubuntu-22.04 environment at the pinned commit")
     conclusion_items = [
         ("Runs end-to-end",
-         f"{cfg['tool_display']} installs and executes without error in a clean "
-         f"ubuntu-22.04 environment at the pinned commit. All {n_pass} verification "
-         "gates were passed."),
+         f"{cfg['tool_display']} installs and executes without error in {where}. "
+         f"All {n_pass} verification gates were passed."),
         ("Produces valid output",
          f"The tool generated a structurally valid {fmt_label}output file with genotype "
          f"calls across {n_loci} target forensic STR loci, with a "
@@ -1163,6 +1175,11 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         # Why the build failed, with the side it falls on. Absent unless the
         # Installs gate failed and the build log named a cause.
         "install_detail": report.get("install_detail") or {},
+        # Plan B ran: the pinned commit did not build and the manifest's fallback
+        # environment (the published image or package the README points at) did.
+        "fallback_used":  bool((report.get("environment") or {}).get("fallback_used")),
+        "fallback_reason": ((report.get("environment") or {}).get("fallback") or {}).get("reason")
+                           or "the fallback environment the manifest declares",
         # "maintainer" | "third_party" | "" — who filled in the submission. Kept
         # apart from the maintainer named in the manifest, who answers for the
         # software: the two are the same person only when a tool's own maintainer
