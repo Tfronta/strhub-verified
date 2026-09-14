@@ -33,6 +33,7 @@ import yaml
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import datasets as datasets_lib  # noqa: E402
+import regions_library  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = "https://raw.githubusercontent.com"
@@ -134,7 +135,7 @@ def stage_own(
     return any(work_in.iterdir())
 
 
-def stage_regions(regions, legs: list[pathlib.Path]) -> str:
+def stage_regions(regions, legs: list[pathlib.Path], input_type: str | None = None) -> str:
     """Stage the regions BED into every leg as canonical ``regions.bed``.
 
     An explicit ``inputs.regions`` takes precedence over any per-tool asset
@@ -163,6 +164,18 @@ def stage_regions(regions, legs: list[pathlib.Path]) -> str:
             return "none"
         _fan_out(src)
         return "tool" if regions.get("provided_by") == "author" else "strhub"
+
+    if isinstance(regions, dict) and "library" in regions:
+        # A ready-made file from the dataset's regions library, chosen by
+        # format. STRhub's provenance: the loci are the panel's, the layout is
+        # the tool's, and nobody had to write it.
+        src = regions_library.library_path(input_type or "", regions["library"])
+        if src is None:
+            print(f"::error::no '{regions['library']}' regions file in the library for {input_type!r}",
+                  file=sys.stderr)
+            return "none"
+        _fan_out(src)
+        return "strhub"
 
     if isinstance(regions, dict):
         # Remote pointer (deprecated; hand-written manifests only). Fetch once from
@@ -349,10 +362,15 @@ def main() -> int:
         rel = pathlib.PurePosixPath(regions["path"])
         prefix = pathlib.PurePosixPath("tools") / args.tool
         try:
-            regions = dict(regions, path=str(tool_dir.relative_to(ROOT) / rel.relative_to(prefix)))
+            inside = rel.relative_to(prefix)
         except ValueError:
-            pass  # not under tools/<tool>/: leave it, stage_regions will report it
-    regions_source = stage_regions(regions, legs)
+            inside = None  # not under tools/<tool>/: leave it, stage_regions will report it
+        if inside is not None:
+            # Absolute when the work dir is outside the repo (a local run); the
+            # stager joins ROOT / path, which pathlib resolves to the absolute one.
+            target = tool_dir / inside
+            regions = dict(regions, path=str(target.relative_to(ROOT) if target.is_relative_to(ROOT) else target))
+    regions_source = stage_regions(regions, legs, input_type)
 
     # The manifest names a regions BED and nothing staged one: the path it points
     # at does not exist in this repo. That is always a STRhub-side fault — the
@@ -411,7 +429,7 @@ def main() -> int:
         "fixture_source": fixture_source,
         "regions_source": regions_source,
         "regions_missing": regions_missing,
-        "regions_declared": regions["path"] if isinstance(regions, dict) and "path" in regions else (regions or ""),
+        "regions_declared": (regions.get("path") or regions.get("library") or "") if isinstance(regions, dict) else (regions or ""),
         "supported_loci": supported_loci,
         "min_loci": min_loci,
     }

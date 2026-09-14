@@ -380,3 +380,22 @@ que el dueño confirme.
 
 `python -m pytest harness/tests -q` (58 tests) y `python harness/test_validate_bed.py`
 corren en el job `resolve` antes de verificar nada.
+
+### Biblioteca de regiones (BEDs listos)
+
+`datasets/<tipo>/regions/{hipstr,gangstr,strsearch,bed4}.bed`: los loci del panel del
+dataset escritos en cada formato que STRhub sabe generar. Los genera
+`harness/build_regions_library.py` (necesita hg38 local: `--hg38` o `STRHUB_HG38`)
+a partir de `str_candidates.bed` + `loci.bed`; `--check` avisa si están desactualizados.
+Se commitean: una corrida no necesita genoma para usarlos.
+
+- Manifest: `inputs.regions: {library: hipstr}` (o gangstr, strsearch, bed4). Las
+  recetas de HipSTR, GangSTR y STRsearch ya lo usan; los archivos son byte-idénticos a
+  los `assets/regions.bed` a mano que reemplazan.
+- Propuesta automática: `regions_library.format_for_tool` elige el formato por el
+  nombre del programa (HipSTR, GangSTR, STRsearch); si no lo conoce, prueba `bed4` y lo
+  marca como `regions_format_guessed`. Un archivo subido se reconoce por sus columnas
+  (`detect_format`): un HipSTR de 590 loci sigue siendo formato hipstr, y el de 24 loci
+  de la biblioteca lo reemplaza.
+- Formato nuevo: agregar el escritor en `build_regions_library.py`, el detector en
+  `regions_library.py`, regenerar, y `harness/tests/test_regions_library.py` lo cubre.

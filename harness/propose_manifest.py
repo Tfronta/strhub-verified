@@ -37,6 +37,7 @@ import yaml
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import datasets as datasets_lib  # noqa: E402
+import regions_library  # noqa: E402
 from prepare import example_wrapper  # noqa: E402
 
 INPUT_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b", re.I)
@@ -153,11 +154,24 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
         run_cmd = example_wrapper(rewritten, cwd)
         caveat_items.append("Run command: the README's own command, rewritten to STRhub's mounts; "
                             "everything it created was captured as output.")
+    regions_block = None
     if input_type in REQUIRES_REGIONS:
-        limitations.append("regions_format_unknown")
-        caveat_items.append("This input type needs a regions BED in the tool's own format; none was "
-                            "generated, so the STRhub-data leg may find no loci. The tool's own example "
-                            "leg does not depend on it.")
+        # The tool needs a regions file. Pick the library format the tool is
+        # known to read; failing that, plain BED, flagged so a failed run is
+        # read as "the guess may be wrong", never as the tool's fault.
+        fmt, how = regions_library.format_for_tool(name, best, proposal.get("readme_text", ""))
+        if fmt is None:
+            fmt, how = "bed4", "fallback"
+            limitations.append("regions_format_guessed")
+        if regions_library.library_path(input_type, fmt) is None:
+            limitations.append("regions_format_unknown")
+        else:
+            regions_block = {"library": fmt}
+            caveat_items.append(
+                f"Regions: STRhub's ready-made {fmt} file for the dataset's panel loci"
+                + (" (the tool is known to read this format)." if how == "tool"
+                   else " (chosen from the README)." if how == "readme"
+                   else " (no known format for this tool; plain chrom/start/end/name was tried)."))
 
     # --- outputs
     glob, fmt = OUTPUT_GLOB.get(out_fmt or "", ("**/*", "text"))
@@ -170,7 +184,8 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
         "report": {"slug": slug},
         "environment": env,
         "run": {"cmd": run_cmd, "timeout_minutes": 20},
-        "inputs": {"type": input_type} if input_type else {},
+        "inputs": ({"type": input_type, **({"regions": regions_block} if regions_block else {})}
+                   if input_type else {}),
         "outputs": outputs,
     }
     ex = proposal.get("example")

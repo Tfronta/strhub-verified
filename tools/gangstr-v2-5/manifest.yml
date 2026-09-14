@@ -24,6 +24,8 @@ run:
   timeout_minutes: 20
 inputs:
   type: "illumina-bam-hg38"
+  regions:
+    library: gangstr   # STRhub's ready-made 24-locus file (the 9-locus assets/regions.bed it replaces was hand-made)
   fixture: "illumina_slices/NA12878.autosomal.bam"
 outputs:
 - path: output.vcf
