@@ -195,7 +195,7 @@ Tres páginas de entrada con un campo cada una, un catálogo curado con 5 herram
 
 ## 5. Plan de próximos pasos
 
-### Fase 0. Cerrar el agujero y limpiar (1 semana)
+### Fase 0. Cerrar el agujero y limpiar (1 semana) — implementada el 14 de septiembre en `fix/fase0-hardening` (motor y web); pendiente de push, PRs, retiro en gh-pages, rotación de JWT
 
 1. **Aprobación manual de todo envío** hasta que exista el ensayo efímero (Fase 1) y la receta en repo (Fase 2): un `if` en `submit/route.ts:246`. Cierra S1.
 2. `docker run` con `--network none --memory 6g --cpus 2 --pids-limit 512 --cap-drop ALL --security-opt no-new-privileges`; `maximum` en `timeout_minutes`; `permissions: contents: read` en el job `verify` y un job aparte para deploy y rechazo; `persist-credentials: false` en checkout.
@@ -206,15 +206,15 @@ Tres páginas de entrada con un campo cada una, un catálogo curado con 5 herram
 7. Borrar `.env.local.save`, rotar `JWT_SECRET`; JWT a 12 h con `algorithms: ["HS256"]`; escapar HTML en `lib/email.ts`; rate-limit en `/status` y `/repo-context`.
 8. Limpiar la raíz según la tabla de P3; borrar ramas mergeadas; resolver o descartar el stash; `git gc`.
 
-### Fase 1. El ensayo (3 a 4 semanas)
+### Fase 1. El ensayo (3 a 4 semanas) — implementada el 14 de septiembre en `fix/fase0-hardening` (motor); pendiente: conversores de BED por tool, y la parte web (Fase 2)
 
-9. Modo ensayo en `verify.yml` (`publish: false`): receta como inputs del dispatch, sin commit a `main`, sin deploy, resultado como artifact con link privado de 30 días.
-10. Detección determinista de receta (`harness/detect_recipe.py`): método de instalación, datos de ejemplo, comando del README, Bioconda. Con tests sobre los 5 repos reales del catálogo.
-11. Inferencia del tipo de entrada desde el repo, con ensayo de dos tipos cuando hay duda y una sola pregunta al que envía como último recurso; cada `dataset.yml` lleva su contrato (referencia, nomenclatura de cromosomas, panel de loci) y el motor deriva de ahí el vocabulario de loci esperado; conversores de BED por familia de formato desde `str_candidates.bed` (el de STRsearch ya existe).
-12. Compuerta `reproduces_own_example` implementada: correr el ejemplo documentado con los datos del repo y comparar con la salida documentada si existe.
-13. Los cuatro veredictos en `report.py` y en la web, con la lista de huecos del README cuando el veredicto es "no se pudo determinar" (reemplaza el checklist por palabras clave, que hoy da 5/5 a una línea de texto).
-14. **Re-verificar cuando la tool cambia**: `upstream.py` ya detecta "N commits desde el ref"; falta que un release o tag nuevo en el repo dispare un ensayo con el ref nuevo y avise al dueño (así se atrapa el caso STRspy: la v2 publicada seguía llamando código de la v1). Publicar solo si el dueño confirma.
-15. Tests del motor: mergear `fix/bed-header-and-shared-cases`; pytest para `check_io`, `check_content`, `diagnose_log`, `prepare`, `report`; correrlos en el job `resolve`. Arreglar conteo TSV, falsos positivos, aviso obsoleto, `$GITHUB_OUTPUT`, `git ls-remote --`, `ref` como SHA.
+9. ✅ Modo ensayo en `verify.yml` (`publish: false`): receta como inputs del dispatch, sin commit a `main`, sin deploy, resultado como artifact con link privado de 30 días.
+10. ✅ Detección determinista de receta (`harness/detect_recipe.py`): método de instalación, datos de ejemplo, comando del README, Bioconda. Con tests sobre los 5 repos reales del catálogo.
+11. ✅ (parcial) Inferencia del tipo de entrada desde el repo, con ensayo de dos tipos cuando hay duda y una sola pregunta al que envía como último recurso; cada `dataset.yml` lleva su contrato (referencia, nomenclatura de cromosomas, panel de loci) y el motor deriva de ahí el vocabulario de loci esperado; conversores de BED por familia de formato desde `str_candidates.bed` (el de STRsearch ya existe).
+12. ✅ Compuerta `reproduces_own_example` implementada: correr el ejemplo documentado con los datos del repo y comparar con la salida documentada si existe.
+13. ✅ (motor; web en Fase 2) Los cuatro veredictos en `report.py` y en la web, con la lista de huecos del README cuando el veredicto es "no se pudo determinar" (reemplaza el checklist por palabras clave, que hoy da 5/5 a una línea de texto).
+14. ✅ **Re-verificar cuando la tool cambia**: `upstream.py` ya detecta "N commits desde el ref"; falta que un release o tag nuevo en el repo dispare un ensayo con el ref nuevo y avise al dueño (así se atrapa el caso STRspy: la v2 publicada seguía llamando código de la v1). Publicar solo si el dueño confirma.
+15. ✅ Tests del motor: mergear `fix/bed-header-and-shared-cases`; pytest para `check_io`, `check_content`, `diagnose_log`, `prepare`, `report`; correrlos en el job `resolve`. Arreglar conteo TSV, falsos positivos, aviso obsoleto, `$GITHUB_OUTPUT`, `git ls-remote --`, `ref` como SHA.
 
 ### Fase 2. Las tres entradas (3 a 4 semanas)
 
