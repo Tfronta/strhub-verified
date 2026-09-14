@@ -273,7 +273,11 @@ def _first_program(line: str) -> str | None:
 def detect_commands(readme: str, names: list[str]) -> list[dict]:
     cands = []
     lower_names = {n.lower() for n in names}
-    in_re = re.compile(r"--?(?:bams?|fastq|input|in|reads|i)\b|\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b", re.I)
+    # A flag, a real extension, or a PLACEHOLDER the README uses for the input
+    # ("fastqfile", "<reads.fq>", "input.bam"): READMEs describe the command
+    # with stand-ins at least as often as with real paths.
+    in_re = re.compile(r"--?(?:bams?|fastq|input|in|reads|i)\b|\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b"
+                       r"|(?<![\w-])[<\[]?\w*(?:fastq|fq|bam|reads|input)\w*[>\]]?(?![\w-])", re.I)
     out_re = re.compile(r"--?(?:out(?:put)?(?:[-_]?\w+)?|o|str-vcf|prefix)\b|\s>\s", re.I)
     for ln in _code_lines(readme):
         text = ln.strip()
@@ -416,10 +420,15 @@ def propose_example(commands: list[dict], tree_paths: list[str], examples: list[
 def generate_dockerfile(slug: str, ref: str, build: dict) -> str | None:
     """A pinned environment for the methods STRhub can template. None when the
     repository ships its own Dockerfile (used as-is) or nothing was detected."""
+    # Only the submodule step is tolerated (many repositories have none); a
+    # failed clone or checkout must fail the build. Written as `A && B && (C ||
+    # true)` on purpose: `A && B && C || true` swallows A and B too, and a build
+    # that carried on with an empty /opt/tool then failed at `make` with "no
+    # makefile found", which read as the tool's fault.
     clone = (f"ARG TOOL_REF={ref}\nWORKDIR /opt\n"
              f"RUN git clone https://github.com/{slug}.git tool \\\n"
              f"    && cd tool && git checkout \"${{TOOL_REF}}\" \\\n"
-             f"    && git submodule update --init --recursive || true\nWORKDIR /opt/tool\n")
+             f"    && (git submodule update --init --recursive || true)\nWORKDIR /opt/tool\n")
     tail = "ENV PATH=\"/opt/tool:/opt/tool/bin:$PATH\"\nWORKDIR /work\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n"
     head = "# Proposed by STRhub Verified detect_recipe. The build IS the Installs gate.\n"
     apt = ("RUN apt-get update && apt-get install -y --no-install-recommends \\\n"
@@ -474,6 +483,11 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         "build": build,
         "example_data": examples,
         "tool_names": names,
+        # Configuration files a README placeholder like `configFile` can resolve
+        # to; propose_manifest picks the one matching the dataset's kit.
+        "config_files": sorted(e["path"] for e in tree if e["type"] == "blob"
+                               and e["path"].count("/") <= 1
+                               and e["path"].lower().endswith((".config", ".cfg", ".conf", ".ini"))),
         "commands": commands,
         "input_type": input_type,
         "output": output,
