@@ -6,7 +6,7 @@ name: STRhub Verified
 # A pull request names no tool — the job works that out from what the PR touches
 # — so it says which PR instead of a tool it might not be running.
 run-name: >-
-  Verify ${{ github.event.inputs.tool || (github.event_name == 'pull_request' && format('what PR #{0} changed', github.event.pull_request.number)) || 'strait-razor-PowerSeqv2.31' }}${{ github.event.inputs.dispatch_id && format(' [{0}]', github.event.inputs.dispatch_id) || '' }}
+  ${{ github.event.inputs.mode == 'trial' && 'Trial' || 'Verify' }} ${{ github.event.inputs.tool || (github.event_name == 'pull_request' && format('what PR #{0} changed', github.event.pull_request.number)) || 'strait-razor-PowerSeqv2.31' }}${{ github.event.inputs.dispatch_id && format(' [{0}]', github.event.inputs.dispatch_id) || '' }}
 
 # The engine. Each gate is a CI step; failures are captured (continue-on-error)
 # so the report is always produced and reflects the furthest gate cleared.
@@ -22,6 +22,22 @@ on:
         required: true
       dispatch_id:
         description: "Unique id echoed in run-name for dispatch→run correlation"
+        type: string
+        required: false
+        default: ""
+      # A trial is a rehearsal of a recipe that is not committed anywhere: the
+      # gates run exactly as for a real verification, but nothing is pushed to
+      # main, nothing reaches gh-pages, and the report says "trial" on it. The
+      # result lives only in this run's artifact (30 days). This is what lets a
+      # submitter try a configuration as often as it takes; every attempt used
+      # to be a commit on main and a published attestation.
+      mode:
+        description: "publish (default) or trial"
+        type: choice
+        options: [publish, trial]
+        default: publish
+      recipe:
+        description: "Trial only: base64 JSON {manifest_yml, dockerfile, regions_bed?}"
         type: string
         required: false
         default: ""
@@ -148,6 +164,7 @@ jobs:
         tool: ${{ fromJSON(needs.resolve.outputs.tools) }}
     env:
       TOOL: ${{ matrix.tool }}
+      MODE: ${{ github.event.inputs.mode || 'publish' }}
       # The tool runs as a container built from a submitted Dockerfile with a
       # submitted command. Everything it needs is mounted: inputs, the reference
       # genome, an output directory. So it gets no network (the manifest's
@@ -181,6 +198,10 @@ jobs:
       # and work/in_external (typed dataset from datasets/, or N/A).
       - id: m
         name: Prepare run (manifest + dataset matrix)
+        env:
+          # Only set for a trial. Read by prepare.py from the environment rather
+          # than the command line: it is author-supplied and can be large.
+          RECIPE_B64: ${{ github.event.inputs.mode == 'trial' && github.event.inputs.recipe || '' }}
         run: python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
 
       # --- Pre-flight: the BED the manifest names must actually be here --------
@@ -261,7 +282,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -e
-          if [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          if [ "$MODE" != "trial" ] && [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
@@ -528,6 +549,7 @@ jobs:
             --regions-validation regions_validation.json \
             --supported-loci "$SUPPORTED_LOCI" \
             --check-upstream \
+            --mode "$MODE" \
             --run-url "$RUN_URL"
 
       - name: Generate PDF report
@@ -551,8 +573,11 @@ jobs:
         if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: attestation-${{ env.TOOL }}
+          name: ${{ env.MODE == 'trial' && 'trial' || 'attestation' }}-${{ env.TOOL }}
           path: reports/
+          # A trial's report exists nowhere else, so it is kept the full window a
+          # submitter has to come back for it; a published one is on gh-pages.
+          retention-days: ${{ env.MODE == 'trial' && 30 || 90 }}
 
       # Publish a navigable web page (index + per-tool HTML) to the gh-pages
       # branch. Reports accumulate across runs: we clone the existing branch,
@@ -563,7 +588,7 @@ jobs:
       # unaffected; only branch-based testing is held back.
       - id: deploy
         name: Deploy reports to GitHub Pages
-        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: always() && env.MODE != 'trial' && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -607,7 +632,7 @@ jobs:
       # to remove it: strsearch-c70179b sat on main as "rejected" for weeks after
       # it had been published at the top step.
       - name: Clear a stale rejection notice
-        if: always() && steps.deploy.outcome == 'success' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: always() && env.MODE != 'trial' && steps.deploy.outcome == 'success' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
