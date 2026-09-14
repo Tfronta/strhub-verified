@@ -188,25 +188,23 @@ def docker_image(readme: str) -> str | None:
     return None
 
 
+#: Environments somebody else already built: a Docker image on a registry, a
+#: Bioconda package. Whatever runs from one is whatever its publisher last
+#: pushed, which need not be the pinned commit the report names.
+PUBLISHED_METHODS = ("docker_image", "bioconda")
+
+
 def detect_build(paths: list[str], readme: str) -> dict:
     found = []
     img = docker_image(readme)
     if img:
         found.append({"method": "docker_image", "file": None, "image": img})
-    # A published Bioconda package is the maintainer's own tested install and
-    # needs no toolchain we have to guess; it outranks compiling from source.
     pkg = bioconda_package(readme)
     if pkg:
         found.append({"method": "bioconda", "file": None, "package": pkg})
     for path, method in BUILD_FILES:
         if path in paths:
             found.append({"method": method, "file": path})
-    # The repository's own Dockerfile wins over everything, then a published
-    # image the README points at, then a Bioconda package: each is the author's
-    # own statement of the environment, in decreasing order of being tied to
-    # the pinned commit.
-    rank = {"dockerfile": 0, "docker_image": 1, "bioconda": 2}
-    found.sort(key=lambda f: rank.get(f["method"], 3))
     # A conda environment file under another name or one directory down
     # (setup/STRspy_2.0.yml) still says how the tool is installed.
     if not any(f["method"] == "conda" for f in found):
@@ -214,16 +212,28 @@ def detect_build(paths: list[str], readme: str) -> dict:
             if path.count("/") <= 1 and CONDA_ENV_FILE.search(path) and not VENDOR_DIRS.search(path):
                 found.append({"method": "conda", "file": path})
                 break
-    # A Dockerfile the repository ships is the author's own statement of the
-    # environment and wins outright. After that the first hit in tier order.
+    # The repository's own Dockerfile wins outright: the author's own statement
+    # of the environment, at the pinned ref. Then anything that BUILDS the
+    # pinned commit (conda, pip, cmake, make, ...), in tier order: what the
+    # report names is what ran. A published image or Bioconda package comes
+    # after: it is the author's environment too, but holds whatever version was
+    # last pushed to it. A published one is kept as the FALLBACK for a source
+    # build, so a toolchain we guessed wrong does not end the trial (see
+    # `fallback`); the report then says which of the two ran.
+    rank = {"dockerfile": 0, "docker_image": 2, "bioconda": 3}
+    found.sort(key=lambda f: rank.get(f["method"], 1))
     chosen = found[0] if found else None
     install_lines = [ln.strip() for ln in _code_lines(readme) if INSTALL_RE.search(ln)]
     method = chosen["method"] if chosen else ("readme" if install_lines else "unknown")
+    fallback = None
+    if chosen and method not in PUBLISHED_METHODS and method != "dockerfile":
+        fallback = next((f for f in found if f["method"] in PUBLISHED_METHODS), None)
     return {
         "method": method,
         "file": chosen["file"] if chosen else None,
         "package": chosen.get("package") if chosen else None,
         "image": chosen.get("image") if chosen else None,
+        "fallback": fallback,
         "candidates": found,
         "readme_install_lines": install_lines[:12],
     }
@@ -564,6 +574,10 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         "readme_text": readme[:20_000],
         "example": propose_example(commands, paths, examples),
         "dockerfile": generate_dockerfile(slug, ref, build),
+        # Plan B, built only if the one above fails: the published environment
+        # the README points at. Same layout (the clone at /opt/tool, bash
+        # entrypoint), so the command and the example run unchanged on it.
+        "dockerfile_fallback": generate_dockerfile(slug, ref, build["fallback"]) if build.get("fallback") else None,
     }
 
 

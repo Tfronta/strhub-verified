@@ -427,12 +427,16 @@ jobs:
           DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
           DOCKER_FILE: ${{ steps.m.outputs.dockerfile }}
           DOCKER_FROM_REPO: ${{ steps.m.outputs.dockerfile_from_repo }}
+          # Plan B (manifest environment.fallback): built only if the first
+          # Dockerfile fails. Empty when none is declared.
+          DOCKER_FALLBACK: ${{ steps.m.outputs.dockerfile_fallback }}
         run: |
           # pipefail, or `tee` would swallow docker's exit status and a failed
           # build would be recorded as a passed gate — the one bug this step
           # must not have.
           set -o pipefail
           mkdir -p work
+          : > work/log_build.txt
           if [ -n "$DOCKER_FROM_REPO" ]; then
             # The repository ships its own Dockerfile: build THAT, with the
             # repository at the pinned ref as its context. The author's own
@@ -443,12 +447,27 @@ jobs:
               && (git -C work/src submodule update --init --recursive -q || true)
             DOCKER_DIR=work/src; DOCKER_FILE="$DOCKER_FROM_REPO"
           fi
-          docker build \
-            --build-arg "STRAITRAZOR_REF=$TOOL_REF" \
-            --build-arg "TOOL_REF=$TOOL_REF" \
-            -f "$DOCKER_DIR/$DOCKER_FILE" \
-            -t toolimg:ci \
-            "$DOCKER_DIR" 2>&1 | tee work/log_build.txt
+          build() {
+            docker build \
+              --build-arg "STRAITRAZOR_REF=$TOOL_REF" \
+              --build-arg "TOOL_REF=$TOOL_REF" \
+              -f "$DOCKER_DIR/$1" \
+              -t toolimg:ci \
+              "$DOCKER_DIR" 2>&1 | tee -a work/log_build.txt
+          }
+          if build "$DOCKER_FILE"; then
+            echo "environment=primary" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          [ -n "$DOCKER_FALLBACK" ] || exit 1
+          # The pinned commit did not build. The published environment the
+          # README points at stands in, so a toolchain we guessed wrong does not
+          # end the run here — but the report must say which one ran, and keep
+          # the log of the build that failed: both are in the same file, split
+          # by the marker line report.py looks for.
+          echo "::warning::the build from the pinned commit failed; building the fallback environment ($DOCKER_FALLBACK)"
+          printf '\n==== STRhub: the build above failed; building the fallback environment (%s) ====\n\n' "$DOCKER_FALLBACK" >> work/log_build.txt
+          build "$DOCKER_FALLBACK" && echo "environment=fallback" >> "$GITHUB_OUTPUT"
 
       # --- Matrix leg: own data (the badge ladder uses THIS leg) -------------
       - id: runs
@@ -674,6 +693,10 @@ jobs:
           RUNS_OUTCOME: ${{ steps.runs.outcome }}
           RUNS_EXT_OUTCOME: ${{ steps.runs_ext.outcome }}
           EXAMPLE_OUTCOME: ${{ steps.runs_example.outcome }}
+          # Which Dockerfile produced the image the gates ran on: primary,
+          # fallback (plan B, after the pinned commit failed to build), or empty
+          # when nothing built.
+          ENVIRONMENT_BUILT: ${{ steps.installs.outputs.environment }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           # Read-only, for the upstream check below. Raises the API allowance
           # from 60/hour per runner IP to 5,000, which matters because public
@@ -701,6 +724,7 @@ jobs:
             --log-own work/log_own.txt \
             --log-external work/log_external.txt \
             --log-build work/log_build.txt \
+            --environment-built "$ENVIRONMENT_BUILT" \
             --ref "$TOOL_REF" \
             --regions-source "$REGIONS_SOURCE" \
             --regions-validation regions_validation.json \

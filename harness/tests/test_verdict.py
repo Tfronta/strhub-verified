@@ -92,3 +92,11 @@ def test_runs_has_no_blockers():
 def test_readme_gaps_become_blockers_without_duplicates():
     v = verdict.decide(G_INSTALL_FAIL, recipe_proposal=PROPOSAL_GAPS)
     assert [b["code"] for b in v["blockers"]] == ["no_command", "build_failed"]
+
+
+def test_output_on_plan_b_is_still_runs_but_says_which_version_ran():
+    v = verdict.decide(G_OK, fallback_used=True)
+    assert v["code"] == "runs" and v["blockers"] == []
+    assert "pinned commit failed" in v["reason"] and "published environment" in v["reason"]
+    assert "pinned" not in verdict.decide(G_OK)["reason"]
+

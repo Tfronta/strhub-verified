@@ -61,3 +61,24 @@ def test_error_among_warnings_stays_an_error():
 
 def test_fault_sets_are_disjoint():
     assert not (d.AUTHOR_FIXABLE & d.HARNESS_INCOMPATIBLE)
+
+
+def test_apt_installing_libsigsegv_is_not_a_crash():
+    # A toolchain install lists this package seven times in a build log; it is
+    # not a segfault, and read as one it hid the real cause of a failed build.
+    log = ("#6 6.855   librhash0 librtmp1 libsasl2-2 libsigsegv2 libssh-4\n"
+           "#6 17.02 Unpacking libsigsegv2:amd64 (2.13-1ubuntu3) ...\n"
+           "#6 20.56 Setting up libsigsegv2:amd64 (2.13-1ubuntu3) ...\n")
+    assert "segfault" not in ids(log)
+    assert ids("Program received signal SIGSEGV, Segmentation fault.")["segfault"]["count"] == 1
+    assert "segfault" in ids("./GangSTR: Segmentation fault (core dumped)")
+
+
+def test_autotools_missing_aux_files_is_named_with_the_file():
+    log = ("#10 31.91 configure.ac: error: required file 'config.sub' not found\n"
+           "#10 31.91 configure.ac: error: required file 'config.guess' not found\n"
+           "make[2]: *** [CMakeFiles/htslib.dir/build.make:124: htslib-update] Error 1\n")
+    got = ids(log)
+    assert got["autotools_aux_missing"]["count"] == 2
+    assert got["autotools_aux_missing"]["examples"] == ["config.sub", "config.guess"]
+    assert "autoreconf" in got["autotools_aux_missing"]["suggestion"]

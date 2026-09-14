@@ -145,8 +145,10 @@ _rule(
 )
 
 # --- Permission / segfault / OOM ------------------------------------------
+# Word-bounded: apt lists `libsigsegv2` while installing a toolchain, and that
+# used to count as a crash in every build log that pulled in autoconf.
 _rule(
-    r"[Ss]egmentation fault|SIGSEGV|core dump",
+    r"[Ss]egmentation fault|(?<![\w-])SIGSEGV(?![\w-])|core dump",
     "error", "segfault",
     "Tool crashed (segmentation fault)",
     "The tool crashed with a segfault. This may indicate incompatible input data, "
@@ -294,6 +296,16 @@ _rule(
     "The declared conda dependencies cannot be satisfied together on this base "
     "image. Bioconda builds trail the newest Python by months, so an environment "
     "that solved when it was written may not solve now.",
+)
+
+_rule(
+    r"configure(?:\.ac)?: error: required file '([\w./-]+)' not found",
+    "error", "autotools_aux_missing",
+    "An autotools build is missing its auxiliary file: {0}",
+    "The configure script needs '{0}', which `autoreconf -i` (or `automake "
+    "--add-missing`) copies in from the automake package. The build runs "
+    "autoconf without installing those files; running `autoreconf -fi` before "
+    "`./configure` in that step fixes it.",
 )
 
 _rule(

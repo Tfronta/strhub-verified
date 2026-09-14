@@ -56,14 +56,17 @@ def test_strsearch_ships_dockerfile_and_examples_and_warns_about_hg19():
     assert any("try both" in w for w in r["input_type"]["warnings"])
 
 
-def test_gangstr_installs_from_bioconda_and_reads_the_full_command():
+def test_gangstr_builds_the_pinned_commit_and_keeps_the_published_image_as_plan_b():
     r = _detect("gangstr")
     # The README points at a published Docker image (gymreklab/str-toolkit)
-    # and installs from Bioconda; both outrank compiling the CMake tree, and
-    # the image, being the author's own environment, comes first.
-    assert r["build"]["method"] == "docker_image" and r["build"]["image"] == "gymreklab/str-toolkit"
-    assert [c["method"] for c in r["build"]["candidates"]][:2] == ["docker_image", "bioconda"]
-    assert "FROM gymreklab/str-toolkit" in r["dockerfile"]
+    # and installs from Bioconda, but the tree can be built with CMake. What
+    # the report names is the pinned commit, so that is what gets built; the
+    # image holds whatever was last pushed to it and is kept as the fallback.
+    assert r["build"]["method"] == "cmake" and r["build"]["file"] == "CMakeLists.txt"
+    assert r["build"]["fallback"] == {"method": "docker_image", "file": None, "image": "gymreklab/str-toolkit"}
+    assert [c["method"] for c in r["build"]["candidates"]] == ["cmake", "docker_image", "bioconda"]
+    assert "FROM ubuntu:22.04" in r["dockerfile"] and "cmake . && make" in r["dockerfile"]
+    assert r["dockerfile_fallback"].startswith("# Proposed") and "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
     assert r["commands"][0]["invokes"] == "GangSTR"
     # One option per line in the README, no backslashes: all of them are kept.
     assert "--regions" in r["commands"][0]["cmd"] and "--out" in r["commands"][0]["cmd"]
@@ -102,8 +105,9 @@ def test_example_is_proposed_only_when_the_command_runs_on_shipped_data():
 
 def test_generated_dockerfiles_never_mask_a_failed_clone():
     import re
-    for name in ("hipstr", "straitrazor", "gangstr", "strspy"):
-        df = _detect(name)["dockerfile"]
+    for name in ("hipstr", "straitrazor", "gangstr", "strspy", "gangstr:fallback"):
+        name, _, which = name.partition(":")
+        df = _detect(name)["dockerfile_fallback" if which else "dockerfile"]
         assert df, name
         for line in df.splitlines():
             # A bare `|| true` at the end of a RUN chain hides every earlier
@@ -111,11 +115,35 @@ def test_generated_dockerfiles_never_mask_a_failed_clone():
             assert not re.search(r"&&\s+[^()\n]*\|\|\s*true\s*$", line), (name, line)
 
 
-def test_a_published_docker_image_in_the_readme_is_the_environment():
-    readme = "## Install\n\nA Docker image is available at [x](https://hub.docker.com/r/gymreklab/str-toolkit).\n\n```\nGangSTR --bam file.bam --ref ref.fa --regions r.bed --out o\n```\n"
-    r = dr.detect("gymreklab/gangstr", "abc", {"tree": [{"path": "CMakeLists.txt", "type": "blob", "size": 1}], "truncated": False}, readme, "README.md")
+README_WITH_IMAGE = "## Install\n\nA Docker image is available at [x](https://hub.docker.com/r/gymreklab/str-toolkit).\n\n```\nGangSTR --bam file.bam --ref ref.fa --regions r.bed --out o\n```\n"
+
+
+def test_a_published_docker_image_is_the_environment_only_when_nothing_builds_the_commit():
+    # Nothing in the tree to build from: the image is all there is, and no plan B.
+    r = dr.detect("gymreklab/gangstr", "abc", {"tree": [], "truncated": False}, README_WITH_IMAGE, "README.md")
     assert r["build"]["method"] == "docker_image" and r["build"]["image"] == "gymreklab/str-toolkit"
+    assert r["build"]["fallback"] is None and r["dockerfile_fallback"] is None
     assert r["dockerfile"].startswith("# Proposed") and "FROM gymreklab/str-toolkit" in r["dockerfile"]
+
+
+def test_a_source_build_outranks_the_published_image_which_becomes_plan_b():
+    tree = {"tree": [{"path": "CMakeLists.txt", "type": "blob", "size": 1}], "truncated": False}
+    r = dr.detect("gymreklab/gangstr", "abc", tree, README_WITH_IMAGE, "README.md")
+    assert r["build"]["method"] == "cmake"
+    assert r["build"]["fallback"]["image"] == "gymreklab/str-toolkit"
+    assert "FROM ubuntu:22.04" in r["dockerfile"]
+    assert "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
+    # Both lay the tool out the same way, so one command runs on either.
+    for df in (r["dockerfile"], r["dockerfile_fallback"]):
+        assert "git clone https://github.com/gymreklab/gangstr.git tool" in df
+        assert df.rstrip().endswith('ENTRYPOINT ["/bin/bash", "-lc"]')
+
+
+def test_the_repositorys_own_dockerfile_needs_no_plan_b():
+    tree = {"tree": [{"path": "Dockerfile", "type": "blob", "size": 1}, {"path": "CMakeLists.txt", "type": "blob", "size": 1}], "truncated": False}
+    r = dr.detect("gymreklab/gangstr", "abc", tree, README_WITH_IMAGE, "README.md")
+    assert r["build"]["method"] == "dockerfile"
+    assert r["build"]["fallback"] is None and r["dockerfile_fallback"] is None
 
 
 def test_source_builds_bring_the_autotools():
