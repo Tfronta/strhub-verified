@@ -64,7 +64,7 @@
           "type": "string",
           "description": "Command executed INSIDE the container. /data/in is the read-only fixture mount, /data/out is the writable output mount."
         },
-        "timeout_minutes": { "type": "integer", "default": 30, "minimum": 1 }
+        "timeout_minutes": { "type": "integer", "default": 30, "minimum": 1, "maximum": 120, "description": "Per-leg wall clock. Capped so a submitted command cannot hold a runner for the 6 hours GitHub allows a job." }
       }
     },
     "inputs": {
@@ -132,7 +132,7 @@
         "required": ["path", "format"],
         "additionalProperties": false,
         "properties": {
-          "path": { "type": "string", "description": "Glob, relative to /data/out, e.g. '*.allsequences.txt'" },
+          "path": { "type": "string", "pattern": "^(?!/)(?!~)(?!.*(^|/)\\.\\.(/|$)).+$", "description": "Glob, relative to /data/out, e.g. '*.allsequences.txt'. Must stay under /data/out: no absolute paths, no '..' segments." },
           "format": { "type": "string", "enum": ["vcf", "csv", "tsv", "json", "text"] },
           "min_records": { "type": "integer", "default": 1, "description": "Minimum non-header data rows/records required (guards against silent empty output)." },
           "must_contain": {

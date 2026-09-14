@@ -49,8 +49,17 @@ def check(manifest_path: str, out_dir: str) -> dict:
     ok = True
 
     for spec in m["outputs"]:
-        matches = sorted(out.glob(spec["path"]))
+        matches, refused = _manifest.safe_glob(out, spec["path"])
         entry = {"path": spec["path"], "format": spec["format"], "checks": {}}
+
+        # A pattern that could leave /data/out is refused outright, and the
+        # refusal is recorded so the report can say why the gate did not pass.
+        entry["checks"]["confined"] = refused is None
+        if refused is not None:
+            entry["error"] = refused
+            entry["passed"] = ok = False
+            checks.append(entry)
+            continue
 
         present = bool(matches)
         entry["checks"]["exists"] = present

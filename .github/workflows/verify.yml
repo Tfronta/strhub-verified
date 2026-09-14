@@ -37,9 +37,9 @@ on:
   schedule:
     - cron: "0 6 1 * *"   # monthly re-verification so badges never go stale
 
-permissions:
-  contents: write        # deploy step pushes reports to the gh-pages branch
-  pull-requests: read    # resolve job reads the files a PR changed
+# Permissions are granted per job below, not here. The token is scoped to the
+# least each job needs: `resolve` only reads, and only `verify` may write.
+permissions: {}
 
 jobs:
   # Which tool(s) this run is about. A dispatch says; a pull request does not,
@@ -47,6 +47,9 @@ jobs:
   # checked by running an unrelated tool. See harness/pick_tools.py.
   resolve:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      pull-requests: read    # reads the files a PR changed
     outputs:
       tools: ${{ steps.pick.outputs.tools }}
       count: ${{ steps.pick.outputs.count }}
@@ -120,6 +123,8 @@ jobs:
   verify:
     needs: resolve
     runs-on: ubuntu-22.04   # free, unlimited on public repos
+    permissions:
+      contents: write        # deploy pushes reports to gh-pages; rejection notices go to main
     strategy:
       # One tool failing its gates says nothing about the next: a matrix leg is a
       # separate attestation, not a stage of one build.
@@ -128,10 +133,28 @@ jobs:
         tool: ${{ fromJSON(needs.resolve.outputs.tools) }}
     env:
       TOOL: ${{ matrix.tool }}
+      # The tool runs as a container built from a submitted Dockerfile with a
+      # submitted command. Everything it needs is mounted: inputs, the reference
+      # genome, an output directory. So it gets no network (the manifest's
+      # `runtime_network` compatibility flag routes tools that need one to manual
+      # verification instead), a memory and CPU ceiling, a process cap, and no
+      # capabilities. Unquoted on purpose where it is used: it is a flag list.
+      DOCKER_HARDENING: >-
+        --network none
+        --memory 6g --memory-swap 6g
+        --cpus 2
+        --pids-limit 512
+        --cap-drop ALL
+        --security-opt no-new-privileges
     steps:
       - uses: actions/checkout@v6
         with:
           lfs: true   # fixtures may be stored with Git LFS
+          # The token is not left in .git/config. Everything below that writes
+          # back (rejection notice, gh-pages, clearing a stale notice) names the
+          # remote with the token explicitly, so nothing that runs from this
+          # checkout inherits push rights by accident.
+          persist-credentials: false
 
       - uses: actions/setup-python@v6
         with:
@@ -226,15 +249,24 @@ jobs:
           if [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
             git add "state/rejections/$TOOL.json"
             git commit -m "verified: rejection notice $TOOL" || exit 0
             # Retried like the gh-pages deploy below. A push that loses a race
-            # with another run used to end here, and the notice — the only thing
-            # a stopped run leaves the submitter — would never exist. Losing the
-            # explanation to a concurrent commit is the worst way to lose it.
+            # with another run used to end here, and the notice, the only thing
+            # a stopped run leaves the submitter, would never exist. The loop
+            # used to end in a `sleep` that exits 0, so three lost races still
+            # painted this step green; now running out of attempts fails it.
+            pushed=0
             for i in 1 2 3; do
-              git push origin HEAD:main && break || { git pull --rebase origin main || true; sleep 3; }
+              if git push "$remote" HEAD:main; then pushed=1; break; fi
+              git pull --rebase "$remote" main || true
+              sleep 3
             done
+            if [ "$pushed" != 1 ]; then
+              echo "::error::could not publish the rejection notice for $TOOL after 3 attempts"
+              exit 1
+            fi
           fi
 
       - name: "Upload rejection notice"
@@ -314,7 +346,7 @@ jobs:
           mkdir -p work/out_own
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
-          docker run --rm \
+          docker run --rm $DOCKER_HARDENING \
             -v "$PWD/work/in_own:/data/in:ro" \
             -v "$PWD/work/out_own:/data/out" \
             $REF_MOUNT \
@@ -350,7 +382,7 @@ jobs:
           mkdir -p work/out_external
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
-          docker run --rm \
+          docker run --rm $DOCKER_HARDENING \
             -v "$PWD/work/in_external:/data/in:ro" \
             -v "$PWD/work/out_external:/data/out" \
             $REF_MOUNT \
@@ -514,7 +546,8 @@ jobs:
       # strhub.app/verified — gh-pages IS production. The web backend always
       # dispatches with ref=main (VERIFIED_ENGINE_BRANCH), so real submissions are
       # unaffected; only branch-based testing is held back.
-      - name: Deploy reports to GitHub Pages
+      - id: deploy
+        name: Deploy reports to GitHub Pages
         if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -523,24 +556,59 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           remote="https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
-          tmp="$(mktemp -d)"
-          if git ls-remote --exit-code --heads "$remote" gh-pages >/dev/null 2>&1; then
-            git clone --depth 1 --branch gh-pages "$remote" "$tmp"
-          else
-            git clone --depth 1 "$remote" "$tmp"
-            git -C "$tmp" checkout --orphan gh-pages
-            git -C "$tmp" rm -rfq . || true
-          fi
-          cp -f reports/* "$tmp/" 2>/dev/null || true
-          touch "$tmp/.nojekyll"
-          python harness/build_index.py "$tmp" --out "$tmp/index.html"
-          cd "$tmp"
-          git add -A
-          if git diff --cached --quiet; then echo "no changes to publish"; exit 0; fi
-          git commit -m "deploy ${TOOL} @ run ${{ github.run_id }}"
-          for i in 1 2 3; do
-            git push "$remote" gh-pages && break || { git pull --rebase "$remote" gh-pages || true; sleep 3; }
+          publish() {
+            tmp="$(mktemp -d)"
+            if git ls-remote --exit-code --heads "$remote" gh-pages >/dev/null 2>&1; then
+              git clone -q --depth 1 --branch gh-pages "$remote" "$tmp"
+            else
+              git clone -q --depth 1 "$remote" "$tmp"
+              git -C "$tmp" checkout -q --orphan gh-pages
+              git -C "$tmp" rm -rfq . || true
+            fi
+            cp -f reports/* "$tmp/" 2>/dev/null || true
+            touch "$tmp/.nojekyll"
+            python harness/build_index.py "$tmp" --out "$tmp/index.html"
+            git -C "$tmp" add -A
+            if git -C "$tmp" diff --cached --quiet; then echo "no changes to publish"; return 0; fi
+            git -C "$tmp" commit -q -m "deploy ${TOOL} @ run ${{ github.run_id }}"
+            git -C "$tmp" push "$remote" gh-pages
+          }
+          # Matrix legs finish together and every one of them rewrites index.json
+          # and index.html, so a plain push races. Each attempt starts from a
+          # FRESH clone of the branch, so a lost race is redone on top of the
+          # winner's tree instead of rebased over it, and running out of attempts
+          # fails the step. The old loop ended in a `sleep` that exits 0, which
+          # painted a lost deploy green and left the catalogue silently stale.
+          for i in 1 2 3 4 5; do
+            if publish; then exit 0; fi
+            echo "publish attempt $i failed (most likely a race with another leg); retrying"
+            sleep $((i * 3))
           done
+          echo "::error::could not publish reports for $TOOL to gh-pages after 5 attempts"
+          exit 1
+
+      # An attestation was just published for this tool, so a rejection notice
+      # from an earlier, aborted run no longer describes anything. Nothing used
+      # to remove it: strsearch-c70179b sat on main as "rejected" for weeks after
+      # it had been published at the top step.
+      - name: Clear a stale rejection notice
+        if: always() && steps.deploy.outcome == 'success' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          [ -f "state/rejections/$TOOL.json" ] || { echo "no stale notice for $TOOL"; exit 0; }
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -q "state/rejections/$TOOL.json"
+          git commit -q -m "verified: clear rejection notice for $TOOL (attestation published)"
+          for i in 1 2 3; do
+            if git push "$remote" HEAD:main; then exit 0; fi
+            git pull --rebase "$remote" main || true
+            sleep 3
+          done
+          echo "::warning::could not clear the stale rejection notice for $TOOL; it will be cleared on the next successful run"
 
       # To publish badges, commit reports/ to a gh-pages branch (or use
       # actions/deploy-pages). strhub.app then fetches reports/<tool>.badge.json
