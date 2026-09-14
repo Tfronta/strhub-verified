@@ -597,6 +597,9 @@ def main() -> int:
                          "repository's default branch, and whether it still exists")
     ap.add_argument("--ref", default="")
     ap.add_argument("--run-url", default="")
+    ap.add_argument("--mode", default="publish", choices=["publish", "trial"],
+                    help="trial: an unpublished rehearsal of a recipe; stamped into the "
+                         "report so a trial can never be mistaken for an attestation")
     ap.add_argument("--regions-source", default="",
                     help="who supplied the regions BED: tool | strhub | none")
     ap.add_argument("--regions-validation", default="regions_validation.json",
@@ -683,6 +686,9 @@ def main() -> int:
 
     report = {
         "schema": "strhub-verified/1",
+        # "trial" is a rehearsal: same gates, same honesty, no catalogue entry,
+        # no badge anyone can cite. Readers (the web, build_index) key on it.
+        "mode": args.mode,
         "tool": m["tool"],
         # Who filled in the submission, straight from the manifest. `tool` names
         # whoever answers for the software; this names whoever asked for the run,

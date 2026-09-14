@@ -12,10 +12,18 @@ Legs:
               Absent/unmatched → external_ready=0 → the leg is reported N/A.
 
 Usage:
-  python harness/prepare.py <tool> --work work [--github-output]
+  python harness/prepare.py <tool> --work work [--recipe-b64 <base64 json>]
+
+Trial runs (--recipe-b64 / $RECIPE_B64): the recipe is not read from
+tools/<tool>/ but materialised from the dispatch input into <work>/recipe/<tool>/.
+Nothing is committed, so a submitter can try a configuration as many times as it
+takes without each attempt landing on main and on the public catalogue.
 """
 from __future__ import annotations
 import argparse
+import base64
+import json
+import os
 import pathlib
 import shutil
 import sys
@@ -224,13 +232,61 @@ def stage_external(input_type, work_in: pathlib.Path) -> tuple[bool, str]:
     return True, rec.get("name", input_type or "")
 
 
+#: Trial recipes are capped well under GitHub's limit on dispatch inputs; the
+#: web refuses larger ones before dispatching, this is the backstop.
+RECIPE_MAX_BYTES = 60_000
+
+
+def materialise_recipe(tool: str, recipe_b64: str, work: pathlib.Path) -> pathlib.Path:
+    """Write a dispatched recipe to <work>/recipe/<tool>/ and return that dir.
+
+    The recipe is a base64 JSON object: {"manifest_yml": str, "dockerfile": str,
+    "regions_bed": str?}. It is laid out exactly as tools/<tool>/ would be, so
+    every later step (docker build context, the BED under assets/) works the
+    same for a trial as for a committed tool.
+    """
+    if len(recipe_b64) > RECIPE_MAX_BYTES * 4 // 3 + 4:
+        raise SystemExit(f"::error::trial recipe exceeds {RECIPE_MAX_BYTES} bytes")
+    try:
+        recipe = json.loads(base64.b64decode(recipe_b64, validate=True))
+    except Exception as exc:  # noqa: BLE001
+        raise SystemExit(f"::error::trial recipe is not base64 JSON: {exc}")
+    if not isinstance(recipe, dict) or not recipe.get("manifest_yml") or not recipe.get("dockerfile"):
+        raise SystemExit("::error::trial recipe needs manifest_yml and dockerfile")
+    d = work / "recipe" / tool
+    if d.exists():
+        shutil.rmtree(d)
+    d.mkdir(parents=True)
+    (d / "manifest.yml").write_text(recipe["manifest_yml"])
+    (d / "Dockerfile").write_text(recipe["dockerfile"])
+    if recipe.get("regions_bed"):
+        (d / "assets").mkdir()
+        (d / "assets" / REGIONS_CANONICAL).write_text(recipe["regions_bed"])
+    return d
+
+
+def _output_value(value) -> str:
+    """One $GITHUB_OUTPUT value. Newlines are the delimiter of that file, so a
+    manifest value carrying one could inject further keys (own_ready=1, ...)."""
+    return " ".join(str(value if value is not None else "").split())
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("tool")
     ap.add_argument("--work", default="work")
+    ap.add_argument("--recipe-b64", default=os.environ.get("RECIPE_B64", ""),
+                    help="trial run: the recipe as base64 JSON instead of tools/<tool>/")
     args = ap.parse_args()
 
-    mf = ROOT / "tools" / args.tool / "manifest.yml"
+    work = pathlib.Path(args.work)
+    if args.recipe_b64.strip():
+        tool_dir = materialise_recipe(args.tool, args.recipe_b64.strip(), work)
+        mode = "trial"
+    else:
+        tool_dir = ROOT / "tools" / args.tool
+        mode = "publish"
+    mf = tool_dir / "manifest.yml"
     m = yaml.safe_load(mf.read_text())
     inputs = m.get("inputs", {})
     fixture = inputs.get("fixture")
@@ -244,7 +300,6 @@ def main() -> int:
         if ds_rec:
             canonical = ds_rec.get("canonical_input")
 
-    work = pathlib.Path(args.work)
     # The own leg runs only when the author declared a BYOR fixture. Without one
     # we do NOT fall back to a placeholder fixture (that produced spurious
     # Content failures on a 2-read dummy); the own leg is simply N/A and the
@@ -260,7 +315,7 @@ def main() -> int:
     # Stage tool-specific assets into both legs. A legacy per-tool regions.bed
     # lives here; an explicit inputs.regions (staged next) overrides it.
     legs = [work / "in_own", work / "in_external"]
-    assets_dir = ROOT / "tools" / args.tool / "assets"
+    assets_dir = tool_dir / "assets"
     if assets_dir.is_dir():
         for leg in legs:
             leg.mkdir(parents=True, exist_ok=True)
@@ -269,6 +324,15 @@ def main() -> int:
                     shutil.copy2(f, leg / f.name)
 
     # Regions BED (coordinate-based tools). Precedence over the asset above.
+    # An uploaded BED is named tools/<tool>/assets/regions.bed in the manifest;
+    # for a trial that path lives under the materialised recipe instead.
+    if isinstance(regions, dict) and "path" in regions and mode == "trial":
+        rel = pathlib.PurePosixPath(regions["path"])
+        prefix = pathlib.PurePosixPath("tools") / args.tool
+        try:
+            regions = dict(regions, path=str(tool_dir.relative_to(ROOT) / rel.relative_to(prefix)))
+        except ValueError:
+            pass  # not under tools/<tool>/: leave it, stage_regions will report it
     regions_source = stage_regions(regions, legs)
 
     # The manifest names a regions BED and nothing staged one: the path it points
@@ -298,28 +362,31 @@ def main() -> int:
             ref_genome_url = rg.get("url", "")
             ref_genome_filename = rg.get("filename", "")
 
-    out = [
-        f"ref={m['source']['ref']}",
-        f"cmd={' '.join(m['run']['cmd'].split())}",
-        f"dockerdir=tools/{args.tool}",
-        f"dockerfile={m['environment']['dockerfile']}",
-        f"timeout={m['run'].get('timeout_minutes', 30)}",
-        f"manifest={mf}",
-        f"repo={m['source']['repo']}",
-        f"input_type={input_type or ''}",
-        f"own_ready={'1' if own_ready else '0'}",
-        f"external_ready={'1' if external_ready else '0'}",
-        f"dataset_name={dataset_name}",
-        f"ref_genome_url={ref_genome_url}",
-        f"ref_genome_filename={ref_genome_filename}",
-        f"fixture_source={fixture_source}",
-        f"regions_source={regions_source}",
-        f"regions_missing={regions_missing}",
-        f"regions_declared={regions['path'] if isinstance(regions, dict) and 'path' in regions else (regions or '')}",
-        f"supported_loci={supported_loci}",
-        f"min_loci={min_loci}",
-    ]
-    print("\n".join(out))
+    values = {
+        "ref": m["source"]["ref"],
+        "cmd": m["run"]["cmd"],
+        "dockerdir": tool_dir.relative_to(ROOT) if tool_dir.is_relative_to(ROOT) else tool_dir,
+        "dockerfile": m["environment"]["dockerfile"],
+        "timeout": min(int(m["run"].get("timeout_minutes", 30)), 120),
+        "manifest": mf,
+        "repo": m["source"]["repo"],
+        "mode": mode,
+        "input_type": input_type or "",
+        "own_ready": "1" if own_ready else "0",
+        "external_ready": "1" if external_ready else "0",
+        "dataset_name": dataset_name,
+        "ref_genome_url": ref_genome_url,
+        "ref_genome_filename": ref_genome_filename,
+        "fixture_source": fixture_source,
+        "regions_source": regions_source,
+        "regions_missing": regions_missing,
+        "regions_declared": regions["path"] if isinstance(regions, dict) and "path" in regions else (regions or ""),
+        "supported_loci": supported_loci,
+        "min_loci": min_loci,
+    }
+    # Every value is flattened to one line: this goes to $GITHUB_OUTPUT, where a
+    # newline starts a new key. Only `cmd` used to be flattened.
+    print("\n".join(f"{k}={_output_value(v)}" for k, v in values.items()))
     return 0
 
 
