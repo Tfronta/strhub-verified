@@ -747,6 +747,38 @@ jobs:
           # submitter has to come back for it; a published one is on gh-pages.
           retention-days: ${{ env.MODE == 'trial' && 30 || 90 }}
 
+      # A pull request's check is only worth something if it goes red when a
+      # change breaks a tool. Every gate above runs with continue-on-error so
+      # the report is always produced, which left the job green over four
+      # tools that could not write their output (PR #19). So, for pull requests
+      # only: compare this run's level with the one published for the same slug
+      # and fail the job if it dropped. A tool not yet published is not held to
+      # anything; the report is still the artifact.
+      - name: "PR check · no regression against the published level"
+        if: github.event_name == 'pull_request' && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        run: |
+          python - <<'PY'
+          import json, pathlib, sys, urllib.request
+          ladder = ["none", "available", "installs", "runs", "io", "content"]
+          reports = [p for p in pathlib.Path("reports").glob("*.json")
+                     if not p.name.endswith((".badge.json", ".recipe.json"))]
+          if not reports:
+              print("no report produced"); sys.exit(0)
+          r = json.loads(reports[0].read_text())
+          slug = (r.get("report") or {}).get("slug") or reports[0].stem
+          try:
+              with urllib.request.urlopen(
+                  "https://raw.githubusercontent.com/${{ github.repository }}/gh-pages/index.json", timeout=20) as f:
+                  published = {t["slug"]: t["level"] for t in json.load(f)["tools"]}
+          except Exception as exc:
+              print(f"could not read the published catalogue ({exc}); nothing to compare against"); sys.exit(0)
+          was, now = published.get(slug, "none"), r.get("level", "none")
+          print(f"{slug}: published={was} this run={now}")
+          if ladder.index(now) < ladder.index(was):
+              print(f"::error::{slug} regressed from '{was}' to '{now}' in this pull request")
+              sys.exit(1)
+          PY
+
       # Publish a navigable web page (index + per-tool HTML) to the gh-pages
       # branch. Reports accumulate across runs: we clone the existing branch,
       # drop in this run's files, regenerate the index, and push.
