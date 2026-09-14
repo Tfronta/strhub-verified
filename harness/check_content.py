@@ -24,6 +24,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
+import content_auto  # noqa: E402
 
 _DNA_RE = re.compile(r"^[ACGTN]+$", re.IGNORECASE)
 # ForenSeq-style panels mix STR loci with identity SNPs (named rsNNNN). We count
@@ -182,16 +183,59 @@ def _check_one(path: pathlib.Path, spec: dict) -> dict:
     return entry
 
 
-def check(manifest_path: str, out_dir: str) -> dict:
+def _auto_entry(f: pathlib.Path, fmt: str, spec: dict, regions_path, panel_names, panel_path=None) -> dict:
+    """The gate without a content block, or a VCF with one: what the output
+    itself shows. `min_distinct_loci` and `expect_loci` from a block still
+    apply on top, so a manifest can tighten what auto finds but never has to
+    say where the columns are."""
+    if fmt == "vcf":
+        regions = content_auto.name_regions(content_auto.read_regions(regions_path), panel_path)
+        stats = content_auto.analyze_vcf(f, regions)
+        checks = content_auto.judge(stats, "vcf", len(regions))
+    else:
+        stats = content_auto.analyze_table(f, fmt, panel_names)
+        checks = content_auto.judge(stats, fmt, 0)
+    missing: list = []
+    if "min_distinct_loci" in spec:
+        checks["min_distinct_loci"] = stats["distinct_loci"] >= spec["min_distinct_loci"]
+    if spec.get("expect_loci"):
+        present = set(stats["loci"])
+        missing = [l for l in spec["expect_loci"] if l not in present]
+        checks["expect_loci"] = not missing
+    if "min_total_reads" in spec:
+        checks["min_total_reads"] = stats["total_reads"] >= spec["min_total_reads"]
+    entry = {"mode": "auto", "checks": checks, "stats": stats, "passed": all(checks.values())}
+    if missing:
+        entry["missing_loci"] = missing
+    return entry
+
+
+def _auto_applies(spec: dict) -> bool:
+    """When the manifest says nothing about columns, or the output is a VCF
+    (whose columns are the standard's, not the tool's), the output is read
+    for itself. A table with declared columns keeps the declared analysis."""
+    content_spec = spec.get("content") or {}
+    column_keys = {"columns", "dna_column", "count_columns", "locus_column", "locus_sep"}
+    return spec.get("format") == "vcf" or not (column_keys & set(content_spec))
+
+
+def check(manifest_path: str, out_dir: str, regions_path=None, panel_path=None) -> dict:
     m = _manifest.load(manifest_path)
     out = pathlib.Path(out_dir)
     results = []
     ok = True
     any_content = False
+    panel_names = None
+    if panel_path and pathlib.Path(panel_path).is_file():
+        panel_names = {ln.split("\t")[3] for ln in pathlib.Path(panel_path).read_text().splitlines()
+                       if ln.strip() and not ln.startswith("#") and len(ln.split("\t")) > 3}
 
     for spec in m["outputs"]:
-        content_spec = spec.get("content")
-        if not content_spec:
+        content_spec = spec.get("content") or {}
+        auto = _auto_applies(spec)
+        if not content_spec and not auto:
+            continue
+        if not content_spec and spec.get("format") not in ("vcf", "tsv", "csv", "text"):
             continue
         any_content = True
         matches, refused = _manifest.safe_glob(out, spec["path"])
@@ -210,7 +254,12 @@ def check(manifest_path: str, out_dir: str) -> dict:
             continue
         f = matches[0]
         entry["resolved"] = str(f.relative_to(out))
-        entry.update(_check_one(f, content_spec))
+        if auto:
+            entry.update(_auto_entry(f, spec.get("format", "tsv"), content_spec,
+                                     pathlib.Path(regions_path) if regions_path else None, panel_names,
+                                     pathlib.Path(panel_path) if panel_path else None))
+        else:
+            entry.update(_check_one(f, content_spec))
         ok = ok and entry["passed"]
         results.append(entry)
 
@@ -224,9 +273,11 @@ def main() -> int:
     ap.add_argument("manifest")
     ap.add_argument("output_dir")
     ap.add_argument("--json", default="content_result.json")
+    ap.add_argument("--regions", default="", help="the regions file this run was given (VCF loci vocabulary)")
+    ap.add_argument("--panel", default="", help="the dataset's loci.bed (table loci vocabulary)")
     args = ap.parse_args()
 
-    result = check(args.manifest, args.output_dir)
+    result = check(args.manifest, args.output_dir, args.regions or None, args.panel or None)
     pathlib.Path(args.json).write_text(json.dumps(result, indent=2))
     print(json.dumps(result, indent=2))
     return 0 if result["passed"] else 1

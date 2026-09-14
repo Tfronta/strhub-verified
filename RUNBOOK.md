@@ -399,3 +399,30 @@ Se commitean: una corrida no necesita genoma para usarlos.
   de la biblioteca lo reemplaza.
 - Formato nuevo: agregar el escritor en `build_regions_library.py`, el detector en
   `regions_library.py`, regenerar, y `harness/tests/test_regions_library.py` lo cubre.
+
+### Compuerta Content sin declarar columnas
+
+`harness/content_auto.py` lee la salida por sí misma cuando el manifest no dice
+qué columna es qué (o siempre, si el formato es VCF, cuyas columnas son del
+estándar y no de la tool):
+
+- **VCF**: registros con CHROM/POS/REF/ALT y muestra; una llamada es un
+  registro con GT no vacío; un locus se reconoce cuando el ID del registro es un
+  nombre del BED de regiones que la corrida recibió (HipSTR) o su posición cae
+  en una de esas regiones (GangSTR, ±50 pb). Un BED sin nombres (formato
+  GangSTR) toma los nombres del panel por solapamiento.
+- **TSV/CSV/TXT**: la columna cuyos valores parecen nombres de loci forenses
+  (`D\d+S\d+`, `DYS`, TH01, TPOX, vWA, FGA, SE33, Penta, AMEL, `rs\d+`, o los
+  nombres del panel) es la de loci; columnas ACGTN son secuencia; enteros son
+  conteos; números chicos con `.3` son alelos.
+
+Pasa si: hay registros; (VCF) al menos la mitad tienen genotipo llamado y
+volvió al menos el 30% (mínimo 3) de los loci dados; (tabla) hay columna de
+loci con al menos 3 distintos y alguna columna de conteos, secuencia o alelos.
+Un bloque `content` con `min_distinct_loci`, `expect_loci` o `min_total_reads`
+se aplica encima. **No dice si un genotipo es correcto**: eso es concordancia y
+queda fuera de alcance.
+
+El workflow pasa a la compuerta el BED de regiones de cada pierna y `loci.bed`
+del dataset (`--regions`, `--panel`). Tests con VCF reales de HipSTR y GangSTR
+en `harness/testdata/outputs/`.
