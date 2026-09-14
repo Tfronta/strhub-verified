@@ -78,3 +78,8 @@ def test_rewrite_leaves_unknown_types_alone():
 def test_recipe_round_trips_through_json():
     r = pm.build(_proposal("gangstr"), "gangstr-trial")
     json.dumps({"manifest_yml": r["manifest_yml"], "dockerfile": r["dockerfile"]})
+
+
+def test_a_list_of_input_files_becomes_one_canonical_input(tmp_path):
+    cmd, _ = pm.rewrite_for_strhub("./HipSTR --bams run1.bam,run2.bam,run3.bam --fasta g.fa", "illumina-bam-hg38")
+    assert cmd == "./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa"
