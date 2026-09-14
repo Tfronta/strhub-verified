@@ -159,11 +159,33 @@ def load_offline(d: pathlib.Path) -> tuple[dict, str, str]:
 
 # --- analysis ----------------------------------------------------------------
 
+BIOCONDA_RE = re.compile(r"(?:conda|mamba|micromamba)\s+install\b[^\n]*?-c\s+bioconda[^\n]*?\s([a-z0-9][a-z0-9._-]*)\s*$", re.I)
+
+
+def bioconda_package(readme: str) -> str | None:
+    """The package a README installs from Bioconda, if it says so. The last
+    token of the install line is the package in every README seen so far
+    (`conda install -c bioconda -c conda-forge gangstr`)."""
+    for ln in _code_lines(readme):
+        m = BIOCONDA_RE.search(ln.strip())
+        if m and m.group(1) not in ("bioconda", "conda-forge"):
+            return m.group(1)
+    return None
+
+
 def detect_build(paths: list[str], readme: str) -> dict:
     found = []
+    # A published Bioconda package is the maintainer's own tested install and
+    # needs no toolchain we have to guess; it outranks compiling from source.
+    pkg = bioconda_package(readme)
+    if pkg:
+        found.append({"method": "bioconda", "file": None, "package": pkg})
     for path, method in BUILD_FILES:
         if path in paths:
             found.append({"method": method, "file": path})
+    # The repository's own Dockerfile still wins over everything: it is the
+    # author's statement of the environment.
+    found.sort(key=lambda f: 0 if f["method"] == "dockerfile" else 1)
     # A conda environment file under another name or one directory down
     # (setup/STRspy_2.0.yml) still says how the tool is installed.
     if not any(f["method"] == "conda" for f in found):
@@ -179,6 +201,7 @@ def detect_build(paths: list[str], readme: str) -> dict:
     return {
         "method": method,
         "file": chosen["file"] if chosen else None,
+        "package": chosen.get("package") if chosen else None,
         "candidates": found,
         "readme_install_lines": install_lines[:12],
     }
@@ -217,12 +240,19 @@ def _code_lines(readme: str) -> list[str]:
             lines.append(s)
         elif s.startswith(("    ", "\t")) and s.strip():
             lines.append(s.strip())
-    # Shell prompts, then backslash continuations joined into one command.
+    # Shell prompts, then continuations joined into one command: a trailing
+    # backslash, or a following line that starts with a flag. READMEs lay a
+    # long invocation out one option per line without any backslash (HipSTR,
+    # GangSTR), and reading only the first line loses --regions and --out.
     cleaned: list[str] = []
     for ln in lines:
         ln = re.sub(r"^\s*[$>]\s+", "", ln)
+        stripped = ln.strip()
         if cleaned and cleaned[-1].endswith("\\"):
-            cleaned[-1] = cleaned[-1][:-1].rstrip() + " " + ln.strip()
+            cleaned[-1] = cleaned[-1][:-1].rstrip() + " " + stripped
+        elif cleaned and stripped.startswith("-") and not stripped.startswith("---") \
+                and cleaned[-1].strip() and not cleaned[-1].strip().startswith(("#", "-")):
+            cleaned[-1] = cleaned[-1].rstrip() + " " + stripped
         else:
             cleaned.append(ln)
     return cleaned
@@ -436,6 +466,13 @@ def generate_dockerfile(slug: str, ref: str, build: dict) -> str | None:
     m = build["method"]
     if m == "dockerfile":
         return None
+    if m == "bioconda":
+        return (head + "FROM mambaorg/micromamba:1.5.8\nUSER root\n"
+                + apt.format(pkgs="git ca-certificates") + clone
+                + f"RUN micromamba install -y -n base -c conda-forge -c bioconda {build['package']} "
+                "&& micromamba clean -a -y\n"
+                + "ENV PATH=\"/opt/conda/bin:/opt/tool:$PATH\"\nWORKDIR /work\n"
+                + "ENTRYPOINT [\"micromamba\", \"run\", \"-n\", \"base\", \"/bin/bash\", \"-lc\"]\n")
     if m == "conda":
         return (head + "FROM mambaorg/micromamba:1.5.8\nUSER root\n"
                 + apt.format(pkgs="git ca-certificates") + clone

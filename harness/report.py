@@ -122,6 +122,12 @@ def _verdict_md(report: dict) -> list[str]:
     if not v:
         return []
     lines = ["", f"**Verdict: {v['title']}.** {v['reason']}"]
+    if v.get("blockers"):
+        lines += ["", "What stopped it, and what can be done:", ""]
+        for b in v["blockers"]:
+            lines += [f"- {b['what']}",
+                      f"  - Yourself: {b['self_fix_text']}",
+                      f"  - The tool's owner: open an issue, \"{b['ask_owner']['title']}\"."]
     if v.get("readme_gaps"):
         lines += ["", "What the README does not say:", ""]
         lines += [f"- {g['text']}" for g in v["readme_gaps"]]
