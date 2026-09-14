@@ -68,3 +68,27 @@ def test_proposal_with_known_limitations_is_undetermined():
     p = {**PROPOSAL_OK, "limitations": ["regions_format_unknown"]}
     v = verdict.decide(G_RUN_FAIL, recipe_proposal=p)
     assert v["code"] == "undetermined" and "regions" in v["reason"]
+
+
+def test_blockers_name_the_regions_file_and_both_actions():
+    p = {**PROPOSAL_OK, "limitations": ["regions_format_unknown"]}
+    v = verdict.decide(G_RUN_FAIL, recipe_proposal=p)
+    assert [b["code"] for b in v["blockers"]] == ["regions_format_unknown"]
+    b = v["blockers"][0]
+    assert b["self_fix"] == "upload_regions"
+    assert "hg38" in b["ask_owner"]["title"]
+
+
+def test_blockers_follow_the_gate_that_failed():
+    assert [b["code"] for b in verdict.decide(G_INSTALL_FAIL)["blockers"]] == ["build_failed"]
+    assert [b["code"] for b in verdict.decide(G_RUN_FAIL)["blockers"]] == ["run_failed"]
+    assert [b["code"] for b in verdict.decide(G_NO_OUTPUT)["blockers"]] == ["no_output"]
+
+
+def test_runs_has_no_blockers():
+    assert verdict.decide(G_OK)["blockers"] == []
+
+
+def test_readme_gaps_become_blockers_without_duplicates():
+    v = verdict.decide(G_INSTALL_FAIL, recipe_proposal=PROPOSAL_GAPS)
+    assert [b["code"] for b in v["blockers"]] == ["no_command", "build_failed"]
