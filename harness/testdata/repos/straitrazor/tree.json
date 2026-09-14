@@ -1,0 +1,182 @@
+{
+"repo": "https://github.com/Ahhgust/STRaitRazor",
+"ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+"truncated": false,
+"tree": [
+{
+"path": "ForenSeqv1.27.config",
+"type": "blob",
+"size": 13382
+},
+{
+"path": "GFNGSv2_v7.1.config",
+"type": "blob",
+"size": 2048
+},
+{
+"path": "IDseek_Autosomal30_v0.3.config",
+"type": "blob",
+"size": 1989
+},
+{
+"path": "IDseek_SNP85_v0.2.config",
+"type": "blob",
+"size": 6966
+},
+{
+"path": "IDseek_YSTR27_v0.4.config",
+"type": "blob",
+"size": 1811
+},
+{
+"path": "LICENSE.txt",
+"type": "blob",
+"size": 1078
+},
+{
+"path": "MainstAY_v0.2.config",
+"type": "blob",
+"size": 3956
+},
+{
+"path": "Makefile",
+"type": "blob",
+"size": 1548
+},
+{
+"path": "OldConfigs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "OldConfigs/ForenSeqv1.25.config",
+"type": "blob",
+"size": 13396
+},
+{
+"path": "OldConfigs/Forenseq.config",
+"type": "blob",
+"size": 13388
+},
+{
+"path": "OldConfigs/Forenseq.config.strs",
+"type": "blob",
+"size": 3905
+},
+{
+"path": "OldConfigs/IDseek_YSTR27_v0.3.config",
+"type": "blob",
+"size": 1781
+},
+{
+"path": "OldConfigs/PowerSeqv2.1.config",
+"type": "blob",
+"size": 2356
+},
+{
+"path": "OldConfigs/PowerSeqv2.config",
+"type": "blob",
+"size": 2354
+},
+{
+"path": "OldConfigs/Powerseq.config",
+"type": "blob",
+"size": 2499
+},
+{
+"path": "PowerSeqv2.31.config",
+"type": "blob",
+"size": 2355
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 23501
+},
+{
+"path": "batchCstr8.bash",
+"type": "blob",
+"size": 794
+},
+{
+"path": "batchCstr8.bat",
+"type": "blob",
+"size": 620
+},
+{
+"path": "constants.h",
+"type": "blob",
+"size": 3093
+},
+{
+"path": "lookup.cpp",
+"type": "blob",
+"size": 5070
+},
+{
+"path": "lookup.h",
+"type": "blob",
+"size": 2702
+},
+{
+"path": "parseConfig.cpp",
+"type": "blob",
+"size": 5842
+},
+{
+"path": "simpleCompare.pl",
+"type": "blob",
+"size": 601
+},
+{
+"path": "str8.cpp",
+"type": "blob",
+"size": 47208
+},
+{
+"path": "str8.h",
+"type": "blob",
+"size": 1676
+},
+{
+"path": "str8rzr",
+"type": "blob",
+"size": 99464
+},
+{
+"path": "str8rzr.exe",
+"type": "blob",
+"size": 2463200
+},
+{
+"path": "str8rzr_devel_osX",
+"type": "blob",
+"size": 112044
+},
+{
+"path": "str8rzr_osX",
+"type": "blob",
+"size": 102884
+},
+{
+"path": "str8rzr_osX_M1",
+"type": "blob",
+"size": 117156
+},
+{
+"path": "testconfig",
+"type": "blob",
+"size": 113
+},
+{
+"path": "trie.cpp",
+"type": "blob",
+"size": 17453
+},
+{
+"path": "trie.h",
+"type": "blob",
+"size": 2798
+}
+]
+}
