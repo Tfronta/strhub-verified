@@ -27,6 +27,8 @@ def test_hipstr_recipe_is_generated_and_rewritten_to_strhub_mounts(tmp_path):
     assert "FROM ubuntu:22.04" in r["dockerfile"]
     assert m["inputs"]["type"] == "illumina-bam-hg38"
     assert "/data/in/input.bam" in m["run"]["cmd"]
+    assert "--fasta /data/ref/hg38.fa" in m["run"]["cmd"]
+    assert "--regions /data/in/regions.bed" in m["run"]["cmd"]
     assert m["run"]["cmd"].startswith("cd '/opt/tool' && touch /tmp/.strhub_mark")
     assert m["outputs"][0] == {"path": "**/*.vcf*", "format": "vcf", "min_records": 1}
     assert "regions_format_unknown" in r["limitations"]
