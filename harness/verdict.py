@@ -37,6 +37,8 @@ TITLES = {
 
 
 LIMITATION_TEXT = {
+    "regions_format_guessed": "the tool needs a regions file and STRhub does not know its format; "
+                              "a plain chrom/start/end/name file was tried",
     "no_command": "no command line invoking the tool was found in the README",
     "install_method_unknown": "no install method was found in the repository",
     "regions_format_unknown": "the tool needs a regions file in its own format, which STRhub "
@@ -50,10 +52,11 @@ LIMITATION_TEXT = {
 #: web renders these as two buttons; the codes are the contract.
 BLOCKERS = {
     "regions_format_unknown": {
-        "what": "The tool needs a regions file (BED) in its own format, and the repository "
-                "does not ship one for hg38 that covers forensic STR loci.",
+        "what": "The tool needs a regions file (BED) in its own format. STRhub has ready-made files "
+                "for the HipSTR, GangSTR and STRsearch layouts and a plain BED; none of them is known "
+                "to fit this tool, and the repository ships none for hg38 covering forensic STR loci.",
         "self_fix": "upload_regions",
-        "self_fix_text": "Provide the regions file for the tool and try again.",
+        "self_fix_text": "Pick one of STRhub's ready-made regions files, or provide the tool's own, and try again.",
         "ask_owner": {
             "title": "Publish a regions file (hg38) for forensic STR loci",
             "body": "STRhub Verified tried to run the tool in a clean environment on a public hg38 "
@@ -128,7 +131,9 @@ def blockers_for(gates: dict, limits: list[str], gaps: list[dict], ids: set[str]
     """The blockers that apply, most actionable first, at most three."""
     out: list[str] = []
     for l in limits:
-        if l in BLOCKERS:
+        if l == "regions_format_guessed" and not gates.get("io"):
+            out.append("regions_format_unknown")
+        elif l in BLOCKERS:
             out.append(l)
     gap_items = {g.get("item") for g in gaps}
     if "install" in gap_items and "install_method_unknown" not in out:
@@ -192,6 +197,10 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     # method, a regions BED in a format STRhub cannot write) did not test the
     # tool; it tested the proposal.
     limits = [l for l in proposal.get("limitations", []) if l in LIMITATION_TEXT]
+    # A guessed regions format only counts against the proposal when the run
+    # did not get its output: if the plain BED worked, it worked.
+    if "regions_format_guessed" in limits and gates.get("io"):
+        limits.remove("regions_format_guessed")
     if auto and limits:
         return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "recipe",
                 "reason": "STRhub could not complete a way to run this tool: "
