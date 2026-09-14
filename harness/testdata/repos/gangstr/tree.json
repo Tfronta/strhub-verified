@@ -1,0 +1,1037 @@
+{
+"repo": "https://github.com/gymreklab/gangstr",
+"ref": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+"truncated": false,
+"tree": [
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 667
+},
+{
+"path": ".gitmodules",
+"type": "blob",
+"size": 0
+},
+{
+"path": "AUTHORS",
+"type": "blob",
+"size": 113
+},
+{
+"path": "CMakeLists.txt",
+"type": "blob",
+"size": 4490
+},
+{
+"path": "COPYING",
+"type": "blob",
+"size": 35146
+},
+{
+"path": "ChangeLog",
+"type": "blob",
+"size": 371
+},
+{
+"path": "GangSTRConfig.h.in",
+"type": "blob",
+"size": 313
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 18027
+},
+{
+"path": "MAKE_SOURCE_DIST.md",
+"type": "blob",
+"size": 195
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 21293
+},
+{
+"path": "TODO",
+"type": "blob",
+"size": 227
+},
+{
+"path": "experimental",
+"type": "tree",
+"size": 0
+},
+{
+"path": "experimental/TRF_script",
+"type": "tree",
+"size": 0
+},
+{
+"path": "experimental/TRF_script/chr_make_reference.sh",
+"type": "blob",
+"size": 1892
+},
+{
+"path": "experimental/TRF_script/not_used",
+"type": "tree",
+"size": 0
+},
+{
+"path": "experimental/TRF_script/not_used/make_reference.sh",
+"type": "blob",
+"size": 1740
+},
+{
+"path": "experimental/TRF_script/not_used/run_on_snorlax.sh",
+"type": "blob",
+"size": 188
+},
+{
+"path": "experimental/TRF_script/run_nima.sh",
+"type": "blob",
+"size": 490
+},
+{
+"path": "experimental/plot_stats",
+"type": "tree",
+"size": 0
+},
+{
+"path": "experimental/plot_stats/plot_gangstr_bamstats.py",
+"type": "blob",
+"size": 2516
+},
+{
+"path": "experimental/ref_panel_filters",
+"type": "tree",
+"size": 0
+},
+{
+"path": "experimental/ref_panel_filters/minimal_trim.py",
+"type": "blob",
+"size": 2742
+},
+{
+"path": "experimental/ref_panel_filters/remove_bundles.py",
+"type": "blob",
+"size": 1432
+},
+{
+"path": "experimental/ref_panel_filters/remove_messy.py",
+"type": "blob",
+"size": 1010
+},
+{
+"path": "experimental/ref_panel_filters/run.sh",
+"type": "blob",
+"size": 3786
+},
+{
+"path": "experimental/ref_panel_filters/supplement_ref.py",
+"type": "blob",
+"size": 1699
+},
+{
+"path": "experimental/str_info_generator",
+"type": "tree",
+"size": 0
+},
+{
+"path": "experimental/str_info_generator/info_gen.py",
+"type": "blob",
+"size": 6220
+},
+{
+"path": "experimental/str_info_generator/run.sh",
+"type": "blob",
+"size": 505
+},
+{
+"path": "experimental/supplement_bed",
+"type": "tree",
+"size": 0
+},
+{
+"path": "experimental/supplement_bed/hg19_codis.bed",
+"type": "blob",
+"size": 418
+},
+{
+"path": "experimental/supplement_bed/hg19_disease.txt",
+"type": "blob",
+"size": 500
+},
+{
+"path": "experimental/supplement_bed/hg38_codis.bed",
+"type": "blob",
+"size": 416
+},
+{
+"path": "experimental/supplement_bed/hg38_disease.txt",
+"type": "blob",
+"size": 500
+},
+{
+"path": "experimental/supplement_bed/read.me",
+"type": "blob",
+"size": 71
+},
+{
+"path": "logo",
+"type": "tree",
+"size": 0
+},
+{
+"path": "logo/GangSTR_logo_square.png",
+"type": "blob",
+"size": 235013
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/create_ref_panel",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/create_ref_panel/1_run_TRF.sh",
+"type": "blob",
+"size": 538
+},
+{
+"path": "scripts/create_ref_panel/2_trim.sh",
+"type": "blob",
+"size": 3699
+},
+{
+"path": "scripts/create_ref_panel/3_supplement_bed.sh",
+"type": "blob",
+"size": 294
+},
+{
+"path": "scripts/create_ref_panel/scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/create_ref_panel/scripts/chr_make_reference.sh",
+"type": "blob",
+"size": 1941
+},
+{
+"path": "scripts/create_ref_panel/scripts/minimal_trim.py",
+"type": "blob",
+"size": 2742
+},
+{
+"path": "scripts/create_ref_panel/scripts/remove_bundles.py",
+"type": "blob",
+"size": 1432
+},
+{
+"path": "scripts/create_ref_panel/scripts/remove_messy.py",
+"type": "blob",
+"size": 1010
+},
+{
+"path": "scripts/create_ref_panel/scripts/supplement_ref.py",
+"type": "blob",
+"size": 1722
+},
+{
+"path": "scripts/extract_offtarget",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/extract_offtarget/helpers",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/extract_offtarget/helpers/merge_off.py",
+"type": "blob",
+"size": 1517
+},
+{
+"path": "scripts/extract_offtarget/helpers/process_sam.sh",
+"type": "blob",
+"size": 430
+},
+{
+"path": "scripts/extract_offtarget/run.py",
+"type": "blob",
+"size": 2506
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/CMakeLists.txt",
+"type": "blob",
+"size": 202
+},
+{
+"path": "src/bam_info_extract.cpp",
+"type": "blob",
+"size": 13767
+},
+{
+"path": "src/bam_info_extract.h",
+"type": "blob",
+"size": 2246
+},
+{
+"path": "src/bam_io.cpp",
+"type": "blob",
+"size": 8836
+},
+{
+"path": "src/bam_io.h",
+"type": "blob",
+"size": 18314
+},
+{
+"path": "src/common.cpp",
+"type": "blob",
+"size": 1929
+},
+{
+"path": "src/common.h",
+"type": "blob",
+"size": 1122
+},
+{
+"path": "src/enclosing_class.cpp",
+"type": "blob",
+"size": 3687
+},
+{
+"path": "src/enclosing_class.h",
+"type": "blob",
+"size": 1517
+},
+{
+"path": "src/fastonebigheader.h",
+"type": "blob",
+"size": 17207
+},
+{
+"path": "src/flanking_class.cpp",
+"type": "blob",
+"size": 3641
+},
+{
+"path": "src/flanking_class.h",
+"type": "blob",
+"size": 1507
+},
+{
+"path": "src/frr_class.cpp",
+"type": "blob",
+"size": 7592
+},
+{
+"path": "src/frr_class.h",
+"type": "blob",
+"size": 1795
+},
+{
+"path": "src/gc_region_reader.cpp",
+"type": "blob",
+"size": 2545
+},
+{
+"path": "src/gc_region_reader.h",
+"type": "blob",
+"size": 1378
+},
+{
+"path": "src/genotyper.cpp",
+"type": "blob",
+"size": 10820
+},
+{
+"path": "src/genotyper.h",
+"type": "blob",
+"size": 1775
+},
+{
+"path": "src/likelihood_maximizer.cpp",
+"type": "blob",
+"size": 28102
+},
+{
+"path": "src/likelihood_maximizer.h",
+"type": "blob",
+"size": 7669
+},
+{
+"path": "src/locus.cpp",
+"type": "blob",
+"size": 1489
+},
+{
+"path": "src/locus.h",
+"type": "blob",
+"size": 2474
+},
+{
+"path": "src/main_gangstr.cpp",
+"type": "blob",
+"size": 18937
+},
+{
+"path": "src/mathops.cpp",
+"type": "blob",
+"size": 1989
+},
+{
+"path": "src/mathops.h",
+"type": "blob",
+"size": 586
+},
+{
+"path": "src/options.cpp",
+"type": "blob",
+"size": 2378
+},
+{
+"path": "src/options.h",
+"type": "blob",
+"size": 3476
+},
+{
+"path": "src/read_class.cpp",
+"type": "blob",
+"size": 5807
+},
+{
+"path": "src/read_class.h",
+"type": "blob",
+"size": 3986
+},
+{
+"path": "src/read_extractor.cpp",
+"type": "blob",
+"size": 36103
+},
+{
+"path": "src/read_extractor.h",
+"type": "blob",
+"size": 3272
+},
+{
+"path": "src/read_pair.cpp",
+"type": "blob",
+"size": 891
+},
+{
+"path": "src/read_pair.h",
+"type": "blob",
+"size": 1292
+},
+{
+"path": "src/realignment.cpp",
+"type": "blob",
+"size": 23191
+},
+{
+"path": "src/realignment.h",
+"type": "blob",
+"size": 5758
+},
+{
+"path": "src/ref_genome.cpp",
+"type": "blob",
+"size": 2556
+},
+{
+"path": "src/ref_genome.h",
+"type": "blob",
+"size": 1367
+},
+{
+"path": "src/region_reader.cpp",
+"type": "blob",
+"size": 2833
+},
+{
+"path": "src/region_reader.h",
+"type": "blob",
+"size": 1077
+},
+{
+"path": "src/sample_info.cpp",
+"type": "blob",
+"size": 11550
+},
+{
+"path": "src/sample_info.h",
+"type": "blob",
+"size": 2630
+},
+{
+"path": "src/spanning_class.cpp",
+"type": "blob",
+"size": 5265
+},
+{
+"path": "src/spanning_class.h",
+"type": "blob",
+"size": 1415
+},
+{
+"path": "src/ssw.c",
+"type": "blob",
+"size": 30929
+},
+{
+"path": "src/ssw.h",
+"type": "blob",
+"size": 8615
+},
+{
+"path": "src/ssw_cpp.cpp",
+"type": "blob",
+"size": 13690
+},
+{
+"path": "src/ssw_cpp.h",
+"type": "blob",
+"size": 8859
+},
+{
+"path": "src/str_info.cpp",
+"type": "blob",
+"size": 4930
+},
+{
+"path": "src/str_info.h",
+"type": "blob",
+"size": 1605
+},
+{
+"path": "src/stringops.cpp",
+"type": "blob",
+"size": 2197
+},
+{
+"path": "src/stringops.h",
+"type": "blob",
+"size": 737
+},
+{
+"path": "src/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/tests/.deps",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/tests/.deps/.dirstamp",
+"type": "blob",
+"size": 0
+},
+{
+"path": "src/tests/.deps/GangSTRTests-Genotyper_test.Po",
+"type": "blob",
+"size": 23884
+},
+{
+"path": "src/tests/.deps/GangSTRTests-LikelihoodMaximizer_test.Po",
+"type": "blob",
+"size": 23924
+},
+{
+"path": "src/tests/.deps/GangSTRTests-ReadClass_test.Po",
+"type": "blob",
+"size": 15992
+},
+{
+"path": "src/tests/.deps/GangSTRTests-ReadExtractor_test.Po",
+"type": "blob",
+"size": 23785
+},
+{
+"path": "src/tests/.deps/GangSTRTests-Realignment_test.Po",
+"type": "blob",
+"size": 15854
+},
+{
+"path": "src/tests/.deps/GangSTRTests-main_test.Po",
+"type": "blob",
+"size": 12360
+},
+{
+"path": "src/tests/.dirstamp",
+"type": "blob",
+"size": 0
+},
+{
+"path": "src/tests/Genotyper_test.cpp",
+"type": "blob",
+"size": 3184
+},
+{
+"path": "src/tests/Genotyper_test.h",
+"type": "blob",
+"size": 1251
+},
+{
+"path": "src/tests/LikelihoodMaximizer_test.cpp",
+"type": "blob",
+"size": 7242
+},
+{
+"path": "src/tests/LikelihoodMaximizer_test.h",
+"type": "blob",
+"size": 1846
+},
+{
+"path": "src/tests/ReadClass_test.cpp",
+"type": "blob",
+"size": 7581
+},
+{
+"path": "src/tests/ReadClass_test.h",
+"type": "blob",
+"size": 1966
+},
+{
+"path": "src/tests/ReadExtractor_test.cpp",
+"type": "blob",
+"size": 10811
+},
+{
+"path": "src/tests/ReadExtractor_test.h",
+"type": "blob",
+"size": 1946
+},
+{
+"path": "src/tests/Realignment_test.cpp",
+"type": "blob",
+"size": 12115
+},
+{
+"path": "src/tests/Realignment_test.h",
+"type": "blob",
+"size": 1642
+},
+{
+"path": "src/tests/main_test.cpp",
+"type": "blob",
+"size": 1253
+},
+{
+"path": "src/vcf_writer.cpp",
+"type": "blob",
+"size": 9390
+},
+{
+"path": "src/vcf_writer.h",
+"type": "blob",
+"size": 1389
+},
+{
+"path": "test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test/HTT.bed",
+"type": "blob",
+"size": 387
+},
+{
+"path": "test/alignment",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test/alignment/nc10_25.sorted.bam",
+"type": "blob",
+"size": 213250
+},
+{
+"path": "test/alignment/nc10_25.sorted.bam.bai",
+"type": "blob",
+"size": 66168
+},
+{
+"path": "test/alignment/nc190_25.sorted.bam",
+"type": "blob",
+"size": 212769
+},
+{
+"path": "test/alignment/nc190_25.sorted.bam.bai",
+"type": "blob",
+"size": 438968
+},
+{
+"path": "test/alignment/nc30_15.sorted.bam",
+"type": "blob",
+"size": 213337
+},
+{
+"path": "test/alignment/nc30_15.sorted.bam.bai",
+"type": "blob",
+"size": 111864
+},
+{
+"path": "test/results",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test/results/HTT_10_25.readinfo.tab",
+"type": "blob",
+"size": 15521
+},
+{
+"path": "test/results/HTT_10_25.vcf",
+"type": "blob",
+"size": 1415
+},
+{
+"path": "test/results/nc10_25.readinfo.tab",
+"type": "blob",
+"size": 16398
+},
+{
+"path": "test/results/nc10_25.vcf",
+"type": "blob",
+"size": 1385
+},
+{
+"path": "test/results/nc190_25.readinfo.tab",
+"type": "blob",
+"size": 20924
+},
+{
+"path": "test/results/nc190_25.vcf",
+"type": "blob",
+"size": 1919
+},
+{
+"path": "test/results/nc30_15.readinfo.tab",
+"type": "blob",
+"size": 15521
+},
+{
+"path": "test/results/nc30_15.vcf",
+"type": "blob",
+"size": 1413
+},
+{
+"path": "test/run_test.sh",
+"type": "blob",
+"size": 310
+},
+{
+"path": "unused",
+"type": "tree",
+"size": 0
+},
+{
+"path": "unused/NA12878_validation.bootstrap.tab",
+"type": "blob",
+"size": 0
+},
+{
+"path": "unused/NA12878_validation.readinfo.tab",
+"type": "blob",
+"size": 0
+},
+{
+"path": "unused/NA12878_validation.vcf",
+"type": "blob",
+"size": 1327
+},
+{
+"path": "unused/genot_error_hist_l.pdf",
+"type": "blob",
+"size": 11450
+},
+{
+"path": "unused/genot_error_hist_s.pdf",
+"type": "blob",
+"size": 11203
+},
+{
+"path": "unused/genot_errors.txt",
+"type": "blob",
+"size": 7022
+},
+{
+"path": "unused/test.bam",
+"type": "blob",
+"size": 721509
+},
+{
+"path": "unused/test.bam.bai",
+"type": "blob",
+"size": 824
+},
+{
+"path": "unused/test.bed",
+"type": "blob",
+"size": 24
+},
+{
+"path": "unused/test.sh",
+"type": "blob",
+"size": 253
+},
+{
+"path": "unused/test.vcf",
+"type": "blob",
+"size": 5533
+},
+{
+"path": "unused/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "unused/tests/47_nc_70.sorted.bam",
+"type": "blob",
+"size": 139755
+},
+{
+"path": "unused/tests/47_nc_70.sorted.bam.bai",
+"type": "blob",
+"size": 148888
+},
+{
+"path": "unused/tests/53_nc_12.sorted.bam",
+"type": "blob",
+"size": 136934
+},
+{
+"path": "unused/tests/53_nc_12.sorted.bam.bai",
+"type": "blob",
+"size": 148888
+},
+{
+"path": "unused/tests/53_nc_80.sorted.bam",
+"type": "blob",
+"size": 139992
+},
+{
+"path": "unused/tests/53_nc_80.sorted.bam.bai",
+"type": "blob",
+"size": 148888
+},
+{
+"path": "unused/tests/54_nc_12.sorted.bam",
+"type": "blob",
+"size": 137063
+},
+{
+"path": "unused/tests/54_nc_12.sorted.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "unused/tests/54_nc_40.sorted.bam",
+"type": "blob",
+"size": 140895
+},
+{
+"path": "unused/tests/54_nc_40.sorted.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "unused/tests/ATXN10.bed",
+"type": "blob",
+"size": 29
+},
+{
+"path": "unused/tests/ATXN3.bed",
+"type": "blob",
+"size": 27
+},
+{
+"path": "unused/tests/ATXN7.bed",
+"type": "blob",
+"size": 26
+},
+{
+"path": "unused/tests/CACNA1A.bed",
+"type": "blob",
+"size": 27
+},
+{
+"path": "unused/tests/CACNA1A_5k_region.fa",
+"type": "blob",
+"size": 10043
+},
+{
+"path": "unused/tests/CACNA1A_5k_region.fa.fai",
+"type": "blob",
+"size": 23
+},
+{
+"path": "unused/tests/HTT.bed",
+"type": "blob",
+"size": 24
+},
+{
+"path": "unused/tests/generate_bam",
+"type": "tree",
+"size": 0
+},
+{
+"path": "unused/tests/generate_bam/genot_error_hist_l.pdf",
+"type": "blob",
+"size": 10952
+},
+{
+"path": "unused/tests/generate_bam/genot_error_hist_s.pdf",
+"type": "blob",
+"size": 11355
+},
+{
+"path": "unused/tests/generate_bam/genot_errors.txt",
+"type": "blob",
+"size": 105
+},
+{
+"path": "unused/tests/generate_bam/run.sh",
+"type": "blob",
+"size": 644
+},
+{
+"path": "unused/tests/generate_bam/test.bootstrap.tab",
+"type": "blob",
+"size": 2600
+},
+{
+"path": "unused/tests/generate_bam/test.readinfo.tab",
+"type": "blob",
+"size": 1414
+},
+{
+"path": "unused/tests/generate_bam/test.vcf.gz",
+"type": "blob",
+"size": 742
+},
+{
+"path": "unused/tests/generate_bam/test.vcf.gz.tbi",
+"type": "blob",
+"size": 173
+},
+{
+"path": "unused/tests/generate_bam/test_locus.bed",
+"type": "blob",
+"size": 26
+},
+{
+"path": "unused/tests/test.discarded.bam",
+"type": "blob",
+"size": 1966
+},
+{
+"path": "unused/tests/test.discarded.bam.bai",
+"type": "blob",
+"size": 31968
+},
+{
+"path": "unused/tests/test.enclosing.bam",
+"type": "blob",
+"size": 2797
+},
+{
+"path": "unused/tests/test.enclosing.bam.bai",
+"type": "blob",
+"size": 76072
+},
+{
+"path": "unused/tests/test.enclosing.single.bam",
+"type": "blob",
+"size": 2344
+},
+{
+"path": "unused/tests/test.enclosing.single.bam.bai",
+"type": "blob",
+"size": 31976
+},
+{
+"path": "unused/tests/test.fa",
+"type": "blob",
+"size": 412
+},
+{
+"path": "unused/tests/test.fa.fai",
+"type": "blob",
+"size": 14
+},
+{
+"path": "unused/tests/test.frr.bam",
+"type": "blob",
+"size": 2525
+},
+{
+"path": "unused/tests/test.frr.bam.bai",
+"type": "blob",
+"size": 58048
+},
+{
+"path": "unused/tests/test.frr.single.bam",
+"type": "blob",
+"size": 2613
+},
+{
+"path": "unused/tests/test.frr.single.bam.bai",
+"type": "blob",
+"size": 31976
+},
+{
+"path": "unused/tests/test.sorted.bam",
+"type": "blob",
+"size": 106621
+},
+{
+"path": "unused/tests/test.sorted.bam.bai",
+"type": "blob",
+"size": 134816
+},
+{
+"path": "unused/tests/test.spanning.bam",
+"type": "blob",
+"size": 2418
+},
+{
+"path": "unused/tests/test.spanning.bam.bai",
+"type": "blob",
+"size": 31976
+},
+{
+"path": "unused/tests/test.spanning.single.bam",
+"type": "blob",
+"size": 4870
+},
+{
+"path": "unused/tests/test.spanning.single.bam.bai",
+"type": "blob",
+"size": 58048
+},
+{
+"path": "unused/tests/test_pair_answers.tab",
+"type": "blob",
+"size": 17841
+}
+]
+}
