@@ -62,3 +62,9 @@ def test_example_data_gap_is_never_a_reason():
          "readme": {"gaps": [{"item": "example_data", "text": "none"}], "sufficient_to_attempt": True}}
     v = verdict.decide(G_INSTALL_FAIL, recipe_proposal=p)
     assert v["code"] == "fails" and v["readme_gaps"] == []
+
+
+def test_proposal_with_known_limitations_is_undetermined():
+    p = {**PROPOSAL_OK, "limitations": ["regions_format_unknown"]}
+    v = verdict.decide(G_RUN_FAIL, recipe_proposal=p)
+    assert v["code"] == "undetermined" and "regions" in v["reason"]

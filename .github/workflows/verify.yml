@@ -41,6 +41,19 @@ on:
         type: string
         required: false
         default: ""
+      # A trial from nothing but a URL: the recipe is PROPOSED here, in CI, from
+      # the repository's tree and README (harness/detect_recipe.py), and the
+      # report's verdict says whether what could be worked out was enough.
+      repo:
+        description: "Trial from URL: public GitHub repository (no recipe needed)"
+        type: string
+        required: false
+        default: ""
+      ref:
+        description: "Trial from URL: commit SHA or tag"
+        type: string
+        required: false
+        default: ""
   pull_request:
     paths:
       - "tools/**"
@@ -196,13 +209,29 @@ jobs:
       # --- Prepare: read manifest, resolve external dataset, stage inputs -----
       # prepare.py stages each matrix leg: work/in_own (BYOR, local or remote)
       # and work/in_external (typed dataset from datasets/, or N/A).
+      - id: propose
+        name: "Propose a recipe from the repository (trial from URL)"
+        if: github.event.inputs.mode == 'trial' && github.event.inputs.recipe == '' && github.event.inputs.repo != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRIAL_REPO: ${{ github.event.inputs.repo }}
+          TRIAL_REF: ${{ github.event.inputs.ref }}
+        run: |
+          mkdir -p work
+          python harness/detect_recipe.py "$TRIAL_REPO" "$TRIAL_REF" --json recipe_proposal.json
+          python harness/propose_manifest.py recipe_proposal.json --slug "$TOOL" \
+            --out-dir work/proposal --recipe-b64-out work/recipe.b64
+
       - id: m
         name: Prepare run (manifest + dataset matrix)
         env:
           # Only set for a trial. Read by prepare.py from the environment rather
           # than the command line: it is author-supplied and can be large.
           RECIPE_B64: ${{ github.event.inputs.mode == 'trial' && github.event.inputs.recipe || '' }}
-        run: python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
+        run: |
+          # A recipe proposed in the step above takes the place of a dispatched one.
+          if [ -f work/recipe.b64 ]; then RECIPE_B64="$(cat work/recipe.b64)"; export RECIPE_B64; fi
+          python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
 
       # --- Pre-flight: the BED the manifest names must actually be here --------
       # STRhub's fault, not the author's, and it must STOP the run.
@@ -351,14 +380,26 @@ jobs:
         continue-on-error: true
         env:
           TOOL_REF: ${{ steps.m.outputs.ref }}
+          TOOL_REPO: ${{ steps.m.outputs.repo }}
           DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
           DOCKER_FILE: ${{ steps.m.outputs.dockerfile }}
+          DOCKER_FROM_REPO: ${{ steps.m.outputs.dockerfile_from_repo }}
         run: |
           # pipefail, or `tee` would swallow docker's exit status and a failed
           # build would be recorded as a passed gate — the one bug this step
           # must not have.
           set -o pipefail
           mkdir -p work
+          if [ -n "$DOCKER_FROM_REPO" ]; then
+            # The repository ships its own Dockerfile: build THAT, with the
+            # repository at the pinned ref as its context. The author's own
+            # statement of the environment, taken at its word.
+            rm -rf work/src
+            git clone -q -- "$TOOL_REPO" work/src \
+              && git -C work/src checkout -q "$TOOL_REF" \
+              && (git -C work/src submodule update --init --recursive -q || true)
+            DOCKER_DIR=work/src; DOCKER_FILE="$DOCKER_FROM_REPO"
+          fi
           docker build \
             --build-arg "STRAITRAZOR_REF=$TOOL_REF" \
             --build-arg "TOOL_REF=$TOOL_REF" \
@@ -376,18 +417,25 @@ jobs:
           # The author's own command. It is meant to run INSIDE the container (the
           # image entrypoint is `bash -lc`), so it is passed as a single argument
           # here and never evaluated by the runner's shell.
+          # The engine's own images end in `ENTRYPOINT ["/bin/bash", "-lc"]`, so
+          # the command is passed as one argument. A repository's own Dockerfile
+          # has whatever entrypoint its author chose; for those the entrypoint is
+          # overridden to bash so the command still reaches a shell. Unquoted on
+          # purpose: empty for the engine's images, two words for a repository's.
           TOOL_CMD: ${{ steps.m.outputs.cmd }}
+          ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
+          ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
         run: |
           set -o pipefail
           mkdir -p work/out_own
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
-          docker run --rm $DOCKER_HARDENING \
+          docker run --rm $DOCKER_HARDENING $ENTRY \
             -v "$PWD/work/in_own:/data/in:ro" \
             -v "$PWD/work/out_own:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            "$TOOL_CMD" 2>&1 | tee work/log_own.txt
+            $ENTRY_ARGS "$TOOL_CMD" 2>&1 | tee work/log_own.txt
 
       - id: io
         name: "Gate · Expected IO (own)"
@@ -419,16 +467,18 @@ jobs:
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         env:
           EXAMPLE_CMD: ${{ steps.m.outputs.example_cmd }}
+          ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
+          ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
         run: |
           set -o pipefail
           mkdir -p work/out_example
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
-          docker run --rm $DOCKER_HARDENING \
+          docker run --rm $DOCKER_HARDENING $ENTRY \
             -v "$PWD/work/out_example:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            "$EXAMPLE_CMD" 2>&1 | tee work/log_example.txt
+            $ENTRY_ARGS "$EXAMPLE_CMD" 2>&1 | tee work/log_example.txt
 
       - id: example
         name: "Example produced its output"
@@ -446,17 +496,19 @@ jobs:
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         env:
           TOOL_CMD: ${{ steps.m.outputs.cmd }}
+          ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
+          ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
         run: |
           set -o pipefail
           mkdir -p work/out_external
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
-          docker run --rm $DOCKER_HARDENING \
+          docker run --rm $DOCKER_HARDENING $ENTRY \
             -v "$PWD/work/in_external:/data/in:ro" \
             -v "$PWD/work/out_external:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            "$TOOL_CMD" 2>&1 | tee work/log_external.txt
+            $ENTRY_ARGS "$TOOL_CMD" 2>&1 | tee work/log_external.txt
 
       - id: io_ext
         name: "Expected IO (external)"
