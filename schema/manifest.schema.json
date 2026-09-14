@@ -179,14 +179,17 @@
         "slug": { "type": "string", "description": "Filename stem for this variant's report + badge, e.g. 'strait-razor-PowerSeqv2.31'." }
       }
     },
-    "reproduces_own_example": {
+    "example": {
       "type": "object",
-      "description": "OPTIONAL gate 5. Compares output to the tool's OWN published example result for the fixture. Verifies documented behaviour, NOT biological correctness.",
-      "required": ["expected", "produced"],
+      "description": "The tool's OWN documented example: the command its README shows, run on the data its repository ships, inside the built image (the clone lives at /opt/tool). This is the reviewer's question, 'does the Quick Start work?', and it needs nothing from STRhub. Whatever the command creates is captured and checked for a non-empty result; declare `outputs` to check for specific files, and `expected` to compare against a golden file the repository publishes.",
+      "required": ["cmd"],
       "additionalProperties": false,
       "properties": {
-        "expected": { "type": "string", "description": "Path to the golden file shipped by the author, relative to manifest" },
-        "produced": { "type": "string", "description": "Glob of the produced file to compare, relative to /data/out" }
+        "cmd": { "type": "string", "description": "Verbatim from the README. Runs with cwd = `cwd`; relative paths are the repository's own." },
+        "cwd": { "type": "string", "default": "/opt/tool", "description": "Where the command runs. The generated Dockerfiles clone the repository to /opt/tool." },
+        "outputs": { "type": "array", "items": { "type": "string", "pattern": "^(?!/)(?!~)(?!.*(^|/)\\.\\.(/|$)).+$" }, "description": "Globs relative to cwd that the command is documented to produce. Optional: without it, any non-empty file the command created counts." },
+        "expected": { "type": "string", "description": "Path (relative to cwd) of the output the repository publishes for this example; the produced file named by outputs[0] is compared to it, whitespace-normalised." },
+        "source": { "type": "string", "enum": ["readme", "author", "detected"], "description": "Where this example came from: quoted from the README, written by the submitter, or proposed by detect_recipe." }
       }
     },
     "caveats": {

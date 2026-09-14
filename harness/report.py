@@ -21,6 +21,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
 import diagnose_log  # noqa: E402
+import verdict as verdict_lib  # noqa: E402
 import upstream  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -112,6 +113,21 @@ THIRD_PARTY_NOTE = (
 )
 
 
+LABELS.setdefault("example", "Reproduces own example")
+MEANING.setdefault("example", "the README's own command produced its documented output on the repository's own data")
+
+
+def _verdict_md(report: dict) -> list[str]:
+    v = report.get("verdict")
+    if not v:
+        return []
+    lines = ["", f"**Verdict: {v['title']}.** {v['reason']}"]
+    if v.get("readme_gaps"):
+        lines += ["", "What the README does not say:", ""]
+        lines += [f"- {g['text']}" for g in v["readme_gaps"]]
+    return lines
+
+
 def _summary_md(report: dict, slug: str) -> str:
     """A human-readable attestation summary: what STRhub shows the user."""
     tool = report["tool"]
@@ -122,6 +138,7 @@ def _summary_md(report: dict, slug: str) -> str:
         f"# STRhub Verified: {tool['name']} ({slug})",
         "",
         f"**Result: {LABELS.get(level, 'not run')}.** {MEANING.get(level, '')}.",
+        *_verdict_md(report),
         "",
         f"- Source: `{report['source']['repo']}` @ `{report['source']['ref_resolved']}`",
         f"- Environment: {', '.join(report['environment'].get('os', []))} "
@@ -145,6 +162,8 @@ def _summary_md(report: dict, slug: str) -> str:
     ]
     for g in LADDER:
         lines.append(f"| {LABELS[g]} | {mark[gates.get(g, False)]} | {MEANING.get(g, '')} |")
+    if "example" in gates:
+        lines.append(f"| {LABELS['example']} | {mark[bool(gates['example'])]} | {MEANING['example']} |")
 
     # Why the build failed, immediately after the ladder that says it did.
     # Nothing below this point ran, so the reader needs the reason here rather
@@ -337,7 +356,7 @@ def _summary_html(report: dict, slug: str) -> str:
         return _html.escape(str(s))
 
     rows = []
-    for g in LADDER:
+    for g in LADDER + (["example"] if "example" in gates else []):
         ok = gates.get(g, False)
         chip = ('<span class="ok">PASS</span>' if ok
                 else '<span class="no">—</span>')
@@ -597,6 +616,13 @@ def main() -> int:
                          "repository's default branch, and whether it still exists")
     ap.add_argument("--ref", default="")
     ap.add_argument("--run-url", default="")
+    ap.add_argument("--example-runs", default="skipped",
+                    help="outcome of the own-example step (success/failure/skipped)")
+    ap.add_argument("--example", default="example.json", help="path to check_example.py output")
+    ap.add_argument("--log-example", default="", help="log of the own-example leg")
+    ap.add_argument("--recipe-proposal", default="",
+                    help="detect_recipe.py output when the recipe was proposed from the "
+                         "repository; lets the verdict tell a documentation gap from a failure")
     ap.add_argument("--mode", default="publish", choices=["publish", "trial"],
                     help="trial: an unpublished rehearsal of a recipe; stamped into the "
                          "report so a trial can never be mistaken for an attestation")
@@ -675,6 +701,18 @@ def main() -> int:
         "io": io_pass,
         "content": content_pass,
     }
+    # The tool's own example, outside the ladder: present only when the manifest
+    # declared one, so older readers that iterate the five ladder gates see
+    # nothing new and newer ones can show the reviewer's line.
+    example_detail = {}
+    ep = pathlib.Path(args.example)
+    if ep.exists():
+        try:
+            example_detail = json.loads(ep.read_text())
+        except Exception:  # noqa: BLE001
+            example_detail = {}
+    if example_detail.get("applicable"):
+        gates["example"] = bool(example_detail.get("passed"))
 
     # Highest contiguous green gate from the bottom of the ladder.
     level = "none"
@@ -704,6 +742,7 @@ def main() -> int:
         "level": level,
         "io_detail": io_detail,
         "content_detail": content_detail,
+        "example_detail": example_detail or None,
         "datasets": datasets,
         "regions": regions,
         "readme_check": readme_check,
@@ -781,7 +820,7 @@ def main() -> int:
     # The build log rides along with the run logs. A reader told the build failed
     # will want the same thing a reader told a run failed wants: the output.
     for leg, flag in [("own", args.log_own), ("external", args.log_external),
-                      ("build", args.log_build)]:
+                      ("example", args.log_example), ("build", args.log_build)]:
         if not flag:
             continue
         lp = pathlib.Path(flag)
@@ -816,7 +855,8 @@ def main() -> int:
         report["install_detail"] = install_detail
 
     diagnostics = {}
-    for leg, flag in [("own", args.log_own), ("external", args.log_external)]:
+    for leg, flag in [("own", args.log_own), ("external", args.log_external),
+                      ("example", args.log_example)]:
         if not flag:
             continue
         issues = diagnose_log.diagnose_file(flag)
@@ -832,6 +872,19 @@ def main() -> int:
     # environment ceiling, or one the log proves we hit. Nobody grants it by hand.
     report["manual_verification"] = diagnose_log.manual_eligibility(
         diagnostics, gates, m.get("compatibility"),
+    )
+
+    # The one sentence for a reader who does not program. Decided from the gates,
+    # the diagnostics and, when the recipe was proposed from the repository, the
+    # README gaps detect_recipe found (see harness/verdict.py for the policy).
+    proposal = None
+    if args.recipe_proposal and pathlib.Path(args.recipe_proposal).exists():
+        try:
+            proposal = json.loads(pathlib.Path(args.recipe_proposal).read_text())
+        except Exception:  # noqa: BLE001
+            proposal = None
+    report["verdict"] = verdict_lib.decide(
+        gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
     )
 
     (reports / f"{slug}.json").write_text(json.dumps(report, indent=2))

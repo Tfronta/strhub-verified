@@ -265,6 +265,25 @@ def materialise_recipe(tool: str, recipe_b64: str, work: pathlib.Path) -> pathli
     return d
 
 
+def example_wrapper(cmd: str, cwd: str) -> str:
+    """The README command, wrapped so that whatever it creates ends up under
+    /data/out, whatever it was called and wherever it was written.
+
+    A README example writes where it likes (`results/`, the cwd, a path in the
+    command); the IO check reads /data/out. Instead of asking the author to
+    rewrite their documented command to STRhub's mount, the wrapper marks the
+    time, runs the command exactly as documented, and copies every regular file
+    created or modified afterwards. The command's own exit status is preserved.
+    """
+    cmd = " ".join(cmd.split())
+    return (
+        f"cd {cwd!r} && touch /tmp/.strhub_mark && ( {cmd} ); rc=$?; "
+        "find . -type f -newer /tmp/.strhub_mark -size +0 ! -path './.git/*' 2>/dev/null | head -500 | "
+        "while IFS= read -r f; do mkdir -p \"/data/out/$(dirname \"$f\")\" && cp \"$f\" \"/data/out/$f\"; done; "
+        "exit $rc"
+    )
+
+
 def _output_value(value) -> str:
     """One $GITHUB_OUTPUT value. Newlines are the delimiter of that file, so a
     manifest value carrying one could inject further keys (own_ready=1, ...)."""
@@ -362,8 +381,16 @@ def main() -> int:
             ref_genome_url = rg.get("url", "")
             ref_genome_filename = rg.get("filename", "")
 
+    # The tool's own example (reviewer's gate): runs inside the image, in the
+    # clone, so nothing is staged; the wrapper captures what the command creates.
+    example = m.get("example") or {}
+    example_ready = bool(example.get("cmd"))
+    example_cwd = example.get("cwd") or "/opt/tool"
+
     values = {
         "ref": m["source"]["ref"],
+        "example_ready": "1" if example_ready else "0",
+        "example_cmd": example_wrapper(example.get("cmd", ""), example_cwd) if example_ready else "",
         "cmd": m["run"]["cmd"],
         "dockerdir": tool_dir.relative_to(ROOT) if tool_dir.is_relative_to(ROOT) else tool_dir,
         "dockerfile": m["environment"]["dockerfile"],
