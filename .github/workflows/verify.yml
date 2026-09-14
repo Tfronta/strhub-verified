@@ -696,6 +696,15 @@ jobs:
             --recipe-proposal recipe_proposal.json \
             --run-url "$RUN_URL"
 
+      # The recipe rides with the report so the web can show what ran and, for
+      # a trial, let the owner publish exactly that. Only for trials: a
+      # published tool's recipe is tools/<slug>/ on main.
+      - name: Attach the recipe to the report (trial)
+        if: always() && env.MODE == 'trial' && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        env:
+          DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
+        run: python harness/attach_recipe.py "$TOOL" --dockerdir "$DOCKER_DIR" --proposal recipe_proposal.json
+
       - name: Generate PDF report
         if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         env:
