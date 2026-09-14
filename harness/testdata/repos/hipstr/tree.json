@@ -1,0 +1,2067 @@
+{
+"repo": "https://github.com/tfwillems/HipSTR",
+"ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+"truncated": false,
+"tree": [
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 476
+},
+{
+"path": ".travis.yml",
+"type": "blob",
+"size": 128
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 18027
+},
+{
+"path": "Makefile",
+"type": "blob",
+"size": 5859
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 38650
+},
+{
+"path": "VizAln",
+"type": "blob",
+"size": 2746
+},
+{
+"path": "VizAlnPdf",
+"type": "blob",
+"size": 3058
+},
+{
+"path": "_config.yml",
+"type": "blob",
+"size": 25
+},
+{
+"path": "img",
+"type": "tree",
+"size": 0
+},
+{
+"path": "img/HipSTR_icon_small.png",
+"type": "blob",
+"size": 7435
+},
+{
+"path": "img/phasing.png",
+"type": "blob",
+"size": 61846
+},
+{
+"path": "lib",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/cephes",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/cephes/Makefile",
+"type": "blob",
+"size": 474
+},
+{
+"path": "lib/cephes/README",
+"type": "blob",
+"size": 504
+},
+{
+"path": "lib/cephes/bdtr.c",
+"type": "blob",
+"size": 4886
+},
+{
+"path": "lib/cephes/btdtr.c",
+"type": "blob",
+"size": 1008
+},
+{
+"path": "lib/cephes/cephes.h",
+"type": "blob",
+"size": 162
+},
+{
+"path": "lib/cephes/chbevl.c",
+"type": "blob",
+"size": 1595
+},
+{
+"path": "lib/cephes/chdtr.c",
+"type": "blob",
+"size": 3477
+},
+{
+"path": "lib/cephes/const.c",
+"type": "blob",
+"size": 9558
+},
+{
+"path": "lib/cephes/drand.c",
+"type": "blob",
+"size": 3138
+},
+{
+"path": "lib/cephes/expx2.c",
+"type": "blob",
+"size": 1597
+},
+{
+"path": "lib/cephes/fdtr.c",
+"type": "blob",
+"size": 5197
+},
+{
+"path": "lib/cephes/gamma.c",
+"type": "blob",
+"size": 14053
+},
+{
+"path": "lib/cephes/gdtr.c",
+"type": "blob",
+"size": 1945
+},
+{
+"path": "lib/cephes/igam.c",
+"type": "blob",
+"size": 3924
+},
+{
+"path": "lib/cephes/igami.c",
+"type": "blob",
+"size": 3140
+},
+{
+"path": "lib/cephes/incbet.c",
+"type": "blob",
+"size": 6929
+},
+{
+"path": "lib/cephes/incbi.c",
+"type": "blob",
+"size": 5093
+},
+{
+"path": "lib/cephes/isnan.c",
+"type": "blob",
+"size": 3907
+},
+{
+"path": "lib/cephes/kolmogorov.c",
+"type": "blob",
+"size": 5034
+},
+{
+"path": "lib/cephes/mconf.h",
+"type": "blob",
+"size": 5442
+},
+{
+"path": "lib/cephes/msc.rsp",
+"type": "blob",
+"size": 146
+},
+{
+"path": "lib/cephes/mtherr.c",
+"type": "blob",
+"size": 2369
+},
+{
+"path": "lib/cephes/nbdtr.c",
+"type": "blob",
+"size": 3408
+},
+{
+"path": "lib/cephes/ndtr.c",
+"type": "blob",
+"size": 10927
+},
+{
+"path": "lib/cephes/ndtri.c",
+"type": "blob",
+"size": 10095
+},
+{
+"path": "lib/cephes/pdtr.c",
+"type": "blob",
+"size": 2589
+},
+{
+"path": "lib/cephes/polevl.c",
+"type": "blob",
+"size": 1605
+},
+{
+"path": "lib/cephes/stdtr.c",
+"type": "blob",
+"size": 4121
+},
+{
+"path": "lib/cephes/unity.c",
+"type": "blob",
+"size": 2648
+},
+{
+"path": "lib/htslib",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/htslib/.appveyor.yml",
+"type": "blob",
+"size": 1047
+},
+{
+"path": "lib/htslib/.gitattributes",
+"type": "blob",
+"size": 671
+},
+{
+"path": "lib/htslib/.gitignore",
+"type": "blob",
+"size": 622
+},
+{
+"path": "lib/htslib/.travis.yml",
+"type": "blob",
+"size": 1186
+},
+{
+"path": "lib/htslib/INSTALL",
+"type": "blob",
+"size": 9728
+},
+{
+"path": "lib/htslib/LICENSE",
+"type": "blob",
+"size": 3540
+},
+{
+"path": "lib/htslib/Makefile",
+"type": "blob",
+"size": 23394
+},
+{
+"path": "lib/htslib/NEWS",
+"type": "blob",
+"size": 19272
+},
+{
+"path": "lib/htslib/README",
+"type": "blob",
+"size": 273
+},
+{
+"path": "lib/htslib/README.md",
+"type": "blob",
+"size": 1315
+},
+{
+"path": "lib/htslib/bcf_sr_sort.c",
+"type": "blob",
+"size": 21895
+},
+{
+"path": "lib/htslib/bcf_sr_sort.h",
+"type": "blob",
+"size": 3857
+},
+{
+"path": "lib/htslib/bgzf.c",
+"type": "blob",
+"size": 63908
+},
+{
+"path": "lib/htslib/bgzip.1",
+"type": "blob",
+"size": 5365
+},
+{
+"path": "lib/htslib/bgzip.c",
+"type": "blob",
+"size": 13927
+},
+{
+"path": "lib/htslib/config.mk.in",
+"type": "blob",
+"size": 3240
+},
+{
+"path": "lib/htslib/configure.ac",
+"type": "blob",
+"size": 15409
+},
+{
+"path": "lib/htslib/cram",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/htslib/cram/cram.h",
+"type": "blob",
+"size": 2412
+},
+{
+"path": "lib/htslib/cram/cram_codecs.c",
+"type": "blob",
+"size": 56940
+},
+{
+"path": "lib/htslib/cram/cram_codecs.h",
+"type": "blob",
+"size": 6439
+},
+{
+"path": "lib/htslib/cram/cram_decode.c",
+"type": "blob",
+"size": 120328
+},
+{
+"path": "lib/htslib/cram/cram_decode.h",
+"type": "blob",
+"size": 3687
+},
+{
+"path": "lib/htslib/cram/cram_encode.c",
+"type": "blob",
+"size": 111424
+},
+{
+"path": "lib/htslib/cram/cram_encode.h",
+"type": "blob",
+"size": 3626
+},
+{
+"path": "lib/htslib/cram/cram_external.c",
+"type": "blob",
+"size": 13347
+},
+{
+"path": "lib/htslib/cram/cram_index.c",
+"type": "blob",
+"size": 18858
+},
+{
+"path": "lib/htslib/cram/cram_index.h",
+"type": "blob",
+"size": 3427
+},
+{
+"path": "lib/htslib/cram/cram_io.c",
+"type": "blob",
+"size": 132236
+},
+{
+"path": "lib/htslib/cram/cram_io.h",
+"type": "blob",
+"size": 27866
+},
+{
+"path": "lib/htslib/cram/cram_samtools.c",
+"type": "blob",
+"size": 5583
+},
+{
+"path": "lib/htslib/cram/cram_samtools.h",
+"type": "blob",
+"size": 3758
+},
+{
+"path": "lib/htslib/cram/cram_stats.c",
+"type": "blob",
+"size": 6007
+},
+{
+"path": "lib/htslib/cram/cram_stats.h",
+"type": "blob",
+"size": 2272
+},
+{
+"path": "lib/htslib/cram/cram_structs.h",
+"type": "blob",
+"size": 24264
+},
+{
+"path": "lib/htslib/cram/files.c",
+"type": "blob",
+"size": 2457
+},
+{
+"path": "lib/htslib/cram/mFILE.c",
+"type": "blob",
+"size": 16807
+},
+{
+"path": "lib/htslib/cram/mFILE.h",
+"type": "blob",
+"size": 3054
+},
+{
+"path": "lib/htslib/cram/misc.h",
+"type": "blob",
+"size": 4283
+},
+{
+"path": "lib/htslib/cram/open_trace_file.c",
+"type": "blob",
+"size": 13414
+},
+{
+"path": "lib/htslib/cram/open_trace_file.h",
+"type": "blob",
+"size": 5002
+},
+{
+"path": "lib/htslib/cram/os.h",
+"type": "blob",
+"size": 7156
+},
+{
+"path": "lib/htslib/cram/pooled_alloc.c",
+"type": "blob",
+"size": 4735
+},
+{
+"path": "lib/htslib/cram/pooled_alloc.h",
+"type": "blob",
+"size": 2177
+},
+{
+"path": "lib/htslib/cram/rANS_byte.h",
+"type": "blob",
+"size": 12297
+},
+{
+"path": "lib/htslib/cram/rANS_static.c",
+"type": "blob",
+"size": 26212
+},
+{
+"path": "lib/htslib/cram/rANS_static.h",
+"type": "blob",
+"size": 2075
+},
+{
+"path": "lib/htslib/cram/sam_header.c",
+"type": "blob",
+"size": 35021
+},
+{
+"path": "lib/htslib/cram/sam_header.h",
+"type": "blob",
+"size": 14139
+},
+{
+"path": "lib/htslib/cram/string_alloc.c",
+"type": "blob",
+"size": 4124
+},
+{
+"path": "lib/htslib/cram/string_alloc.h",
+"type": "blob",
+"size": 2312
+},
+{
+"path": "lib/htslib/errmod.c",
+"type": "blob",
+"size": 6445
+},
+{
+"path": "lib/htslib/faidx.5",
+"type": "blob",
+"size": 6262
+},
+{
+"path": "lib/htslib/faidx.c",
+"type": "blob",
+"size": 26220
+},
+{
+"path": "lib/htslib/hfile.c",
+"type": "blob",
+"size": 29849
+},
+{
+"path": "lib/htslib/hfile_gcs.c",
+"type": "blob",
+"size": 4344
+},
+{
+"path": "lib/htslib/hfile_internal.h",
+"type": "blob",
+"size": 7421
+},
+{
+"path": "lib/htslib/hfile_libcurl.c",
+"type": "blob",
+"size": 43077
+},
+{
+"path": "lib/htslib/hfile_net.c",
+"type": "blob",
+"size": 3192
+},
+{
+"path": "lib/htslib/hfile_s3.c",
+"type": "blob",
+"size": 13197
+},
+{
+"path": "lib/htslib/hts.c",
+"type": "blob",
+"size": 92485
+},
+{
+"path": "lib/htslib/hts_internal.h",
+"type": "blob",
+"size": 2807
+},
+{
+"path": "lib/htslib/hts_os.c",
+"type": "blob",
+"size": 1723
+},
+{
+"path": "lib/htslib/htsfile.1",
+"type": "blob",
+"size": 3311
+},
+{
+"path": "lib/htslib/htsfile.c",
+"type": "blob",
+"size": 8007
+},
+{
+"path": "lib/htslib/htslib.mk",
+"type": "blob",
+"size": 5817
+},
+{
+"path": "lib/htslib/htslib.pc.in",
+"type": "blob",
+"size": 490
+},
+{
+"path": "lib/htslib/htslib",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/htslib/htslib/bgzf.h",
+"type": "blob",
+"size": 14797
+},
+{
+"path": "lib/htslib/htslib/cram.h",
+"type": "blob",
+"size": 15393
+},
+{
+"path": "lib/htslib/htslib/faidx.h",
+"type": "blob",
+"size": 8972
+},
+{
+"path": "lib/htslib/htslib/hfile.h",
+"type": "blob",
+"size": 10077
+},
+{
+"path": "lib/htslib/htslib/hts.h",
+"type": "blob",
+"size": 30459
+},
+{
+"path": "lib/htslib/htslib/hts_defs.h",
+"type": "blob",
+"size": 3336
+},
+{
+"path": "lib/htslib/htslib/hts_endian.h",
+"type": "blob",
+"size": 11446
+},
+{
+"path": "lib/htslib/htslib/hts_log.h",
+"type": "blob",
+"size": 3898
+},
+{
+"path": "lib/htslib/htslib/hts_os.h",
+"type": "blob",
+"size": 1996
+},
+{
+"path": "lib/htslib/htslib/kbitset.h",
+"type": "blob",
+"size": 4195
+},
+{
+"path": "lib/htslib/htslib/kfunc.h",
+"type": "blob",
+"size": 2716
+},
+{
+"path": "lib/htslib/htslib/khash.h",
+"type": "blob",
+"size": 21540
+},
+{
+"path": "lib/htslib/htslib/khash_str2int.h",
+"type": "blob",
+"size": 3990
+},
+{
+"path": "lib/htslib/htslib/klist.h",
+"type": "blob",
+"size": 5086
+},
+{
+"path": "lib/htslib/htslib/knetfile.h",
+"type": "blob",
+"size": 2850
+},
+{
+"path": "lib/htslib/htslib/kseq.h",
+"type": "blob",
+"size": 9139
+},
+{
+"path": "lib/htslib/htslib/ksort.h",
+"type": "blob",
+"size": 10567
+},
+{
+"path": "lib/htslib/htslib/kstring.h",
+"type": "blob",
+"size": 7012
+},
+{
+"path": "lib/htslib/htslib/regidx.h",
+"type": "blob",
+"size": 5834
+},
+{
+"path": "lib/htslib/htslib/sam.h",
+"type": "blob",
+"size": 29580
+},
+{
+"path": "lib/htslib/htslib/synced_bcf_reader.h",
+"type": "blob",
+"size": 14954
+},
+{
+"path": "lib/htslib/htslib/tbx.h",
+"type": "blob",
+"size": 3118
+},
+{
+"path": "lib/htslib/htslib/thread_pool.h",
+"type": "blob",
+"size": 9386
+},
+{
+"path": "lib/htslib/htslib/vcf.h",
+"type": "blob",
+"size": 43671
+},
+{
+"path": "lib/htslib/htslib/vcf_sweep.h",
+"type": "blob",
+"size": 1602
+},
+{
+"path": "lib/htslib/htslib/vcfutils.h",
+"type": "blob",
+"size": 4819
+},
+{
+"path": "lib/htslib/htslib_vars.mk",
+"type": "blob",
+"size": 2931
+},
+{
+"path": "lib/htslib/kfunc.c",
+"type": "blob",
+"size": 9166
+},
+{
+"path": "lib/htslib/knetfile.c",
+"type": "blob",
+"size": 19072
+},
+{
+"path": "lib/htslib/kstring.c",
+"type": "blob",
+"size": 9317
+},
+{
+"path": "lib/htslib/m4",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/htslib/m4/hts_prog_cc_warnings.m4",
+"type": "blob",
+"size": 8274
+},
+{
+"path": "lib/htslib/md5.c",
+"type": "blob",
+"size": 10579
+},
+{
+"path": "lib/htslib/multipart.c",
+"type": "blob",
+"size": 8406
+},
+{
+"path": "lib/htslib/os",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/htslib/os/lzma_stub.h",
+"type": "blob",
+"size": 2345
+},
+{
+"path": "lib/htslib/os/rand.c",
+"type": "blob",
+"size": 2648
+},
+{
+"path": "lib/htslib/plugin.c",
+"type": "blob",
+"size": 5566
+},
+{
+"path": "lib/htslib/probaln.c",
+"type": "blob",
+"size": 12123
+},
+{
+"path": "lib/htslib/realn.c",
+"type": "blob",
+"size": 11539
+},
+{
+"path": "lib/htslib/regidx.c",
+"type": "blob",
+"size": 10190
+},
+{
+"path": "lib/htslib/sam.5",
+"type": "blob",
+"size": 2785
+},
+{
+"path": "lib/htslib/sam.c",
+"type": "blob",
+"size": 94513
+},
+{
+"path": "lib/htslib/synced_bcf_reader.c",
+"type": "blob",
+"size": 38006
+},
+{
+"path": "lib/htslib/tabix.1",
+"type": "blob",
+"size": 5683
+},
+{
+"path": "lib/htslib/tabix.c",
+"type": "blob",
+"size": 19888
+},
+{
+"path": "lib/htslib/tbx.c",
+"type": "blob",
+"size": 11744
+},
+{
+"path": "lib/htslib/test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/htslib/test/auxf#values.sam",
+"type": "blob",
+"size": 751
+},
+{
+"path": "lib/htslib/test/auxf#values_java.cram",
+"type": "blob",
+"size": 5152
+},
+{
+"path": "lib/htslib/test/auxf.fa",
+"type": "blob",
+"size": 29
+},
+{
+"path": "lib/htslib/test/auxf.fa.fai",
+"type": "blob",
+"size": 18
+},
+{
+"path": "lib/htslib/test/bgziptest.txt",
+"type": "blob",
+"size": 15
+},
+{
+"path": "lib/htslib/test/bgziptest.txt.gz",
+"type": "blob",
+"size": 181
+},
+{
+"path": "lib/htslib/test/bgziptest.txt.gz.gzi",
+"type": "blob",
+"size": 88
+},
+{
+"path": "lib/htslib/test/c1#bounds.sam",
+"type": "blob",
+"size": 148
+},
+{
+"path": "lib/htslib/test/c1#clip.sam",
+"type": "blob",
+"size": 337
+},
+{
+"path": "lib/htslib/test/c1#noseq.sam",
+"type": "blob",
+"size": 433
+},
+{
+"path": "lib/htslib/test/c1#pad1.sam",
+"type": "blob",
+"size": 388
+},
+{
+"path": "lib/htslib/test/c1#pad2.sam",
+"type": "blob",
+"size": 527
+},
+{
+"path": "lib/htslib/test/c1#pad3.sam",
+"type": "blob",
+"size": 665
+},
+{
+"path": "lib/htslib/test/c1#unknown.sam",
+"type": "blob",
+"size": 429
+},
+{
+"path": "lib/htslib/test/c1.fa",
+"type": "blob",
+"size": 15
+},
+{
+"path": "lib/htslib/test/c1.fa.fai",
+"type": "blob",
+"size": 14
+},
+{
+"path": "lib/htslib/test/c2#pad.sam",
+"type": "blob",
+"size": 847
+},
+{
+"path": "lib/htslib/test/c2.fa",
+"type": "blob",
+"size": 14
+},
+{
+"path": "lib/htslib/test/c2.fa.fai",
+"type": "blob",
+"size": 12
+},
+{
+"path": "lib/htslib/test/ce#1.sam",
+"type": "blob",
+"size": 341
+},
+{
+"path": "lib/htslib/test/ce#1000.sam",
+"type": "blob",
+"size": 322632
+},
+{
+"path": "lib/htslib/test/ce#2.sam",
+"type": "blob",
+"size": 645
+},
+{
+"path": "lib/htslib/test/ce#5.sam",
+"type": "blob",
+"size": 1872
+},
+{
+"path": "lib/htslib/test/ce#5b.sam",
+"type": "blob",
+"size": 1836
+},
+{
+"path": "lib/htslib/test/ce#5b_java.cram",
+"type": "blob",
+"size": 6784
+},
+{
+"path": "lib/htslib/test/ce#large_seq.sam",
+"type": "blob",
+"size": 2147244
+},
+{
+"path": "lib/htslib/test/ce#supp.sam",
+"type": "blob",
+"size": 547
+},
+{
+"path": "lib/htslib/test/ce#tag_depadded.sam",
+"type": "blob",
+"size": 1638
+},
+{
+"path": "lib/htslib/test/ce#tag_padded.sam",
+"type": "blob",
+"size": 1650
+},
+{
+"path": "lib/htslib/test/ce#unmap.sam",
+"type": "blob",
+"size": 1325
+},
+{
+"path": "lib/htslib/test/ce#unmap1.sam",
+"type": "blob",
+"size": 2747
+},
+{
+"path": "lib/htslib/test/ce#unmap2.sam",
+"type": "blob",
+"size": 5525
+},
+{
+"path": "lib/htslib/test/ce.fa",
+"type": "blob",
+"size": 1060702
+},
+{
+"path": "lib/htslib/test/ce.fa.fai",
+"type": "blob",
+"size": 230
+},
+{
+"path": "lib/htslib/test/compare_sam.pl",
+"type": "blob",
+"size": 5699
+},
+{
+"path": "lib/htslib/test/cross_validate.sh",
+"type": "blob",
+"size": 3198
+},
+{
+"path": "lib/htslib/test/faidx.fa",
+"type": "blob",
+"size": 289
+},
+{
+"path": "lib/htslib/test/fastqs.fq",
+"type": "blob",
+"size": 48599
+},
+{
+"path": "lib/htslib/test/fastqs_README.txt",
+"type": "blob",
+"size": 4951
+},
+{
+"path": "lib/htslib/test/fieldarith.c",
+"type": "blob",
+"size": 2430
+},
+{
+"path": "lib/htslib/test/fieldarith.sam",
+"type": "blob",
+"size": 916
+},
+{
+"path": "lib/htslib/test/formatcols.vcf",
+"type": "blob",
+"size": 240
+},
+{
+"path": "lib/htslib/test/formatmissing-out.vcf",
+"type": "blob",
+"size": 226
+},
+{
+"path": "lib/htslib/test/formatmissing.vcf",
+"type": "blob",
+"size": 226
+},
+{
+"path": "lib/htslib/test/hfile.c",
+"type": "blob",
+"size": 10668
+},
+{
+"path": "lib/htslib/test/hts_endian.c",
+"type": "blob",
+"size": 17616
+},
+{
+"path": "lib/htslib/test/md#1.sam",
+"type": "blob",
+"size": 1017
+},
+{
+"path": "lib/htslib/test/md.fa",
+"type": "blob",
+"size": 45
+},
+{
+"path": "lib/htslib/test/md.fa.fai",
+"type": "blob",
+"size": 13
+},
+{
+"path": "lib/htslib/test/noroundtrip-out.vcf",
+"type": "blob",
+"size": 325
+},
+{
+"path": "lib/htslib/test/noroundtrip.vcf",
+"type": "blob",
+"size": 271
+},
+{
+"path": "lib/htslib/test/range.bam",
+"type": "blob",
+"size": 13337
+},
+{
+"path": "lib/htslib/test/range.bam.bai",
+"type": "blob",
+"size": 360
+},
+{
+"path": "lib/htslib/test/range.cram",
+"type": "blob",
+"size": 11182
+},
+{
+"path": "lib/htslib/test/range.cram.crai",
+"type": "blob",
+"size": 94
+},
+{
+"path": "lib/htslib/test/range.out",
+"type": "blob",
+"size": 3496
+},
+{
+"path": "lib/htslib/test/realn01.fa",
+"type": "blob",
+"size": 719
+},
+{
+"path": "lib/htslib/test/realn01.fa.fai",
+"type": "blob",
+"size": 21
+},
+{
+"path": "lib/htslib/test/realn01.sam",
+"type": "blob",
+"size": 1843
+},
+{
+"path": "lib/htslib/test/realn01_exp-a.sam",
+"type": "blob",
+"size": 2157
+},
+{
+"path": "lib/htslib/test/realn01_exp-e.sam",
+"type": "blob",
+"size": 2157
+},
+{
+"path": "lib/htslib/test/realn01_exp.sam",
+"type": "blob",
+"size": 2157
+},
+{
+"path": "lib/htslib/test/realn02-r.sam",
+"type": "blob",
+"size": 3758
+},
+{
+"path": "lib/htslib/test/realn02.fa",
+"type": "blob",
+"size": 4284
+},
+{
+"path": "lib/htslib/test/realn02.fa.fai",
+"type": "blob",
+"size": 17
+},
+{
+"path": "lib/htslib/test/realn02.sam",
+"type": "blob",
+"size": 2894
+},
+{
+"path": "lib/htslib/test/realn02_exp-a.sam",
+"type": "blob",
+"size": 3758
+},
+{
+"path": "lib/htslib/test/realn02_exp-e.sam",
+"type": "blob",
+"size": 3758
+},
+{
+"path": "lib/htslib/test/realn02_exp.sam",
+"type": "blob",
+"size": 3758
+},
+{
+"path": "lib/htslib/test/sam.c",
+"type": "blob",
+"size": 22653
+},
+{
+"path": "lib/htslib/test/tabix",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/htslib/test/tabix/bed_file.Y.100200.out",
+"type": "blob",
+"size": 47
+},
+{
+"path": "lib/htslib/test/tabix/bed_file.bed",
+"type": "blob",
+"size": 1857
+},
+{
+"path": "lib/htslib/test/tabix/gff_file.X.2934832.2935190.out",
+"type": "blob",
+"size": 405
+},
+{
+"path": "lib/htslib/test/tabix/gff_file.gff",
+"type": "blob",
+"size": 5618
+},
+{
+"path": "lib/htslib/test/tabix/large_chr.20.1.2147483647.out",
+"type": "blob",
+"size": 288
+},
+{
+"path": "lib/htslib/test/tabix/large_chr.vcf",
+"type": "blob",
+"size": 622
+},
+{
+"path": "lib/htslib/test/tabix/tabix.tst",
+"type": "blob",
+"size": 2872
+},
+{
+"path": "lib/htslib/test/tabix/test-tabix.sh",
+"type": "blob",
+"size": 4057
+},
+{
+"path": "lib/htslib/test/tabix/vcf_file.1.3000151.out",
+"type": "blob",
+"size": 67
+},
+{
+"path": "lib/htslib/test/tabix/vcf_file.2.3199812.out",
+"type": "blob",
+"size": 74
+},
+{
+"path": "lib/htslib/test/tabix/vcf_file.vcf",
+"type": "blob",
+"size": 2491
+},
+{
+"path": "lib/htslib/test/test-bcf-sr.c",
+"type": "blob",
+"size": 4892
+},
+{
+"path": "lib/htslib/test/test-bcf-sr.pl",
+"type": "blob",
+"size": 16067
+},
+{
+"path": "lib/htslib/test/test-bcf-translate.c",
+"type": "blob",
+"size": 8584
+},
+{
+"path": "lib/htslib/test/test-bcf-translate.out",
+"type": "blob",
+"size": 869
+},
+{
+"path": "lib/htslib/test/test-logging.pl",
+"type": "blob",
+"size": 2602
+},
+{
+"path": "lib/htslib/test/test-regidx.c",
+"type": "blob",
+"size": 4294
+},
+{
+"path": "lib/htslib/test/test-vcf-api.c",
+"type": "blob",
+"size": 13248
+},
+{
+"path": "lib/htslib/test/test-vcf-api.out",
+"type": "blob",
+"size": 1936
+},
+{
+"path": "lib/htslib/test/test-vcf-hdr-in.vcf",
+"type": "blob",
+"size": 2024
+},
+{
+"path": "lib/htslib/test/test-vcf-hdr.out",
+"type": "blob",
+"size": 1349
+},
+{
+"path": "lib/htslib/test/test-vcf-sweep.c",
+"type": "blob",
+"size": 3823
+},
+{
+"path": "lib/htslib/test/test-vcf-sweep.out",
+"type": "blob",
+"size": 92
+},
+{
+"path": "lib/htslib/test/test.pl",
+"type": "blob",
+"size": 16755
+},
+{
+"path": "lib/htslib/test/test_bgzf.c",
+"type": "blob",
+"size": 24179
+},
+{
+"path": "lib/htslib/test/test_realn.c",
+"type": "blob",
+"size": 5047
+},
+{
+"path": "lib/htslib/test/test_view.c",
+"type": "blob",
+"size": 11941
+},
+{
+"path": "lib/htslib/test/thrash_threads1.c",
+"type": "blob",
+"size": 1684
+},
+{
+"path": "lib/htslib/test/thrash_threads2.c",
+"type": "blob",
+"size": 1614
+},
+{
+"path": "lib/htslib/test/thrash_threads3.c",
+"type": "blob",
+"size": 1725
+},
+{
+"path": "lib/htslib/test/thrash_threads4.c",
+"type": "blob",
+"size": 2266
+},
+{
+"path": "lib/htslib/test/thrash_threads5.c",
+"type": "blob",
+"size": 2169
+},
+{
+"path": "lib/htslib/test/thrash_threads6.c",
+"type": "blob",
+"size": 3405
+},
+{
+"path": "lib/htslib/test/thread_pool.md",
+"type": "blob",
+"size": 2938
+},
+{
+"path": "lib/htslib/test/xx#blank.sam",
+"type": "blob",
+"size": 0
+},
+{
+"path": "lib/htslib/test/xx#large_aux.sam",
+"type": "blob",
+"size": 905485
+},
+{
+"path": "lib/htslib/test/xx#large_aux2.sam",
+"type": "blob",
+"size": 651
+},
+{
+"path": "lib/htslib/test/xx#large_aux_java.cram",
+"type": "blob",
+"size": 22668
+},
+{
+"path": "lib/htslib/test/xx#minimal.sam",
+"type": "blob",
+"size": 254
+},
+{
+"path": "lib/htslib/test/xx#pair.sam",
+"type": "blob",
+"size": 304
+},
+{
+"path": "lib/htslib/test/xx#repeated.sam",
+"type": "blob",
+"size": 298
+},
+{
+"path": "lib/htslib/test/xx#rg.sam",
+"type": "blob",
+"size": 517
+},
+{
+"path": "lib/htslib/test/xx#tlen.sam",
+"type": "blob",
+"size": 1028
+},
+{
+"path": "lib/htslib/test/xx#tlen2.sam",
+"type": "blob",
+"size": 1096
+},
+{
+"path": "lib/htslib/test/xx#triplet.sam",
+"type": "blob",
+"size": 267
+},
+{
+"path": "lib/htslib/test/xx#unsorted.sam",
+"type": "blob",
+"size": 320
+},
+{
+"path": "lib/htslib/test/xx.fa",
+"type": "blob",
+"size": 51
+},
+{
+"path": "lib/htslib/test/xx.fa.fai",
+"type": "blob",
+"size": 29
+},
+{
+"path": "lib/htslib/textutils.c",
+"type": "blob",
+"size": 9413
+},
+{
+"path": "lib/htslib/textutils_internal.h",
+"type": "blob",
+"size": 7333
+},
+{
+"path": "lib/htslib/thread_pool.c",
+"type": "blob",
+"size": 40403
+},
+{
+"path": "lib/htslib/thread_pool_internal.h",
+"type": "blob",
+"size": 5664
+},
+{
+"path": "lib/htslib/vcf.5",
+"type": "blob",
+"size": 3538
+},
+{
+"path": "lib/htslib/vcf.c",
+"type": "blob",
+"size": 132665
+},
+{
+"path": "lib/htslib/vcf_sweep.c",
+"type": "blob",
+"size": 5345
+},
+{
+"path": "lib/htslib/vcfutils.c",
+"type": "blob",
+"size": 32975
+},
+{
+"path": "lib/htslib/version.sh",
+"type": "blob",
+"size": 816
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/GetStutterModels",
+"type": "blob",
+"size": 1209
+},
+{
+"path": "scripts/filter_haploid_vcf.py",
+"type": "blob",
+"size": 15901
+},
+{
+"path": "scripts/filter_vcf.py",
+"type": "blob",
+"size": 20845
+},
+{
+"path": "scripts/generate_aln_html.py",
+"type": "blob",
+"size": 7053
+},
+{
+"path": "scripts/html_alns_to_pdf.py",
+"type": "blob",
+"size": 7150
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/SeqAlignment",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/SeqAlignment/AlignmentData.h",
+"type": "blob",
+"size": 4577
+},
+{
+"path": "src/SeqAlignment/AlignmentModel.cpp",
+"type": "blob",
+"size": 1646
+},
+{
+"path": "src/SeqAlignment/AlignmentModel.h",
+"type": "blob",
+"size": 618
+},
+{
+"path": "src/SeqAlignment/AlignmentOps.cpp",
+"type": "blob",
+"size": 6734
+},
+{
+"path": "src/SeqAlignment/AlignmentOps.h",
+"type": "blob",
+"size": 391
+},
+{
+"path": "src/SeqAlignment/AlignmentTraceback.cpp",
+"type": "blob",
+"size": 4623
+},
+{
+"path": "src/SeqAlignment/AlignmentTraceback.h",
+"type": "blob",
+"size": 4228
+},
+{
+"path": "src/SeqAlignment/AlignmentViz.cpp",
+"type": "blob",
+"size": 7312
+},
+{
+"path": "src/SeqAlignment/AlignmentViz.h",
+"type": "blob",
+"size": 552
+},
+{
+"path": "src/SeqAlignment/HTMLCreator.cpp",
+"type": "blob",
+"size": 3147
+},
+{
+"path": "src/SeqAlignment/HTMLCreator.h",
+"type": "blob",
+"size": 701
+},
+{
+"path": "src/SeqAlignment/HapAligner.cpp",
+"type": "blob",
+"size": 30826
+},
+{
+"path": "src/SeqAlignment/HapAligner.h",
+"type": "blob",
+"size": 3690
+},
+{
+"path": "src/SeqAlignment/HapBlock.cpp",
+"type": "blob",
+"size": 1198
+},
+{
+"path": "src/SeqAlignment/HapBlock.h",
+"type": "blob",
+"size": 5122
+},
+{
+"path": "src/SeqAlignment/Haplotype.cpp",
+"type": "blob",
+"size": 9351
+},
+{
+"path": "src/SeqAlignment/Haplotype.h",
+"type": "blob",
+"size": 4416
+},
+{
+"path": "src/SeqAlignment/HaplotypeGenerator.cpp",
+"type": "blob",
+"size": 13931
+},
+{
+"path": "src/SeqAlignment/HaplotypeGenerator.h",
+"type": "blob",
+"size": 3177
+},
+{
+"path": "src/SeqAlignment/NeedlemanWunsch.cpp",
+"type": "blob",
+"size": 18910
+},
+{
+"path": "src/SeqAlignment/NeedlemanWunsch.h",
+"type": "blob",
+"size": 684
+},
+{
+"path": "src/SeqAlignment/RepeatBlock.h",
+"type": "blob",
+"size": 2653
+},
+{
+"path": "src/SeqAlignment/RepeatStutterInfo.h",
+"type": "blob",
+"size": 2304
+},
+{
+"path": "src/SeqAlignment/StutterAlignerClass.cpp",
+"type": "blob",
+"size": 6298
+},
+{
+"path": "src/SeqAlignment/StutterAlignerClass.h",
+"type": "blob",
+"size": 4156
+},
+{
+"path": "src/adapter_trimmer.cpp",
+"type": "blob",
+"size": 7833
+},
+{
+"path": "src/adapter_trimmer.h",
+"type": "blob",
+"size": 4829
+},
+{
+"path": "src/alignment_filters.cpp",
+"type": "blob",
+"size": 6867
+},
+{
+"path": "src/alignment_filters.h",
+"type": "blob",
+"size": 1034
+},
+{
+"path": "src/bam_io.cpp",
+"type": "blob",
+"size": 17250
+},
+{
+"path": "src/bam_io.h",
+"type": "blob",
+"size": 17777
+},
+{
+"path": "src/bam_processor.cpp",
+"type": "blob",
+"size": 26626
+},
+{
+"path": "src/bam_processor.h",
+"type": "blob",
+"size": 6389
+},
+{
+"path": "src/base_quality.cpp",
+"type": "blob",
+"size": 957
+},
+{
+"path": "src/base_quality.h",
+"type": "blob",
+"size": 2617
+},
+{
+"path": "src/bgzf_streams.h",
+"type": "blob",
+"size": 3655
+},
+{
+"path": "src/check_phasing.cpp",
+"type": "blob",
+"size": 8984
+},
+{
+"path": "src/debruijn_graph.cpp",
+"type": "blob",
+"size": 7224
+},
+{
+"path": "src/debruijn_graph.h",
+"type": "blob",
+"size": 2456
+},
+{
+"path": "src/denovos",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/denovos/annotate_vcf_with_denovo_lls.py",
+"type": "blob",
+"size": 5400
+},
+{
+"path": "src/denovos/denovo_allele_priors.cpp",
+"type": "blob",
+"size": 1436
+},
+{
+"path": "src/denovos/denovo_allele_priors.h",
+"type": "blob",
+"size": 2817
+},
+{
+"path": "src/denovos/denovo_main.cpp",
+"type": "blob",
+"size": 12423
+},
+{
+"path": "src/denovos/denovo_scanner.cpp",
+"type": "blob",
+"size": 14753
+},
+{
+"path": "src/denovos/denovo_scanner.h",
+"type": "blob",
+"size": 1686
+},
+{
+"path": "src/denovos/mutation_model.h",
+"type": "blob",
+"size": 808
+},
+{
+"path": "src/denovos/trio_denovo_scanner.cpp",
+"type": "blob",
+"size": 10144
+},
+{
+"path": "src/denovos/trio_denovo_scanner.h",
+"type": "blob",
+"size": 1369
+},
+{
+"path": "src/directed_graph.cpp",
+"type": "blob",
+"size": 2357
+},
+{
+"path": "src/directed_graph.h",
+"type": "blob",
+"size": 3841
+},
+{
+"path": "src/em_stutter_genotyper.cpp",
+"type": "blob",
+"size": 9601
+},
+{
+"path": "src/em_stutter_genotyper.h",
+"type": "blob",
+"size": 4482
+},
+{
+"path": "src/error.cpp",
+"type": "blob",
+"size": 204
+},
+{
+"path": "src/error.h",
+"type": "blob",
+"size": 133
+},
+{
+"path": "src/extract_indels.cpp",
+"type": "blob",
+"size": 3652
+},
+{
+"path": "src/extract_indels.h",
+"type": "blob",
+"size": 471
+},
+{
+"path": "src/fasta_reader.cpp",
+"type": "blob",
+"size": 2859
+},
+{
+"path": "src/fasta_reader.h",
+"type": "blob",
+"size": 3490
+},
+{
+"path": "src/fastonebigheader.h",
+"type": "blob",
+"size": 17311
+},
+{
+"path": "src/genotyper.cpp",
+"type": "blob",
+"size": 21894
+},
+{
+"path": "src/genotyper.h",
+"type": "blob",
+"size": 6593
+},
+{
+"path": "src/genotyper_bam_processor.cpp",
+"type": "blob",
+"size": 13282
+},
+{
+"path": "src/genotyper_bam_processor.h",
+"type": "blob",
+"size": 10984
+},
+{
+"path": "src/haplotype_tracker.cpp",
+"type": "blob",
+"size": 8066
+},
+{
+"path": "src/haplotype_tracker.h",
+"type": "blob",
+"size": 6006
+},
+{
+"path": "src/hipstr_main.cpp",
+"type": "blob",
+"size": 31284
+},
+{
+"path": "src/mathops.cpp",
+"type": "blob",
+"size": 2899
+},
+{
+"path": "src/mathops.h",
+"type": "blob",
+"size": 1064
+},
+{
+"path": "src/null_ostream.h",
+"type": "blob",
+"size": 428
+},
+{
+"path": "src/pcr_duplicates.cpp",
+"type": "blob",
+"size": 4303
+},
+{
+"path": "src/pcr_duplicates.h",
+"type": "blob",
+"size": 2064
+},
+{
+"path": "src/pedigree.cpp",
+"type": "blob",
+"size": 12756
+},
+{
+"path": "src/pedigree.h",
+"type": "blob",
+"size": 6502
+},
+{
+"path": "src/process_timer.h",
+"type": "blob",
+"size": 545
+},
+{
+"path": "src/read_pooler.cpp",
+"type": "blob",
+"size": 866
+},
+{
+"path": "src/read_pooler.h",
+"type": "blob",
+"size": 1542
+},
+{
+"path": "src/region.cpp",
+"type": "blob",
+"size": 2330
+},
+{
+"path": "src/region.h",
+"type": "blob",
+"size": 2977
+},
+{
+"path": "src/seq_stutter_genotyper.cpp",
+"type": "blob",
+"size": 69583
+},
+{
+"path": "src/seq_stutter_genotyper.h",
+"type": "blob",
+"size": 9129
+},
+{
+"path": "src/snp_bam_processor.cpp",
+"type": "blob",
+"size": 9803
+},
+{
+"path": "src/snp_bam_processor.h",
+"type": "blob",
+"size": 4318
+},
+{
+"path": "src/snp_phasing_quality.cpp",
+"type": "blob",
+"size": 4534
+},
+{
+"path": "src/snp_phasing_quality.h",
+"type": "blob",
+"size": 1036
+},
+{
+"path": "src/snp_tree.cpp",
+"type": "blob",
+"size": 5401
+},
+{
+"path": "src/snp_tree.h",
+"type": "blob",
+"size": 4029
+},
+{
+"path": "src/stringops.cpp",
+"type": "blob",
+"size": 1360
+},
+{
+"path": "src/stringops.h",
+"type": "blob",
+"size": 515
+},
+{
+"path": "src/stutter_model.cpp",
+"type": "blob",
+"size": 3293
+},
+{
+"path": "src/stutter_model.h",
+"type": "blob",
+"size": 3024
+},
+{
+"path": "src/vcf_input.cpp",
+"type": "blob",
+"size": 4030
+},
+{
+"path": "src/vcf_input.h",
+"type": "blob",
+"size": 3230
+},
+{
+"path": "src/vcf_reader.cpp",
+"type": "blob",
+"size": 4705
+},
+{
+"path": "src/vcf_reader.h",
+"type": "blob",
+"size": 6713
+},
+{
+"path": "src/vcf_writer.cpp",
+"type": "blob",
+"size": 1199
+},
+{
+"path": "src/vcf_writer.h",
+"type": "blob",
+"size": 1990
+},
+{
+"path": "src/version.cpp",
+"type": "blob",
+"size": 57
+},
+{
+"path": "src/version.h",
+"type": "blob",
+"size": 100
+},
+{
+"path": "src/zalgorithm.cpp",
+"type": "blob",
+"size": 4248
+},
+{
+"path": "src/zalgorithm.h",
+"type": "blob",
+"size": 1695
+},
+{
+"path": "test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test/em_stutter_test.cpp",
+"type": "blob",
+"size": 4900
+},
+{
+"path": "test/fast_ops_test.cpp",
+"type": "blob",
+"size": 351
+},
+{
+"path": "test/haplotype_test.cpp",
+"type": "blob",
+"size": 2031
+},
+{
+"path": "test/input",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test/input/1kg.chr1.imputed.vcf.gz",
+"type": "blob",
+"size": 18485802
+},
+{
+"path": "test/input/1kg.chr1.imputed.vcf.gz.tbi",
+"type": "blob",
+"size": 6317
+},
+{
+"path": "test/input/chr1_regions.bed",
+"type": "blob",
+"size": 713
+},
+{
+"path": "test/input/chr1_regions_v2.bed",
+"type": "blob",
+"size": 980
+},
+{
+"path": "test/plot_stutter_results.py",
+"type": "blob",
+"size": 5142
+},
+{
+"path": "test/read_vcf_alleles_test.cpp",
+"type": "blob",
+"size": 1067
+},
+{
+"path": "test/run_stutter_em_test.sh",
+"type": "blob",
+"size": 998
+},
+{
+"path": "test/run_stutter_em_tests.sh",
+"type": "blob",
+"size": 610
+},
+{
+"path": "test/run_tests.sh",
+"type": "blob",
+"size": 313
+},
+{
+"path": "test/snp_tree_test.cpp",
+"type": "blob",
+"size": 3207
+},
+{
+"path": "test/vcf_snp_tree_test.cpp",
+"type": "blob",
+"size": 645
+}
+]
+}

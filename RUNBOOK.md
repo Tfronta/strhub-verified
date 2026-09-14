@@ -300,3 +300,83 @@ dependencias). Es **siempre informativo**: nunca cambia el badge de ejecución.
 Determinista (keywords), sin costo de API.
 
 Salida en el reporte: `readme_check.score` / `readme_check.max` + cada ítem.
+
+---
+
+## Fase 1 — Ensayos, receta propuesta, veredictos
+
+### Ensayo (`mode=trial`): correr sin publicar
+
+Un ensayo corre las mismas compuertas que una verificación, pero **no commitea a
+`main`, no despliega a `gh-pages`, no borra ni crea avisos de rechazo**, y su
+reporte lleva `"mode": "trial"` (el índice del catálogo lo ignora aunque llegara
+a gh-pages). El resultado vive en el artifact `trial-<slug>` del run, 30 días.
+
+Tres formas de disparar uno:
+
+```bash
+# 1. Receta explícita (lo que manda la web): manifest + Dockerfile (+ BED) en base64
+gh workflow run verify.yml -f tool=hipstr-trial -f mode=trial -f recipe="$(base64 < recipe.json)"
+
+# 2. Desde una URL, sin receta: el motor la PROPONE leyendo el repo (detect_recipe + propose_manifest)
+gh workflow run verify.yml -f tool=strsearch-trial -f mode=trial \
+  -f repo=https://github.com/AnJingwd/STRsearch -f ref=c70179b3b175adc82a7314409af06900b3861d61
+
+# 3. Localmente, sin CI (mismo harness): ver harness/detect_recipe.py --offline y propose_manifest.py
+```
+
+`recipe.json` es `{"manifest_yml": "...", "dockerfile": "...", "regions_bed": "..."?}`
+(tope 60 KB; `prepare.py --recipe-b64` lo materializa en `work/recipe/<slug>/`).
+
+### Receta propuesta desde el repo
+
+`harness/detect_recipe.py <repo> <ref> --json proposal.json` lee el árbol y el
+README al ref y propone, con evidencia: método de instalación (Dockerfile del
+repo, conda incluso bajo `setup/`, pip, make/cmake, cargo, go), datos de ejemplo
+por tipo (excluye vendored y salidas), comandos del README (continuaciones
+unidas; marcadores como `fastqfile` cuentan como entrada), tipo de entrada más
+probable con sus señales y avisos (hg19, BAM/FASTQ ambiguo), formato de salida,
+Dockerfile generado, y **los huecos del README** (qué no dice).
+
+`harness/propose_manifest.py proposal.json --slug X` lo convierte en receta:
+comando del README reescrito a los mounts de STRhub (`/data/in/sample.fastq`,
+`/data/ref/hg38.fa`, `/data/in/regions.bed`; marcadores de config resueltos con
+el archivo del kit del dataset), envuelto para capturar todo lo que crea en
+`/data/out`; `outputs` por formato detectado; `caveats` con cada decisión. Si el
+repo trae Dockerfile, se construye ese (`environment.source: repository`).
+
+Snapshots de los 5 repos del catálogo en `harness/testdata/repos/` para tests
+sin red (`harness/tests/test_detect_recipe.py`, `test_propose_manifest.py`).
+
+### Compuerta "Reproduces own example"
+
+Bloque `example` del manifest: el comando del README, tal cual, corrido dentro
+de la imagen en el clon (`/opt/tool`, o el WORKDIR de la imagen si es del
+repo), con los datos del propio repo. El wrapper (`prepare.example_wrapper`)
+copia a `/data/out` todo lo que el comando creó; `check_example.py` pasa si hay
+salida no vacía (o los `outputs` declarados), y compara con `expected` si se
+declara (informa, nunca falla). Es la pregunta del revisor: ¿funciona el Quick
+Start? No depende de los datos de STRhub y es independiente de la escalera.
+
+### Los cuatro veredictos
+
+`harness/verdict.py` (puro, testeado) pone una frase sobre la escalera, en este
+orden: **Runs** (produjo salida: IO o example), **Out of scope** (GPU, GUI,
+licencia, red, otro SO: declarado o detectado), **Could not be determined**
+(receta propuesta insuficiente: huecos del README, o límites conocidos como
+"BED en formato de la tool"; o fallo corregible con receta propuesta), **Fails**
+(con la causa por compuerta). Va en `<slug>.json` (`verdict`), en el summary y
+en el HTML.
+
+### Re-verificación cuando la tool cambia
+
+Job `upstream` del cron mensual: para cada repo del catálogo publicado pide el
+último release (o tag); si su commit no es el verificado, `retarget_recipe.py`
+re-apunta la receta commiteada y la despacha como **ensayo** (`up_<sha7>_<slug>`),
+y un issue en este repo lo dice (uno solo, se comenta). Nada se publica hasta
+que el dueño confirme.
+
+### Tests del motor
+
+`python -m pytest harness/tests -q` (58 tests) y `python harness/test_validate_bed.py`
+corren en el job `resolve` antes de verificar nada.
