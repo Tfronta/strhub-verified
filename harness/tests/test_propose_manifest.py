@@ -1,0 +1,72 @@
+"""A proposal becomes a schema-valid trial recipe, and says what it guessed."""
+import json
+import pathlib
+
+import _manifest
+import detect_recipe as dr
+import propose_manifest as pm
+
+REPOS = pathlib.Path(__file__).resolve().parents[1] / "testdata" / "repos"
+
+
+def _proposal(name):
+    tree, readme, repo = dr.load_offline(REPOS / name)
+    return dr.detect(dr.repo_slug(repo), tree["ref"], tree, readme, "README.md")
+
+
+def _valid(manifest_yml, tmp_path):
+    p = tmp_path / "manifest.yml"
+    p.write_text(manifest_yml)
+    return _manifest.load(str(p))  # raises on schema violation
+
+
+def test_hipstr_recipe_is_generated_and_rewritten_to_strhub_mounts(tmp_path):
+    r = pm.build(_proposal("hipstr"), "hipstr-trial")
+    m = _valid(r["manifest_yml"], tmp_path)
+    assert m["environment"]["source"] == "generated"
+    assert "FROM ubuntu:22.04" in r["dockerfile"]
+    assert m["inputs"]["type"] == "illumina-bam-hg38"
+    assert "/data/in/input.bam" in m["run"]["cmd"]
+    assert m["run"]["cmd"].startswith("cd '/opt/tool' && touch /tmp/.strhub_mark")
+    assert m["outputs"][0] == {"path": "**/*.vcf*", "format": "vcf", "min_records": 1}
+    assert "regions_format_unknown" in r["limitations"]
+    assert m["caveats"]["source"] == "detect_recipe"
+    assert "example" not in m  # README shows placeholders, not shipped data
+
+
+def test_strsearch_uses_the_repository_dockerfile_and_its_example(tmp_path):
+    r = pm.build(_proposal("strsearch"), "strsearch-trial")
+    m = _valid(r["manifest_yml"], tmp_path)
+    assert m["environment"]["source"] == "repository"
+    assert m["environment"]["from_repo"] == "Dockerfile"
+    assert m["example"]["cmd"].startswith("python3 pipeline.py from_")
+    assert m["example"]["cwd"] == "."
+    assert any("hg19" in c for c in m["caveats"]["items"])
+
+
+def test_straitrazor_fastq_is_pointed_at_the_nist_sample(tmp_path):
+    r = pm.build(_proposal("straitrazor"), "straitrazor-trial")
+    m = _valid(r["manifest_yml"], tmp_path)
+    assert m["inputs"]["type"] == "illumina-str-fastq"
+    assert "/data/in/sample.fastq" in m["run"]["cmd"]
+    assert m["outputs"][0]["path"] == "**/*.t[sx][vt]"
+    assert r["limitations"] == []
+
+
+def test_empty_repository_yields_a_recipe_that_reports_its_gaps(tmp_path):
+    proposal = dr.detect("x/y", "abcdef0123", {"tree": [], "truncated": False}, "", None)
+    r = pm.build(proposal, "x-trial")
+    m = _valid(r["manifest_yml"], tmp_path)
+    assert "install_method_unknown" in r["limitations"] and "no_command" in r["limitations"]
+    assert m["outputs"][0]["format"] == "text"
+    assert r["readme_gaps"]
+
+
+def test_rewrite_leaves_unknown_types_alone():
+    cmd, notes = pm.rewrite_for_strhub("tool -i reads.fsa -o out", "capillary-fsa")
+    assert cmd == "tool -i reads.fsa -o out" and notes
+
+
+def test_recipe_round_trips_through_json():
+    r = pm.build(_proposal("gangstr"), "gangstr-trial")
+    json.dumps({"manifest_yml": r["manifest_yml"], "dockerfile": r["dockerfile"]})

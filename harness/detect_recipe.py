@@ -308,10 +308,14 @@ def detect_commands(readme: str, names: list[str]) -> list[dict]:
             "named_in_tree": named,
             "has_input_flag": has_in,
             "has_output_flag": has_out,
+            # `zcat x.fq.gz | tool ...` documents a compressed-input variant;
+            # the plain invocation is the one to rewrite for STRhub's data.
+            "piped": len(segments) > 1,
         })
-    # Best first: an invocation that names both an input and an output.
+    # Best first: an invocation that names both an input and an output, direct
+    # rather than behind a pipe, and by a program the tree names.
     cands.sort(key=lambda c: (not (c["has_input_flag"] and c["has_output_flag"]),
-                              not c["has_input_flag"], not c["named_in_tree"]))
+                              not c["has_input_flag"], c["piped"], not c["named_in_tree"]))
     seen, uniq = set(), []
     for c in cands:
         if c["cmd"] not in seen:
