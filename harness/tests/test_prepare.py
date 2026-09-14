@@ -28,10 +28,15 @@ def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
     manifest = src.joinpath("manifest.yml").read_text()
     # A newline smuggled into a manifest value must not become a second key.
     manifest = manifest.replace('name: hipstr', 'name: "hipstr\\nown_ready=1"')
+    # An uploaded regions file, as the web sends one (the committed recipe now
+    # uses the library; a trial recipe can still carry its own).
+    import re
+    manifest = re.sub(r"^    library: hipstr.*$", '    path: "tools/hipstr-b2033bf/assets/regions.bed"\n    provided_by: author', manifest, flags=re.M)
+    assert "provided_by: author" in manifest
     recipe = {
         "manifest_yml": manifest,
         "dockerfile": src.joinpath("Dockerfile").read_text(),
-        "regions_bed": src.joinpath("assets", "regions.bed").read_text(),
+        "regions_bed": (ROOT / "datasets" / "illumina-bam-hg38" / "regions" / "hipstr.bed").read_text(),
     }
     b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
     rc, kv, err = _run(["hipstr-b2033bf", "--work", str(tmp_path), "--recipe-b64", b64])

@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/datasets/1",
-  "description": "Typed reference-dataset library. The verify workflow's external matrix leg looks up a compatible dataset by the manifest's inputs.type. If no entry matches, the external leg is reported N/A (never a failure). Each entry also carries its contract: kit (for FASTQ), chrom_naming and read_length, so a recipe proposed from a repository can be pointed at the right data without asking anyone.",
+  "description": "Typed reference-dataset library. The verify workflow's external matrix leg looks up a compatible dataset by the manifest's inputs.type. If no entry matches, the external leg is reported N/A (never a failure). Each entry also carries its contract: kit (for FASTQ), chrom_naming and read_length, so a recipe proposed from a repository can be pointed at the right data without asking anyone. Each BAM dataset also carries a regions_library: the same panel loci written in every tool format STRhub knows (harness/build_regions_library.py), so a coordinate-based tool gets its regions file without anyone writing one.",
   "datasets": {
     "illumina-str-fastq": {
       "dir": "datasets/illumina-str-fastq",
@@ -57,7 +57,13 @@
       "sequencer": "Illumina HiSeq 2500 (GIAB 300x)",
       "notes": "GIAB NA12878/HG001 300x, GRCh38, sliced around 24 autosomal forensic STR loci (CODIS 20 + PentaD + PentaE + D6S1043 + SE33), ±1000bp flanking. Pick this dataset for autosomal/CODIS tools. Female sample: no Y markers. Panel (loci.bed) guarantees all 24 loci at >=10x window-wide; observed floor 55x. See datasets/illumina-bam-hg38/SOURCE.txt.",
       "chrom_naming": "chr",
-      "read_length": 148
+      "read_length": 148,
+      "regions_library": {
+        "hipstr": "datasets/illumina-bam-hg38/regions/hipstr.bed",
+        "gangstr": "datasets/illumina-bam-hg38/regions/gangstr.bed",
+        "strsearch": "datasets/illumina-bam-hg38/regions/strsearch.bed",
+        "bed4": "datasets/illumina-bam-hg38/regions/bed4.bed"
+      }
     },
     "illumina-bam-hg38-y": {
       "dir": "datasets/illumina-bam-hg38-y",
@@ -81,7 +87,19 @@
       "sequencer": "Illumina HiSeq 2500 (GIAB 300x)",
       "notes": "GIAB HG002 300x, GRCh38, sliced around Y-STR forensic loci, ±1000bp flanking. Pick this dataset for Y-chromosome tools. Panel (loci.bed) guarantees 14 loci at >=10x window-wide (DYS19/389I-II/390/391/392/393/438/448/456/458/635 + DYS385b + Y-GATA-H4/A10); typical depth 48-188x. DYS385a is EXCLUDED: the palindromic DYS385a/b pair is collapsed in the GIAB alignment, starving the 'a' copy to ~2-10x over the repeat. Not a slicing artifact — the reads are absent from the source BAM.",
       "chrom_naming": "chr",
-      "read_length": 148
+      "read_length": 148,
+      "regions_library": {
+        "hipstr": "datasets/illumina-bam-hg38-y/regions/hipstr.bed",
+        "gangstr": "datasets/illumina-bam-hg38-y/regions/gangstr.bed",
+        "strsearch": "datasets/illumina-bam-hg38-y/regions/strsearch.bed",
+        "bed4": "datasets/illumina-bam-hg38-y/regions/bed4.bed"
+      }
     }
+  },
+  "regions_formats": {
+    "hipstr": "chrom start end period ref_copies name [motif]  (HipSTR --regions)",
+    "gangstr": "chrom start end period motif  (GangSTR --regions)",
+    "strsearch": "11 columns: Chr Start End Period Reference-allele Marker Official-name Structure Strand 5'flank 3'flank  (STRsearch --ref_bed)",
+    "bed4": "chrom start end name  (any BED-reading tool)"
   }
 }

@@ -24,8 +24,7 @@ run:
 inputs:
   type: "illumina-bam-hg38"
   regions:
-    path: "tools/strsearch-c70179b/assets/regions.bed"
-    provided_by: author
+    library: strsearch   # STRhub's ready-made file; byte-identical to the assets/regions.bed it replaces
 outputs:
 - path: multiple_alleles.txt
   format: tsv

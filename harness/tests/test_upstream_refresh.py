@@ -40,7 +40,8 @@ def test_retarget_swaps_ref_in_manifest_and_dockerfile_and_renames_slug():
     assert f'ref: "{NEW}"' in manifest and VERIFIED not in manifest
     assert 'slug: "hipstr-b2033bf-1111111"' in manifest
     assert f"ARG TOOL_REF={NEW}" in r["recipe"]["dockerfile"]
-    assert "regions_bed" in r["recipe"]
+    # The recipe takes its regions from the library, so nothing to carry along.
+    assert "regions_bed" not in r["recipe"] and "library: hipstr" in manifest
     decoded = json.loads(base64.b64decode(r["recipe_b64"]))
     assert decoded["manifest_yml"] == manifest
 

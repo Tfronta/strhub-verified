@@ -529,6 +529,9 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         "input_type": input_type,
         "output": output,
         "readme": rd,
+        # The first part of the README travels with the proposal so the regions
+        # library can read how the tool describes its regions file. Bounded.
+        "readme_text": readme[:20_000],
         "example": propose_example(commands, paths, examples),
         "dockerfile": generate_dockerfile(slug, ref, build),
     }
