@@ -29,7 +29,7 @@ def _rule(pattern: str, severity: str, rid: str, title: str, suggestion: str,
 
 # --- Unrecognized / invalid options -----------------------------------------
 _rule(
-    r"unrecognized option ['\"]?--([\w-]+)",
+    r"(?:^|error\b[^\n]{0,40}?|:\s*)unrecognized option ['\"]?--([\w-]+)",
     "error", "bad_option",
     "Unrecognized command-line option: --{0}",
     "The flag '--{0}' does not exist in this tool version. "
@@ -37,14 +37,14 @@ _rule(
 )
 
 _rule(
-    r"unknown option ['\"]?--([\w-]+)",
+    r"(?:^|error\b[^\n]{0,40}?|:\s*)unknown option ['\"]?--([\w-]+)",
     "error", "bad_option",
     "Unknown option: --{0}",
     "The flag '--{0}' is not recognized. Check --help for valid options.",
 )
 
 _rule(
-    r"invalid option ['\"]?--([\w-]+)",
+    r"(?:^|error\b[^\n]{0,40}?|:\s*)invalid option ['\"]?--([\w-]+)",
     "error", "bad_option",
     "Invalid option: --{0}",
     "The flag '--{0}' is not valid. Check --help for valid options.",
@@ -222,12 +222,18 @@ _rule(
 
 # --- Command not found ------------------------------------------------------
 _rule(
-    r"(\S+):\s+(?:command )?not found",
+    # The shell's own message, and only that. `X: not found` on its own also
+    # matched "usage: ... --bams: not found" and "Processing complete: not found
+    # any errors", each of which turned a clean run's badge yellow.
+    r"(\S+):\s+command not found|exec: ['\"]?([^'\"\s]+)['\"]?: executable file not found",
     "error", "cmd_not_found",
     "Command not found: {0}",
     "The binary '{0}' was not found in the container. Check the Dockerfile "
     "installs it and that the PATH includes its location.",
 )
+# The docker form of cmd_not_found captures in group 2; fold it into group 1 so
+# the title, suggestion and examples read the same either way.
+_CMD_NOT_FOUND_FOLD = "cmd_not_found"
 
 # --- Python/runtime errors --------------------------------------------------
 _rule(
@@ -340,6 +346,15 @@ def _clean(value: str) -> str:
     return value.strip().strip("\"'`").rstrip(":;,.").strip("\"'`")
 
 
+#: A line that is quoting the tool's own help, not reporting a failure. "An
+#: invalid option --x will be rejected" in a usage block is documentation.
+_HELP_LINE = re.compile(r"^(?:usage:|options?:|arguments?:|-{1,2}[a-z])", re.IGNORECASE)
+#: A line the tool itself labels as a warning. Its content can still match an
+#: error rule ("WARNING: file /data/in/x does not exist (optional)"), but the
+#: tool has already said how serious it is, and a warning never turns the badge.
+_WARN_LINE = re.compile(r"^\W*warn(?:ing)?\b", re.IGNORECASE)
+
+
 def diagnose(log_text: str) -> list[dict]:
     """Return a list of diagnostic issues found in the log text.
 
@@ -353,20 +368,24 @@ def diagnose(log_text: str) -> list[dict]:
 
     for line in log_text.splitlines():
         line = line.strip()
-        if not line:
+        if not line or _HELP_LINE.match(line):
             continue
+        warned = bool(_WARN_LINE.match(line))
         for pattern, severity, rid, title_tmpl, suggestion_tmpl in _RULES:
             m = pattern.search(line)
             if not m:
                 continue
             groups = tuple(_clean(g) if isinstance(g, str) else g for g in m.groups())
+            if rid == _CMD_NOT_FOUND_FOLD:
+                groups = (groups[0] or groups[1] or "",)
+            sev = "warning" if warned and severity == "error" else severity
             entry = by_rule.get(rid)
             if entry is None:
                 title = title_tmpl.format(*groups) if groups else title_tmpl
                 suggestion = suggestion_tmpl.format(*groups) if groups else suggestion_tmpl
                 entry = {
                     "id": rid,
-                    "severity": severity,
+                    "severity": sev,
                     "title": title,
                     "count": 0,
                     "examples": [],
@@ -375,6 +394,9 @@ def diagnose(log_text: str) -> list[dict]:
                     entry["suggestion"] = suggestion
                 by_rule[rid] = entry
                 order.append(rid)
+            elif sev == "error" and entry["severity"] == "warning":
+                # One real error among warnings makes it an error.
+                entry["severity"] = "error"
             entry["count"] += 1
             # Distinct captured values (the file, the option, ...) are what make
             # the scale legible; a bare repeat count would not say WHAT repeated.

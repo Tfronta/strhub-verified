@@ -1,0 +1,99 @@
+{
+  "description": "Shared BED-parsing contract between the engine's harness/validate_bed.py and the web form's strhub-web/lib/verified/validate-regions.ts. Both must agree on which files parse and to what rows: a BED accepted in the form and rejected here aborts a run with no report, which is a far worse failure than being told about it in the form. This file is duplicated verbatim in strhub-web/lib/verified/bed-cases.json; each side asserts the copies are identical when both checkouts are present.",
+  "cases": [
+    {
+      "name": "plain BED3",
+      "bed": "chr1\t100\t200\nchr2\t300\t400\n",
+      "rows": [
+        { "chrom": "chr1", "start": 100, "end": 200, "name": "chr1:100-200" },
+        { "chrom": "chr2", "start": 300, "end": 400, "name": "chr2:300-400" }
+      ]
+    },
+    {
+      "name": "chr prefix added when the file omits it",
+      "bed": "1\t100\t200\nX\t300\t400\n",
+      "rows": [
+        { "chrom": "chr1", "start": 100, "end": 200, "name": "chr1:100-200" },
+        { "chrom": "chrX", "start": 300, "end": 400, "name": "chrX:300-400" }
+      ]
+    },
+    {
+      "name": "comment, track and browser lines ignored",
+      "bed": "# a note\ntrack name=x\nbrowser hide all\nchr1\t100\t200\n",
+      "rows": [{ "chrom": "chr1", "start": 100, "end": 200, "name": "chr1:100-200" }]
+    },
+    {
+      "name": "extra columns ignored, column 4 taken as the name (HipSTR/GangSTR layouts)",
+      "bed": "chr1\t100\t200\tD1S1656\t4\tGATA\n",
+      "rows": [{ "chrom": "chr1", "start": 100, "end": 200, "name": "D1S1656" }]
+    },
+    {
+      "name": "a period in column 4 is not a name",
+      "bed": "chr1\t100\t200\t.\t4\n",
+      "rows": [{ "chrom": "chr1", "start": 100, "end": 200, "name": "chr1:100-200" }]
+    },
+    {
+      "name": "space-separated",
+      "bed": "chr1 100 200\nchr2 300 400\n",
+      "rows": [
+        { "chrom": "chr1", "start": 100, "end": 200, "name": "chr1:100-200" },
+        { "chrom": "chr2", "start": 300, "end": 400, "name": "chr2:300-400" }
+      ]
+    },
+    {
+      "name": "CRLF line endings",
+      "bed": "chr1\t100\t200\r\nchr2\t300\t400\r\n",
+      "rows": [
+        { "chrom": "chr1", "start": 100, "end": 200, "name": "chr1:100-200" },
+        { "chrom": "chr2", "start": 300, "end": 400, "name": "chr2:300-400" }
+      ]
+    },
+    {
+      "name": "empty file yields no rows rather than an error",
+      "bed": "\n\n# only comments\n",
+      "rows": []
+    },
+    {
+      "name": "header row skipped (STRsearch ref bed)",
+      "bed": "Chr\tStart\tEnd\tPeriod\tReference allele\tMarker\tSTR sequence structure\tStand\nchr1\t7442891\t7442934\t4\t11\tMarker1\tD1GATA113\t+\nchr21\t20554291\t20554417\t4\t29\tMarker2\tD21S11\t+\n",
+      "rows": [
+        { "chrom": "chr1", "start": 7442891, "end": 7442934, "name": "4" },
+        { "chrom": "chr21", "start": 20554291, "end": 20554417, "name": "4" }
+      ]
+    },
+    {
+      "name": "a single data row is not mistaken for a header",
+      "bed": "chr1\t100\t200\n",
+      "rows": [{ "chrom": "chr1", "start": 100, "end": 200, "name": "chr1:100-200" }]
+    },
+    {
+      "name": "coordinates located when they are not in the first three columns",
+      "bed": "D1S1656\tchr1\t100\t200\nD21S11\tchr21\t300\t400\nvWA\tchr12\t500\t600\n",
+      "rows": [
+        { "chrom": "chr1", "start": 100, "end": 200, "name": "chr1:100-200" },
+        { "chrom": "chr21", "start": 300, "end": 400, "name": "chr21:300-400" },
+        { "chrom": "chr12", "start": 500, "end": 600, "name": "chr12:500-600" }
+      ]
+    },
+    {
+      "name": "BED convention wins when two layouts would both parse",
+      "bed": "chr1\t100\t200\tchr2\t300\t400\n",
+      "rows": [{ "chrom": "chr1", "start": 100, "end": 200, "name": "chr2" }]
+    },
+    {
+      "name": "end before start is an error, not a reason to relocate the columns",
+      "bed": "chr1\t200\t100\n",
+      "throws": true
+    },
+    {
+      "name": "no coordinate columns anywhere",
+      "bed": "name,description\nD1S1656,a marker\nvWA,another\n",
+      "throws": true
+    },
+    {
+      "name": "fewer columns than the located layout needs",
+      "bed": "D1S1656\tchr1\t100\t200\nD21S11\tchr21\t300\t400\nvWA\tchr12\t500\t600\nshort\n",
+      "throws": true
+    }
+  ]
+}

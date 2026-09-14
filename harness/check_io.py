@@ -37,9 +37,46 @@ def _count_records(path: pathlib.Path, fmt: str) -> int:
         return len(obj) if isinstance(obj, (list, dict)) else 1
     if fmt in ("csv", "tsv"):
         delim = "\t" if fmt == "tsv" else ","
-        rows = list(csv.reader(text.splitlines(), delimiter=delim))
-        return max(0, len(rows) - 1)  # minus header
+        rows = [r for r in csv.reader(text.splitlines(), delimiter=delim)
+                if any(cell.strip() for cell in r)]
+        return len(rows) - (1 if _has_header(rows) else 0)
     return sum(1 for ln in text.splitlines() if ln.strip())  # text
+
+
+def _looks_numeric(cell: str) -> bool:
+    try:
+        float(cell.strip())
+        return True
+    except ValueError:
+        return False
+
+
+def _has_header(rows: list[list[str]]) -> bool:
+    """Whether row 0 of a CSV/TSV is a header rather than a record.
+
+    This used to be assumed: every CSV/TSV lost its first row, and blank lines
+    counted as records. So a file holding nothing but two newlines cleared
+    `min_records: 1`, and a one-row headerless TSV failed it. Both are the
+    exact opposite of what the gate is for.
+
+    Evidence-based instead: a header is a first row with a non-numeric cell in a
+    column where the rows below are numeric (a label over a count), or, when it
+    is the only row, one with no digits at all. A single row that carries a
+    number is a record, not a heading.
+    """
+    if not rows:
+        return False
+    first = rows[0]
+    if len(rows) == 1:
+        return not any(ch.isdigit() for cell in first for ch in cell)
+    body = rows[1:]
+    for c, cell in enumerate(first):
+        if _looks_numeric(cell):
+            continue
+        below = [r[c] for r in body if c < len(r) and r[c].strip()]
+        if below and all(_looks_numeric(v) for v in below):
+            return True
+    return False
 
 
 def check(manifest_path: str, out_dir: str) -> dict:
@@ -49,8 +86,17 @@ def check(manifest_path: str, out_dir: str) -> dict:
     ok = True
 
     for spec in m["outputs"]:
-        matches = sorted(out.glob(spec["path"]))
+        matches, refused = _manifest.safe_glob(out, spec["path"])
         entry = {"path": spec["path"], "format": spec["format"], "checks": {}}
+
+        # A pattern that could leave /data/out is refused outright, and the
+        # refusal is recorded so the report can say why the gate did not pass.
+        entry["checks"]["confined"] = refused is None
+        if refused is not None:
+            entry["error"] = refused
+            entry["passed"] = ok = False
+            checks.append(entry)
+            continue
 
         present = bool(matches)
         entry["checks"]["exists"] = present

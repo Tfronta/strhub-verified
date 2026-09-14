@@ -3,8 +3,10 @@
 # Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
 
 tool:
-  name: Strspy
+  name: STRspy
   version: v2.0
+  maintainer: "Kesharwani RK; Zascavage RR et al."
+  contact: "https://github.com/unique379r/strspy/issues"
 source:
   repo: "https://github.com/unique379r/strspy"
   ref: dafdee7e7e5672c8dc732e8577dbe153f53a12f5

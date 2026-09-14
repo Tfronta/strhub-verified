@@ -24,10 +24,11 @@ WORKDIR /opt/strait-razor
 RUN make 2>/dev/null || (cmake . && make)
 
 # Put the executable on PATH. VERIFY names/locations.
-RUN cp str8rzr /usr/local/bin/ 2>/dev/null || true
+RUN cp str8rzr /usr/local/bin/
 
-# Sanity check at BUILD time so a broken binary fails Installs, not Runs.
-RUN str8rzr --help >/dev/null 2>&1 || str8rzr 2>/dev/null || true
+# Sanity check at BUILD time so a missing binary fails Installs, not Runs.
+# No `|| true`: that mask let a build that never produced str8rzr pass Installs.
+RUN command -v str8rzr
 
 WORKDIR /work
 ENTRYPOINT ["/bin/bash", "-lc"]

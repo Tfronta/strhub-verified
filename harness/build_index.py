@@ -33,8 +33,11 @@ def _load(reports: pathlib.Path) -> list[dict]:
             r = json.loads(p.read_text())
         except Exception:
             continue
-        # Only attestation reports (strhub-verified/1), not catalogues or datasets.
-        if r.get("schema") == "strhub-verified/1":
+        # Only attestation reports (strhub-verified/1), not catalogues or datasets,
+        # and never a trial: a rehearsal is not a claim, and this index is what
+        # the public catalogue lists. The workflow already keeps trials off
+        # gh-pages; this is the second lock on the same door.
+        if r.get("schema") == "strhub-verified/1" and r.get("mode", "publish") != "trial":
             items.append((p.stem, r))
     return items
 

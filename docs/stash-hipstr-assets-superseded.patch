@@ -1,0 +1,54 @@
+diff --git a/harness/prepare.py b/harness/prepare.py
+index 5ce9b18..3a65aac 100644
+--- a/harness/prepare.py
++++ b/harness/prepare.py
+@@ -177,6 +177,15 @@ def main() -> int:
+     own_ready = stage_own(fixture, work / "in_own", canonical)
+     external_ready, dataset_name = stage_external(input_type, work / "in_external")
+ 
++    # Stage tool-specific assets (e.g. regions BED) into both legs.
++    assets_dir = ROOT / "tools" / args.tool / "assets"
++    if assets_dir.is_dir():
++        for leg in [work / "in_own", work / "in_external"]:
++            leg.mkdir(parents=True, exist_ok=True)
++            for f in assets_dir.iterdir():
++                if f.is_file():
++                    shutil.copy2(f, leg / f.name)
++
+     ref_genome_url = ""
+     ref_genome_filename = ""
+     if input_type:
+diff --git a/tools/hipstr-v0-7/Dockerfile b/tools/hipstr-v0-7/Dockerfile
+index 8273fe6..b406077 100644
+--- a/tools/hipstr-v0-7/Dockerfile
++++ b/tools/hipstr-v0-7/Dockerfile
+@@ -4,6 +4,7 @@ FROM ubuntu:22.04
+ 
+ RUN apt-get update && apt-get install -y --no-install-recommends \
+         build-essential cmake git ca-certificates \
++        zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev \
+     && rm -rf /var/lib/apt/lists/*
+ 
+ # Immutable ref of the author's public repo.
+@@ -15,6 +16,8 @@ RUN git clone https://github.com/tfwillems/HipSTR.git tool \
+ WORKDIR /opt/tool
+ RUN make
+ 
++ENV PATH="/opt/tool:$PATH"
++
+ # Execution contract: the manifest cmd runs via bash -lc.
+ WORKDIR /work
+ ENTRYPOINT ["/bin/bash", "-lc"]
+diff --git a/tools/hipstr-v0-7/manifest.yml b/tools/hipstr-v0-7/manifest.yml
+index af59b61..d5e9d87 100644
+--- a/tools/hipstr-v0-7/manifest.yml
++++ b/tools/hipstr-v0-7/manifest.yml
+@@ -14,7 +14,7 @@ environment:
+   dockerfile: Dockerfile
+   os: ["ubuntu-22.04"]
+ run:
+-  cmd: "HipSTR --input /data/in/input.bam --fasta /data/ref/hg38.fa --out /data/out/result.tsv"
++  cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/str_calls.vcf.gz"
+   timeout_minutes: 15
+ inputs:
+   type: "illumina-bam-hg38"

@@ -1,0 +1,347 @@
+{
+"repo": "https://github.com/AnJingwd/STRsearch",
+"ref": "c70179b3b175adc82a7314409af06900b3861d61",
+"truncated": false,
+"tree": [
+{
+"path": "Dockerfile",
+"type": "blob",
+"size": 1802
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 1065
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 10670
+},
+{
+"path": "conf.py",
+"type": "blob",
+"size": 158
+},
+{
+"path": "example",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/ref_test.bed",
+"type": "blob",
+"size": 649
+},
+{
+"path": "example/test_data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/test_data/test.bam",
+"type": "blob",
+"size": 2221994
+},
+{
+"path": "example/test_data/test_R1.fastq",
+"type": "blob",
+"size": 5345231
+},
+{
+"path": "example/test_data/test_R2.fastq",
+"type": "blob",
+"size": 5345971
+},
+{
+"path": "example/test_output",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/test_output/STRfq",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/test_output/STRfq/Marker3_reads_test.bam",
+"type": "blob",
+"size": 303618
+},
+{
+"path": "example/test_output/STRfq/Marker3_reads_test_R1.fastq",
+"type": "blob",
+"size": 801618
+},
+{
+"path": "example/test_output/STRfq/Marker3_reads_test_R2.fastq",
+"type": "blob",
+"size": 801618
+},
+{
+"path": "example/test_output/STRfq/Marker3_reads_test_R2_trans.fastq",
+"type": "blob",
+"size": 801618
+},
+{
+"path": "example/test_output/STRfq/Marker3_reads_test_merge.fastq",
+"type": "blob",
+"size": 1603236
+},
+{
+"path": "example/test_output/STRfq/Marker3_reads_test_sortByname.bam",
+"type": "blob",
+"size": 256419
+},
+{
+"path": "example/test_output/STRfq/Marker58_reads_test.bam",
+"type": "blob",
+"size": 435146
+},
+{
+"path": "example/test_output/STRfq/Marker58_reads_test_R1.fastq",
+"type": "blob",
+"size": 963938
+},
+{
+"path": "example/test_output/STRfq/Marker58_reads_test_R2.fastq",
+"type": "blob",
+"size": 964330
+},
+{
+"path": "example/test_output/STRfq/Marker58_reads_test_R2_trans.fastq",
+"type": "blob",
+"size": 964330
+},
+{
+"path": "example/test_output/STRfq/Marker58_reads_test_merge.fastq",
+"type": "blob",
+"size": 1928268
+},
+{
+"path": "example/test_output/STRfq/Marker58_reads_test_sortByname.bam",
+"type": "blob",
+"size": 367003
+},
+{
+"path": "example/test_output/STRfq/Marker79_reads_test.bam",
+"type": "blob",
+"size": 512821
+},
+{
+"path": "example/test_output/STRfq/Marker79_reads_test_R1.fastq",
+"type": "blob",
+"size": 909542
+},
+{
+"path": "example/test_output/STRfq/Marker79_reads_test_R2.fastq",
+"type": "blob",
+"size": 909890
+},
+{
+"path": "example/test_output/STRfq/Marker79_reads_test_R2_trans.fastq",
+"type": "blob",
+"size": 909890
+},
+{
+"path": "example/test_output/STRfq/Marker79_reads_test_merge.fastq",
+"type": "blob",
+"size": 1819432
+},
+{
+"path": "example/test_output/STRfq/Marker79_reads_test_sortByname.bam",
+"type": "blob",
+"size": 448419
+},
+{
+"path": "example/test_output/STRfq/Marker85_reads_test.bam",
+"type": "blob",
+"size": 1036518
+},
+{
+"path": "example/test_output/STRfq/Marker85_reads_test_R1.fastq",
+"type": "blob",
+"size": 2097257
+},
+{
+"path": "example/test_output/STRfq/Marker85_reads_test_R1_trans.fastq",
+"type": "blob",
+"size": 2097257
+},
+{
+"path": "example/test_output/STRfq/Marker85_reads_test_R2.fastq",
+"type": "blob",
+"size": 2097257
+},
+{
+"path": "example/test_output/STRfq/Marker85_reads_test_merge.fastq",
+"type": "blob",
+"size": 4194514
+},
+{
+"path": "example/test_output/STRfq/Marker85_reads_test_sortByname.bam",
+"type": "blob",
+"size": 929812
+},
+{
+"path": "example/test_output/STRfq/Marker94_reads_test.bam",
+"type": "blob",
+"size": 271905
+},
+{
+"path": "example/test_output/STRfq/Marker94_reads_test_R1.fastq",
+"type": "blob",
+"size": 551875
+},
+{
+"path": "example/test_output/STRfq/Marker94_reads_test_R2.fastq",
+"type": "blob",
+"size": 551875
+},
+{
+"path": "example/test_output/STRfq/Marker94_reads_test_R2_trans.fastq",
+"type": "blob",
+"size": 551875
+},
+{
+"path": "example/test_output/STRfq/Marker94_reads_test_merge.fastq",
+"type": "blob",
+"size": 1103750
+},
+{
+"path": "example/test_output/STRfq/Marker94_reads_test_sortByname.bam",
+"type": "blob",
+"size": 232518
+},
+{
+"path": "example/test_output/STRsearch",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/test_output/STRsearch/Marker3_results_test.txt",
+"type": "blob",
+"size": 72841
+},
+{
+"path": "example/test_output/STRsearch/Marker58_results_test.txt",
+"type": "blob",
+"size": 278310
+},
+{
+"path": "example/test_output/STRsearch/Marker79_results_test.txt",
+"type": "blob",
+"size": 162670
+},
+{
+"path": "example/test_output/STRsearch/Marker85_results_test.txt",
+"type": "blob",
+"size": 155515
+},
+{
+"path": "example/test_output/STRsearch/Marker94_results_test.txt",
+"type": "blob",
+"size": 86204
+},
+{
+"path": "example/test_output/alignments",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/test_output/alignments/test.bam",
+"type": "blob",
+"size": 2141405
+},
+{
+"path": "example/test_output/alignments/test.bam.bai",
+"type": "blob",
+"size": 593488
+},
+{
+"path": "example/test_output/test_genotypes.txt",
+"type": "blob",
+"size": 919
+},
+{
+"path": "example/test_output/test_multiple_alleles.txt",
+"type": "blob",
+"size": 1139
+},
+{
+"path": "example/test_output/test_qc_matrix.txt",
+"type": "blob",
+"size": 717
+},
+{
+"path": "model",
+"type": "tree",
+"size": 0
+},
+{
+"path": "model/Additional file 1.xlsx",
+"type": "blob",
+"size": 94896
+},
+{
+"path": "model/Additional file 2.xlsx",
+"type": "blob",
+"size": 83396
+},
+{
+"path": "model/Additional file 3.xlsx",
+"type": "blob",
+"size": 225680
+},
+{
+"path": "model/Ion_S5.pkl",
+"type": "blob",
+"size": 184621
+},
+{
+"path": "model/build a base classifier.py",
+"type": "blob",
+"size": 2962
+},
+{
+"path": "pipeline.py",
+"type": "blob",
+"size": 3958
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/STR_parse.py",
+"type": "blob",
+"size": 8925
+},
+{
+"path": "scripts/STR_search.py",
+"type": "blob",
+"size": 13761
+},
+{
+"path": "scripts/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "scripts/bwa_align.py",
+"type": "blob",
+"size": 2573
+},
+{
+"path": "scripts/fastq.py",
+"type": "blob",
+"size": 2590
+},
+{
+"path": "scripts/get_STR_fastq.py",
+"type": "blob",
+"size": 5171
+}
+]
+}
