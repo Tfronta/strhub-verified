@@ -160,7 +160,7 @@ def _ids(diagnostics: dict[str, list[dict]] | None) -> set[str]:
 
 def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
             manual_verification: dict | None = None, recipe_proposal: dict | None = None,
-            declared_compatibility: dict | None = None) -> dict:
+            declared_compatibility: dict | None = None, fallback_used: bool = False) -> dict:
     """Return {code, title, reason, readme_gaps, basis}."""
     gates = gates or {}
     mv = manual_verification or {}
@@ -170,9 +170,17 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     produced = bool(gates.get("io")) or bool(gates.get("example"))
 
     if produced:
+        # Plan B ran: the pinned commit did not build, the published environment
+        # the README points at did. Still "Runs" — output came out — but the
+        # one sentence has to say which version that was, since it is not the
+        # commit the report names.
+        reason = ("The tool installed and its run produced its documented output."
+                  if not fallback_used else
+                  "The tool's run produced its documented output, on the published environment "
+                  "the README points at: the build from the pinned commit failed, so what ran is "
+                  "the version that environment holds.")
         return {"code": "runs", "title": TITLES["runs"], "basis": "gates",
-                "reason": "The tool installed and its run produced its documented output.",
-                "readme_gaps": []}
+                "reason": reason, "readme_gaps": []}
 
     declared = {k for k, v in (declared_compatibility or {}).items() if v}
     incompatible = ids & diagnose_log.HARNESS_INCOMPATIBLE
@@ -232,9 +240,10 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
 
 def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
            manual_verification: dict | None = None, recipe_proposal: dict | None = None,
-           declared_compatibility: dict | None = None) -> dict:
+           declared_compatibility: dict | None = None, fallback_used: bool = False) -> dict:
     """The verdict, plus the blockers a reader can act on when it is not 'runs'."""
-    v = _decide(gates, diagnostics, manual_verification, recipe_proposal, declared_compatibility)
+    v = _decide(gates, diagnostics, manual_verification, recipe_proposal, declared_compatibility,
+                fallback_used)
     if v["code"] in ("runs", "out_of_scope"):
         v["blockers"] = []
         return v
