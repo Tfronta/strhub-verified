@@ -2,12 +2,14 @@
 
 **Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
+**Verdict: Runs.** The tool installed and its run produced its documented output.
+
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-08-14T18:16:41+00:00
+- Generated: 2026-09-14T20:35:03+00:00
 - Submitted by: a third party — not the tool's maintainer
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/31827601844
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/34893412639
 
 ## Gates
 
@@ -33,10 +35,11 @@
 |---|---|---|---|---|
 | STRhub fixture | N/A | N/A | — | — |
 | External data | yes | PASS | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
+| Tool's own example | N/A | N/A | — | — |
 
 ## Regions
 
-A third party, not the tool's maintainer, supplied the regions BED, covering 24 of 24 supported loci. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
+STRhub supplied the regions BED. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
 
 ## Who submitted this
 
@@ -56,7 +59,6 @@ Score: **5/5**. Advisory only; does not affect the execution badge.
 
 The result above describes a run configured as follows. Anyone repeating it needs the same things.
 
-- A regions configuration file, supplied with the submission rather than taken from the repository.
 - Test data: no sample from the repository was used, so a public reference sample stood in.
 - A container environment, built from the tool's declared install steps rather than from a recipe the repository ships.
 
