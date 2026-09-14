@@ -754,7 +754,8 @@ def build_body(cfg):
         sec += 1
         els.append(Paragraph(lead, ST["body"]))
         els.append(vspace(2))
-        els.append(Paragraph(_install_fault_sentence(inst.get("faults") or []),
+        els.append(Paragraph(diagnose_log.install_fault_sentence(inst.get("faults") or [],
+                                                                 cfg.get("submitted_by") or None),
                              ST["body"]))
         els.append(vspace(3))
         ihead = [Paragraph(f"<b>{h}</b>", ST["tbl_cell"])
