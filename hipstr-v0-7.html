@@ -32,13 +32,15 @@
   <li>Variant: <code>hipstr-v0-7</code></li>
   <li>Source: <code>https://github.com/tfwillems/HipSTR</code> @ <code>b2033bfbb5cf55496b776463bdf2993fa763a4be</code></li>
   <li>Environment: ubuntu-22.04 (<code>Dockerfile</code>)</li>
-  <li>Generated: 2026-08-14T12:40:21+00:00</li>
+  <li>Generated: 2026-09-14T20:35:44+00:00</li>
   <li>Submitted by: a third party — not the tool&#x27;s maintainer</li>
-  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/31801056413">CI run</a></li>
+  <li>Upstream: The verified commit is the head of `master`.</li>
+  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/34893419838">CI run</a></li>
 </ul>
 <h2>Gates</h2>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
 <tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="ok">PASS</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="ok">PASS</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="ok">PASS</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr></tbody></table>
+
 
     <h2>Output content (plausibility evidence)</h2>
     <ul class="stats">
@@ -48,7 +50,7 @@
       <li>STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA, PentaD …</li>
       <li>Top markers by read depth: D18S51 (523), FGA (475), vWA (465), PentaD (444), D2S441 (433), D3S1358 (423)</li>
     </ul>
-<h2>Verification matrix</h2><table><thead><tr><th>Leg</th><th>Result</th><th>Errors reported</th><th>Dataset</th></tr></thead><tbody><tr><td>External data</td><td><span class="ok">PASS</span></td><td><span class="no">—</span></td><td>Illumina BAM (hg38), NA12878 (autosomal, female)</td></tr></tbody></table>
+<h2>Verification matrix</h2><table><thead><tr><th>Leg</th><th>Result</th><th>Errors reported</th><th>Dataset</th></tr></thead><tbody><tr><td>External data</td><td><span class="ok">PASS</span></td><td><span class="no">—</span></td><td>Illumina BAM (hg38), NA12878 (autosomal, female)</td></tr><tr><td>Tool&#x27;s own example</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr></tbody></table>
 <h2>Regions</h2><p>STRhub supplied the regions BED. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.</p>
 <h2>Who submitted this</h2><p>This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.</p>
 
@@ -63,5 +65,5 @@ truth is out of scope.</p>
 <a href="hipstr-v0-7.json">hipstr-v0-7.json</a> ·
 <a href="hipstr-v0-7.badge.json">badge</a> ·
 <a href="hipstr-v0-7.summary.md">summary.md</a></p>
-<p style="font-size:.85rem">Log (own): <a href="hipstr-v0-7.log-own.txt">hipstr-v0-7.log-own.txt</a></p><p style="font-size:.85rem">Log (external): <a href="hipstr-v0-7.log-external.txt">hipstr-v0-7.log-external.txt</a></p>
+<p style="font-size:.85rem">Log (own): <a href="hipstr-v0-7.log-own.txt">hipstr-v0-7.log-own.txt</a></p><p style="font-size:.85rem">Log (external): <a href="hipstr-v0-7.log-external.txt">hipstr-v0-7.log-external.txt</a></p><p style="font-size:.85rem">Log (build): <a href="hipstr-v0-7.log-build.txt">hipstr-v0-7.log-build.txt</a></p>
 </body></html>
