@@ -471,6 +471,11 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p work/out_own
+          # World-writable on purpose. The container runs with every capability
+          # dropped, so its root has no CAP_DAC_OVERRIDE and cannot write to a
+          # directory the runner user owns. Every tool failed with 'Permission
+          # denied' on /data/out the first time the hardening ran (PR #19).
+          chmod 0777 work/out_own
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
           docker run --rm $DOCKER_HARDENING $ENTRY \
@@ -515,6 +520,11 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p work/out_example
+          # World-writable on purpose. The container runs with every capability
+          # dropped, so its root has no CAP_DAC_OVERRIDE and cannot write to a
+          # directory the runner user owns. Every tool failed with 'Permission
+          # denied' on /data/out the first time the hardening ran (PR #19).
+          chmod 0777 work/out_example
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
           docker run --rm $DOCKER_HARDENING $ENTRY \
@@ -544,6 +554,11 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p work/out_external
+          # World-writable on purpose. The container runs with every capability
+          # dropped, so its root has no CAP_DAC_OVERRIDE and cannot write to a
+          # directory the runner user owns. Every tool failed with 'Permission
+          # denied' on /data/out the first time the hardening ran (PR #19).
+          chmod 0777 work/out_external
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
           docker run --rm $DOCKER_HARDENING $ENTRY \
