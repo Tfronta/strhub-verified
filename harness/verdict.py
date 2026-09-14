@@ -36,6 +36,14 @@ TITLES = {
 }
 
 
+LIMITATION_TEXT = {
+    "no_command": "no command line invoking the tool was found in the README",
+    "install_method_unknown": "no install method was found in the repository",
+    "regions_format_unknown": "the tool needs a regions file in its own format, which STRhub "
+                              "does not yet generate for it",
+}
+
+
 def _ids(diagnostics: dict[str, list[dict]] | None) -> set[str]:
     return {i.get("id") for issues in (diagnostics or {}).values() for i in issues}
 
@@ -73,6 +81,16 @@ def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
                 "reason": "STRhub could not work out how to install or run this tool from "
                           "its repository. The README does not say enough for a stranger to "
                           "run it; each missing item is listed below.",
+                "readme_gaps": gaps}
+
+    # A proposed recipe that knew it was incomplete (no command, no install
+    # method, a regions BED in a format STRhub cannot write) did not test the
+    # tool; it tested the proposal.
+    limits = [l for l in proposal.get("limitations", []) if l in LIMITATION_TEXT]
+    if auto and limits:
+        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "recipe",
+                "reason": "STRhub could not complete a way to run this tool: "
+                          + "; ".join(LIMITATION_TEXT[l] for l in limits) + ".",
                 "readme_gaps": gaps}
 
     # It was run, and did not produce. If the recipe was auto-proposed and the
