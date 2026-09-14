@@ -164,6 +164,49 @@ jobs:
             echo "Verify any of them with a manual dispatch of this workflow."
           } >> "$GITHUB_STEP_SUMMARY"
 
+  # Monthly, alongside the refresh of the stalest published tools: has any
+  # verified tool published a release since? If so, the committed recipe is
+  # re-run against the new commit as a TRIAL (nothing published) and an issue
+  # on this repository says so. See harness/upstream_refresh.py.
+  upstream:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: write        # dispatches the trials
+      issues: write         # one notice, updated rather than duplicated
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install -q pyyaml jsonschema
+      - name: Find newer upstream releases and dispatch trials
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python harness/upstream_refresh.py \
+            --index "https://raw.githubusercontent.com/$GITHUB_REPOSITORY/gh-pages/index.json" \
+            --dispatch --json upstream_refresh.json
+      - name: Say so in an issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          r = json.load(open("upstream_refresh.json"))
+          if not r.get("dispatched"):
+              print("no newer upstream releases"); raise SystemExit(0)
+          title = "Upstream releases newer than verified commits"
+          body = r["issue_body"]
+          existing = subprocess.run(["gh", "issue", "list", "--search", f'"{title}" in:title', "--state", "open",
+                                     "--json", "number", "--jq", ".[0].number"], capture_output=True, text=True).stdout.strip()
+          if existing:
+              subprocess.run(["gh", "issue", "comment", existing, "--body", body], check=True)
+          else:
+              subprocess.run(["gh", "issue", "create", "--title", title, "--body", body, "--label", "upstream"], check=False)
+          PY
+
   verify:
     needs: resolve
     runs-on: ubuntu-22.04   # free, unlimited on public repos

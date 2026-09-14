@@ -54,7 +54,28 @@ OUTPUT_GLOB = {
 REQUIRES_REGIONS = {"illumina-bam-hg38", "illumina-bam-hg38-y"}
 
 
-def rewrite_for_strhub(cmd: str, input_type: str | None) -> tuple[str, list[str]]:
+PLACEHOLDER_INPUT = re.compile(r"(?<![\w/.-])[<\[]?\w*(?:fastq|fq|bam|reads|input)\w*[>\]]?(?![\w/.-])", re.I)
+PLACEHOLDER_CONFIG = re.compile(r"(?<![\w/.-])[<\[]?\w*config\w*[>\]]?(?![\w/.-])", re.I)
+
+
+def resolve_placeholders(cmd: str, config_files: list[str], kit: str | None) -> tuple[str, list[str]]:
+    """READMEs write `str8rzr -c configFile fastqfile`; a stranger with the
+    repository in front of them substitutes a real config from the tree. When
+    the dataset names a kit (the NIST sample is ForenSeq), the matching config
+    is chosen; otherwise the first one, and the note says so."""
+    notes = []
+    new = cmd
+    if config_files:
+        chosen = next((c for c in config_files if kit and kit.lower() in c.lower()), config_files[0])
+        new, n = PLACEHOLDER_CONFIG.subn(chosen, new)
+        if n:
+            notes.append(f"'{cmd.split()[0]}' config placeholder resolved to {chosen}"
+                         + (f" (matches the dataset's {kit} kit)." if kit and kit.lower() in chosen.lower()
+                            else " (first configuration file in the repository; may not match the data)."))
+    return new, notes
+
+
+def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str] | None = None) -> tuple[str, list[str]]:
     """Point the README's command at STRhub's mounts. Returns (cmd, notes)."""
     ds = datasets_lib.resolve(input_type) if input_type else None
     notes: list[str] = []
@@ -62,11 +83,15 @@ def rewrite_for_strhub(cmd: str, input_type: str | None) -> tuple[str, list[str]
         return cmd, ["No STRhub reference dataset for the detected input type; the run "
                      "leg uses the command as documented."]
     canonical = ds.get("canonical_input")
-    new = cmd
+    new, notes = resolve_placeholders(cmd, config_files or [], ds.get("kit"))
     if canonical:
         new, n = INPUT_TOKEN.subn(f"/data/in/{canonical}", new)
-        if n:
-            notes.append(f"{n} input path(s) in the README command replaced with /data/in/{canonical}.")
+        n2 = 0
+        if n == 0:
+            new, n2 = PLACEHOLDER_INPUT.subn(f"/data/in/{canonical}", new)
+        if n or n2:
+            notes.append(f"{n or n2} input {'path' if n else 'placeholder'}(s) in the README command "
+                         f"replaced with /data/in/{canonical}.")
     if ds.get("reference_genome"):
         mount = ds["reference_genome"].get("mount_path", "/data/ref/hg38.fa")
         new, n = REF_TOKEN.subn(mount, new)
@@ -123,7 +148,7 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
         limitations.append("no_command")
         run_cmd = "true  # no command found in the README; nothing to run"
     else:
-        rewritten, notes = rewrite_for_strhub(best, input_type)
+        rewritten, notes = rewrite_for_strhub(best, input_type, proposal.get("config_files"))
         caveat_items += notes
         run_cmd = example_wrapper(rewritten, cwd)
         caveat_items.append("Run command: the README's own command, rewritten to STRhub's mounts; "
