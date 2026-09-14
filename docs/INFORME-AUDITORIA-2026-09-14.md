@@ -198,26 +198,27 @@ Tres páginas de entrada con un campo cada una, un catálogo curado con 5 herram
 10. Detección determinista de receta (`harness/detect_recipe.py`): método de instalación, datos de ejemplo, comando del README, Bioconda. Con tests sobre los 5 repos reales del catálogo.
 11. Compuerta `reproduces_own_example` implementada: correr el ejemplo documentado con los datos del repo y comparar con la salida documentada si existe.
 12. Los cuatro veredictos en `report.py` y en la web, con la lista de huecos del README cuando el veredicto es "no se pudo determinar" (reemplaza el checklist por palabras clave, que hoy da 5/5 a una línea de texto).
-13. Tests del motor: mergear `fix/bed-header-and-shared-cases`; pytest para `check_io`, `check_content`, `diagnose_log`, `prepare`, `report`; correrlos en el job `resolve`. Arreglar conteo TSV, falsos positivos, aviso obsoleto, `$GITHUB_OUTPUT`, `git ls-remote --`, `ref` como SHA.
+13. **Re-verificar cuando la tool cambia**: `upstream.py` ya detecta "N commits desde el ref"; falta que un release o tag nuevo en el repo dispare un ensayo con el ref nuevo y avise al dueño (así se atrapa el caso STRspy: la v2 publicada seguía llamando código de la v1). Publicar solo si el dueño confirma.
+14. Tests del motor: mergear `fix/bed-header-and-shared-cases`; pytest para `check_io`, `check_content`, `diagnose_log`, `prepare`, `report`; correrlos en el job `resolve`. Arreglar conteo TSV, falsos positivos, aviso obsoleto, `$GITHUB_OUTPUT`, `git ls-remote --`, `ref` como SHA.
 
 ### Fase 2. Las tres entradas (3 a 4 semanas)
 
-14. Página "Revisar para un paper": URL + tag, sin aprobación, informe privado compartible.
-15. Página "¿Es mi entorno o la tool?": búsqueda en catálogo, entorno y comando exactos, "pegá tu error" con `diagnose_log` (la web ya tiene el espejo `diagnostics.ts`).
-16. "Verificar mi tool" reducido a URL + ref + panel avanzado; "Publicar" solo tras ensayo verde; soporte de `strhub-verified.yml` en el repo del dueño como prueba de control (reemplaza la aprobación manual).
-17. Runner local `harness/run_local.py` para dueños.
+15. Página "Revisar para un paper": URL + tag, sin aprobación, informe privado compartible.
+16. Página "¿Es mi entorno o la tool?": búsqueda en catálogo, entorno y comando exactos, "pegá tu error" con `diagnose_log` (la web ya tiene el espejo `diagnostics.ts`).
+17. "Verificar mi tool" reducido a URL + ref + panel avanzado; "Publicar" solo tras ensayo verde; soporte de `strhub-verified.yml` en el repo del dueño como prueba de control (reemplaza la aprobación manual).
+18. Runner local `harness/run_local.py` para dueños.
 
 ### Fase 3. El bucle con el modelo y la deuda (2 a 3 semanas)
 
-18. Bucle autoconfig → ensayo → diagnóstico → corrección, hasta 5 intentos, solo sobre la receta; el humano ve la que funcionó.
-19. Un solo origen para las constantes espejo motor ↔ web, con test de igualdad.
-20. Partir `verified-submit-form.tsx`; polling con tope; borrar código muerto; consolidar renders y etiquetas del motor; README, RUNBOOK, `datasets/README.md` y `download.sh` al día.
+19. Bucle autoconfig → ensayo → diagnóstico → corrección, hasta 5 intentos, solo sobre la receta; el humano ve la que funcionó.
+20. Un solo origen para las constantes espejo motor ↔ web, con test de igualdad.
+21. Partir `verified-submit-form.tsx`; polling con tope; borrar código muerto; consolidar renders y etiquetas del motor; README, RUNBOOK, `datasets/README.md` y `download.sh` al día.
 
 ### Fase 4. Lanzamiento público
 
-21. Catálogo consolidado: una entrada por herramienta, variantes por kit con `tool.variant`; `maintainer` y `contact` completos.
-22. `VERIFIED_PUBLIC = true`; anuncio con las tres entradas y el caso STRspy.
-23. Invitar a 5 a 10 mantenedores con la receta ya armada para que solo confirmen, y a 2 o 3 editores de revistas del área para probar la entrada de revisores.
+22. Catálogo consolidado: una entrada por herramienta, variantes por kit con `tool.variant`; `maintainer` y `contact` completos.
+23. `VERIFIED_PUBLIC = true`; anuncio con las tres entradas y el caso STRspy.
+24. Invitar a 5 a 10 mantenedores con la receta ya armada para que solo confirmen, y a 2 o 3 editores de revistas del área para probar la entrada de revisores.
 
 ### Después
 
