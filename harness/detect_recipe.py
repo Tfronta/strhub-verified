@@ -394,6 +394,21 @@ def readme_gaps(readme_name: str | None, build: dict, commands: list[dict],
             "sufficient_to_attempt": build["method"] != "unknown" and bool(commands)}
 
 
+def propose_example(commands: list[dict], tree_paths: list[str], examples: list[dict]) -> dict | None:
+    """The manifest `example` block, when the README shows a command that runs on
+    data the repository ships. That is the whole condition: a command whose
+    input path exists in the tree is one a stranger can run as written."""
+    tree = set(tree_paths)
+    example_paths = {e["path"] for e in examples}
+    for c in commands:
+        tokens = [t.strip("'\"<>()") for t in c["cmd"].replace("=", " ").split()]
+        refs = [t for t in tokens if t in tree or t.lstrip("./") in tree]
+        if any(r.lstrip("./") in example_paths for r in refs):
+            return {"cmd": c["cmd"], "cwd": "/opt/tool", "source": "detected",
+                    "inputs_in_repo": sorted({r.lstrip("./") for r in refs})}
+    return None
+
+
 def generate_dockerfile(slug: str, ref: str, build: dict) -> str | None:
     """A pinned environment for the methods STRhub can template. None when the
     repository ships its own Dockerfile (used as-is) or nothing was detected."""
@@ -459,6 +474,7 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         "input_type": input_type,
         "output": output,
         "readme": rd,
+        "example": propose_example(commands, paths, examples),
         "dockerfile": generate_dockerfile(slug, ref, build),
     }
 

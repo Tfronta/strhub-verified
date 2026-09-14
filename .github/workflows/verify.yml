@@ -405,6 +405,39 @@ jobs:
           MANIFEST: ${{ steps.m.outputs.manifest }}
         run: python harness/check_content.py "$MANIFEST" work/out_own --json content_own.json
 
+      # --- Leg: the tool's OWN example (the reviewer's gate) ------------------
+      # The README's command on the repository's data, inside the image, with
+      # nothing from STRhub. prepare.py wraps it so that everything it creates
+      # is copied to /data/out; check_example.py decides whether that is the
+      # documented output. Independent of the other legs: a tool whose Quick
+      # Start works has earned that sentence even if our reference data did
+      # not suit it, and vice versa.
+      - id: runs_example
+        name: "Reproduces own example"
+        if: steps.m.outputs.example_ready == '1'
+        continue-on-error: true
+        timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
+        env:
+          EXAMPLE_CMD: ${{ steps.m.outputs.example_cmd }}
+        run: |
+          set -o pipefail
+          mkdir -p work/out_example
+          REF_MOUNT=""
+          [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
+          docker run --rm $DOCKER_HARDENING \
+            -v "$PWD/work/out_example:/data/out" \
+            $REF_MOUNT \
+            toolimg:ci \
+            "$EXAMPLE_CMD" 2>&1 | tee work/log_example.txt
+
+      - id: example
+        name: "Example produced its output"
+        if: steps.m.outputs.example_ready == '1'
+        continue-on-error: true
+        env:
+          MANIFEST: ${{ steps.m.outputs.manifest }}
+        run: python harness/check_example.py "$MANIFEST" work/out_example --json example.json
+
       # --- Matrix leg: external typed dataset (N/A if no compatible dataset) --
       - id: runs_ext
         name: "Runs (external data)"
@@ -464,6 +497,7 @@ jobs:
         env:
           OWN_READY: ${{ steps.m.outputs.own_ready }}
           EXT_READY: ${{ steps.m.outputs.external_ready }}
+          EXAMPLE_READY: ${{ steps.m.outputs.example_ready }}
           INPUT_TYPE: ${{ steps.m.outputs.input_type }}
           DATASET_NAME: ${{ steps.m.outputs.dataset_name }}
           FIXTURE_SOURCE: ${{ steps.m.outputs.fixture_source }}
@@ -498,6 +532,16 @@ jobs:
               "content": bool(ext_ct and ext_ct.get("passed")),
               "passed": bool(ext_io and ext_io.get("passed")),
           })
+          ex = load("example.json")
+          legs.append({
+              "leg": "example", "label": "Tool's own example",
+              "available": os.environ.get("EXAMPLE_READY") == "1",
+              "io": bool(ex and ex.get("passed")),
+              "content": None,
+              "passed": bool(ex and ex.get("passed")),
+              "matches_expected": (ex or {}).get("checks", {}).get("matches_expected"),
+              "produced_count": (ex or {}).get("produced_count"),
+          })
           pathlib.Path("matrix.json").write_text(json.dumps(legs, indent=2))
           print(json.dumps(legs, indent=2))
           PY
@@ -517,6 +561,7 @@ jobs:
           INSTALLS_OUTCOME: ${{ steps.installs.outcome }}
           RUNS_OUTCOME: ${{ steps.runs.outcome }}
           RUNS_EXT_OUTCOME: ${{ steps.runs_ext.outcome }}
+          EXAMPLE_OUTCOME: ${{ steps.runs_example.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           # Read-only, for the upstream check below. Raises the API allowance
           # from 60/hour per runner IP to 5,000, which matters because public
@@ -550,6 +595,10 @@ jobs:
             --supported-loci "$SUPPORTED_LOCI" \
             --check-upstream \
             --mode "$MODE" \
+            --example-runs "$EXAMPLE_OUTCOME" \
+            --example example.json \
+            --log-example work/log_example.txt \
+            --recipe-proposal recipe_proposal.json \
             --run-url "$RUN_URL"
 
       - name: Generate PDF report
