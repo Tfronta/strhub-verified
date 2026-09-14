@@ -238,8 +238,9 @@ build time).
    fixture BYOR sea público; si el repo es nuevo, queda **pendiente de aprobación**.
 3. Admin aprueba el repo nuevo: `POST /api/verify/approve` con `Authorization:
    Bearer <jwt>` y `{ "repo": "https://github.com/owner/tool" }`. El autor reenvía.
-4. Repos aprobados: la web commitea `tools/<slug>/{manifest.yml,Dockerfile}` y
-   dispara `verify.yml` con un `dispatch_id` único.
+4. Repos aprobados: la web commitea `tools/<slug>/{manifest.yml,Dockerfile}` (y
+   `Dockerfile.fallback` si la receta trae plan B) y dispara `verify.yml` con un
+   `dispatch_id` único.
 5. `run-name` del workflow incluye el `dispatch_id`; `GET /api/verify/status?
    dispatchId=` lo encuentra filtrando los runs y muestra el progreso en vivo.
 
@@ -337,6 +338,17 @@ por tipo (excluye vendored y salidas), comandos del README (continuaciones
 unidas; marcadores como `fastqfile` cuentan como entrada), tipo de entrada más
 probable con sus señales y avisos (hg19, BAM/FASTQ ambiguo), formato de salida,
 Dockerfile generado, y **los huecos del README** (qué no dice).
+
+**Entorno: primero el commit fijado, la imagen publicada como plan B.** Si el
+repo se puede compilar (`CMakeLists.txt`, `Makefile`, `setup.py`, `environment.yml`…),
+la receta propuesta compila **ese commit**: lo que el informe nombra es lo que corre.
+Si además el README apunta a una imagen publicada (Docker Hub) o a un paquete de
+Bioconda, eso queda como `environment.fallback` (`Dockerfile.fallback`): la compuerta
+Installs lo construye **solo si** falla el build del commit fijado. Un informe que
+corrió sobre el plan B lo dice en todos lados (`environment.fallback_used`, la línea
+"Environment", el veredicto, "Why the pinned commit did not build" con el log del
+build que falló, el PDF). Si el repo trae su propio Dockerfile, no hay plan B. Si no
+hay nada que compilar, la imagen publicada es el entorno principal, como antes.
 
 `harness/propose_manifest.py proposal.json --slug X` lo convierte en receta:
 comando del README reescrito a los mounts de STRhub (`/data/in/sample.fastq`,
