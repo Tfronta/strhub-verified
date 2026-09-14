@@ -58,10 +58,12 @@ def test_strsearch_ships_dockerfile_and_examples_and_warns_about_hg19():
 
 def test_gangstr_installs_from_bioconda_and_reads_the_full_command():
     r = _detect("gangstr")
-    # The README says `conda install -c bioconda -c conda-forge gangstr`; that
-    # outranks compiling the CMake tree, which needs autoreconf for htslib.
-    assert r["build"]["method"] == "bioconda" and r["build"]["package"] == "gangstr"
-    assert "micromamba install" in r["dockerfile"]
+    # The README points at a published Docker image (gymreklab/str-toolkit)
+    # and installs from Bioconda; both outrank compiling the CMake tree, and
+    # the image, being the author's own environment, comes first.
+    assert r["build"]["method"] == "docker_image" and r["build"]["image"] == "gymreklab/str-toolkit"
+    assert [c["method"] for c in r["build"]["candidates"]][:2] == ["docker_image", "bioconda"]
+    assert "FROM gymreklab/str-toolkit" in r["dockerfile"]
     assert r["commands"][0]["invokes"] == "GangSTR"
     # One option per line in the README, no backslashes: all of them are kept.
     assert "--regions" in r["commands"][0]["cmd"] and "--out" in r["commands"][0]["cmd"]
@@ -107,3 +109,15 @@ def test_generated_dockerfiles_never_mask_a_failed_clone():
             # A bare `|| true` at the end of a RUN chain hides every earlier
             # failure in the chain. Only a parenthesised step may be tolerated.
             assert not re.search(r"&&\s+[^()\n]*\|\|\s*true\s*$", line), (name, line)
+
+
+def test_a_published_docker_image_in_the_readme_is_the_environment():
+    readme = "## Install\n\nA Docker image is available at [x](https://hub.docker.com/r/gymreklab/str-toolkit).\n\n```\nGangSTR --bam file.bam --ref ref.fa --regions r.bed --out o\n```\n"
+    r = dr.detect("gymreklab/gangstr", "abc", {"tree": [{"path": "CMakeLists.txt", "type": "blob", "size": 1}], "truncated": False}, readme, "README.md")
+    assert r["build"]["method"] == "docker_image" and r["build"]["image"] == "gymreklab/str-toolkit"
+    assert r["dockerfile"].startswith("# Proposed") and "FROM gymreklab/str-toolkit" in r["dockerfile"]
+
+
+def test_source_builds_bring_the_autotools():
+    df = _detect("hipstr")["dockerfile"]
+    assert "autoconf automake libtool" in df
