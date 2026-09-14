@@ -31,6 +31,9 @@ SCOPE = ("Executed end-to-end in the stated environment with output in the "
 
 # Highest gate cleared, in order. The badge reflects the furthest green gate.
 LADDER = ["available", "installs", "runs", "io", "content"]
+#: Written into the build log by the Installs step between the attempt that
+#: failed and the plan-B build that followed it (see verify.yml).
+FALLBACK_MARKER = "==== STRhub: the build above failed; building the fallback environment"
 LABELS = {"available": "Available", "installs": "Installs",
           "runs": "Runs", "io": "Runs + Expected IO",
           "content": "Runs + Plausible output"}
@@ -134,6 +137,45 @@ def _verdict_md(report: dict) -> list[str]:
     return lines
 
 
+def _fallback_reason(env: dict) -> str:
+    fb = env.get("fallback") or {}
+    return fb.get("reason") or "the fallback environment the manifest declares"
+
+
+def _environment_line(env: dict, code=lambda t: f"`{t}`") -> str:
+    """'ubuntu-22.04 (`Dockerfile`)', plus plan B when that is what ran.
+    `code` wraps a file name: backticks for markdown, <code> for HTML."""
+    line = f"{', '.join(env.get('os', []))} ({code(env['dockerfile'])})"
+    if env.get("fallback_used"):
+        fb = env.get("fallback") or {}
+        line += (f" — plan B: {_fallback_reason(env)} ({code(fb.get('dockerfile', 'Dockerfile.fallback'))}), "
+                 "after the build from the pinned commit failed")
+    return line
+
+
+def _install_heading(inst: dict) -> str:
+    return ("Why the pinned commit did not build" if inst.get("fallback_used")
+            else "Why the environment did not build")
+
+
+def _install_lead(inst: dict, env: dict) -> str:
+    if inst.get("fallback_used"):
+        return (f"The container could not be built from the declared install steps at the "
+                f"pinned commit; {_fallback_reason(env)} was built instead, and every gate "
+                "below ran on it. What ran is the version that environment holds, not "
+                "necessarily the pinned commit.")
+    return ("The container could not be built from the declared install steps, so "
+            "nothing below the Installs gate ran.")
+
+
+def _primary_build_log(path: str) -> str:
+    """The build log up to the plan-B marker: the attempt on the pinned commit."""
+    p = pathlib.Path(path)
+    if not p.exists():
+        return ""
+    return p.read_text(errors="replace").split(FALLBACK_MARKER, 1)[0]
+
+
 def _summary_md(report: dict, slug: str) -> str:
     """A human-readable attestation summary: what STRhub shows the user."""
     tool = report["tool"]
@@ -147,8 +189,7 @@ def _summary_md(report: dict, slug: str) -> str:
         *_verdict_md(report),
         "",
         f"- Source: `{report['source']['repo']}` @ `{report['source']['ref_resolved']}`",
-        f"- Environment: {', '.join(report['environment'].get('os', []))} "
-        f"(`{report['environment']['dockerfile']}`)",
+        f"- Environment: {_environment_line(report['environment'])}",
         f"- Generated: {report['generated']}",
     ]
     submitted_by = (report.get("submission") or {}).get("by")
@@ -176,9 +217,8 @@ def _summary_md(report: dict, slug: str) -> str:
     # than at the foot of a report about a run that never happened.
     inst = report.get("install_detail") or {}
     if inst.get("diagnostics"):
-        lines += ["", "## Why the environment did not build", "",
-                  "The container could not be built from the declared install "
-                  "steps, so nothing below the Installs gate ran.",
+        lines += ["", f"## {_install_heading(inst)}", "",
+                  _install_lead(inst, report["environment"]),
                   "",
                   diagnose_log.install_fault_sentence(inst.get("faults") or [], submitted_by),
                   "",
@@ -382,9 +422,8 @@ def _summary_html(report: dict, slug: str) -> str:
         log_link = (f'<p><a href="{esc(build_log)}">Full build output</a></p>'
                     if build_log else "")
         install_block = (
-            "<h2>Why the environment did not build</h2>"
-            "<p>The container could not be built from the declared install steps, "
-            "so nothing below the Installs gate ran.</p>"
+            f"<h2>{esc(_install_heading(inst))}</h2>"
+            f"<p>{esc(_install_lead(inst, report['environment']))}</p>"
             f"<p>{esc(diagnose_log.install_fault_sentence(inst.get('faults') or [], submitted_by))}</p>"
             "<table><thead><tr><th>What happened</th><th>Times</th>"
             "<th>Suggested fix</th></tr></thead>"
@@ -567,7 +606,7 @@ def _summary_html(report: dict, slug: str) -> str:
 <ul class="meta">
   <li>Variant: <code>{esc(slug)}</code></li>
   <li>Source: <code>{esc(report['source']['repo'])}</code> @ <code>{esc(report['source']['ref_resolved'])}</code></li>
-  <li>Environment: {esc(', '.join(report['environment'].get('os', [])))} (<code>{esc(report['environment']['dockerfile'])}</code>)</li>
+  <li>Environment: {_environment_line({**report['environment'], 'os': [esc(o) for o in report['environment'].get('os', [])]}, code=lambda t: f"<code>{esc(t)}</code>")}</li>
   <li>Generated: {esc(report['generated'])}</li>
   {submitted_li}
   {upstream_li}
@@ -617,6 +656,10 @@ def main() -> int:
                     help="path to captured stdout+stderr from external-data run")
     ap.add_argument("--log-build", default="",
                     help="path to captured output from the docker build (Installs)")
+    ap.add_argument("--environment-built", default="", choices=["", "primary", "fallback"],
+                    help="which Dockerfile produced the image the gates ran on: 'fallback' "
+                         "when the pinned commit did not build and the manifest's plan B "
+                         "(environment.fallback) was built instead")
     ap.add_argument("--check-upstream", action="store_true",
                     help="ask GitHub how far the pinned ref has fallen behind the "
                          "repository's default branch, and whether it still exists")
@@ -741,7 +784,11 @@ def main() -> int:
         # handles by naming nobody.
         "submission": m.get("submission"),
         "source": {**m["source"], "ref_resolved": args.ref or m["source"]["ref"]},
-        "environment": m["environment"],
+        # Plan B is recorded on the environment itself: a reader of the JSON
+        # must not have to open the build log to learn that what ran was not
+        # built from the pinned commit.
+        "environment": ({**m["environment"], "fallback_used": True}
+                        if args.environment_built == "fallback" else m["environment"]),
         "generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "ci_run": args.run_url,
         "gates": gates,
@@ -792,7 +839,13 @@ def main() -> int:
             "reference sample stood in."
         )
     env_source = (m.get("environment") or {}).get("source")
-    if env_source == "generated":
+    if args.environment_built == "fallback":
+        needed.append(
+            f"A container environment: the build from the pinned commit failed, so "
+            f"{_fallback_reason(m['environment'])} was built instead. What ran is the "
+            "version that environment holds, not necessarily the pinned commit."
+        )
+    elif env_source == "generated":
         needed.append(
             "A container environment, built from the tool's declared install "
             "steps rather than from a recipe the repository ships."
@@ -846,7 +899,20 @@ def main() -> int:
     # happened. It is its own thing, and only meaningful when Installs failed:
     # a warning in a build that succeeded is not news.
     install_detail = None
-    if args.log_build and not gates["installs"]:
+    if args.log_build and args.environment_built == "fallback" and gates["installs"]:
+        # The gate passed on plan B; why the pinned commit did not build is
+        # still the finding a maintainer wants, so the first attempt's log is
+        # diagnosed on its own, cut at the marker the Installs step wrote.
+        issues = diagnose_log.diagnose(_primary_build_log(args.log_build))
+        install_detail = {
+            "passed": True,
+            "fallback_used": True,
+            "diagnostics": issues,
+            "faults": sorted({
+                f for f in (diagnose_log.fault_of(i["id"]) for i in issues) if f
+            }),
+        }
+    elif args.log_build and not gates["installs"]:
         issues = diagnose_log.diagnose_file(args.log_build)
         install_detail = {
             "passed": False,
@@ -858,6 +924,7 @@ def main() -> int:
                 f for f in (diagnose_log.fault_of(i["id"]) for i in issues) if f
             }),
         }
+    if install_detail is not None:
         report["install_detail"] = install_detail
 
     diagnostics = {}
@@ -891,6 +958,7 @@ def main() -> int:
             proposal = None
     report["verdict"] = verdict_lib.decide(
         gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
+        fallback_used=args.environment_built == "fallback",
     )
 
     (reports / f"{slug}.json").write_text(json.dumps(report, indent=2))
