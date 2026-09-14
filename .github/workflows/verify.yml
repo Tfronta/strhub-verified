@@ -57,6 +57,21 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # The harness is what every attestation rests on, so its tests gate every
+      # run: a regression in a gate check or a diagnostic rule must stop here,
+      # before it can be published as a finding about someone's software.
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install -q pyyaml jsonschema pytest
+      - name: Harness tests
+        run: python -m pytest harness/tests -q
+      # The BED parser is mirrored in the web form; the shared cases catch the
+      # two drifting apart, which otherwise shows up as a run that aborts in
+      # pre-flight with no report.
+      - name: Shared BED cases
+        run: python harness/test_validate_bed.py
+
       # Before it is trusted to say what this run examines. A picker that quietly
       # went back to answering "the default" would turn every PR green again, and
       # nothing downstream would notice — the whole check would just stop meaning
