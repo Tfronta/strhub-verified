@@ -1,0 +1,43 @@
+{
+  "_about": "Hand-checked against https://github.com/Ahhgust/STRaitRazor at b618e93 on 2026-09-15.",
+  "documented_inputs": {
+    "value": [
+      "fastq"
+    ],
+    "where": "README.md:82,91,149 — fastq files, plain or gzipped; `zcat file.fastq.gz | str8rzr -c configFile`"
+  },
+  "documented_platform": {
+    "value": "illumina",
+    "where": "README.md:19 — Forenseq.config (a Verogen/Illumina kit)"
+  },
+  "author_recommends_input": {
+    "value": null,
+    "where": "no line recommends one input kind over another"
+  },
+  "ships_example_data": {
+    "value": false,
+    "where": "tree: 34 blobs, no reads, no BED, no example directory"
+  },
+  "ships_example_reads": {
+    "value": false,
+    "where": "tree: none"
+  },
+  "install_method": {
+    "value": "make",
+    "where": "tree: Makefile"
+  },
+  "readme_command_program": {
+    "value": "str8rzr",
+    "where": "README.md:149"
+  },
+  "published_image": {
+    "value": null,
+    "where": "no `docker pull` / hub.docker.com in the README"
+  },
+  "known_issue_headings": {
+    "value": [
+      "known issues"
+    ],
+    "where": "README.md:114 — '#### known issues<br>' (Windows 7 + Xeon)"
+  }
+}

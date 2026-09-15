@@ -1,0 +1,41 @@
+{
+  "_about": "Hand-checked against https://github.com/gymreklab/gangstr at 6ea9b2b on 2026-09-15.",
+  "documented_inputs": {
+    "value": [
+      "bam"
+    ],
+    "where": "README.md:6 — 'GangSTR takes aligned reads (BAM) ... as input'; README.md:101 — `GangSTR --bam file.bam`"
+  },
+  "documented_platform": {
+    "value": "illumina",
+    "where": "README.md:168 — 'a BAM file of short read alignments'"
+  },
+  "author_recommends_input": {
+    "value": null,
+    "where": "no line recommends one input kind over another"
+  },
+  "ships_example_data": {
+    "value": true,
+    "where": "tree: test/alignment/*.sorted.bam (17 files), test/HTT.bed, experimental/supplement_bed/hg38_codis.bed"
+  },
+  "ships_example_reads": {
+    "value": true,
+    "where": "tree: test/alignment/nc10_25.sorted.bam and 16 more"
+  },
+  "install_method": {
+    "value": "cmake",
+    "where": "tree: CMakeLists.txt"
+  },
+  "readme_command_program": {
+    "value": "GangSTR",
+    "where": "README.md:101"
+  },
+  "published_image": {
+    "value": "gymreklab/str-toolkit",
+    "where": "README.md:18 — 'A Docker with GangSTR ... is available at gymreklab/str-toolkit'"
+  },
+  "known_issue_headings": {
+    "value": [],
+    "where": "no such section"
+  }
+}
