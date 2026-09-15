@@ -105,3 +105,25 @@ def test_a_recipe_without_a_plan_b_declares_none(tmp_path):
     assert "fallback" not in m["environment"]
     assert r["dockerfile_fallback"] is None
 
+
+def test_strspy_runs_on_the_input_type_strhub_has_data_for(tmp_path):
+    # The README names FASTQ first and STRhub has ONT reads only as hg38 BAM:
+    # the run uses the BAM and the caveat says so. Nothing is forced past
+    # that — the documented command runs as documented, config files and all.
+    r = pm.build(_proposal("strspy"), "strspy-trial")
+    m = _valid(r["manifest_yml"], tmp_path)
+    assert m["inputs"]["type"] == "ont-bam-hg38"
+    assert any(c.startswith("Input: the README suggests ont-fastq first") for c in m["caveats"]["items"])
+    assert "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt" in m["run"]["cmd"]
+    assert "no_reference_dataset" not in r["limitations"]
+
+
+def test_nothing_to_run_on_is_a_limitation_not_a_failure(tmp_path):
+    proposal = _proposal("strspy")
+    proposal["input_type"] = {"best": "ont-fastq", "candidates": ["ont-fastq"], "signals": {}, "warnings": []}
+    proposal["example"] = None
+    r = pm.build(proposal, "strspy-trial")
+    m = _valid(r["manifest_yml"], tmp_path)
+    assert m["inputs"] == {"type": "ont-fastq"}
+    assert "no_reference_dataset" in r["limitations"]
+
