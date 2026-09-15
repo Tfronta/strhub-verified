@@ -19,8 +19,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-14T20:12:55+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/34891329012",
+  "generated": "2026-09-15T19:53:01+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016057251",
   "gates": {
     "available": true,
     "installs": true,
@@ -300,12 +300,24 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-14T20:12:55+00:00",
+    "checked": "2026-09-15T19:53:01+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
     "status": "identical",
     "behind_by": 0
+  },
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 10,
+    "examples": [
+      "test/HTT.bed",
+      "test/alignment/nc190_25.sorted.bam",
+      "test/alignment/nc10_25.sorted.bam",
+      "test/alignment/nc30_15.sorted.bam",
+      "experimental/supplement_bed/hg38_codis.bed"
+    ]
   },
   "logs": {
     "own": "gangstr-v2-5.log-own.txt",

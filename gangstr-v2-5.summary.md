@@ -6,10 +6,10 @@
 
 - Source: `https://github.com/gymreklab/gangstr` @ `6ea9b2b8daca51dcab1f0e46210622b94b52ff17`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-14T20:12:55+00:00
+- Generated: 2026-09-15T19:53:01+00:00
 - Submitted by: a third party — not the tool's maintainer
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/34891329012
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35016057251
 
 ## Gates
 
