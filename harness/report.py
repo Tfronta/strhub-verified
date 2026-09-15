@@ -231,6 +231,19 @@ def _summary_md(report: dict, slug: str) -> str:
         if build_log:
             lines += ["", f"Full build output: [`{build_log}`]({build_log})"]
 
+    # The author's own words about their own software, before any of STRhub's
+    # findings: a run that stops where the README says it stops is not news,
+    # and a reader must be able to see that without opening the repository.
+    known = report.get("author_known_issues") or []
+    if known:
+        lines += ["", "## What the author documents as a known issue", "",
+                  "Quoted from the repository's README at the verified commit. "
+                  "STRhub did not establish any of this by running the tool; it is "
+                  "the author's own note about their own software."]
+        for k in known:
+            quote = k["text"] + ("…" if k.get("truncated") else "")
+            lines += ["", f"**{k['heading']}** (README line {k['line']})", "", f"> {quote}"]
+
     # Content highlights (the genotype-plausibility evidence), if available.
     outs = report.get("content_detail", {}).get("outputs", [])
     stats = outs[0].get("stats") if outs and isinstance(outs[0], dict) else None
@@ -430,6 +443,19 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<tbody>{irows}</tbody></table>{log_link}"
         )
 
+    known_block = ""
+    known = report.get("author_known_issues") or []
+    if known:
+        quotes = "".join(
+            f"<p><b>{esc(k['heading'])}</b> (README line {esc(k['line'])})</p>"
+            f"<blockquote>{esc(k['text'])}{'…' if k.get('truncated') else ''}</blockquote>"
+            for k in known)
+        known_block = (
+            "<h2>What the author documents as a known issue</h2>"
+            "<p>Quoted from the repository's README at the verified commit. STRhub did "
+            "not establish any of this by running the tool; it is the author's own note "
+            "about their own software.</p>" + quotes)
+
     content_block = ""
     outs = report.get("content_detail", {}).get("outputs", [])
     stats = outs[0].get("stats") if outs and isinstance(outs[0], dict) else None
@@ -616,6 +642,7 @@ def _summary_html(report: dict, slug: str) -> str:
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table>
 {install_block}
+{known_block}
 {content_block}
 {matrix_block}
 {regions_block}
@@ -870,6 +897,13 @@ def main() -> int:
     # certificate used to state "This tool does not include its own demo or
     # test data" unconditionally — false for STRsearch, which ships 35 files
     # including example/test_data/test.bam.
+    # What the author already wrote down as wrong or incomplete, quoted from
+    # their README at the pinned ref. STRspy documents that its wrapper can
+    # exit without doing any work; a report on a run that died in that wrapper
+    # said nothing about it, because nobody carried the section out of the
+    # README. A reader deciding whether a failure is news needs this first.
+    if proposal is not None and proposal.get("known_issues"):
+        report["author_known_issues"] = proposal["known_issues"]
     if proposal is not None:
         examples = proposal.get("example_data") or []
         report["repo_test_data"] = {

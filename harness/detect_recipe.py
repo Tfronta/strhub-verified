@@ -439,6 +439,54 @@ def detect_output(readme: str, commands: list[dict]) -> dict:
     return {"format": best, "signals": dict(scores)}
 
 
+#: Headings under which an author writes down what they already know is wrong
+#: or incomplete. Their own words about their own software: the safest thing a
+#: report can carry, and the thing a reader most needs when a run stops.
+KNOWN_ISSUE_HEADINGS = re.compile(
+    r"known[\s-]*(?:bugs?|issues?|problems?|limitations?)|limitations?|caveats?"
+    r"|troubleshooting|gotchas?|warnings?", re.I)
+
+
+def author_known_issues(readme: str) -> list[dict]:
+    """Sections where the author documents a known bug or limitation, quoted.
+
+    STRspy's README has a "Known bug" section saying its wrapper can exit
+    without doing any work and that the user should choose the Normal version.
+    STRhub read that text (it travels in readme_text) and did nothing with it,
+    so a report on a run that died in that very wrapper never mentioned that
+    the author had written the problem down. A quote needs no heuristic to
+    justify it: it is what the author said, at the ref the report names.
+    """
+    out: list[dict] = []
+    lines = readme.splitlines()
+    for i, line in enumerate(lines):
+        m = re.match(r"^(#{1,4})\s+(.+?)\s*$", line)
+        if not m or not KNOWN_ISSUE_HEADINGS.search(m.group(2)):
+            continue
+        depth = len(m.group(1))
+        body: list[str] = []
+        for nxt in lines[i + 1:]:
+            h = re.match(r"^(#{1,4})\s+", nxt)
+            if h and len(h.group(1)) <= depth:
+                break
+            body.append(nxt)
+        text = " ".join(" ".join(body).split())
+        if len(text) < 20:
+            continue
+        out.append({
+            "heading": m.group(2).strip(),
+            # The line number so a reader can open the README at it, and a
+            # bounded quote so a long troubleshooting chapter cannot take over
+            # the report.
+            "line": i + 1,
+            "text": text[:600],
+            "truncated": len(text) > 600,
+        })
+        if len(out) >= 4:
+            break
+    return out
+
+
 def readme_gaps(readme_name: str | None, build: dict, commands: list[dict],
                 input_type: dict, output: dict, examples: list[dict]) -> dict:
     """What a stranger needs and did not find. Each is a fact about the README,
@@ -581,6 +629,9 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         # The first part of the README travels with the proposal so the regions
         # library can read how the tool describes its regions file. Bounded.
         "readme_text": readme[:20_000],
+        # What the author already wrote down as wrong or incomplete. Quoted, so
+        # the report carries the author's own words rather than an inference.
+        "known_issues": author_known_issues(readme),
         "example": propose_example(commands, paths, examples),
         "dockerfile": generate_dockerfile(slug, ref, build),
         # Plan B, built only if the one above fails: the published environment
