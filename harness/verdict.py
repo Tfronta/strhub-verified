@@ -37,12 +37,19 @@ TITLES = {
 
 
 LIMITATION_TEXT = {
-    "regions_format_guessed": "the tool needs a regions file and STRhub does not know its format; "
-                              "a plain chrom/start/end/name file was tried",
+    # "The tool needs a regions file" was never established by reading
+    # anything: it comes from REQUIRES_REGIONS, which is a property of STRhub's
+    # own reference data — a slice around panel loci rather than a whole
+    # genome. The requirement is ours; only the layout is about the tool, and
+    # that rests on STRhub's table of program names.
+    "regions_format_guessed": "this run had to supply a regions file, because STRhub's reference "
+                              "data covers a panel of loci rather than a whole genome, and STRhub "
+                              "records no layout for this program; a plain chrom/start/end/name "
+                              "file was tried",
     "no_command": "no command line invoking the tool was found in the README",
     "install_method_unknown": "no install method was found in the repository",
-    "regions_format_unknown": "the tool needs a regions file in its own format, which STRhub "
-                              "does not yet generate for it",
+    "regions_format_unknown": "this run had to supply a regions file and STRhub could not write "
+                              "one in a layout it records for this program",
     "no_reference_dataset": "STRhub holds no reference sample of the kind this tool reads and "
                             "the repository ships no example to run, so nothing was executed",
 }
@@ -54,19 +61,28 @@ LIMITATION_TEXT = {
 #: web renders these as two buttons; the codes are the contract.
 BLOCKERS = {
     "regions_format_unknown": {
-        "what": "The tool needs a regions file (BED) in its own format. STRhub has ready-made files "
-                "for the HipSTR, GangSTR and STRsearch layouts and a plain BED; none of them is known "
-                "to fit this tool, and the repository ships none for hg38 covering forensic STR loci.",
+        # Two claims were folded in here that nobody had checked: that the tool
+        # requires a per-tool BED (STRhub's reference data does), and that the
+        # repository ships no hg38 forensic BED (never looked — STRsearch ships
+        # example/ref_test.bed). What is left is what STRhub did and what
+        # STRhub knows, which is enough to act on.
+        "what": "This run had to supply a regions file (BED): STRhub's reference data covers a panel "
+                "of forensic STR loci, not a whole genome. STRhub writes the HipSTR, GangSTR and "
+                "STRsearch layouts and a plain BED, and records none of them for this program.",
         "self_fix": "upload_regions",
         "self_fix_text": "Pick one of STRhub's ready-made regions files, or provide the tool's own, and try again.",
         "ask_owner": {
             "title": "Publish a regions file (hg38) for forensic STR loci",
-            "body": "STRhub Verified tried to run the tool in a clean environment on a public hg38 "
-                    "reference sample, but could not: the tool needs a regions file in its own "
-                    "format and the repository does not ship one for hg38 covering forensic STR "
-                    "loci (CODIS and the usual expanded panel). Publishing one in the repository "
-                    "would let anyone run the documented example and let STRhub verify the tool "
-                    "automatically.",
+            # This text is posted to the author's own issue tracker by whoever
+            # reads the report, so every sentence in it has to be one STRhub
+            # can stand behind. It no longer says what the repository lacks.
+            "body": "STRhub Verified ran the tool in a clean environment on a public hg38 reference "
+                    "sample covering forensic STR loci (CODIS and the usual expanded panel). It had "
+                    "to supply a regions file (BED) and could not write one in a layout it knows "
+                    "this tool reads. If the tool reads the HipSTR, GangSTR or STRsearch layout, "
+                    "saying so in the README would be enough; publishing a regions file for hg38 "
+                    "forensic loci in the repository would also let anyone run the documented "
+                    "example.",
         },
     },
     "no_reference_dataset": {

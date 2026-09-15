@@ -116,3 +116,17 @@ def test_the_two_sentences_that_shipped_would_be_caught_today():
         assert FINDING.search(text), text
         assert any(re.search(p, text, re.I) for p, _ in claims.FORBIDDEN), text
         assert fingerprint(text) not in claims.REGISTER, text
+
+
+def test_strhub_s_own_lookup_table_may_not_speak_as_a_fact_about_the_tool():
+    """The five that were left after the audit, and the shape they had.
+
+    Each rested on nothing but STRhub's table of program names, published as a
+    property of somebody's software. They are gone, the source that held them
+    is refused, and the two phrasings break the build.
+    """
+    assert "strhub-table" not in claims.VALID_SOURCES
+    assert not [fp for fp, (_, src) in claims.REGISTER.items() if src == "strhub-table"]
+    for text in ["the tool is known to read this format",
+                 "The tool needs a regions file (BED) in its own format."]:
+        assert any(re.search(p, text, re.I) for p, _ in claims.FORBIDDEN), text
