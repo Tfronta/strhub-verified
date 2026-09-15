@@ -53,13 +53,20 @@ Las 56 están registradas en `harness/claims.py` con la fuente que las sostiene:
 | `run` | 6 | la propia configuración de STRhub |
 | `gates` | 6 | el resultado de las compuertas de esta corrida |
 | `log` | 5 | una línea que la herramienta imprimió |
-| `strhub-table` | 5 | conocimiento de STRhub — **nuestra** afirmación, no del autor |
+| `strhub-table` | ~~5~~ 0 | conocimiento de STRhub — retirada, ver abajo |
 | `policy` | 2 | alcance de STRhub, no afirma nada sobre la tool |
 | `advice` | 1 | instrucción al lector |
 
 Por módulo: `verdict.py` 19, `diagnose_log.py` 16, `propose_manifest.py` 9, `report.py` 7, `generate_pdf.py` 3, `certificate_text.py` 2.
 
-**Lo que la auditoría dejó ver.** Ninguna de las 56 quedó sin fuente, pero cinco descansan en `strhub-table`: conocimiento nuestro presentado como hecho sobre la herramienta ("the tool is known to read this format"). Son legítimas, y son exactamente el lugar donde volvería a pasar lo de STRspy: nadie leyó el repositorio para decirlas. Reescribirlas para que se note de quién es la afirmación es la primera tarea de la Fase C.
+**Lo que la auditoría dejó ver, y ya se corrigió.** Ninguna de las 56 quedó sin fuente, pero cinco descansaban en `strhub-table`: conocimiento nuestro presentado como hecho sobre la herramienta. Dos problemas distintos, los dos arreglados el 15 de septiembre:
+
+- *"the tool is known to read this format"* — lo sabe **nuestra tabla** de nombres de programa, no el repositorio. Ahora: *"STRhub records the hipstr layout for a program of this name"*.
+- *"the tool needs a regions file in its own format"* — la necesidad es **del dato de referencia de STRhub**, que cubre un panel de loci y no un genoma entero. Ninguna lectura del repositorio la establece. Ahora: *"this run had to supply a regions file, because STRhub's reference data covers a panel of loci"*.
+
+Y una tercera que viajaba con ellas: el issue pre-escrito que el lector postea en el repositorio del autor afirmaba *"the repository does not ship one for hg38 covering forensic STR loci"* — nadie lo había mirado, y STRsearch trae `example/ref_test.bed`. Esa frase se fue: el borrador ahora dice qué hizo STRhub y qué le alcanzaría, sin afirmar qué le falta al repositorio.
+
+Dichas así son **observaciones, no hallazgos**: el registro bajó de 56 a 54 entradas y `strhub-table` quedó **retirada como fuente válida**, más dos frases nuevas en la lista de prohibidas (`the tool is known to`, `the tool needs a regions file`) para que la forma no vuelva.
 
 Las que ya estaban bien, y conviene no romper: los 16 diagnósticos de `diagnose_log` citan la línea que la herramienta imprimió, con ejemplos; los 14 de `manifest` repiten lo que el envío declaró.
 
@@ -113,6 +120,6 @@ Nada de lo anterior alcanza si el lector no puede chequear:
 
 ## Orden sugerido
 
-~~A~~ → ~~D2~~ → **C1** (las cinco de `strhub-table`, las más expuestas) → B → D1 → E.
+~~A~~ → ~~D2~~ → ~~C1~~ → **B** (evidencia como campo, con la línea del README) → D1 (tests de veracidad) → C2/C3 → E.
 
-A y D2 están hechas: el problema queda congelado — ninguna afirmación nueva entra sin fuente, y las dos que se publicaron romperían el build hoy. Lo que sigue mejora las que ya existen, empezando por las cinco que hablan con conocimiento nuestro en voz de hecho sobre la herramienta.
+A, D2 y C1 están hechas: el problema queda congelado — ninguna afirmación nueva entra sin fuente, las que se publicaron romperían el build hoy, y ya no queda ninguna frase que hable con conocimiento nuestro en voz de hecho sobre la herramienta. Lo que sigue es adjuntar la evidencia como dato (Fase B) para que el lector pueda abrirla, y los tests de veracidad (D1) que comprueben que lo afirmado es cierto y no sólo que se generó.
