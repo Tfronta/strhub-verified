@@ -237,11 +237,19 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
             limitations.append("regions_format_unknown")
         else:
             regions_block = {"library": fmt}
+            # Whose knowledge picked the layout, said out loud. "The tool is
+            # known to read this format" put STRhub's own lookup table in the
+            # voice of a fact about somebody's software: nobody read the
+            # repository to establish it, which is how the STRspy sentence
+            # happened. The table is a fine basis — it just has to be named.
+            basis = {
+                "tool": f"STRhub records the {fmt} layout for a program of this name",
+                "readme": "the layout the README describes",
+                "fallback": f"STRhub records no layout for this program, so plain "
+                            f"chrom/start/end/name was tried",
+            }[how]
             caveat_items.append(
-                f"Regions: STRhub's ready-made {fmt} file for the dataset's panel loci"
-                + (" (the tool is known to read this format)." if how == "tool"
-                   else " (chosen from the README)." if how == "readme"
-                   else " (no known format for this tool; plain chrom/start/end/name was tried)."))
+                f"Regions: STRhub's ready-made {fmt} file for the dataset's panel loci ({basis}).")
 
     # --- outputs
     glob, fmt = OUTPUT_GLOB.get(out_fmt or "", ("**/*", "text"))
