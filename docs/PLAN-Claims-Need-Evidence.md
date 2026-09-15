@@ -39,18 +39,29 @@ Tres voces, y no se mezclan:
 
 Hoy el motor mezcla las tres. Toda frase que hoy suene a la segunda o la tercera sin evidencia debe bajar a la primera.
 
-## Fase A — Auditoría de afirmaciones (1 día)
+## Fase A — Auditoría de afirmaciones ✅ hecha el 15 de septiembre
 
-Inventariar **cada** frase que el motor escribe sobre una herramienta: `propose_manifest.py` (caveats), `report.py` (needed_beyond_repo, notas de regiones, diagnósticos), `certificate_text.py`, `generate_pdf.py` (§6 a §13), `verdict.py` (razones y bloqueos), y los espejos en la web.
+Se extrajeron por AST todas las cadenas de los siete módulos que llegan a un informe, un certificado o una página (`propose_manifest`, `report`, `certificate_text`, `generate_pdf`, `verdict`, `check_readme`, `diagnose_log`): **141 candidatas**, de las cuales **56 hablan en voz de hallazgo** — afirman algo sobre la herramienta, su repositorio, su documentación o su autor. Las otras 85 son observaciones sobre la propia corrida y no necesitan respaldo.
 
-Para cada una, clasificar: observación / cita / hallazgo, y si es de las dos últimas, si tiene evidencia. El resultado es una tabla en este documento y una lista de las que hay que reescribir.
+Las 56 están registradas en `harness/claims.py` con la fuente que las sostiene:
 
-Sospechosas ya identificadas, sin auditar todavía:
+| fuente | frases | qué la sostiene |
+|---|---:|---|
+| `manifest` | 14 | algo que declaró el envío |
+| `tree` | 9 | el árbol del repo al commit fijado |
+| `readme` | 8 | texto del README al commit fijado |
+| `run` | 6 | la propia configuración de STRhub |
+| `gates` | 6 | el resultado de las compuertas de esta corrida |
+| `log` | 5 | una línea que la herramienta imprimió |
+| `strhub-table` | 5 | conocimiento de STRhub — **nuestra** afirmación, no del autor |
+| `policy` | 2 | alcance de STRhub, no afirma nada sobre la tool |
+| `advice` | 1 | instrucción al lector |
 
-- `"chosen from the README"` (formato de regiones) — ¿lo eligió el README o lo adivinamos?
-- `"the published image the README points at"` — esta sí tiene evidencia (la URL), pero conviene que la cite.
-- Las razones de `verdict.py` que describen por qué falló algo.
-- El README-check (5 ítems): dice "PASS install" sin mostrar qué línea lo satisfizo.
+Por módulo: `verdict.py` 19, `diagnose_log.py` 16, `propose_manifest.py` 9, `report.py` 7, `generate_pdf.py` 3, `certificate_text.py` 2.
+
+**Lo que la auditoría dejó ver.** Ninguna de las 56 quedó sin fuente, pero cinco descansan en `strhub-table`: conocimiento nuestro presentado como hecho sobre la herramienta ("the tool is known to read this format"). Son legítimas, y son exactamente el lugar donde volvería a pasar lo de STRspy: nadie leyó el repositorio para decirlas. Reescribirlas para que se note de quién es la afirmación es la primera tarea de la Fase C.
+
+Las que ya estaban bien, y conviene no romper: los 16 diagnósticos de `diagnose_log` citan la línea que la herramienta imprimió, con ejemplos; los 14 de `manifest` repiten lo que el envío declaró.
 
 ## Fase B — Evidencia en el tipo de dato (2 a 3 días)
 
@@ -77,11 +88,15 @@ Para lo que hoy se decide por frecuencia:
 2. **Recomendaciones del autor**: detectar "Tip:", "recommended", "good practice", "faster" cerca de un formato, y citarlas. Si el autor recomienda algo que STRhub no puede correr, eso es un dato para el lector, no un defecto.
 3. **Cuando la lectura no alcanza**: decirlo. "STRhub no pudo determinar qué entradas acepta" es una frase honesta y accionable; "el README sugiere FASTQ" es una invención.
 
-## Fase D — La red que lo sostiene (2 días)
+## Fase D — La red que lo sostiene
 
-1. **Tests de veracidad sobre los 5 repos snapshot.** Para cada uno, una lista de afirmaciones verificadas a mano contra el repositorio real. Un cambio en las heurísticas que haga falsa una afirmación rompe el test. Es lo que faltó acá: los tests comprobaban *que* se generaba un caveat, no que fuera **cierto**.
-2. **Regla de lint de afirmaciones**: ninguna cadena nueva en voz de hallazgo sin `evidence`. Un test que recorre las fuentes y falla ante frases con patrones prohibidos (`the README suggests`, `does not include`, `the tool requires`) sin evidencia asociada.
-3. **Un repo nuevo al banco de pruebas** cada vez que se encuentre un error de este tipo, con el caso que lo destapó.
+1. **Tests de veracidad sobre los 5 repos snapshot** (pendiente). Para cada uno, una lista de afirmaciones verificadas a mano contra el repositorio real. Un cambio en las heurísticas que haga falsa una afirmación rompe el test. Es lo que faltó acá: los tests comprobaban *que* se generaba un caveat, no que fuera **cierto**.
+2. **Regla de lint de afirmaciones** ✅ hecha el 15 de septiembre — `harness/tests/test_claims_have_evidence.py`, en el job `resolve` que corre antes de verificar nada:
+   - toda cadena en voz de hallazgo tiene que estar en `claims.py` con su fuente; una nueva o reescrita falla con su huella y el renglón listo para registrar;
+   - el registro no puede tener entradas muertas (si la frase se borró, la entrada se borra);
+   - cinco **frases prohibidas** que ninguna evidencia rescata, porque ponen una preferencia o una ausencia en boca del autor: `the README suggests`, `this tool does not include its own`, `the tool prefers`, `the README recommends/wants/expects`, `is designed/intended for`;
+   - un test de regresión con las dos frases que efectivamente se publicaron: hoy las dos rompen el build.
+3. **Un repo nuevo al banco de pruebas** cada vez que se encuentre un error de este tipo, con el caso que lo destapó (pendiente).
 
 ## Fase E — Que el lector pueda desconfiar (2 días)
 
@@ -98,6 +113,6 @@ Nada de lo anterior alcanza si el lector no puede chequear:
 
 ## Orden sugerido
 
-A → D2 (la regla de lint, que congela el problema) → B → C → D1 → E.
+~~A~~ → ~~D2~~ → **C1** (las cinco de `strhub-table`, las más expuestas) → B → D1 → E.
 
-Fase A y D2 solas ya impiden que se agregue una afirmación sin evidencia. El resto mejora las que ya existen.
+A y D2 están hechas: el problema queda congelado — ninguna afirmación nueva entra sin fuente, y las dos que se publicaron romperían el build hoy. Lo que sigue mejora las que ya existen, empezando por las cinco que hablan con conocimiento nuestro en voz de hecho sobre la herramienta.

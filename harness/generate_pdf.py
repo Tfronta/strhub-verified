@@ -450,6 +450,16 @@ def build_cover(cfg):
     els.append(verify_tbl)
     return els
 
+def esc(text) -> str:
+    """Escape text for reportlab's mini-markup.
+
+    A Paragraph parses <b>, <font> and friends, so an ampersand or an angle
+    bracket in text read off somebody's README is a parse error, not a
+    character. Everything quoted from a repository goes through here.
+    """
+    return (str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+
+
 # ── Body ──────────────────────────────────────────────────────────────────────
 def build_body(cfg):
     els = []
@@ -756,6 +766,25 @@ def build_body(cfg):
     # It reports what the tool's own log said and stops there — no claim about
     # whether the results produced are correct.
     sec = 9
+
+    # The author's own note about their own software, before STRhub's findings:
+    # a run that stops where the README says it stops is not news.
+    known = cfg.get("author_known_issues") or []
+    if known:
+        els.append(section_num(str(sec), "What the Author Documents as a Known Issue"))
+        sec += 1
+        els.append(Paragraph(
+            "Quoted from the repository's README at the verified commit. STRhub did not "
+            "establish any of this by running the tool; it is the author's own note about "
+            "their own software.", ST["body"]))
+        els.append(vspace(3))
+        for k in known:
+            els.append(Paragraph(f"<b>{esc(k['heading'])}</b> (README line {k['line']})",
+                                 S("kih", fontSize=8.5, textColor=INK, leading=12, spaceAfter=2)))
+            quote = esc(k["text"]) + ("…" if k.get("truncated") else "")
+            els.append(boxed([Paragraph(quote, S("kiq", fontSize=8, textColor=GRAY, leading=12))]))
+            els.append(vspace(3))
+
 
     # Why the build failed, when it did. A certificate that says "Installs — not
     # passed" and stops there tells a reviewer nothing they can act on, and tells
@@ -1190,6 +1219,9 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         # Whether the repository ships example data, when a run actually read
         # the tree to find out. Absent means nobody looked.
         "repo_test_data": report.get("repo_test_data") or {},
+        # Quoted from the README at the pinned ref; the framing is ours, the
+        # content is the author's.
+        "author_known_issues": report.get("author_known_issues") or [],
         # A trial publishes nothing and has no catalogue entry. Unmarked, its
         # PDF is indistinguishable from an attestation anyone may circulate.
         "is_trial":       report.get("mode") == "trial",
