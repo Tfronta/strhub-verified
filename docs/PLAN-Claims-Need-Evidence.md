@@ -70,9 +70,13 @@ Dichas así son **observaciones, no hallazgos**: el registro bajó de 56 a 54 en
 
 Las que ya estaban bien, y conviene no romper: los 16 diagnósticos de `diagnose_log` citan la línea que la herramienta imprimió, con ejemplos; los 14 de `manifest` repiten lo que el envío declaró.
 
-## Fase B — Evidencia en el tipo de dato (2 a 3 días)
+## Fase B — Evidencia en el tipo de dato ✅ hecha el 15 de septiembre
 
-Un campo `evidence` junto a cada hallazgo, no en prosa:
+`detect_recipe` emite `evidence`: una entrada por afirmación, con `kind` (`tree` / `readme`), `path`, `line` cuando la hay, el texto tal cual se leyó, y la **URL al commit fijado** (`blob/<sha>/README.md#L120`). Cubre: método de instalación, imagen publicada o paquete de Bioconda (con la línea del README que lo nombra), entorno de respaldo, comando de ejecución (la línea del README donde empieza — el joiner de bloques de código ahora conserva el número), datos de ejemplo y problemas conocidos. Viaja al informe para recetas propuestas y commiteadas, al resumen como links, y a la web (página del ensayo y del catálogo).
+
+Lo que la sostiene es `harness/tests/test_evidence_is_real.py`: sobre los 5 repos snapshot, cada `path` citado existe en el árbol, cada línea citada existe y **dice lo citado**, cada URL es la que GitHub sirve, y la línea citada para un comando contiene ese comando. Probado corriendo la cita una línea: falla con *"command starts with './HipSTR' but README line 70 is '--fasta genome.fa'"*. Ese chequeo habría atrapado a `where:` — el texto de ayuda — citado como comando de STRspy.
+
+La idea original era un campo por hallazgo en prosa:
 
 ```json
 { "claim": "repo_ships_no_test_data",
@@ -85,7 +89,7 @@ Un campo `evidence` junto a cada hallazgo, no en prosa:
                 "text": "Tip: Its good practice to use pre-aligned bams for quicker outcomes." } }
 ```
 
-Regla mecánica en el renderizado: **sin `evidence`, la frase no se escribe en voz de hallazgo.** Un test la sostiene.
+La regla mecánica ("sin `evidence`, la frase no se escribe en voz de hallazgo") vive en dos capas: el registro de `claims.py` para las frases fijas del código, y `test_evidence_is_real` para los datos que cada corrida cita.
 
 ## Fase C — Leer, no contar (3 a 5 días)
 
@@ -120,6 +124,6 @@ Nada de lo anterior alcanza si el lector no puede chequear:
 
 ## Orden sugerido
 
-~~A~~ → ~~D2~~ → ~~C1~~ → **B** (evidencia como campo, con la línea del README) → D1 (tests de veracidad) → C2/C3 → E.
+~~A~~ → ~~D2~~ → ~~C1~~ → ~~B~~ → **D1** (tests de veracidad sobre las afirmaciones, no sólo sobre las citas) → C2/C3 → E.
 
 A, D2 y C1 están hechas: el problema queda congelado — ninguna afirmación nueva entra sin fuente, las que se publicaron romperían el build hoy, y ya no queda ninguna frase que hable con conocimiento nuestro en voz de hecho sobre la herramienta. Lo que sigue es adjuntar la evidencia como dato (Fase B) para que el lector pueda abrirla, y los tests de veracidad (D1) que comprueben que lo afirmado es cierto y no sólo que se generó.
