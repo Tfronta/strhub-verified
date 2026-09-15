@@ -24,9 +24,18 @@ What the sources mean:
   manifest      something the submission declared
   gates         the outcome of this run's own gates
   run           STRhub's own configuration or choice for this run
-  strhub-table  STRhub's own knowledge (e.g. which BED layout a tool reads).
-                Legitimate, but it is OUR claim: the sentence must not imply
-                the author said it.
+  strhub-table  RETIRED. STRhub's own knowledge (which BED layout a program
+                name maps to), published in the voice of a fact about the tool
+                — "the tool is known to read this format", "the tool needs a
+                regions file in its own format". Nobody read a repository to
+                establish any of it. All five were rewritten to name whose
+                knowledge it is ("STRhub records the hipstr layout for a
+                program of this name") and to attribute the requirement where
+                it belongs: STRhub's reference data covers a panel of loci, so
+                THIS RUN needs a regions file — that is not a property of
+                somebody's software. Once said that way they are observations,
+                not findings, and the register no longer carries them. The
+                source stays refused so the shape cannot come back.
   policy        a statement about STRhub's scope, not about the tool
   advice        an instruction to the reader, asserting nothing
 
@@ -66,8 +75,6 @@ REGISTER: dict[str, tuple[str, str]] = {
     "7ceb34632e90": ("propose_manifest", "tree"),  # # No install method was detected; a bare image so the trial can report # the documentation gap 
     "831100e24df2": ("propose_manifest", "tree"),  # # The repository ships its own Dockerfile (
     "ec6b7b9d5fd5": ("propose_manifest", "readme"),  # ' the README installs; its version is the package's, not necessarily the pinned commit.
-    "18f4fe0bc984": ("propose_manifest", "strhub-table"),  # (no known format for this tool; plain chrom/start/end/name was tried).
-    "3bc2e96f4a72": ("propose_manifest", "strhub-table"),  # (the tool is known to read this format).
     "0e6a6c086e9c": ("propose_manifest", "run"),  # , for which STRhub holds no reference sample; which input the tool is best used with is the aut
     "36152cfaf0d6": ("propose_manifest", "readme"),  # Run command: the README's own command, rewritten to STRhub's mounts; everything it created was 
     "714329de2505": ("propose_manifest", "readme"),  # the README points at; the tool inside it is whatever that image holds, not necessarily the pinn
@@ -84,20 +91,16 @@ REGISTER: dict[str, tuple[str, str]] = {
     "6fbca0b9cb26": ("verdict", "run"),  # STRhub Verified could not run the tool: it holds no public reference sample of the input type t
     "570d333e2c0e": ("verdict", "gates"),  # STRhub Verified installed the tool from a clean checkout at the pinned commit and ran the comma
     "e134d3bb2a39": ("verdict", "gates"),  # STRhub Verified ran the tool to completion in a clean environment, but no output file in the do
-    "03e9ebca6ee3": ("verdict", "gates"),  # STRhub Verified tried to run the tool in a clean environment on a public hg38 reference sample,
     "f3ce2c9fe046": ("verdict", "readme"),  # STRhub could not work out how to install or run this tool from its repository. The README does 
     "936deb76fffd": ("verdict", "run"),  # STRhub has no reference sample of the kind this tool reads, and the repository ships no example
     "ae2a210ac6f3": ("verdict", "run"),  # STRhub holds no reference sample of the kind this tool reads and the repository ships no exampl
     "78de22b7f559": ("verdict", "advice"),  # Say how the tool is installed and try again.
-    "8c8f9a70b520": ("verdict", "strhub-table"),  # The tool needs a regions file (BED) in its own format. STRhub has ready-made files for the HipS
     "4b044277e315": ("verdict", "manifest"),  # The tool needs something the automated runner cannot provide:
     "3855d69d6067": ("verdict", "gates"),  # The tool ran to completion but produced no output file in the documented format.
     "768d4670e6ef": ("verdict", "gates"),  # The tool was installed but exited with an error when run.
     "9b7293a29fdb": ("verdict", "gates"),  # The tool's run produced its documented output, on the published environment the README points a
     "f84cc76d0787": ("verdict", "readme"),  # no command line invoking the tool was found in the README
     "e32acfe17c39": ("verdict", "tree"),  # no install method was found in the repository
-    "0a4be5144c5f": ("verdict", "strhub-table"),  # the tool needs a regions file and STRhub does not know its format; a plain chrom/start/end/name
-    "1dfe6b92d49e": ("verdict", "strhub-table"),  # the tool needs a regions file in its own format, which STRhub does not yet generate for it
     # The author's own words, quoted from their README at the pinned ref: the
     # framing is ours, the content is theirs, and the line number is the cite.
     "0d09141b6660": ("report", "readme"),  # ## What the author documents as a known issue
@@ -111,6 +114,10 @@ REGISTER: dict[str, tuple[str, str]] = {
 #: repository establishes. The first two are the exact sentences that shipped.
 FORBIDDEN = [
     (r"the README suggests", "a keyword count is not a reading; say which data this run used"),
+    (r"(?:the|this) tool is known to",
+     "that is STRhub's lookup table speaking; say that STRhub records it"),
+    (r"(?:the|this) tool needs a regions file",
+     "STRhub's reference data needs one; say that this run had to supply it"),
     (r"(?:this |the )tool does not include its own",
      "absence needs evidence from the tree; see certificate_text.test_data_item"),
     (r"the (?:tool|author) prefers", "a preference is the author's to state, not ours to infer"),
@@ -119,5 +126,10 @@ FORBIDDEN = [
     (r"is (?:designed|intended) (?:for|to)", "intent cannot be read off a repository"),
 ]
 
+#: `strhub-table` is deliberately absent: a claim that rests on nothing but
+#: STRhub's own lookup table is not a finding about anybody's software, and
+#: saying it in finding voice is the exact shape of the error this register
+#: exists for. Reword it as an observation instead — say that STRhub records
+#: something, or that this run needed something.
 VALID_SOURCES = {"tree", "readme", "log", "manifest", "gates", "run",
-                 "strhub-table", "policy", "advice"}
+                 "policy", "advice"}
