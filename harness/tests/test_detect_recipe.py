@@ -82,6 +82,17 @@ def test_strspy_conda_env_under_setup_dir_is_found():
     assert "ont-bam-hg38" in r["input_type"]["candidates"]
 
 
+def test_a_help_listing_is_not_a_command():
+    # STRspy's README quotes its -h output: a "where:" line followed by one
+    # option per line. Joined together that read as a command that "takes a
+    # bam and writes with -o", and it was run as one.
+    r = _detect("strspy")
+    assert all(not c["invokes"].endswith(":") and not c["invokes"].startswith("-") for c in r["commands"])
+    assert r["commands"][0]["cmd"] == "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt"
+    readme = "```\nUsage: tool [-h]\n\nwhere:\n  -h show the help\n  -s input bam\n  -o output dir\n```\n"
+    assert dr.detect_commands(readme, ["tool"]) and all(c["invokes"] == "tool" for c in dr.detect_commands(readme, ["tool"]))
+
+
 def test_empty_repository_reports_every_gap():
     r = dr.detect("x/y", "abc", {"tree": [], "truncated": False}, "", None)
     items = [g["item"] for g in r["readme"]["gaps"]]
