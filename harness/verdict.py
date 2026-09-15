@@ -246,7 +246,9 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     elif not gates.get("installs"):
         reason = "The environment did not build from the declared install steps."
     elif not gates.get("runs"):
-        reason = "The tool exited with an error on the reference data."
+        # Not "on the reference data": a tool can exit before it reads any,
+        # as STRspy's wrapper does when its self-check fails.
+        reason = "The tool exited with an error before producing its documented output."
     else:
         reason = "The tool ran to completion but produced no output in the documented format."
     return {"code": "fails", "title": TITLES["fails"], "basis": "gates", "reason": reason,
