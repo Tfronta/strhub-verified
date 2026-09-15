@@ -1,8 +1,11 @@
 {
   "schema": "strhub-verified/1",
+  "mode": "publish",
   "tool": {
-    "name": "Strspy",
-    "version": "v2.0"
+    "name": "STRspy",
+    "version": "v2.0",
+    "maintainer": "Kesharwani RK; Zascavage RR et al.",
+    "contact": "https://github.com/unique379r/strspy/issues"
   },
   "submission": {
     "by": "third_party"
@@ -18,8 +21,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-01T11:18:36+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/33501209177",
+  "generated": "2026-09-15T19:58:44+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016128138",
   "gates": {
     "available": true,
     "installs": true,
@@ -36,6 +39,7 @@
         "path": "**/*.txt",
         "format": "tsv",
         "checks": {
+          "confined": true,
           "exists": true,
           "non_empty": true,
           "parses_as_tsv": true,
@@ -49,10 +53,41 @@
   },
   "content_detail": {
     "gate": "content",
-    "applicable": false,
+    "applicable": true,
     "passed": false,
-    "outputs": []
+    "outputs": [
+      {
+        "path": "**/*.txt",
+        "resolved": "Countings/CSF1PO_input.bam_Allele_freqs.txt",
+        "mode": "auto",
+        "checks": {
+          "records_present": true,
+          "locus_column_found": false,
+          "loci_recognised": false,
+          "calls_or_counts_present": false
+        },
+        "stats": {
+          "rows": 6,
+          "header_row_dropped": false,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 0,
+          "distinct_str_loci": 0,
+          "distinct_snp_markers": 0,
+          "loci": [],
+          "str_loci": [],
+          "snp_markers": [],
+          "total_reads": 0,
+          "max_sequence_depth": 0,
+          "top_loci_by_depth": [],
+          "locus_column_found": false
+        },
+        "passed": false
+      }
+    ]
   },
+  "example_detail": null,
   "datasets": [
     {
       "leg": "own",
@@ -72,6 +107,16 @@
       "io": true,
       "content": false,
       "passed": true
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": false,
+      "io": false,
+      "content": null,
+      "passed": false,
+      "matches_expected": null,
+      "produced_count": null
     }
   ],
   "regions": null,
@@ -106,7 +151,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-01T11:18:36+00:00",
+    "checked": "2026-09-15T19:58:45+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "main",
@@ -116,6 +161,24 @@
   "needed_beyond_repo": [
     "Test data: no sample from the repository was used, so a public reference sample stood in."
   ],
+  "author_known_issues": [
+    {
+      "heading": "Known bug",
+      "line": 291,
+      "text": "When using the wrapper ('STRspy_run_v1.0.sh'), One might run into an issue. The parallel version of **STRspy_Parallel_v2.0_Args.sh** is unable to properly connect with \"gnu parallel\" and exits the workflow without mapping or further analysis steps of the pipeline. Solution to this, the user can choose the Normal version to avoid any crash. ***Tip: Its good practice to use pre-aligned bams for quicker outcomes.***",
+      "truncated": false
+    }
+  ],
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 3,
+    "examples": [
+      "db-v2/STRspy_v2.DB.sort.bed",
+      "db-v2/optional-create-custom-db/testTwofa/TPOX.fa",
+      "db-v2/optional-create-custom-db/testTwofa/vWA.fa"
+    ]
+  },
   "logs": {
     "external": "strspy-v2-0-ont.log-external.txt",
     "build": "strspy-v2-0-ont.log-build.txt"
@@ -147,5 +210,13 @@
     "basis": null,
     "reason_code": null,
     "reason": null
+  },
+  "verdict": {
+    "code": "runs",
+    "title": "Runs",
+    "basis": "gates",
+    "reason": "The tool installed and its run produced its documented output.",
+    "readme_gaps": [],
+    "blockers": []
   }
 }

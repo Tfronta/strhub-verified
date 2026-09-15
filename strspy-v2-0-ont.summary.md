@@ -1,13 +1,15 @@
-# STRhub Verified: Strspy (strspy-v2-0-ont)
+# STRhub Verified: STRspy (strspy-v2-0-ont)
 
 **Result: Runs + Expected IO.** it produces a non-empty file in the declared format.
 
+**Verdict: Runs.** The tool installed and its run produced its documented output.
+
 - Source: `https://github.com/unique379r/strspy` @ `dafdee7e7e5672c8dc732e8577dbe153f53a12f5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-01T11:18:36+00:00
+- Generated: 2026-09-15T19:58:44+00:00
 - Submitted by: a third party — not the tool's maintainer
 - Upstream: The verified commit is 14 commit(s) behind `main`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/33501209177
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35016128138
 
 ## Gates
 
@@ -19,12 +21,29 @@
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
 
+## What the author documents as a known issue
+
+Quoted from the repository's README at the verified commit. STRhub did not establish any of this by running the tool; it is the author's own note about their own software.
+
+**Known bug** (README line 291)
+
+> When using the wrapper ('STRspy_run_v1.0.sh'), One might run into an issue. The parallel version of **STRspy_Parallel_v2.0_Args.sh** is unable to properly connect with "gnu parallel" and exits the workflow without mapping or further analysis steps of the pipeline. Solution to this, the user can choose the Normal version to avoid any crash. ***Tip: Its good practice to use pre-aligned bams for quicker outcomes.***
+
+## Output content (plausibility evidence)
+
+- Sequence records: **6** (malformed: 0)
+- STR loci detected: **0**
+- Total reads across calls: **0** (deepest single sequence: 0)
+
+
+
 ## Verification matrix
 
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
 | STRhub fixture | N/A | N/A | — | — |
 | External data | yes | PASS | yes | 1000 Genomes ONT, hg38 CODIS slice (R10 SUP) |
+| Tool's own example | N/A | N/A | — | — |
 
 ## Who submitted this
 
