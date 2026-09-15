@@ -160,3 +160,29 @@ def test_the_repositorys_own_dockerfile_needs_no_plan_b():
 def test_source_builds_bring_the_autotools():
     df = _detect("hipstr")["dockerfile"]
     assert "autoconf automake libtool" in df
+
+
+def test_the_author_s_own_known_bug_section_is_carried_out_of_the_readme():
+    # STRspy documents that its wrapper can exit without doing any work. A run
+    # that died in that wrapper reported nothing about it, because the section
+    # never left the README.
+    issues = _detect("strspy")["known_issues"]
+    assert [i["heading"] for i in issues] == ["Known bug"]
+    assert "unable to properly connect with" in issues[0]["text"]
+    assert "choose the Normal version" in issues[0]["text"]
+    assert issues[0]["line"] == 291  # so a reader can open the README at it
+
+    # STRaitRazor documents one too, about a specific architecture.
+    sr = _detect("straitrazor")["known_issues"]
+    assert sr and "windows 7" in sr[0]["text"].lower()
+
+    # Not every repository has one, and inventing a section is worse than none.
+    for name in ("gangstr", "strsearch"):
+        assert _detect(name)["known_issues"] == [], name
+
+
+def test_a_known_issue_quote_is_bounded_and_says_when_it_was_cut():
+    long_readme = "## Known issues\n\n" + ("word " * 400)
+    out = dr.author_known_issues(long_readme)
+    assert len(out) == 1 and out[0]["truncated"] is True and len(out[0]["text"]) == 600
+    assert dr.author_known_issues("## Known issues\n\ntiny") == []  # too short to be a finding
