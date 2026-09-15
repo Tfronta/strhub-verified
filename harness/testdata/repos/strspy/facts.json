@@ -1,0 +1,44 @@
+{
+  "_about": "Hand-checked against https://github.com/unique379r/strspy at dafdee7 (branch STRspy2.0) on 2026-09-15. This is the repository whose report said 'the README suggests ont-fastq first'.",
+  "documented_inputs": {
+    "value": [
+      "fastq",
+      "bam"
+    ],
+    "where": "README.md:44 — 'Input either fastq (raw reads usually from ONT) or bam (pre-aligned reads by user)'; :216-217 `-s input read dir (either bam or fastq)`, `-r is input bam? (yes/no)`"
+  },
+  "documented_platform": {
+    "value": "ont",
+    "where": "README.md:44 — 'raw reads usually from ONT'; :218 `-t technology type (ont/pb)`"
+  },
+  "author_recommends_input": {
+    "value": "bam",
+    "where": "README.md:295 — 'Tip: Its good practice to use pre-aligned bams for quicker outcomes.'"
+  },
+  "ships_example_data": {
+    "value": true,
+    "where": "tree: db-v2/STRspy_v2.DB.sort.bed and db-v2/optional-create-custom-db/testTwofa/*.fa"
+  },
+  "ships_example_reads": {
+    "value": false,
+    "where": "tree: 31 blobs, no .bam/.fastq"
+  },
+  "install_method": {
+    "value": "conda",
+    "where": "tree: setup/STRspy_2.0_env.yml"
+  },
+  "readme_command_program": {
+    "value": "STRspy_run_v2.0_Args.sh",
+    "where": "README.md:120 — `USAGE: bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt`"
+  },
+  "published_image": {
+    "value": null,
+    "where": "no `docker pull` / hub.docker.com in the README"
+  },
+  "known_issue_headings": {
+    "value": [
+      "Known bug"
+    ],
+    "where": "README.md:291 — '## Known bug'"
+  }
+}

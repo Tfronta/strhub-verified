@@ -101,13 +101,19 @@ Para lo que hoy se decide por frecuencia:
 
 ## Fase D — La red que lo sostiene
 
-1. **Tests de veracidad sobre los 5 repos snapshot** (pendiente). Para cada uno, una lista de afirmaciones verificadas a mano contra el repositorio real. Un cambio en las heurísticas que haga falsa una afirmación rompe el test. Es lo que faltó acá: los tests comprobaban *que* se generaba un caveat, no que fuera **cierto**.
+1. **Tests de veracidad sobre los 5 repos snapshot** ✅ hecha el 15 de septiembre — `harness/testdata/repos/<repo>/facts.json` + `harness/tests/test_truth.py`.
+
+   Cada repo tiene nueve hechos establecidos **a mano**, cada uno con la línea del README o la ruta del árbol donde se leyó: entradas documentadas, plataforma documentada, qué entrada recomienda el autor (si alguna), si trae datos de ejemplo, si trae reads de ejemplo, método de instalación, programa del comando del README, imagen publicada, secciones de problemas conocidos. El test construye **todo lo que el motor publicaría** sobre ese repo — caveats de la receta, huecos del README, veredicto y bloqueos (incluido el issue que el lector postea en el repo del autor) — y lo sostiene contra los hechos: la entrada que corre está documentada; la plataforma no es una que el autor desaconseje (HipSTR, línea 435: *"We do not recommend running it on PacBio or Oxford Nanopore data"*); ninguna frase pone una preferencia en boca del autor **después de interpolar** (el lint de fuentes ve literales; esto ve el texto que sale); lo que dice de datos de ejemplo es cierto; el método de instalación y el comando son los del repo; una imagen publicada sólo se reporta si el README la nombra; las secciones de problemas conocidos son las que hay.
+
+   Probado reintroduciendo los tres errores reales: la frase de STRspy (vía f-string) falla con *"a keyword count is not a reading"*; elegir ONT para HipSTR falla citando la línea 435; *"ships no test data"* falla citando `test/input/chr1_regions.bed`.
+
+   Un hecho sin cita no vale: el propio test exige que cada `facts.json` diga contra qué commit se verificó y dónde se leyó cada hecho.
 2. **Regla de lint de afirmaciones** ✅ hecha el 15 de septiembre — `harness/tests/test_claims_have_evidence.py`, en el job `resolve` que corre antes de verificar nada:
    - toda cadena en voz de hallazgo tiene que estar en `claims.py` con su fuente; una nueva o reescrita falla con su huella y el renglón listo para registrar;
    - el registro no puede tener entradas muertas (si la frase se borró, la entrada se borra);
    - cinco **frases prohibidas** que ninguna evidencia rescata, porque ponen una preferencia o una ausencia en boca del autor: `the README suggests`, `this tool does not include its own`, `the tool prefers`, `the README recommends/wants/expects`, `is designed/intended for`;
    - un test de regresión con las dos frases que efectivamente se publicaron: hoy las dos rompen el build.
-3. **Un repo nuevo al banco de pruebas** cada vez que se encuentre un error de este tipo, con el caso que lo destapó (pendiente).
+3. **Un repo nuevo al banco de pruebas** cada vez que se encuentre un error de este tipo, con el caso que lo destapó. Convención (en el docstring de `test_truth.py`): snapshot del repo, `facts.json` escrito a mano, y el nombre en `NAMES`. Agregar un hecho nuevo implica agregarlo a los cinco.
 
 ## Fase E — Que el lector pueda desconfiar (2 días)
 
@@ -124,6 +130,6 @@ Nada de lo anterior alcanza si el lector no puede chequear:
 
 ## Orden sugerido
 
-~~A~~ → ~~D2~~ → ~~C1~~ → ~~B~~ → **D1** (tests de veracidad sobre las afirmaciones, no sólo sobre las citas) → C2/C3 → E.
+~~A~~ → ~~D2~~ → ~~C1~~ → ~~B~~ → ~~D1~~ → **C2/C3** (leer enunciados de entrada y recomendaciones en vez de contar; decir "no pude determinarlo") → E (botón "¿esto está mal?").
 
 A, D2 y C1 están hechas: el problema queda congelado — ninguna afirmación nueva entra sin fuente, las que se publicaron romperían el build hoy, y ya no queda ninguna frase que hable con conocimiento nuestro en voz de hecho sobre la herramienta. Lo que sigue es adjuntar la evidencia como dato (Fase B) para que el lector pueda abrirla, y los tests de veracidad (D1) que comprueben que lo afirmado es cierto y no sólo que se generó.

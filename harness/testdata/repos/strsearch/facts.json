@@ -1,0 +1,42 @@
+{
+  "_about": "Hand-checked against https://github.com/AnJingwd/STRsearch at c70179b on 2026-09-15.",
+  "documented_inputs": {
+    "value": [
+      "fastq",
+      "bam"
+    ],
+    "where": "README.md:77 — 'FASTQ file or BAM-file'; README.md:96 `pipeline.py from_fastq`, :107 `pipeline.py from_bam`"
+  },
+  "documented_platform": {
+    "value": "illumina",
+    "where": "README.md:77 — 'singe-end or paird-end sequencing platforms'"
+  },
+  "author_recommends_input": {
+    "value": null,
+    "where": "no line recommends one input kind over another"
+  },
+  "ships_example_data": {
+    "value": true,
+    "where": "tree: example/test_data/test.bam, test_R1.fastq, test_R2.fastq, example/ref_test.bed — 35 files"
+  },
+  "ships_example_reads": {
+    "value": true,
+    "where": "tree: example/test_data/test.bam and the FASTQ pair"
+  },
+  "install_method": {
+    "value": "dockerfile",
+    "where": "tree: Dockerfile (the repository's own)"
+  },
+  "readme_command_program": {
+    "value": "pipeline.py",
+    "where": "README.md:96 — `python3 pipeline.py from_fastq`"
+  },
+  "published_image": {
+    "value": "anjing123/strsearch:latest",
+    "where": "README.md:223 — `docker pull anjing123/strsearch:latest`"
+  },
+  "known_issue_headings": {
+    "value": [],
+    "where": "no such section"
+  }
+}
