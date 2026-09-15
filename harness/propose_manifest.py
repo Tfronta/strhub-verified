@@ -110,11 +110,34 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
     return new, notes
 
 
+def tool_name_as_written(repo: str, proposal: dict) -> str:
+    """The repository's own spelling of its name.
+
+    A GitHub path is case-flattened by its owner as often as not
+    (`unique379r/strspy`), and a report that renders that is naming the
+    project something nobody calls it. The same word usually appears
+    correctly cased in the README prose and in the repository's own file
+    names; the most frequent such spelling wins, and the path segment is the
+    fallback.
+    """
+    segment = repo.rstrip("/").split("/")[-1]
+    pattern = re.compile(re.escape(segment), re.I)
+    haystack = proposal.get("readme_text", "") + "\n" + "\n".join(proposal.get("tool_names") or [])
+    counts: dict[str, int] = {}
+    for m in pattern.finditer(haystack):
+        counts[m.group(0)] = counts.get(m.group(0), 0) + 1
+    if not counts:
+        return segment
+    # Ties go to the spelling that is not all-lowercase: "STRspy" over "strspy"
+    # when a README uses both, since the flat one is what a URL forces.
+    return max(counts, key=lambda w: (counts[w], w != w.lower()))
+
+
 def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
     """Return {"manifest": dict, "manifest_yml": str, "dockerfile": str,
     "limitations": [...], "readme_gaps": [...]}."""
     repo, ref = proposal["repo"], proposal["ref"]
-    name = repo.rstrip("/").split("/")[-1]
+    name = tool_name_as_written(repo, proposal)
     build_info = proposal.get("build") or {}
     commands = proposal.get("commands") or []
     input_type = (proposal.get("input_type") or {}).get("best")
