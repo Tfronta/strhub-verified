@@ -32,15 +32,16 @@
   <li>Variant: <code>straitrazor-v3-0</code></li>
   <li>Source: <code>https://github.com/Ahhgust/STRaitRazor</code> @ <code>b618e9345ab40f348b504083ae8de2b39abb60fa</code></li>
   <li>Environment: ubuntu-22.04 (<code>Dockerfile</code>)</li>
-  <li>Generated: 2026-09-01T11:12:27+00:00</li>
+  <li>Generated: 2026-09-15T19:52:36+00:00</li>
   <li>Submitted by: a third party — not the tool&#x27;s maintainer</li>
   <li>Upstream: The verified commit is the head of `master`.</li>
-  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/33501209177">CI run</a></li>
+  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/35016112169">CI run</a></li>
 </ul>
 <h2>Gates</h2>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
 <tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="ok">PASS</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="ok">PASS</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="ok">PASS</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr></tbody></table>
 
+<h2>What the author documents as a known issue</h2><p>Quoted from the repository's README at the verified commit. STRhub did not establish any of this by running the tool; it is the author's own note about their own software.</p><p><b>known issues</b> (README line 114)</p><blockquote>There&#x27;s been one computer architecture (windows 7 + Xeon processor) that&#x27;s caused some issues with the str8rzr.exe executable. In this case, str8rzr would occassionally crash, and I had to recompile it for that computer (and since then it&#x27;s been fine). Please let me know if you experience problems-- especially crashes-- it&#x27;ll let me further diagnose the exact problems therein. str8rzr is written in C/C++ with multithreading support using the pthreads library. This new release couples a new search strategy (see algorithm) coupled with a complete redesign of the code-base used to identify short …</blockquote>
 
     <h2>Output content (plausibility evidence)</h2>
     <ul class="stats">
@@ -50,7 +51,7 @@
       <li>STR loci: Amelogenin, CSF1PO, D10S1248, D12S391, D13S317, D16S539, D17S1301, D18S51, D19S433, D1S1656, D20S482, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D4S2408, D5S818 …</li>
       <li>Top markers by read depth: DYS392 (170), DYS438 (117), D6S1043 (111), TH01 (106), DYS389I (97), DYS576 (95)</li>
     </ul>
-<h2>Verification matrix</h2><table><thead><tr><th>Leg</th><th>Result</th><th>Errors reported</th><th>Dataset</th></tr></thead><tbody><tr><td>STRhub fixture</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr><tr><td>External data</td><td><span class="ok">PASS</span></td><td><span class="no">—</span></td><td>NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01)</td></tr></tbody></table>
+<h2>Verification matrix</h2><table><thead><tr><th>Leg</th><th>Result</th><th>Errors reported</th><th>Dataset</th></tr></thead><tbody><tr><td>STRhub fixture</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr><tr><td>External data</td><td><span class="ok">PASS</span></td><td><span class="no">—</span></td><td>NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01)</td></tr><tr><td>Tool&#x27;s own example</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr></tbody></table>
 
 <h2>Who submitted this</h2><p>This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.</p>
 
