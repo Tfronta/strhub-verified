@@ -6,10 +6,10 @@
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-14T20:34:40+00:00
+- Generated: 2026-09-15T19:54:03+00:00
 - Submitted by: a third party — not the tool's maintainer
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/34893416022
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35016070933
 
 ## Gates
 
