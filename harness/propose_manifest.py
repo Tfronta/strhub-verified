@@ -119,6 +119,18 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
     commands = proposal.get("commands") or []
     input_type = (proposal.get("input_type") or {}).get("best")
     out_fmt = (proposal.get("output") or {}).get("format")
+    # The README's first choice of input is not always one STRhub holds data
+    # for: STRspy reads ONT FASTQ or BAM and names FASTQ first, and STRhub has
+    # ONT reads only as hg38 BAM slices. A candidate with data beats the best
+    # guess without any, since the alternative is a run that never starts.
+    input_note = None
+    if input_type and not datasets_lib.resolve(input_type):
+        with_data = next((c for c in (proposal.get("input_type") or {}).get("candidates", [])
+                          if datasets_lib.resolve(c)), None)
+        if with_data:
+            input_note = (f"Input: the README suggests {input_type} first; STRhub has reference "
+                          f"data only as {with_data}, which is what the run uses.")
+            input_type = with_data
     from_repo = build_info.get("method") == "dockerfile"
     limitations: list[str] = []
     caveat_items: list[str] = []
@@ -170,6 +182,8 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
 
     # --- the command
     best = commands[0]["cmd"] if commands else ""
+    if input_note:
+        caveat_items.append(input_note)
     if not best:
         limitations.append("no_command")
         run_cmd = "true  # no command found in the README; nothing to run"
@@ -216,6 +230,11 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
     ex = proposal.get("example")
     if ex and ex.get("cmd"):
         manifest["example"] = {"cmd": ex["cmd"], "cwd": cwd, "source": "detected"}
+    # Nothing to run on at all: no STRhub data for the input type and no
+    # example in the repository. Every run leg is then N/A, and a verdict read
+    # off the gates would call that "fails" — it is nothing of the kind.
+    if not (input_type and datasets_lib.resolve(input_type)) and not ex:
+        limitations.append("no_reference_dataset")
     warnings = (proposal.get("input_type") or {}).get("warnings") or []
     caveat_items += warnings
     if caveat_items:

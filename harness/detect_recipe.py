@@ -283,7 +283,11 @@ def _code_lines(readme: str) -> list[str]:
         if cleaned and cleaned[-1].endswith("\\"):
             cleaned[-1] = cleaned[-1][:-1].rstrip() + " " + stripped
         elif cleaned and stripped.startswith("-") and not stripped.startswith("---") \
-                and cleaned[-1].strip() and not cleaned[-1].strip().startswith(("#", "-")):
+                and cleaned[-1].strip() and not cleaned[-1].strip().startswith(("#", "-")) \
+                and not cleaned[-1].rstrip().endswith(":"):
+            # A line ending in a colon ("where:", "Options:") heads an option
+            # listing, not a command; joining the flags onto it made STRspy's
+            # help text the best "command" in its README.
             cleaned[-1] = cleaned[-1].rstrip() + " " + stripped
         else:
             cleaned.append(ln)
@@ -317,6 +321,9 @@ def tool_names(slug: str, tree: list[dict]) -> list[str]:
 
 #: What may precede the tool's name on a command line and still be "running it".
 RUNNERS = {"python", "python3", "python2", "bash", "sh", "perl", "Rscript", "julia", "java", "-jar"}
+
+
+PROGRAM_RE = re.compile(r"^[A-Za-z0-9_][\w.+-]*$")
 
 
 def _first_program(line: str) -> str | None:
@@ -360,7 +367,9 @@ def detect_commands(readme: str, names: list[str]) -> list[dict]:
         prog = next((pr for pr in progs if _named(pr)), None)
         if prog is None:
             prog = next((pr for pr in reversed(progs) if pr and pr not in SHELL_NOISE), None)
-        if prog is None:
+        # A program is a word: "where:" heads a help listing and "-s" is an
+        # option, and neither runs anything.
+        if prog is None or not PROGRAM_RE.match(prog):
             continue
         named = _named(prog)
         has_in, has_out = bool(in_re.search(text)), bool(out_re.search(text))
