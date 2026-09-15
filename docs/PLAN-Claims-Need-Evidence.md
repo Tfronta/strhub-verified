@@ -91,13 +91,15 @@ La idea original era un campo por hallazgo en prosa:
 
 La regla mecánica ("sin `evidence`, la frase no se escribe en voz de hallazgo") vive en dos capas: el registro de `claims.py` para las frases fijas del código, y `test_evidence_is_real` para los datos que cada corrida cita.
 
-## Fase C — Leer, no contar (3 a 5 días)
+## Fase C — Leer, no contar ✅ hecha el 15 de septiembre
 
-Para lo que hoy se decide por frecuencia:
+`read_input_statements` (en `detect_recipe`) lee el README **por oración** y devuelve, con la línea de cada una: los tipos de entrada que el README *declara* (cue de entrada + tipo: "Input either fastq or bam", `-r is input bam?`, `--bam <file>`, `from_fastq`, una línea bajo "## Inputs"), la recomendación del autor ("Tip:", "recommend", "good practice", "faster"), la plataforma que declara, y las que **desaconseja** ("do not recommend", "not intended for"). Lo que no dice, no se inventa.
 
-1. **Entradas aceptadas**: buscar enunciados explícitos ("either X or Y", "-r is input bam? (yes/no)", `INPUT_BAM`) en vez de contar menciones. Cuando el README documenta varios, el informe dice *varios* — nunca rankea uno como preferido del autor.
-2. **Recomendaciones del autor**: detectar "Tip:", "recommended", "good practice", "faster" cerca de un formato, y citarlas. Si el autor recomienda algo que STRhub no puede correr, eso es un dato para el lector, no un defecto.
-3. **Cuando la lectura no alcanza**: decirlo. "STRhub no pudo determinar qué entradas acepta" es una frase honesta y accionable; "el README sugiere FASTQ" es una invención.
+- `detect_input_type` decide con eso y marca `how: read`. Los candidatos se ordenan para uso de STRhub (qué probar primero) — la recomendación del autor primero **porque la citó**, después el orden del README — no como ranking de preferencia. Sólo si no hay ninguna oración cae al conteo, marcado `how: counted`.
+- El caveat cita: *"Input: the README documents BAM and FASTQ (line 44); this run used STRhub's ont-bam-hg38 reference data. The author recommends BAM (line 295: "Tip: Its good practice to use pre-aligned bams…")."* Cada enunciado va además a `evidence` (`documented_input`, `author_recommendation`, `platform_advice`) con su URL.
+- **C3**: si no había nada que leer, el caveat dice *"no sentence in the README says what the tool takes; X was tried on the strength of mentions alone"* y queda la limitación `input_type_guessed`: si la corrida falla, el veredicto es *could not be determined* citándola; si produce salida, la adivinanza acertó y no cuenta.
+
+Lo que la lectura encontró en los cinco repos coincide con los hechos escritos a mano (`test_truth` lo exige ahora como igualdad, no sólo como no-contradicción): HipSTR desaconseja ONT y PacBio en la línea 435 y ya no puede correr sobre un dataset ONT; STRspy documenta ambos y recomienda BAM; STRsearch documenta ambos en la línea 77; GangSTR y STRaitRazor uno solo. `test_evidence_is_real` verifica que cada oración citada está en la línea citada.
 
 ## Fase D — La red que lo sostiene
 
@@ -130,6 +132,6 @@ Nada de lo anterior alcanza si el lector no puede chequear:
 
 ## Orden sugerido
 
-~~A~~ → ~~D2~~ → ~~C1~~ → ~~B~~ → ~~D1~~ → **C2/C3** (leer enunciados de entrada y recomendaciones en vez de contar; decir "no pude determinarlo") → E (botón "¿esto está mal?").
+~~A~~ → ~~D2~~ → ~~C1~~ → ~~B~~ → ~~D1~~ → ~~C2/C3~~ → **E** (botón "¿esto está mal?" en el informe, con la evidencia ya enlazada).
 
 A, D2 y C1 están hechas: el problema queda congelado — ninguna afirmación nueva entra sin fuente, las que se publicaron romperían el build hoy, y ya no queda ninguna frase que hable con conocimiento nuestro en voz de hecho sobre la herramienta. Lo que sigue es adjuntar la evidencia como dato (Fase B) para que el lector pueda abrirla, y los tests de veracidad (D1) que comprueben que lo afirmado es cierto y no sólo que se generó.

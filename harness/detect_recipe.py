@@ -424,37 +424,171 @@ def detect_commands(readme: str, names: list[str]) -> list[dict]:
     return uniq[:10]
 
 
+# --- reading, not counting -----------------------------------------------------
+# What the README STATES about input, as opposed to how often it mentions
+# things. "The README suggests ont-fastq first" came out of INPUT_SIGNALS: 7
+# mentions of fastq against 4 of bam, in a README that documents both and
+# recommends BAM outright. A count is evidence about STRhub's guess; a
+# sentence is evidence about the tool, and it carries its line.
+#
+# Word edges are (?<![A-Za-z0-9]) rather than \b so that `from_fastq`,
+# `--bam` and `.fastq` all count as the kind they name.
+_W = r"(?<![A-Za-z0-9])(?:{})(?![A-Za-z0-9])"
+KIND_WORDS = {
+    "bam": re.compile(_W.format(r"bams?|crams?|aligned reads|alignments?|pre-aligned"), re.I),
+    "fastq": re.compile(_W.format(r"fastqs?|fqs?|raw reads"), re.I),
+    "fsa": re.compile(_W.format(r"fsa|hid|electropherograms?"), re.I),
+}
+#: A sentence that is about what the tool TAKES. Cues, not mentions: "input",
+#: "takes", "accepts", "-s input read dir", `--bam <file>`, `from_bam`, a line
+#: under an "Input(s)" heading.
+INPUT_CUE = re.compile(
+    r"\binputs?\b|\btakes?\b|\baccepts?\b|\bread dir\b|\bput\b[^\n]{0,60}\bfiles?\b"
+    r"|--(?:bams?|fastq|reads|in)\b|(?<![A-Za-z0-9])from_(?:bam|fastq)\b|\bthe (?:bam|fastq)[- ]files?\b", re.I)
+INPUT_HEADING = re.compile(r"^#{1,4}\s*inputs?\b", re.I)
+RECOMMEND_CUE = re.compile(r"\btips?:|\brecommend|\bgood practice\b|\bwe suggest\b|\bprefer|"
+                           r"\bbest (?:results|practice)\b|\bfaster\b|\bquicker\b", re.I)
+AGAINST_CUE = re.compile(r"\b(?:do not|don'?t|not) recommend|\bnot (?:supported|intended|designed) for\b"
+                         r"|\bavoid\b|\bshould not be (?:used|run)\b", re.I)
+PLATFORM_WORDS = {
+    "ont": re.compile(r"\b(?:oxford )?nanopore\b|\bont\b|\bminion\b|\bpromethion\b|\blong[- ]reads?\b", re.I),
+    "pacbio": re.compile(r"\bpacbio\b|\bpacific biosciences\b|\bhifi\b", re.I),
+    "illumina": re.compile(r"\billumina\b|\bshort[- ]reads?\b|\bmiseq\b|\bnextseq\b|\bforenseq\b|\bpowerseq\b", re.I),
+    "ce": re.compile(r"\bcapillary electrophoresis\b|\bgenemapper\b", re.I),
+}
+#: A sentence that states what the tool is FOR — not one that merely mentions
+#: a platform (an author list saying who ran the Illumina sequencing does).
+PLATFORM_CUE = re.compile(r"\bdesigned\b|\bintended\b|\btakes?\b|\binputs?\b|\baccepts?\b"
+                          r"|\btechnology\b|\bplatforms?\b|\bsequencing data\b", re.I)
+_SENTENCE = re.compile(r"(?<=[.!?])\s+(?=[A-Z*(\[])")
+
+
+def _sentences(readme: str):
+    """(line number, sentence) for every sentence, code blocks included: a
+    usage listing says what the tool takes as plainly as prose does. A line
+    that packs "designed for Illumina. We do not recommend Nanopore" holds
+    two statements, and they must not be read as one."""
+    for no, ln in enumerate(readme.splitlines(), 1):
+        t = ln.strip()
+        if not t or t.startswith(("```", "~~~")):
+            continue
+        for sent in _SENTENCE.split(t):
+            if sent.strip():
+                yield no, sent.strip()
+
+
+def read_input_statements(readme: str) -> dict:
+    """What the README says the tool takes, recommends and runs on — each
+    with the line it was read on, and nothing ranked.
+
+    Returns {"inputs": [{kind, line, text}], "recommendation": {kind, line,
+    text} | None, "platform": [{platform, line, text}], "against":
+    [{platform, line, text}], "determined": bool}. `determined` is False when
+    no sentence about input was found at all; the caller must then say so
+    rather than fall back on a count and present the count as a reading.
+    """
+    inputs: dict[str, dict] = {}
+    recommendation = None
+    platform: list[dict] = []
+    against: list[dict] = []
+    under_input_heading = False
+    for no, text in _sentences(readme):
+        if re.match(r"^#{1,4}\s", text):
+            under_input_heading = bool(INPUT_HEADING.match(text))
+        shown = text[:200]
+        kinds = [k for k, rx in KIND_WORDS.items() if rx.search(text)]
+        if kinds and (INPUT_CUE.search(text) or under_input_heading):
+            for k in kinds:
+                inputs.setdefault(k, {"kind": k, "line": no, "text": shown})
+        if AGAINST_CUE.search(text):
+            for pl, rx in PLATFORM_WORDS.items():
+                if rx.search(text) and not any(a["platform"] == pl for a in against):
+                    against.append({"platform": pl, "line": no, "text": shown})
+            continue  # "do not recommend X" is not a recommendation of X
+        if kinds and RECOMMEND_CUE.search(text) and recommendation is None:
+            recommendation = {"kind": kinds[0], "line": no, "text": shown}
+        if PLATFORM_CUE.search(text):
+            for pl, rx in PLATFORM_WORDS.items():
+                if rx.search(text) and not any(p["platform"] == pl for p in platform):
+                    platform.append({"platform": pl, "line": no, "text": shown})
+    # A platform the author advises against is not one the tool is for, even
+    # if some other sentence names it.
+    bad = {a["platform"] for a in against}
+    platform = [p for p in platform if p["platform"] not in bad]
+    return {"inputs": list(inputs.values()), "recommendation": recommendation,
+            "platform": platform, "against": against, "determined": bool(inputs)}
+
+
+def _type_for(kind: str, platform: str, ystr: bool) -> str | None:
+    if kind == "fsa":
+        return "ce-fsa"
+    if kind == "bam":
+        if platform == "ont":
+            return "ont-bam-hg38"
+        return "illumina-bam-hg38-y" if ystr else "illumina-bam-hg38"
+    if kind == "fastq":
+        return "ont-fastq" if platform == "ont" else "illumina-str-fastq"
+    return None
+
+
 def detect_input_type(readme: str, examples: list[dict]) -> dict:
+    """Which of STRhub's input types the tool can be run as, by READING what
+    the README states (read_input_statements) and only failing that by
+    counting mentions — and saying which of the two it was.
+
+    The candidates are ordered for STRhub's own use (what to try first), not
+    as a claim about the author: the author's recommendation goes first when
+    there is one, cited, and the rest in the order the README documents them.
+    """
     hits = {k: len(rx.findall(readme)) for k, rx in INPUT_SIGNALS.items()}
     kinds = {e["kind"] for e in examples}
-    if "bam" in kinds:
-        hits["bam"] += 3
-    if "fastq" in kinds:
-        hits["fastq"] += 3
-    if "fsa" in kinds:
-        hits["ce"] += 3
-    ranked = []
-    if hits["ce"] and hits["ce"] >= max(hits["bam"], hits["fastq"]):
-        ranked.append("ce-fsa")
-    if hits["bam"] or hits["fastq"]:
-        platform = "ont" if hits["ont"] > hits["illumina"] else "illumina"
-        if hits["bam"] >= hits["fastq"]:
-            ranked.append("ont-bam-hg38" if platform == "ont"
-                          else ("illumina-bam-hg38-y" if hits["ystr"] >= 3 else "illumina-bam-hg38"))
-            ranked.append("illumina-str-fastq" if platform == "illumina" else "ont-fastq")
+    statements = read_input_statements(readme)
+    ystr = hits["ystr"] >= 3
+    warnings: list[str] = []
+    if hits["hg19"] and not hits["hg38"]:
+        warnings.append("README mentions hg19/GRCh37 only; STRhub reference BAMs are hg38")
+
+    if statements["determined"]:
+        # The platform the README states the tool is for; a count of platform
+        # words decides only when no sentence does, and PacBio has no STRhub
+        # dataset so it can only ever fall through to the next.
+        stated = [p["platform"] for p in statements["platform"] if p["platform"] in ("ont", "illumina")]
+        if stated:
+            platform, platform_how = stated[0], "stated"
         else:
-            ranked.append("illumina-str-fastq" if platform == "illumina" else "ont-fastq")
-            ranked.append("ont-bam-hg38" if platform == "ont" else "illumina-bam-hg38")
+            platform, platform_how = ("ont" if hits["ont"] > hits["illumina"] else "illumina"), "counted"
+        documented = [i["kind"] for i in statements["inputs"]]
+        rec = statements["recommendation"]
+        order = ([rec["kind"]] if rec and rec["kind"] in documented else []) + \
+                [k for k in documented if not (rec and k == rec["kind"])]
+        ranked = [t for t in (_type_for(k, platform, ystr) for k in order) if t]
+        how = "read"
+    else:
+        # No sentence about input anywhere: the old count, and marked as such
+        # so the report can say the type was guessed rather than read.
+        if "bam" in kinds:
+            hits["bam"] += 3
+        if "fastq" in kinds:
+            hits["fastq"] += 3
+        if "fsa" in kinds:
+            hits["ce"] += 3
+        platform, platform_how = ("ont" if hits["ont"] > hits["illumina"] else "illumina"), "counted"
+        ranked = []
+        if hits["ce"] and hits["ce"] >= max(hits["bam"], hits["fastq"]):
+            ranked.append("ce-fsa")
+        if hits["bam"] or hits["fastq"]:
+            first, second = ("bam", "fastq") if hits["bam"] >= hits["fastq"] else ("fastq", "bam")
+            ranked += [t for t in (_type_for(first, platform, ystr), _type_for(second, platform, ystr)) if t]
+        how = "counted"
     if hits["snp"] >= 5 and "illumina-snp-fastq" not in ranked:
         ranked.append("illumina-snp-fastq")
     ranked = list(dict.fromkeys(ranked))
-    warnings = []
-    if hits["hg19"] and not hits["hg38"]:
-        warnings.append("README mentions hg19/GRCh37 only; STRhub reference BAMs are hg38")
-    if hits["bam"] and hits["fastq"] and abs(hits["bam"] - hits["fastq"]) <= 2:
-        warnings.append("README mentions BAM and FASTQ about equally; try both")
     return {"best": ranked[0] if ranked else None, "candidates": ranked, "signals": hits,
-            "warnings": warnings}
+            "warnings": warnings,
+            # How the answer was reached, and the sentences it rests on, so a
+            # report can cite them — or say that nothing was there to cite.
+            "how": how, "platform": platform, "platform_how": platform_how,
+            "statements": statements}
 
 
 def detect_output(readme: str, commands: list[dict]) -> dict:
@@ -638,7 +772,7 @@ def blob_url(slug: str, ref: str, path: str, line: int | None = None) -> str:
 
 def evidence_for(slug: str, ref: str, readme: str, readme_name: str | None,
                  build: dict, commands: list[dict], examples: list[dict],
-                 known_issues: list[dict]) -> list[dict]:
+                 known_issues: list[dict], input_type: dict | None = None) -> list[dict]:
     """Every fact the proposal rests on, as data a reader can open.
 
     Phase B of docs/PLAN-Claims-Need-Evidence.md. The proposal already knew
@@ -674,6 +808,22 @@ def evidence_for(slug: str, ref: str, readme: str, readme_name: str | None,
                     "text": e.get("kind", ""), "url": blob_url(slug, ref, e["path"])})
     for k in known_issues:
         out.append(readme_at(k["line"], "known_issue", text=k["heading"]))
+    # What the README states about input: every documented kind, the
+    # author's recommendation, and any platform the author advises against.
+    st = (input_type or {}).get("statements") or {}
+    seen_lines: set[tuple[str, int]] = set()
+    def once(claim: str, line: int, text: str) -> None:
+        # Two kinds read off one sentence are one cite, not two rows.
+        if (claim, line) not in seen_lines:
+            seen_lines.add((claim, line))
+            out.append(readme_at(line, claim, text=text))
+    for i in st.get("inputs") or []:
+        once("documented_input", i["line"], i["text"])
+    if st.get("recommendation"):
+        r = st["recommendation"]
+        once("author_recommendation", r["line"], r["text"])
+    for a in st.get("against") or []:
+        once("platform_advice", a["line"], a["text"])
     return out
 
 
@@ -716,7 +866,7 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         "known_issues": known,
         "readme_name": readme_name,
         # The claims above, each with the file, line and URL it rests on.
-        "evidence": evidence_for(slug, ref, readme, readme_name, build, commands, examples, known),
+        "evidence": evidence_for(slug, ref, readme, readme_name, build, commands, examples, known, input_type),
         "example": propose_example(commands, paths, examples),
         "dockerfile": generate_dockerfile(slug, ref, build),
         # Plan B, built only if the one above fails: the published environment

@@ -75,7 +75,6 @@ REGISTER: dict[str, tuple[str, str]] = {
     "7ceb34632e90": ("propose_manifest", "tree"),  # # No install method was detected; a bare image so the trial can report # the documentation gap 
     "831100e24df2": ("propose_manifest", "tree"),  # # The repository ships its own Dockerfile (
     "ec6b7b9d5fd5": ("propose_manifest", "readme"),  # ' the README installs; its version is the package's, not necessarily the pinned commit.
-    "0e6a6c086e9c": ("propose_manifest", "run"),  # , for which STRhub holds no reference sample; which input the tool is best used with is the aut
     "36152cfaf0d6": ("propose_manifest", "readme"),  # Run command: the README's own command, rewritten to STRhub's mounts; everything it created was 
     "714329de2505": ("propose_manifest", "readme"),  # the README points at; the tool inside it is whatever that image holds, not necessarily the pinn
     "70be7a8f1331": ("propose_manifest", "readme"),  # true # no command found in the README; nothing to run
@@ -107,6 +106,12 @@ REGISTER: dict[str, tuple[str, str]] = {
     "16eb06da646c": ("report", "readme"),  # Quoted from the repository's README at the verified commit…
     "9e3eb83ad8d7": ("report", "readme"),  # <h2>What the author documents as a known issue</h2>…
     "ffbc93dd0780": ("generate_pdf", "readme"),  # What the Author Documents as a Known Issue (§9 del PDF)
+    # Phase C: the input caveat quotes what the README states, with the line
+    # each statement was read on (read_input_statements). When nothing was
+    # there to read, it says the type was guessed — which the verdict weighs.
+    "cbc9c7684db7": ("propose_manifest", "readme"),  # Input: the README documents {kinds} (line N); this run used…
+    "915bef0dcd27": ("propose_manifest", "run"),     # STRhub holds no reference sample as {type}, so the other documented kind was used.
+    "99be0d39da1f": ("verdict", "readme"),           # no sentence in the README says what the tool takes as input…
 }
 
 #: Phrasings that may never be published, whatever evidence is attached: they

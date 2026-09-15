@@ -52,6 +52,8 @@ LIMITATION_TEXT = {
                               "one in a layout it records for this program",
     "no_reference_dataset": "STRhub holds no reference sample of the kind this tool reads and "
                             "the repository ships no example to run, so nothing was executed",
+    "input_type_guessed": "no sentence in the README says what the tool takes as input, so "
+                          "the reference data was chosen on the strength of mentions alone",
 }
 
 #: What stopped the run, as something a person can act on. Each blocker names
@@ -240,6 +242,10 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     # did not get its output: if the plain BED worked, it worked.
     if "regions_format_guessed" in limits and gates.get("io"):
         limits.remove("regions_format_guessed")
+    # Likewise a guessed input type: if the run produced output, the guess
+    # was right, and a right guess is not a limitation.
+    if "input_type_guessed" in limits and gates.get("io"):
+        limits.remove("input_type_guessed")
     if auto and limits:
         return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "recipe",
                 "reason": "STRhub could not complete a way to run this tool: "
