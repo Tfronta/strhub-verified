@@ -1,5 +1,6 @@
 {
   "schema": "strhub-verified/1",
+  "mode": "publish",
   "tool": {
     "name": "STRait Razor",
     "version": "b618e93",
@@ -20,8 +21,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-01T11:12:11+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/33501209177",
+  "generated": "2026-09-15T19:52:12+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016104651",
   "gates": {
     "available": true,
     "installs": true,
@@ -38,13 +39,14 @@
         "path": "allsequences.txt",
         "format": "tsv",
         "checks": {
+          "confined": true,
           "exists": true,
           "non_empty": true,
           "parses_as_tsv": true,
           "min_records": true
         },
         "resolved": "allsequences.txt",
-        "records": 815,
+        "records": 816,
         "passed": true
       }
     ]
@@ -1408,6 +1410,7 @@
       }
     ]
   },
+  "example_detail": null,
   "datasets": [
     {
       "leg": "own",
@@ -1427,6 +1430,16 @@
       "io": true,
       "content": true,
       "passed": true
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": false,
+      "io": false,
+      "content": null,
+      "passed": false,
+      "matches_expected": null,
+      "produced_count": null
     }
   ],
   "regions": null,
@@ -1461,7 +1474,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-01T11:12:11+00:00",
+    "checked": "2026-09-15T19:52:13+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -1471,6 +1484,20 @@
   "needed_beyond_repo": [
     "Test data: no sample from the repository was used, so a public reference sample stood in."
   ],
+  "author_known_issues": [
+    {
+      "heading": "known issues",
+      "line": 114,
+      "text": "There's been one computer architecture (windows 7 + Xeon processor) that's caused some issues with the str8rzr.exe executable. In this case, str8rzr would occassionally crash, and I had to recompile it for that computer (and since then it's been fine). Please let me know if you experience problems-- especially crashes-- it'll let me further diagnose the exact problems therein. str8rzr is written in C/C++ with multithreading support using the pthreads library. This new release couples a new search strategy (see algorithm) coupled with a complete redesign of the code-base used to identify short ",
+      "truncated": true
+    }
+  ],
+  "repo_test_data": {
+    "known": true,
+    "present": false,
+    "count": 0,
+    "examples": []
+  },
   "logs": {
     "build": "strait-razor-b618e93.log-build.txt"
   },
@@ -1479,5 +1506,13 @@
     "basis": null,
     "reason_code": null,
     "reason": null
+  },
+  "verdict": {
+    "code": "runs",
+    "title": "Runs",
+    "basis": "gates",
+    "reason": "The tool installed and its run produced its documented output.",
+    "readme_gaps": [],
+    "blockers": []
   }
 }
