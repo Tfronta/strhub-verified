@@ -57,3 +57,19 @@ def test_a_passing_run_still_reports_its_evidence():
     assert "Runs end-to-end" in text and "executes without error" in text
     assert "24 target forensic STR loci" in text and "800 at D18S51" in text
     assert "Verdict: Runs" in text
+
+
+def test_absence_of_test_data_is_claimed_only_on_evidence():
+    # "This tool does not include its own demo or test data" was printed for
+    # every tool. STRsearch ships 35 files including example/test_data/test.bam.
+    nobody_looked = certificate_text.test_data_item(_cfg(), "ONT slice")
+    assert nobody_looked[0] == "Reference input"
+    assert "does not include" not in nobody_looked[1] and "ships no" not in nobody_looked[1]
+
+    ships = certificate_text.test_data_item(
+        _cfg(repo_test_data={"known": True, "present": True, "count": 35}), "ONT slice")
+    assert "ships example data (35 file(s))" in ships[1]
+
+    ships_none = certificate_text.test_data_item(
+        _cfg(repo_test_data={"known": True, "present": False, "count": 0}), "ONT slice")
+    assert ships_none[0] == "No bundled demo data" and "ships no test or demo data" in ships_none[1]

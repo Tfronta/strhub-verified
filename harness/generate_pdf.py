@@ -630,8 +630,17 @@ def build_body(cfg):
     # §7 Verification Data
     els.append(section_num("7", "Verification Data"))
     ds = cfg.get("dataset", {})
-    intro = ("This tool does not include its own demo or test data. "
-             "STRhub ran the verification using the public reference dataset listed below.")
+    # Evidence, not assumption — see certificate_text.test_data_item.
+    td = cfg.get("repo_test_data") or {}
+    if not td.get("known"):
+        intro = "STRhub ran the verification using the public reference dataset listed below."
+    elif td.get("present"):
+        intro = (f"The repository ships example data ({td.get('count', 0)} file(s)); this run did "
+                 "not use it. STRhub ran the verification using the public reference dataset "
+                 "listed below.")
+    else:
+        intro = ("This tool ships no demo or test data of its own. "
+                 "STRhub ran the verification using the public reference dataset listed below.")
     # Say plainly that the dataset is a slice. Without this a reader sees only
     # "Illumina BAM (hg38) — HG002" and may take it for a whole genome, which makes
     # the narrow locus list below look like a shortcoming of the tool.
@@ -1178,6 +1187,9 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         # The one sentence the web leads with. A certificate that omits it can
         # read as a pass while the report it renders says "Fails".
         "verdict":        report.get("verdict") or {},
+        # Whether the repository ships example data, when a run actually read
+        # the tree to find out. Absent means nobody looked.
+        "repo_test_data": report.get("repo_test_data") or {},
         # A trial publishes nothing and has no catalogue entry. Unmarked, its
         # PDF is indistinguishable from an attestation anyone may circulate.
         "is_trial":       report.get("mode") == "trial",
