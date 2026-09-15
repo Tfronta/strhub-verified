@@ -2,12 +2,14 @@
 
 **Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
+**Verdict: Runs.** The tool installed and its run produced its documented output.
+
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-01T11:12:39+00:00
+- Generated: 2026-09-15T19:52:25+00:00
 - Submitted by: a third party — not the tool's maintainer
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/33501209177
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35016097312
 
 ## Gates
 
@@ -18,6 +20,14 @@
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+
+## What the author documents as a known issue
+
+Quoted from the repository's README at the verified commit. STRhub did not establish any of this by running the tool; it is the author's own note about their own software.
+
+**known issues** (README line 114)
+
+> There's been one computer architecture (windows 7 + Xeon processor) that's caused some issues with the str8rzr.exe executable. In this case, str8rzr would occassionally crash, and I had to recompile it for that computer (and since then it's been fine). Please let me know if you experience problems-- especially crashes-- it'll let me further diagnose the exact problems therein. str8rzr is written in C/C++ with multithreading support using the pthreads library. This new release couples a new search strategy (see algorithm) coupled with a complete redesign of the code-base used to identify short …
 
 ## Output content (plausibility evidence)
 
@@ -32,6 +42,7 @@
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
 | External data | yes | PASS | — | NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01) |
+| Tool's own example | N/A | N/A | — | — |
 
 ## Who submitted this
 
