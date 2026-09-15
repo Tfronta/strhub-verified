@@ -98,6 +98,12 @@ REGISTER: dict[str, tuple[str, str]] = {
     "e32acfe17c39": ("verdict", "tree"),  # no install method was found in the repository
     "0a4be5144c5f": ("verdict", "strhub-table"),  # the tool needs a regions file and STRhub does not know its format; a plain chrom/start/end/name
     "1dfe6b92d49e": ("verdict", "strhub-table"),  # the tool needs a regions file in its own format, which STRhub does not yet generate for it
+    # The author's own words, quoted from their README at the pinned ref: the
+    # framing is ours, the content is theirs, and the line number is the cite.
+    "0d09141b6660": ("report", "readme"),  # ## What the author documents as a known issue
+    "16eb06da646c": ("report", "readme"),  # Quoted from the repository's README at the verified commit…
+    "9e3eb83ad8d7": ("report", "readme"),  # <h2>What the author documents as a known issue</h2>…
+    "ffbc93dd0780": ("generate_pdf", "readme"),  # What the Author Documents as a Known Issue (§9 del PDF)
 }
 
 #: Phrasings that may never be published, whatever evidence is attached: they
