@@ -699,6 +699,11 @@ def main() -> int:
     ap.add_argument("--recipe-proposal", default="",
                     help="detect_recipe.py output when the recipe was proposed from the "
                          "repository; lets the verdict tell a documentation gap from a failure")
+    ap.add_argument("--repo-read", default="",
+                    help="detect_recipe.py output for a run whose recipe was NOT proposed "
+                         "(a committed tool). Evidence only — what the repository holds and "
+                         "what its README documents — and never treated as a proposed recipe, "
+                         "which would change the verdict")
     ap.add_argument("--mode", default="publish", choices=["publish", "trial"],
                     help="trial: an unpublished rehearsal of a recipe; stamped into the "
                          "report so a trial can never be mistaken for an attestation")
@@ -902,10 +907,24 @@ def main() -> int:
     # exit without doing any work; a report on a run that died in that wrapper
     # said nothing about it, because nobody carried the section out of the
     # README. A reader deciding whether a failure is news needs this first.
-    if proposal is not None and proposal.get("known_issues"):
-        report["author_known_issues"] = proposal["known_issues"]
-    if proposal is not None:
-        examples = proposal.get("example_data") or []
+    # Reading the repository is evidence collection, and it is worth doing for
+    # every run — not only for one whose recipe STRhub proposed. A published
+    # tool's recipe is committed, so no proposal exists, and the catalogue
+    # carried none of this: no known-issue section, and a certificate still
+    # claiming the tool ships no test data because nobody had looked. The
+    # verdict keeps reading `proposal` alone, since "the recipe was proposed
+    # from the repository" is what changes a verdict, and reading a repository
+    # is not that.
+    evidence = proposal
+    if evidence is None and args.repo_read and pathlib.Path(args.repo_read).exists():
+        try:
+            evidence = json.loads(pathlib.Path(args.repo_read).read_text())
+        except Exception:  # noqa: BLE001
+            evidence = None
+    if evidence is not None and evidence.get("known_issues"):
+        report["author_known_issues"] = evidence["known_issues"]
+    if evidence is not None:
+        examples = evidence.get("example_data") or []
         report["repo_test_data"] = {
             "known": True,
             "present": bool(examples),
