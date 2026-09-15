@@ -166,10 +166,16 @@ def bioconda_package(readme: str) -> str | None:
     """The package a README installs from Bioconda, if it says so. The last
     token of the install line is the package in every README seen so far
     (`conda install -c bioconda -c conda-forge gangstr`)."""
-    for ln in _code_lines(readme):
+    found = bioconda_package_with_line(readme)
+    return found[0] if found else None
+
+
+def bioconda_package_with_line(readme: str) -> tuple[str, int] | None:
+    """(package, README line) — the line is the cite."""
+    for line_no, ln in _code_lines_numbered(readme):
         m = BIOCONDA_RE.search(ln.strip())
         if m and m.group(1) not in ("bioconda", "conda-forge"):
-            return m.group(1)
+            return m.group(1), line_no
     return None
 
 
@@ -181,10 +187,16 @@ DOCKER_IMAGE_RE = re.compile(
 def docker_image(readme: str) -> str | None:
     """A Docker image the README tells users to pull. The author's own
     environment, published: as trustworthy as a Dockerfile in the tree."""
+    found = docker_image_with_line(readme)
+    return found[0] if found else None
+
+
+def docker_image_with_line(readme: str) -> tuple[str, int] | None:
+    """(image, README line) — the line is the cite."""
     for m in DOCKER_IMAGE_RE.finditer(readme):
         img = m.group(1) or m.group(2)
         if img and "/" in img and not img.startswith(("http", "docker.")):
-            return img
+            return img, readme.count("\n", 0, m.start()) + 1
     return None
 
 
@@ -196,12 +208,12 @@ PUBLISHED_METHODS = ("docker_image", "bioconda")
 
 def detect_build(paths: list[str], readme: str) -> dict:
     found = []
-    img = docker_image(readme)
+    img = docker_image_with_line(readme)
     if img:
-        found.append({"method": "docker_image", "file": None, "image": img})
-    pkg = bioconda_package(readme)
+        found.append({"method": "docker_image", "file": None, "image": img[0], "readme_line": img[1]})
+    pkg = bioconda_package_with_line(readme)
     if pkg:
-        found.append({"method": "bioconda", "file": None, "package": pkg})
+        found.append({"method": "bioconda", "file": None, "package": pkg[0], "readme_line": pkg[1]})
     for path, method in BUILD_FILES:
         if path in paths:
             found.append({"method": method, "file": path})
@@ -233,6 +245,7 @@ def detect_build(paths: list[str], readme: str) -> dict:
         "file": chosen["file"] if chosen else None,
         "package": chosen.get("package") if chosen else None,
         "image": chosen.get("image") if chosen else None,
+        "readme_line": chosen.get("readme_line") if chosen else None,
         "fallback": fallback,
         "candidates": found,
         "readme_install_lines": install_lines[:12],
@@ -261,36 +274,46 @@ def detect_example_data(tree: list[dict]) -> list[dict]:
 
 def _code_lines(readme: str) -> list[str]:
     """Lines inside fenced or indented code blocks of a Markdown/RST README."""
-    lines: list[str] = []
+    return [text for _, text in _code_lines_numbered(readme)]
+
+
+def _code_lines_numbered(readme: str) -> list[tuple[int, str]]:
+    """(README line, text) for each command-shaped line in a code block.
+
+    The line is where the command STARTS in the README (1-based), kept through
+    the joining below so a report can cite it — a reader who is told "the
+    README's own command" must be able to open the README at that command.
+    """
+    lines: list[tuple[int, str]] = []
     fenced = False
-    for ln in readme.splitlines():
+    for no, ln in enumerate(readme.splitlines(), 1):
         s = ln.rstrip()
         if s.strip().startswith("```") or s.strip().startswith("~~~"):
             fenced = not fenced
             continue
         if fenced:
-            lines.append(s)
+            lines.append((no, s))
         elif s.startswith(("    ", "\t")) and s.strip():
-            lines.append(s.strip())
+            lines.append((no, s.strip()))
     # Shell prompts, then continuations joined into one command: a trailing
     # backslash, or a following line that starts with a flag. READMEs lay a
     # long invocation out one option per line without any backslash (HipSTR,
     # GangSTR), and reading only the first line loses --regions and --out.
-    cleaned: list[str] = []
-    for ln in lines:
+    cleaned: list[tuple[int, str]] = []
+    for no, ln in lines:
         ln = re.sub(r"^\s*[$>]\s+", "", ln)
         stripped = ln.strip()
-        if cleaned and cleaned[-1].endswith("\\"):
-            cleaned[-1] = cleaned[-1][:-1].rstrip() + " " + stripped
+        if cleaned and cleaned[-1][1].endswith("\\"):
+            cleaned[-1] = (cleaned[-1][0], cleaned[-1][1][:-1].rstrip() + " " + stripped)
         elif cleaned and stripped.startswith("-") and not stripped.startswith("---") \
-                and cleaned[-1].strip() and not cleaned[-1].strip().startswith(("#", "-")) \
-                and not cleaned[-1].rstrip().endswith(":"):
+                and cleaned[-1][1].strip() and not cleaned[-1][1].strip().startswith(("#", "-")) \
+                and not cleaned[-1][1].rstrip().endswith(":"):
             # A line ending in a colon ("where:", "Options:") heads an option
             # listing, not a command; joining the flags onto it made STRspy's
             # help text the best "command" in its README.
-            cleaned[-1] = cleaned[-1].rstrip() + " " + stripped
+            cleaned[-1] = (cleaned[-1][0], cleaned[-1][1].rstrip() + " " + stripped)
         else:
-            cleaned.append(ln)
+            cleaned.append((no, ln))
     return cleaned
 
 
@@ -348,7 +371,7 @@ def detect_commands(readme: str, names: list[str]) -> list[dict]:
     in_re = re.compile(r"--?(?:bams?|fastq|input|in|reads|i)\b|\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b"
                        r"|(?<![\w-])[<\[]?\w*(?:fastq|fq|bam|reads|input)\w*[>\]]?(?![\w-])", re.I)
     out_re = re.compile(r"--?(?:out(?:put)?(?:[-_]?\w+)?|o|str-vcf|prefix)\b|\s>\s", re.I)
-    for ln in _code_lines(readme):
+    for line_no, ln in _code_lines_numbered(readme):
         text = ln.strip()
         if not text or text.startswith("#"):
             continue
@@ -379,6 +402,9 @@ def detect_commands(readme: str, names: list[str]) -> list[dict]:
             continue
         cands.append({
             "cmd": text,
+            # Where in the README it was read: the cite for "the README's own
+            # command", and what a reader opens to check the rewrite against.
+            "line": line_no,
             "invokes": prog,
             "named_in_tree": named,
             "has_input_flag": has_in,
@@ -604,6 +630,53 @@ def generate_dockerfile(slug: str, ref: str, build: dict) -> str | None:
     return None
 
 
+def blob_url(slug: str, ref: str, path: str, line: int | None = None) -> str:
+    """The file at the pinned ref on GitHub, at a line when there is one."""
+    url = f"https://github.com/{slug}/blob/{ref}/{path}"
+    return f"{url}#L{line}" if line else url
+
+
+def evidence_for(slug: str, ref: str, readme: str, readme_name: str | None,
+                 build: dict, commands: list[dict], examples: list[dict],
+                 known_issues: list[dict]) -> list[dict]:
+    """Every fact the proposal rests on, as data a reader can open.
+
+    Phase B of docs/PLAN-Claims-Need-Evidence.md. The proposal already knew
+    where each thing came from — the README line a command was read on, the
+    file that says how to install, the paths that count as example data — and
+    kept none of it: the report said "the README's own command" and a reader
+    had to trust that. Each entry here is one claim, with the file, the line
+    when there is one, the text as read, and the URL at the pinned ref, so
+    the claim can be checked in one click and challenged when it is wrong.
+    """
+    readme_lines = readme.splitlines()
+    rn = readme_name or "README.md"
+
+    def readme_at(line: int, claim: str, text: str | None = None) -> dict:
+        shown = text if text is not None else (readme_lines[line - 1].strip() if 0 < line <= len(readme_lines) else "")
+        return {"claim": claim, "kind": "readme", "path": rn, "line": line,
+                "text": shown[:300], "url": blob_url(slug, ref, rn, line)}
+
+    out: list[dict] = []
+    if build.get("file"):
+        out.append({"claim": "install_method", "kind": "tree", "path": build["file"],
+                    "text": build["method"], "url": blob_url(slug, ref, build["file"])})
+    if build.get("method") in ("docker_image", "bioconda") and build.get("readme_line"):
+        out.append(readme_at(build["readme_line"],
+                             "published_image" if build["method"] == "docker_image" else "bioconda_package"))
+    fb = build.get("fallback") or {}
+    if fb.get("readme_line"):
+        out.append(readme_at(fb["readme_line"], "fallback_environment"))
+    if commands and commands[0].get("line"):
+        out.append(readme_at(commands[0]["line"], "run_command"))
+    for e in examples[:5]:
+        out.append({"claim": "example_data", "kind": "tree", "path": e["path"],
+                    "text": e.get("kind", ""), "url": blob_url(slug, ref, e["path"])})
+    for k in known_issues:
+        out.append(readme_at(k["line"], "known_issue", text=k["heading"]))
+    return out
+
+
 def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str | None) -> dict:
     tree = tree_resp["tree"]
     paths = [e["path"] for e in tree]
@@ -614,6 +687,10 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
     input_type = detect_input_type(readme, examples)
     output = detect_output(readme, commands)
     rd = readme_gaps(readme_name, build, commands, input_type, output, examples)
+    known = author_known_issues(readme)
+    # Each known-issue quote carries the URL of the line it was read from.
+    for k in known:
+        k["url"] = blob_url(slug, ref, readme_name or "README.md", k["line"])
     return {
         "schema": "strhub-verified/recipe-proposal/1",
         "repo": f"https://github.com/{slug}",
@@ -636,7 +713,10 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         "readme_text": readme[:20_000],
         # What the author already wrote down as wrong or incomplete. Quoted, so
         # the report carries the author's own words rather than an inference.
-        "known_issues": author_known_issues(readme),
+        "known_issues": known,
+        "readme_name": readme_name,
+        # The claims above, each with the file, line and URL it rests on.
+        "evidence": evidence_for(slug, ref, readme, readme_name, build, commands, examples, known),
         "example": propose_example(commands, paths, examples),
         "dockerfile": generate_dockerfile(slug, ref, build),
         # Plan B, built only if the one above fails: the published environment

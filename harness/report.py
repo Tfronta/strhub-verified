@@ -362,6 +362,19 @@ def _summary_md(report: dict, slug: str) -> str:
     # Before the notes and the scope: what the reader needs to hold the ladder
     # against. Phrased as requirements, not as a shortfall — every tool needs
     # something, and the useful question is what.
+    ev = report.get("evidence") or []
+    if ev:
+        lines += ["", "## Evidence", "",
+                  "What this run's configuration rests on, each item at the verified commit. "
+                  "Open any of them to check the claim it supports."]
+        label = {"install_method": "Install method", "published_image": "Published image",
+                 "bioconda_package": "Bioconda package", "fallback_environment": "Fallback environment",
+                 "run_command": "Run command", "example_data": "Example data", "known_issue": "Known issue"}
+        for e in ev:
+            where = f"`{e['path']}`" + (f" line {e['line']}" if e.get("line") else "")
+            txt = f" — `{e['text'][:80]}`" if e.get("text") and e["kind"] == "readme" else ""
+            lines.append(f"- {label.get(e['claim'], e['claim'])}: [{where}]({e['url']}){txt}")
+
     needed = report.get("needed_beyond_repo") or []
     if needed:
         lines += ["", "## What this run needed beyond the repository", "",
@@ -923,6 +936,12 @@ def main() -> int:
             evidence = None
     if evidence is not None and evidence.get("known_issues"):
         report["author_known_issues"] = evidence["known_issues"]
+    # Every fact the run's configuration rests on, as something a reader can
+    # open: file, line, the text as read, and the URL at the pinned ref.
+    # Phase B of docs/PLAN-Claims-Need-Evidence.md — a claim that cannot be
+    # checked in one click cannot be challenged either.
+    if evidence is not None and evidence.get("evidence"):
+        report["evidence"] = evidence["evidence"]
     if evidence is not None:
         examples = evidence.get("example_data") or []
         report["repo_test_data"] = {

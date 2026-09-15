@@ -63,7 +63,11 @@ def test_gangstr_builds_the_pinned_commit_and_keeps_the_published_image_as_plan_
     # the report names is the pinned commit, so that is what gets built; the
     # image holds whatever was last pushed to it and is kept as the fallback.
     assert r["build"]["method"] == "cmake" and r["build"]["file"] == "CMakeLists.txt"
-    assert r["build"]["fallback"] == {"method": "docker_image", "file": None, "image": "gymreklab/str-toolkit"}
+    fb = r["build"]["fallback"]
+    assert (fb["method"], fb["image"]) == ("docker_image", "gymreklab/str-toolkit")
+    # The README line the image was read from: the cite, so a reader can open
+    # the README there and see the author pointing at it.
+    assert fb["readme_line"] == 18
     assert [c["method"] for c in r["build"]["candidates"]] == ["cmake", "docker_image", "bioconda"]
     assert "FROM ubuntu:22.04" in r["dockerfile"] and "cmake . && make" in r["dockerfile"]
     assert r["dockerfile_fallback"].startswith("# Proposed") and "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
