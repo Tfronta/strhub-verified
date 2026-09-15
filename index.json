@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-09-15T19:53:03+00:00",
+  "generated": "2026-09-15T19:53:15+00:00",
   "count": 11,
   "tools": [
     {
@@ -216,10 +216,10 @@
       "level": "content",
       "label": "Runs + Plausible output",
       "errors_reported": false,
-      "generated": "2026-09-14T20:32:41+00:00",
+      "generated": "2026-09-15T19:53:11+00:00",
       "source_repo": "https://github.com/AnJingwd/STRsearch",
       "source_ref": "c70179b3b175adc82a7314409af06900b3861d61",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/34893427310",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016120651",
       "distinct_str_loci": 24,
       "distinct_snp_markers": 0,
       "total_reads": 2401,

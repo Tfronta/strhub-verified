@@ -22,8 +22,8 @@
     ],
     "source": "submitted"
   },
-  "generated": "2026-09-14T20:32:41+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/34893427310",
+  "generated": "2026-09-15T19:53:11+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016120651",
   "gates": {
     "available": true,
     "installs": true,
@@ -300,7 +300,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-14T20:32:41+00:00",
+    "checked": "2026-09-15T19:53:11+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -311,6 +311,18 @@
     "Test data: no sample from the repository was used, so a public reference sample stood in.",
     "A container environment, supplied with the submission."
   ],
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 35,
+    "examples": [
+      "example/ref_test.bed",
+      "example/test_data/test.bam",
+      "example/test_data/test_R1.fastq",
+      "example/test_data/test_R2.fastq",
+      "example/test_output/STRfq/Marker94_reads_test_sortByname.bam"
+    ]
+  },
   "logs": {
     "external": "strsearch-c70179b.log-external.txt",
     "build": "strsearch-c70179b.log-build.txt"
