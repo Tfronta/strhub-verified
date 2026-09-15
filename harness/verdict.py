@@ -43,6 +43,8 @@ LIMITATION_TEXT = {
     "install_method_unknown": "no install method was found in the repository",
     "regions_format_unknown": "the tool needs a regions file in its own format, which STRhub "
                               "does not yet generate for it",
+    "no_reference_dataset": "STRhub holds no reference sample of the kind this tool reads and "
+                            "the repository ships no example to run, so nothing was executed",
 }
 
 #: What stopped the run, as something a person can act on. Each blocker names
@@ -65,6 +67,19 @@ BLOCKERS = {
                     "loci (CODIS and the usual expanded panel). Publishing one in the repository "
                     "would let anyone run the documented example and let STRhub verify the tool "
                     "automatically.",
+        },
+    },
+    "no_reference_dataset": {
+        "what": "STRhub has no reference sample of the kind this tool reads, and the repository "
+                "ships no example to run, so nothing was executed.",
+        "self_fix": None,
+        "self_fix_text": "",
+        "ask_owner": {
+            "title": "Ship a small example dataset",
+            "body": "STRhub Verified could not run the tool: it holds no public reference sample "
+                    "of the input type the README describes, and the repository ships no example "
+                    "data. A small example (a few reads and the expected output) would let a new "
+                    "user, and STRhub, run it end-to-end.",
         },
     },
     "no_command": {
@@ -231,7 +246,9 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     elif not gates.get("installs"):
         reason = "The environment did not build from the declared install steps."
     elif not gates.get("runs"):
-        reason = "The tool exited with an error on the reference data."
+        # Not "on the reference data": a tool can exit before it reads any,
+        # as STRspy's wrapper does when its self-check fails.
+        reason = "The tool exited with an error before producing its documented output."
     else:
         reason = "The tool ran to completion but produced no output in the documented format."
     return {"code": "fails", "title": TITLES["fails"], "basis": "gates", "reason": reason,

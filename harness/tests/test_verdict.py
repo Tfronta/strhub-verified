@@ -100,3 +100,13 @@ def test_output_on_plan_b_is_still_runs_but_says_which_version_ran():
     assert "pinned commit failed" in v["reason"] and "published environment" in v["reason"]
     assert "pinned" not in verdict.decide(G_OK)["reason"]
 
+
+def test_nothing_executed_is_undetermined_with_an_ask_for_example_data():
+    proposal = {**PROPOSAL_OK, "limitations": ["no_reference_dataset"]}
+    v = verdict.decide(G_RUN_FAIL, recipe_proposal=proposal)
+    assert v["code"] == "undetermined" and v["basis"] == "recipe"
+    assert "nothing was executed" in v["reason"]
+    assert v["blockers"][0]["code"] == "no_reference_dataset"
+    assert v["blockers"][0]["self_fix"] is None
+    assert v["blockers"][0]["ask_owner"]["title"] == "Ship a small example dataset"
+
