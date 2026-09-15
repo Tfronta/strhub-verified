@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/1",
-  "generated": "2026-09-15T19:54:32+00:00",
+  "generated": "2026-09-15T19:54:52+00:00",
   "count": 11,
   "tools": [
     {
@@ -101,10 +101,10 @@
       "level": "content",
       "label": "Runs + Plausible output",
       "errors_reported": false,
-      "generated": "2026-09-14T20:35:44+00:00",
+      "generated": "2026-09-15T19:54:48+00:00",
       "source_repo": "https://github.com/tfwillems/HipSTR",
       "source_ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/34893419838",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016077060",
       "distinct_str_loci": 23,
       "distinct_snp_markers": 0,
       "total_reads": 8230,

@@ -19,8 +19,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-14T20:35:44+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/34893419838",
+  "generated": "2026-09-15T19:54:48+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016077060",
   "gates": {
     "available": true,
     "installs": true,
@@ -295,12 +295,22 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-14T20:35:45+00:00",
+    "checked": "2026-09-15T19:54:49+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
     "status": "identical",
     "behind_by": 0
+  },
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 3,
+    "examples": [
+      "test/input/chr1_regions.bed",
+      "test/input/chr1_regions_v2.bed",
+      "test/input/1kg.chr1.imputed.vcf.gz"
+    ]
   },
   "logs": {
     "own": "hipstr-v0-7.log-own.txt",
