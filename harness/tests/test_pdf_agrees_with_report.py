@@ -6,7 +6,7 @@ success with the numbers interpolated, so a run that stopped at Installs was
 certified as "installs and executes without error ... generated a structurally
 valid output file", with "0 loci" as the only hint.
 """
-import generate_pdf
+import certificate_text
 
 
 def _cfg(**over):
@@ -23,7 +23,7 @@ def _cfg(**over):
 
 
 def _conclusion(cfg):
-    return [f"{t} :: {b}" for t, b in generate_pdf.conclusion_items_for(cfg)]
+    return [f"{t} :: {b}" for t, b in certificate_text.conclusion_items_for(cfg)]
 
 
 def test_a_run_that_stopped_is_not_certified_as_running():
