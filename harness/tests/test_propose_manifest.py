@@ -127,3 +127,14 @@ def test_nothing_to_run_on_is_a_limitation_not_a_failure(tmp_path):
     assert m["inputs"] == {"type": "ont-fastq"}
     assert "no_reference_dataset" in r["limitations"]
 
+
+
+def test_the_tool_is_named_the_way_its_repository_writes_it():
+    # A GitHub path is case-flattened by its owner as often as not
+    # (unique379r/strspy); the certificate used to .title() that into "Strspy".
+    for repo, expected in [("strspy", "STRspy"), ("gangstr", "GangSTR"),
+                           ("hipstr", "HipSTR"), ("strsearch", "STRsearch")]:
+        proposal = _proposal(repo)
+        assert pm.tool_name_as_written(proposal["repo"], proposal) == expected, repo
+    # Nothing to go on: the path segment, not an invented capitalisation.
+    assert pm.tool_name_as_written("https://github.com/x/mytool", {"readme_text": ""}) == "mytool"
