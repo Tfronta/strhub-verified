@@ -838,6 +838,12 @@ def main() -> int:
             "Test data: no sample from the repository was used, so a public "
             "reference sample stood in."
         )
+    proposal = None
+    if args.recipe_proposal and pathlib.Path(args.recipe_proposal).exists():
+        try:
+            proposal = json.loads(pathlib.Path(args.recipe_proposal).read_text())
+        except Exception:  # noqa: BLE001
+            proposal = None
     env_source = (m.get("environment") or {}).get("source")
     if args.environment_built == "fallback":
         needed.append(
@@ -856,6 +862,22 @@ def main() -> int:
         )
     if needed:
         report["needed_beyond_repo"] = needed
+
+    # Whether the repository ships example data, as EVIDENCE rather than as an
+    # assumption. Only a run whose recipe was proposed from the repository has
+    # read the tree; for a committed recipe nobody looked, and a report must
+    # then say what STRhub used rather than what the author ships. The
+    # certificate used to state "This tool does not include its own demo or
+    # test data" unconditionally — false for STRsearch, which ships 35 files
+    # including example/test_data/test.bam.
+    if proposal is not None:
+        examples = proposal.get("example_data") or []
+        report["repo_test_data"] = {
+            "known": True,
+            "present": bool(examples),
+            "count": len(examples),
+            "examples": [e.get("path") for e in examples[:5] if isinstance(e, dict)],
+        }
 
     # Notes taken while reading the repository, carried straight from the manifest
     # and kept OUT of "gates" and "diagnostics" on purpose. Those two are what
@@ -950,12 +972,6 @@ def main() -> int:
     # The one sentence for a reader who does not program. Decided from the gates,
     # the diagnostics and, when the recipe was proposed from the repository, the
     # README gaps detect_recipe found (see harness/verdict.py for the policy).
-    proposal = None
-    if args.recipe_proposal and pathlib.Path(args.recipe_proposal).exists():
-        try:
-            proposal = json.loads(pathlib.Path(args.recipe_proposal).read_text())
-        except Exception:  # noqa: BLE001
-            proposal = None
     report["verdict"] = verdict_lib.decide(
         gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
         fallback_used=args.environment_built == "fallback",
