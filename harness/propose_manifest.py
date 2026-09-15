@@ -151,8 +151,16 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
         with_data = next((c for c in (proposal.get("input_type") or {}).get("candidates", [])
                           if datasets_lib.resolve(c)), None)
         if with_data:
-            input_note = (f"Input: the README suggests {input_type} first; STRhub has reference "
-                          f"data only as {with_data}, which is what the run uses.")
+            # Says what STRhub did, not what the README "suggests". The ranking
+            # behind `best` is a keyword count, and a count is not a reading:
+            # for STRspy it put FASTQ first on 7 mentions against 4, while the
+            # README documents both inputs and recommends BAM outright ("its
+            # good practice to use pre-aligned bams"). A report may describe
+            # its own choice; it may not put a preference in the author's mouth.
+            input_note = (f"Input: this run used STRhub's {with_data} reference data. The "
+                          f"repository also describes {input_type}, for which STRhub holds no "
+                          "reference sample; which input the tool is best used with is the "
+                          "author's documentation to say, not this run.")
             input_type = with_data
     from_repo = build_info.get("method") == "dockerfile"
     limitations: list[str] = []

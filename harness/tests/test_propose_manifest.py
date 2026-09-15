@@ -113,7 +113,7 @@ def test_strspy_runs_on_the_input_type_strhub_has_data_for(tmp_path):
     r = pm.build(_proposal("strspy"), "strspy-trial")
     m = _valid(r["manifest_yml"], tmp_path)
     assert m["inputs"]["type"] == "ont-bam-hg38"
-    assert any(c.startswith("Input: the README suggests ont-fastq first") for c in m["caveats"]["items"])
+    assert any(c.startswith("Input: this run used STRhub's ont-bam-hg38 reference data") for c in m["caveats"]["items"])
     assert "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt" in m["run"]["cmd"]
     assert "no_reference_dataset" not in r["limitations"]
 

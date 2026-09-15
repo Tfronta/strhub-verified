@@ -9,6 +9,32 @@ decides whether it may be said at all.
 from __future__ import annotations
 
 
+def test_data_item(cfg: dict, ds_name: str) -> tuple[str, str]:
+    """What the run used for input, and — only on evidence — whether the
+    repository ships any of its own.
+
+    "This tool does not include its own demo or test data" was printed for
+    every tool, whatever the repository held. It is false for STRsearch, which
+    ships 35 files including example/test_data/test.bam. Absence of test data
+    is a finding about somebody's work and needs to be established, not
+    assumed: only a run whose recipe was proposed from the repository has read
+    the tree, and only that run may say so.
+    """
+    used = (f"STRhub Verified supplied {ds_name} as the reference input for this "
+            "verification run. Users replicating this result should use the same or "
+            "equivalent publicly available reference material.")
+    td = cfg.get("repo_test_data") or {}
+    if not td.get("known"):
+        return ("Reference input", used)
+    if td.get("present"):
+        n = td.get("count") or 0
+        return ("Repository test data not used",
+                f"The repository ships example data ({n} file(s)), which this run did not "
+                f"use: the gates above ran on STRhub's reference dataset. {used}")
+    return ("No bundled demo data",
+            f"{cfg['tool_name']} ships no test or demo data of its own. {used}")
+
+
 def conclusion_items_for(cfg: dict) -> list[tuple[str, str]]:
     """The certificate's closing claims, each one derived from a gate.
 
@@ -67,11 +93,7 @@ def conclusion_items_for(cfg: dict) -> list[tuple[str, str]]:
     if verdict.get("title") and verdict.get("reason"):
         items.append((f"Verdict: {verdict['title']}", verdict["reason"]))
     items += [
-        ("No bundled demo data",
-         f"{cfg['tool_name']} does not include its own test or demo dataset. "
-         f"STRhub Verified supplied {ds_name} as the reference input for this "
-         "verification run. Users replicating this result should use the same or "
-         "equivalent publicly available reference material."),
+        test_data_item(cfg, ds_name),
         ("Reproducibility statement",
          "The exact command reported in Section 3, executed at the pinned "
          "commit in the described environment, is sufficient to reproduce "
