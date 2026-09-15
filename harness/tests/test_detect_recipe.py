@@ -175,6 +175,8 @@ def test_the_author_s_own_known_bug_section_is_carried_out_of_the_readme():
     # STRaitRazor documents one too, about a specific architecture.
     sr = _detect("straitrazor")["known_issues"]
     assert sr and "windows 7" in sr[0]["text"].lower()
+    # Its heading is written "known issues<br>"; the markup is not the name.
+    assert sr[0]["heading"] == "known issues"
 
     # Not every repository has one, and inventing a section is worse than none.
     for name in ("gangstr", "strsearch"):

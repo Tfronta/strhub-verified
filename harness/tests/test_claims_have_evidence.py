@@ -35,6 +35,19 @@ FINDING = re.compile(
     r"|\bdoes not include\b|\bships no\b|\bholds no\b", re.I)
 
 
+def _command_line_help(tree: ast.AST) -> set[int]:
+    """Strings passed as argparse `help=`: they reach a maintainer's terminal,
+    never a report, and registering them would fill the register with text
+    nobody publishes."""
+    out = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            for kw in node.keywords:
+                if kw.arg == "help" and isinstance(kw.value, ast.Constant):
+                    out.add(id(kw.value))
+    return out
+
+
 def _docstrings(tree: ast.AST) -> set[str]:
     out = set()
     for node in ast.walk(tree):
@@ -56,8 +69,11 @@ def _claims_in_sources() -> list[tuple[str, str, str]]:
         path = HARNESS / name
         tree = ast.parse(path.read_text())
         docs = _docstrings(tree)
+        cli_help = _command_line_help(tree)
         for node in ast.walk(tree):
             if not (isinstance(node, ast.Constant) and isinstance(node.value, str)):
+                continue
+            if id(node) in cli_help:
                 continue
             value = node.value
             # A docstring explains the code to whoever maintains it; it is not

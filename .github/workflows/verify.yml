@@ -276,6 +276,32 @@ jobs:
           if [ -f work/recipe.b64 ]; then RECIPE_B64="$(cat work/recipe.b64)"; export RECIPE_B64; fi
           python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
 
+      # Reading the tool's repository, for the evidence a report rests on: the
+      # sections where the author documents a known bug, and whether the
+      # repository ships example data. A trial from a URL already has this from
+      # the propose step; a committed tool had nobody read it at all, so the
+      # catalogue carried a certificate asserting "this tool does not include
+      # its own demo or test data" that nobody had checked.
+      #
+      # Evidence only: it is passed as --repo-read, never as --recipe-proposal,
+      # so it cannot turn a committed recipe into a "proposed" one and change
+      # the verdict. Two API calls, and a failure here must never fail a run.
+      - id: repo_read
+        name: "Read the tool's repository (evidence)"
+        if: always() && steps.m.conclusion == 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TOOL_REPO: ${{ steps.m.outputs.repo }}
+          TOOL_REF: ${{ steps.m.outputs.ref }}
+        run: |
+          if [ -f recipe_proposal.json ]; then
+            echo "the recipe was proposed in this run; its reading is already on disk"
+            exit 0
+          fi
+          python harness/detect_recipe.py "$TOOL_REPO" "$TOOL_REF" --json repo_read.json \
+            || echo "::warning::could not read $TOOL_REPO at $TOOL_REF; the report will say less"
+
       # --- Pre-flight: the BED the manifest names must actually be here --------
       # STRhub's fault, not the author's, and it must STOP the run.
       #
@@ -735,6 +761,7 @@ jobs:
             --example example.json \
             --log-example work/log_example.txt \
             --recipe-proposal recipe_proposal.json \
+            --repo-read repo_read.json \
             --run-url "$RUN_URL"
 
       # The recipe rides with the report so the web can show what ran and, for

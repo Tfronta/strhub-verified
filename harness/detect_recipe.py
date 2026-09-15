@@ -473,8 +473,13 @@ def author_known_issues(readme: str) -> list[dict]:
         text = " ".join(" ".join(body).split())
         if len(text) < 20:
             continue
+        # READMEs write headings with raw HTML in them (STRaitRazor's is
+        # "known issues<br>") and with Markdown emphasis; neither is part of
+        # the name of the section.
+        heading = re.sub(r"<[^>]+>", " ", m.group(2))
+        heading = re.sub(r"[*_`#]+", "", heading)
         out.append({
-            "heading": m.group(2).strip(),
+            "heading": " ".join(heading.split()),
             # The line number so a reader can open the README at it, and a
             # bounded quote so a long troubleshooting chapter cannot take over
             # the report.
