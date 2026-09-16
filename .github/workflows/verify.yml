@@ -16,7 +16,7 @@ on:
       tool:
         # Free-form so self-service submissions (any slug under tools/) work, not
         # just the maintainer's built-in variants.
-        description: "Tool variant to verify (directory under tools/)"
+        description: "Tool variant to verify (directory under tools/), or 'all' to re-verify the whole catalogue in one matrix"
         type: string
         default: "strait-razor-PowerSeqv2.31"
         required: true

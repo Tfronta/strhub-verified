@@ -99,12 +99,32 @@ def tools_from_paths(paths: list[str], root: pathlib.Path) -> list[str]:
     return slugs
 
 
+def all_tools(root: pathlib.Path) -> list[str]:
+    """Every tool directory with a manifest, sorted — the whole catalogue.
+
+    The target of a `tool: all` dispatch: re-verify everything published, in one
+    matrix, so a change to the engine or the format can be rolled across the
+    catalogue without waiting for the monthly refresh to reach each tool in turn.
+    """
+    tools = root / "tools"
+    if not tools.is_dir():
+        return []
+    return sorted(d.name for d in tools.iterdir() if (d / "manifest.yml").is_file())
+
+
 def pick(event: str, input_tool: str, changed: list[str], default: str,
          root: pathlib.Path = ROOT,
          published: list[dict] | None = None) -> tuple[list[str], list[str], str]:
     """Return (tools to verify, touched tools left unverified, why)."""
     # A dispatch always wins: somebody asked for a specific tool by name.
     if input_tool.strip():
+        # `all` is the whole catalogue, not a slug: re-verify everything at once.
+        # It bypasses the PR sweep cap on purpose — a human asked for all of them.
+        if input_tool.strip() == "all":
+            every = all_tools(root)
+            if every:
+                return (every, [], f"full re-verification of all {len(every)} tools")
+            return ([default], [], "requested all, but no tool directories were found")
         return ([input_tool.strip()], [], "requested")
 
     if event == "schedule":
@@ -159,6 +179,12 @@ def selftest() -> int:
         check("dispatch",
               pick("workflow_dispatch", "beta", [], "canary", root)[0], ["beta"])
 
+        # `all` is the whole catalogue, sorted, and it ignores the sweep cap that
+        # would otherwise collapse this many tools to the canary.
+        check("dispatch all runs every tool, sorted",
+              pick("workflow_dispatch", "all", [], "canary", root)[0],
+              ["alpha", "beta", "c1", "c2", "c3", "c4", "c5", "canary"])
+
         # The monthly refresh takes the least recently verified, oldest first —
         # the reason it exists is commits that have not changed while the world
         # under them has, so it must never be conditioned on a new commit.
@@ -178,6 +204,9 @@ def selftest() -> int:
               pick("schedule", "", [], "canary", root)[0], ["canary"])
         check("a dispatch still wins over the refresh",
               pick("schedule", "beta", [], "canary", root, catalogue)[0], ["beta"])
+        check("a dispatch of all still wins over the refresh",
+              pick("schedule", "all", [], "canary", root, catalogue)[0],
+              ["alpha", "beta", "c1", "c2", "c3", "c4", "c5", "canary"])
 
         # A PR is answered by what it touches — the whole point of this file.
         check("pr picks the changed tools",
