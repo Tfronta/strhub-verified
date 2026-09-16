@@ -6,7 +6,7 @@ name: STRhub Verified
 # A pull request names no tool — the job works that out from what the PR touches
 # — so it says which PR instead of a tool it might not be running.
 run-name: >-
-  ${{ github.event.inputs.mode == 'trial' && 'Trial' || 'Verify' }} ${{ github.event.inputs.tool || (github.event_name == 'pull_request' && format('what PR #{0} changed', github.event.pull_request.number)) || 'strait-razor-PowerSeqv2.31' }}${{ github.event.inputs.dispatch_id && format(' [{0}]', github.event.inputs.dispatch_id) || '' }}
+  ${{ github.event.inputs.mode == 'trial' && 'Trial' || 'Verify' }} ${{ github.event.inputs.tool || (github.event_name == 'pull_request' && format('what PR #{0} changed', github.event.pull_request.number)) || 'strait-razor-powerseq' }}${{ github.event.inputs.dispatch_id && format(' [{0}]', github.event.inputs.dispatch_id) || '' }}
 
 # The engine. Each gate is a CI step; failures are captured (continue-on-error)
 # so the report is always produced and reflects the furthest gate cleared.
@@ -18,7 +18,7 @@ on:
         # just the maintainer's built-in variants.
         description: "Tool variant to verify (directory under tools/), or 'all' to re-verify the whole catalogue in one matrix"
         type: string
-        default: "strait-razor-PowerSeqv2.31"
+        default: "strait-razor-powerseq"
         required: true
       dispatch_id:
         description: "Unique id echoed in run-name for dispatch→run correlation"
@@ -137,7 +137,7 @@ jobs:
             --input-tool "$INPUT_TOOL" \
             --changed changed.txt \
             --published published.json \
-            --default "strait-razor-PowerSeqv2.31" \
+            --default "strait-razor-powerseq" \
             >> "$GITHUB_OUTPUT"
 
       # Only set when the change is a sweep, and then it is the whole list. Said
@@ -704,7 +704,8 @@ jobs:
           PY
 
       # --- Assemble attestation (always runs) --------------------------------
-      - name: Build attestation + badge
+      - id: attest
+        name: Build attestation + badge
         if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
@@ -763,6 +764,18 @@ jobs:
             --recipe-proposal recipe_proposal.json \
             --repo-read repo_read.json \
             --run-url "$RUN_URL"
+          # The verdict decides whether this run is deployed at all, so the
+          # deploy condition needs it as a step output. Read back off the file
+          # report.py just wrote — the one source — rather than a second
+          # derivation that could drift from it.
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, pathlib
+          reports = [p for p in pathlib.Path("reports").glob("*.json")
+                     if not p.name.endswith((".badge.json", ".recipe.json"))]
+          r = json.loads(reports[0].read_text()) if reports else {}
+          print(f"verdict={(r.get('verdict') or {}).get('code', '')}")
+          print(f"slug={(r.get('report') or {}).get('slug') or (reports[0].stem if reports else '')}")
+          PY
 
       # The recipe rides with the report so the web can show what ran and, for
       # a trial, let the owner publish exactly that. Only for trials: a
@@ -835,13 +848,25 @@ jobs:
       # Publish a navigable web page (index + per-tool HTML) to the gh-pages
       # branch. Reports accumulate across runs: we clone the existing branch,
       # drop in this run's files, regenerate the index, and push.
+      #
+      # What gets published is decided by the VERDICT, not by how far the ladder
+      # got: a run whose verdict is "runs" or "fails" is a fact about the tool
+      # and is published as such — a tool that does not build at the cited
+      # commit is a result a reviewer needs. "out_of_scope" (our environment
+      # cannot run it) and "undetermined" (the recipe could not be worked out)
+      # say nothing attributable to the tool, and are never deployed: the
+      # catalogue must not carry our limitation as the tool's failure. That
+      # split is the engine's own (harness/verdict.py, on diagnose_log's
+      # disjoint fault classes), so the gate reads it back rather than
+      # re-deriving it here.
+      #
       # Publishing is for main only. A dispatch from a test branch must never reach
       # strhub.app/verified — gh-pages IS production. The web backend always
       # dispatches with ref=main (VERIFIED_ENGINE_BRANCH), so real submissions are
       # unaffected; only branch-based testing is held back.
       - id: deploy
         name: Deploy reports to GitHub Pages
-        if: always() && env.MODE != 'trial' && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: always() && env.MODE != 'trial' && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && contains(fromJSON('["runs","fails"]'), steps.attest.outputs.verdict) && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -882,7 +907,7 @@ jobs:
 
       # An attestation was just published for this tool, so a rejection notice
       # from an earlier, aborted run no longer describes anything. Nothing used
-      # to remove it: strsearch-c70179b sat on main as "rejected" for weeks after
+      # to remove it: strsearch sat on main as "rejected" for weeks after
       # it had been published at the top step.
       - name: Clear a stale rejection notice
         if: always() && env.MODE != 'trial' && steps.deploy.outcome == 'success' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'

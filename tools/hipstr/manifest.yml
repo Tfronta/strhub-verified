@@ -1,14 +1,13 @@
-# STRhub Verified manifest — HipSTR (Y-STR variant).
-# Same tool + pinned ref as hipstr-v0-7, but verified against the Y-STR reference
-# dataset (GIAB HG002). Demonstrates the illumina-bam-hg38-y leg end to end.
-# Verification metadata only; STRhub stores no tool source code.
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
 
 tool:
   name: hipstr
   version: v0.7
   maintainer: tfwillems
   contact: "https://github.com/tfwillems/HipSTR/issues"
-  variant: "Y-STR (hg38)"
+  variant: "Autosomal (hg38)"
 source:
   repo: "https://github.com/tfwillems/HipSTR"
   ref: b2033bfbb5cf55496b776463bdf2993fa763a4be
@@ -19,7 +18,7 @@ source:
 submission:
   by: third_party
 report:
-  slug: "hipstr-v0-7-y"
+  slug: "hipstr"
 environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]
@@ -27,8 +26,8 @@ run:
   cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250"
   timeout_minutes: 15
 inputs:
-  type: "illumina-bam-hg38-y"
-  fixture: "illumina_slices/HG002.ystr.bam"
+  type: "illumina-bam-hg38"
+  fixture: "illumina_slices/NA12878.autosomal.bam"
 outputs:
   - path: result.vcf.gz
     format: vcf
@@ -37,7 +36,8 @@ outputs:
     content:
       locus_column: 2
       dna_column: 3
-      # The HG002 Y-STR panel carries ~15 loci. A conservative floor above one
-      # keeps "plausible output" from passing on a single row (S6), while
-      # staying well under what a real run genotypes.
-      min_distinct_loci: 5
+      # A genotype VCF for the autosomal CODIS panel names ~21 STR loci. A floor
+      # well above one keeps "plausible output" from passing on a single row —
+      # the trivial check S6 flagged. Kept far below the observed count so a
+      # real run never trips it.
+      min_distinct_loci: 10

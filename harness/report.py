@@ -55,30 +55,16 @@ def _status(flag: str) -> bool:
     return str(flag).lower() in ("pass", "true", "ok", "1", "success")
 
 
-# How the submitter is named in prose, by what the manifest declares. `None` is
-# not a third state to describe but an absence: manifests written before the form
-# asked carry no answer, and the reports fall back to "the submitter", which is
-# true of everyone and claims nothing.
-SUBMITTER_SHORT = {
-    "maintainer": "the tool's maintainer",
-    "third_party": "a third party — not the tool's maintainer",
-}
-
-
-def _submitter_phrase(by: str | None) -> str:
-    """Noun phrase for whoever supplied the submission, for use mid-sentence."""
-    if by == "maintainer":
-        return "The tool's maintainer"
-    if by == "third_party":
-        return "A third party, not the tool's maintainer,"
-    return "The submitter"
-
-
-def _regions_note(rg: dict, submitted_by: str | None = None) -> str:
-    """One sentence on who defined the target regions, and that the data is a slice.
+def _regions_note(rg: dict) -> str:
+    """One sentence on where the target regions came from, and that the data is a slice.
 
     Shared by the markdown and HTML renders so the two cannot drift. Returns "" for
     tools that take no regions BED (FASTQ-based).
+
+    Never "the tool's author": `provided_by` records that the BED came with the
+    submission, not who wrote it. A verification is the same fact whoever
+    triggered it, so the sentence names the submission and claims nothing
+    about the person behind it.
     """
     total = rg.get("panel_size")
     slice_note = (
@@ -90,29 +76,20 @@ def _regions_note(rg: dict, submitted_by: str | None = None) -> str:
         covered = rg.get("covered_loci")
         detail = (f", covering {covered} of {total} supported loci"
                   if covered and total else "")
-        # Never "the tool's author" unless the manifest says so. `provided_by`
-        # records that the BED came through the form, not who wrote it, and the
-        # two are the same person only when a tool's own maintainer submits it.
-        # STRhub verifying somebody else's tool is the other case, and there this
-        # claimed authorship that the tool's developer never had — over a file
-        # that materially changes the result.
-        return f"{_submitter_phrase(submitted_by)} supplied the regions BED{detail}.{slice_note}"
+        return f"The submission supplied the regions BED{detail}.{slice_note}"
     if rg.get("source") == "strhub":
         return f"STRhub supplied the regions BED.{slice_note}"
     return ""
 
 
-# Said in full only for a third-party submission. A maintainer submitting their
-# own tool is what a reader already assumes, so it needs one line and no more;
-# the other case contradicts that assumption and has to say so plainly, because
-# every configured choice in this report is then somebody else's.
-THIRD_PARTY_NOTE = (
-    "This tool was submitted for verification by somebody other than its "
-    "maintainer. The maintainer took no part in the run and supplied none of "
-    "what it used: the command, the environment, and any target regions were "
-    "chosen by the submitter. Where a maintainer is named above, that names who "
-    "answers for the software — not who asked for this report, and not an "
-    "endorsement of it."
+# One line, on every report: what a result is and is not. Who triggered the
+# run used to get a section of its own; a verification is the same fact
+# whoever asked for it, and the one thing a reader must not infer is that
+# the tool's author stands behind it.
+RECORD_NOTE = (
+    "Verified automatically, in a clean environment, on the tool's public "
+    "source at the pinned commit. This is a record of what happened, not an "
+    "endorsement by the tool's author."
 )
 
 
@@ -192,9 +169,6 @@ def _summary_md(report: dict, slug: str) -> str:
         f"- Environment: {_environment_line(report['environment'])}",
         f"- Generated: {report['generated']}",
     ]
-    submitted_by = (report.get("submission") or {}).get("by")
-    if submitted_by in SUBMITTER_SHORT:
-        lines.append(f"- Submitted by: {SUBMITTER_SHORT[submitted_by]}")
     up_note = upstream.note(report.get("upstream"))
     if up_note:
         lines.append(f"- Upstream: {up_note}")
@@ -220,7 +194,7 @@ def _summary_md(report: dict, slug: str) -> str:
         lines += ["", f"## {_install_heading(inst)}", "",
                   _install_lead(inst, report["environment"]),
                   "",
-                  diagnose_log.install_fault_sentence(inst.get("faults") or [], submitted_by),
+                  diagnose_log.install_fault_sentence(inst.get("faults") or []),
                   "",
                   "| What happened | Times | Suggested fix |",
                   "|---|---|---|"]
@@ -299,15 +273,9 @@ def _summary_md(report: dict, slug: str) -> str:
     # coordinate-based tool only calls where its BED points, so both are material.
     rg = report.get("regions") or {}
     if rg.get("source") in ("tool", "strhub"):
-        note = _regions_note(rg, submitted_by)
+        note = _regions_note(rg)
         if note:
             lines += ["", "## Regions", "", note]
-
-    # Placed after the evidence and before the caveats: a reader who has just
-    # seen a green ladder needs to know whose run produced it before they decide
-    # what it says about the tool.
-    if submitted_by == "third_party":
-        lines += ["", "## Who submitted this", "", THIRD_PARTY_NOTE]
 
     # Errors the tool itself reported. Its own section: the matrix says whether a
     # leg passed, this says what went wrong, and a reviewer should not have to open
@@ -329,7 +297,7 @@ def _summary_md(report: dict, slug: str) -> str:
         # what keeps the paid tier from looking like the way out of a dead end.
         fixable = diagnose_log.author_fixable_ids(report.get("diagnostics") or {})
         if fixable and not (report.get("manual_verification") or {}).get("eligible"):
-            lines += ["", diagnose_log.configuration_fault_sentence(submitted_by)]
+            lines += ["", diagnose_log.configuration_fault_sentence()]
 
     # Manual verification (level 2), when the automated path structurally cannot
     # run this tool. Never offered over a run that produced its expected output.
@@ -407,6 +375,8 @@ def _summary_md(report: dict, slug: str) -> str:
         "is fit for casework or meets any regulatory standard. Concordance against "
         "known truth is out of scope.",
         "",
+        RECORD_NOTE,
+        "",
     ]
     return "\n".join(l for l in lines if l is not None) + "\n"
 
@@ -420,7 +390,6 @@ def _summary_html(report: dict, slug: str) -> str:
     gates = report["gates"]
     # Read once, up here: several blocks below phrase themselves differently
     # depending on whether the tool's own maintainer submitted it.
-    submitted_by = (report.get("submission") or {}).get("by")
     badge = {"content": "#16a34a", "io": "#22a722", "runs": "#22a722",
              "installs": "#d4a017", "available": "#d4a017"}.get(level, "#c33")
 
@@ -450,7 +419,7 @@ def _summary_html(report: dict, slug: str) -> str:
         install_block = (
             f"<h2>{esc(_install_heading(inst))}</h2>"
             f"<p>{esc(_install_lead(inst, report['environment']))}</p>"
-            f"<p>{esc(diagnose_log.install_fault_sentence(inst.get('faults') or [], submitted_by))}</p>"
+            f"<p>{esc(diagnose_log.install_fault_sentence(inst.get('faults') or []))}</p>"
             "<table><thead><tr><th>What happened</th><th>Times</th>"
             "<th>Suggested fix</th></tr></thead>"
             f"<tbody>{irows}</tbody></table>{log_link}"
@@ -532,19 +501,9 @@ def _summary_html(report: dict, slug: str) -> str:
         )
 
     # Who chose the regions + the slice caveat (see _regions_note).
-    regions_note = _regions_note(report.get("regions") or {}, submitted_by)
+    regions_note = _regions_note(report.get("regions") or {})
     regions_block = (
         f"<h2>Regions</h2><p>{esc(regions_note)}</p>" if regions_note else ""
-    )
-
-    # Only for a third-party submission — see THIRD_PARTY_NOTE.
-    submitter_block = (
-        f"<h2>Who submitted this</h2><p>{esc(THIRD_PARTY_NOTE)}</p>"
-        if submitted_by == "third_party" else ""
-    )
-    submitted_li = (
-        f"<li>Submitted by: {esc(SUBMITTER_SHORT[submitted_by])}</li>"
-        if submitted_by in SUBMITTER_SHORT else ""
     )
     _up_note = upstream.note(report.get("upstream"))
     upstream_li = f"<li>Upstream: {esc(_up_note)}</li>" if _up_note else ""
@@ -567,7 +526,7 @@ def _summary_html(report: dict, slug: str) -> str:
         mv_eligible = bool((report.get("manual_verification") or {}).get("eligible"))
         fixable = diagnose_log.author_fixable_ids(all_diags)
         free_note = (
-            f"<p>{esc(diagnose_log.configuration_fault_sentence(submitted_by))}</p>"
+            f"<p>{esc(diagnose_log.configuration_fault_sentence())}</p>"
             if fixable and not mv_eligible else ""
         )
         errors_block = (
@@ -647,7 +606,6 @@ def _summary_html(report: dict, slug: str) -> str:
   <li>Source: <code>{esc(report['source']['repo'])}</code> @ <code>{esc(report['source']['ref_resolved'])}</code></li>
   <li>Environment: {_environment_line({**report['environment'], 'os': [esc(o) for o in report['environment'].get('os', [])]}, code=lambda t: f"<code>{esc(t)}</code>")}</li>
   <li>Generated: {esc(report['generated'])}</li>
-  {submitted_li}
   {upstream_li}
   {f'<li>{ci}</li>' if ci else ''}
 </ul>
@@ -659,7 +617,6 @@ def _summary_html(report: dict, slug: str) -> str:
 {content_block}
 {matrix_block}
 {regions_block}
-{submitter_block}
 {errors_block}
 {manual_block}
 {readme_block}
@@ -668,6 +625,7 @@ def _summary_html(report: dict, slug: str) -> str:
 This is <b>not</b> a claim that the genotypes are correct, nor that the tool is
 fit for casework or meets any regulatory standard. Concordance against known
 truth is out of scope.</p>
+<p style="color:#888;font-size:.85rem">{esc(RECORD_NOTE)}</p>
 <p style="color:#888;font-size:.85rem">Machine-readable:
 <a href="{esc(slug)}.json">{esc(slug)}.json</a> ·
 <a href="{esc(slug)}.badge.json">badge</a> ·
