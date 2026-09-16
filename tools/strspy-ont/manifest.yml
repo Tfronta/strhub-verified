@@ -17,7 +17,7 @@ source:
 submission:
   by: third_party
 report:
-  slug: "strspy-v2-0-ont"
+  slug: "strspy-ont"
 environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]

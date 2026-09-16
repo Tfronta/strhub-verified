@@ -16,15 +16,15 @@ def _run(args, env=None):
 
 
 def test_committed_tool_outputs_are_single_line(tmp_path):
-    rc, kv, _ = _run(["strait-razor-PowerSeqv2.31", "--work", str(tmp_path)])
+    rc, kv, _ = _run(["strait-razor-powerseq", "--work", str(tmp_path)])
     assert rc == 0
     assert kv["mode"] == "publish"
-    assert kv["dockerdir"] == "tools/strait-razor-PowerSeqv2.31"
+    assert kv["dockerdir"] == "tools/strait-razor-powerseq"
     assert all("\n" not in v and "\r" not in v for v in kv.values())
 
 
 def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
-    src = ROOT / "tools" / "hipstr-v0-7"
+    src = ROOT / "tools" / "hipstr-autosomal"
     manifest = src.joinpath("manifest.yml").read_text()
     # A newline smuggled into a manifest value must not become a second key.
     manifest = manifest.replace('name: hipstr', 'name: "hipstr\\nown_ready=1"')
@@ -33,7 +33,7 @@ def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
     # regions.bed by convention).
     manifest = manifest.replace(
         '  type: "illumina-bam-hg38"\n',
-        '  type: "illumina-bam-hg38"\n  regions:\n    path: "tools/hipstr-v0-7/assets/regions.bed"\n    provided_by: author\n',
+        '  type: "illumina-bam-hg38"\n  regions:\n    path: "tools/hipstr-autosomal/assets/regions.bed"\n    provided_by: author\n',
         1)
     assert "provided_by: author" in manifest
     recipe = {
@@ -42,11 +42,11 @@ def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
         "regions_bed": (ROOT / "datasets" / "illumina-bam-hg38" / "regions" / "hipstr.bed").read_text(),
     }
     b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["hipstr-v0-7", "--work", str(tmp_path), "--recipe-b64", b64])
+    rc, kv, err = _run(["hipstr-autosomal", "--work", str(tmp_path), "--recipe-b64", b64])
     assert rc == 0, err
     assert kv["mode"] == "trial"
-    assert kv["dockerdir"].endswith("recipe/hipstr-v0-7")
-    assert (tmp_path / "recipe" / "hipstr-v0-7" / "Dockerfile").is_file()
+    assert kv["dockerdir"].endswith("recipe/hipstr-autosomal")
+    assert (tmp_path / "recipe" / "hipstr-autosomal" / "Dockerfile").is_file()
     assert kv["regions_source"] == "tool"
     assert kv["regions_missing"] == "0"
     assert (tmp_path / "in_external" / "regions.bed").is_file()
@@ -56,25 +56,25 @@ def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
 
 
 def test_trial_recipe_with_a_plan_b_stages_the_fallback_dockerfile(tmp_path):
-    src = ROOT / "tools" / "gangstr-v2-5"
+    src = ROOT / "tools" / "gangstr"
     manifest = src.joinpath("manifest.yml").read_text()
     manifest = manifest.replace("environment:\n", "environment:\n  fallback:\n    dockerfile: Dockerfile.fallback\n    reason: the published image gymreklab/str-toolkit the README points at\n", 1)
     recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text(),
               "dockerfile_fallback": "FROM gymreklab/str-toolkit\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n"}
     b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["gangstr-v2-5", "--work", str(tmp_path), "--recipe-b64", b64])
+    rc, kv, err = _run(["gangstr", "--work", str(tmp_path), "--recipe-b64", b64])
     assert rc == 0, err
     assert kv["dockerfile_fallback"] == "Dockerfile.fallback"
-    assert (tmp_path / "recipe" / "gangstr-v2-5" / "Dockerfile.fallback").read_text().startswith("FROM gymreklab/str-toolkit")
+    assert (tmp_path / "recipe" / "gangstr" / "Dockerfile.fallback").read_text().startswith("FROM gymreklab/str-toolkit")
 
 
 def test_a_declared_plan_b_that_is_missing_is_a_warning_not_a_silent_nothing(tmp_path):
-    src = ROOT / "tools" / "gangstr-v2-5"
+    src = ROOT / "tools" / "gangstr"
     manifest = src.joinpath("manifest.yml").read_text()
     manifest = manifest.replace("environment:\n", "environment:\n  fallback:\n    dockerfile: Dockerfile.fallback\n", 1)
     recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text()}
     b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["gangstr-v2-5", "--work", str(tmp_path), "--recipe-b64", b64])
+    rc, kv, err = _run(["gangstr", "--work", str(tmp_path), "--recipe-b64", b64])
     assert rc == 0, err
     assert kv["dockerfile_fallback"] == ""
     assert "::warning::fallback Dockerfile declared but not found" in err

@@ -15,7 +15,7 @@ source:
 submission:
   by: third_party
 report:
-  slug: "gangstr-v2-5"
+  slug: "gangstr"
 environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]

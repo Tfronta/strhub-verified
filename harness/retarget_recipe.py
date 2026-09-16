@@ -33,11 +33,11 @@ def retarget(slug: str, new_ref: str) -> dict:
     manifest, n_ref = REF_LINE.subn(rf'\g<1>"{new_ref}"\g<2>', manifest, count=1)
     if n_ref != 1:
         raise SystemExit(f"::error::could not find the source.ref line in tools/{slug}/manifest.yml")
-    # The slug must not collide with the published one: a trial of a newer ref
-    # is a different claim, and the report file is named after it.
-    short = new_ref[:7]
-    new_slug = f"{slug}-{short}" if short not in slug else slug
-    manifest = re.sub(r'^(\s*slug:\s*)["\']?[\w.-]+["\']?\s*$', rf'\g<1>"{new_slug}"', manifest, count=1, flags=re.M)
+    # The slug is the tool's identity, not the commit's: one entry per tool and
+    # variant, whose version moves as releases do. A newer ref is the same tool
+    # at a newer commit, so it keeps the slug — the report's source.ref is what
+    # says which commit, and the catalogue's history keeps the previous ones.
+    new_slug = slug
     manifest = ("# Retargeted by STRhub Verified to a newer upstream ref for a TRIAL. The\n"
                 "# recipe is the one that verified the previous ref, unchanged otherwise.\n" + manifest)
     dockerfile = (d / "Dockerfile").read_text()

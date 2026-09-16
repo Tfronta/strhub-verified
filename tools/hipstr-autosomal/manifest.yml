@@ -18,7 +18,7 @@ source:
 submission:
   by: third_party
 report:
-  slug: "hipstr-v0-7"
+  slug: "hipstr-autosomal"
 environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]
