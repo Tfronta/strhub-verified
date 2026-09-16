@@ -25,12 +25,14 @@ on:
         type: string
         required: false
         default: ""
-      # A trial is a rehearsal of a recipe that is not committed anywhere: the
-      # gates run exactly as for a real verification, but nothing is pushed to
-      # main, nothing reaches gh-pages, and the report says "trial" on it. The
-      # result lives only in this run's artifact (30 days). This is what lets a
-      # submitter try a configuration as often as it takes; every attempt used
-      # to be a commit on main and a published attestation.
+      # A trial runs a recipe that is not committed anywhere, through the same
+      # gates as a real verification. Whether it is PUBLISHED is not decided
+      # here but by the deploy gate, on the verdict: a trial from a bare URL
+      # (recipe derived in this run from the public repository) whose verdict
+      # is attributable to the tool is published like any other run, and its
+      # recipe committed under tools/. A trial handed a `recipe` by whoever
+      # dispatched it never publishes, whatever it finds. Every trial's result
+      # also lives in this run's artifact (30 days).
       mode:
         description: "publish (default) or trial"
         type: choice
@@ -51,6 +53,11 @@ on:
         default: ""
       ref:
         description: "Trial from URL: commit SHA or tag"
+        type: string
+        required: false
+        default: ""
+      ref_label:
+        description: "Trial from URL: the tag or release the ref was resolved from, shown as the version"
         type: string
         required: false
         default: ""
@@ -259,10 +266,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TRIAL_REPO: ${{ github.event.inputs.repo }}
           TRIAL_REF: ${{ github.event.inputs.ref }}
+          TRIAL_REF_LABEL: ${{ github.event.inputs.ref_label }}
         run: |
           mkdir -p work
           python harness/detect_recipe.py "$TRIAL_REPO" "$TRIAL_REF" --json recipe_proposal.json
           python harness/propose_manifest.py recipe_proposal.json --slug "$TOOL" \
+            --ref-label "$TRIAL_REF_LABEL" \
             --out-dir work/proposal --recipe-b64-out work/recipe.b64
 
       - id: m
@@ -725,6 +734,13 @@ jobs:
           # when nothing built.
           ENVIRONMENT_BUILT: ${{ steps.installs.outputs.environment }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # A trial whose recipe this run derived from the public repository —
+          # the only kind of trial that may publish. Same test as the propose
+          # step's condition.
+          URL_TRIAL: ${{ github.event.inputs.mode == 'trial' && github.event.inputs.recipe == '' && github.event.inputs.repo != '' }}
+          # A pull request's run is a check, never a publication, whatever it
+          # finds — so its PDF must not carry a permalink either.
+          EVENT_NAME: ${{ github.event_name }}
           # Read-only, for the upstream check below. Raises the API allowance
           # from 60/hour per runner IP to 5,000, which matters because public
           # runners share addresses.
@@ -768,13 +784,27 @@ jobs:
           # deploy condition needs it as a step output. Read back off the file
           # report.py just wrote — the one source — rather than a second
           # derivation that could drift from it.
+          #
+          # `publishable` is the whole decision in one word, read by the deploy
+          # gate and by the PDF (which marks a result that will not be
+          # published): the verdict is attributable to the tool, AND the run is
+          # one that may publish. A committed manifest always may; a trial may
+          # only when its recipe was derived here from the public repository —
+          # a trial handed a recipe by whoever dispatched it never publishes,
+          # whatever it found, because that recipe could be anything.
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, pathlib
+          import json, os, pathlib
           reports = [p for p in pathlib.Path("reports").glob("*.json")
                      if not p.name.endswith((".badge.json", ".recipe.json"))]
           r = json.loads(reports[0].read_text()) if reports else {}
-          print(f"verdict={(r.get('verdict') or {}).get('code', '')}")
-          print(f"slug={(r.get('report') or {}).get('slug') or (reports[0].stem if reports else '')}")
+          verdict = (r.get("verdict") or {}).get("code", "")
+          slug = (r.get("report") or {}).get("slug") or (reports[0].stem if reports else "")
+          may_publish = os.environ.get("MODE") != "trial" or os.environ.get("URL_TRIAL") == "true"
+          publishable = (verdict in ("runs", "fails") and may_publish
+                         and os.environ.get("EVENT_NAME") != "pull_request")
+          print(f"verdict={verdict}")
+          print(f"slug={slug}")
+          print(f"publishable={'true' if publishable else 'false'}")
           PY
 
       # The recipe rides with the report so the web can show what ran and, for
@@ -790,9 +820,13 @@ jobs:
         if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
+          # The PDF marks a result that will not be published and links one
+          # that will; that is the deploy gate's decision, not the run's mode.
+          PUBLISHABLE: ${{ steps.attest.outputs.publishable || 'false' }}
         run: |
           python harness/generate_pdf.py \
-            --manifest "$MANIFEST"
+            --manifest "$MANIFEST" \
+            --publishable "$PUBLISHABLE"
 
       # Render the human-readable summary on the run's "Summary" page (no download
       # needed). $GITHUB_STEP_SUMMARY accepts Markdown.
@@ -849,16 +883,25 @@ jobs:
       # branch. Reports accumulate across runs: we clone the existing branch,
       # drop in this run's files, regenerate the index, and push.
       #
-      # What gets published is decided by the VERDICT, not by how far the ladder
-      # got: a run whose verdict is "runs" or "fails" is a fact about the tool
-      # and is published as such — a tool that does not build at the cited
-      # commit is a result a reviewer needs. "out_of_scope" (our environment
-      # cannot run it) and "undetermined" (the recipe could not be worked out)
-      # say nothing attributable to the tool, and are never deployed: the
-      # catalogue must not carry our limitation as the tool's failure. That
-      # split is the engine's own (harness/verdict.py, on diagnose_log's
-      # disjoint fault classes), so the gate reads it back rather than
-      # re-deriving it here.
+      # What gets published is decided by the VERDICT, not by how the run was
+      # triggered: a run whose verdict is "runs" or "fails" is a fact about the
+      # tool and is published as such — a tool that does not build at the
+      # cited commit is a result a reviewer needs. "out_of_scope" (our
+      # environment cannot run it) and "undetermined" (the recipe could not be
+      # worked out) say nothing attributable to the tool, and are never
+      # deployed: the catalogue must not carry our limitation as the tool's
+      # failure. That split is the engine's own (harness/verdict.py, on
+      # diagnose_log's disjoint fault classes), so the gate reads it back
+      # rather than re-deriving it here.
+      #
+      # A trial from a URL publishes on the same terms as a scheduled
+      # re-verification: anyone may start one, and whoever started it, the
+      # result is a fact about a public repository at a commit. What it may
+      # NOT be is a trial handed a recipe by whoever dispatched it — that
+      # recipe could be anything, and publishing it would let a stranger put an
+      # arbitrary image in the catalogue under a real tool's name. Only a
+      # recipe this run derived itself, from the public repository, publishes.
+      # `publishable` (the attestation step) folds all of that into one word.
       #
       # Publishing is for main only. A dispatch from a test branch must never reach
       # strhub.app/verified — gh-pages IS production. The web backend always
@@ -866,7 +909,7 @@ jobs:
       # unaffected; only branch-based testing is held back.
       - id: deploy
         name: Deploy reports to GitHub Pages
-        if: always() && env.MODE != 'trial' && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && contains(fromJSON('["runs","fails"]'), steps.attest.outputs.verdict) && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && steps.attest.outputs.publishable == 'true' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -883,7 +926,10 @@ jobs:
               git -C "$tmp" checkout -q --orphan gh-pages
               git -C "$tmp" rm -rfq . || true
             fi
-            cp -f reports/* "$tmp/" 2>/dev/null || true
+            # Everything the run wrote, except the recipe attachment: what ran
+            # is on main under tools/<slug>/, and the JSON copy is for the web
+            # to read out of the artifact, not a page to publish.
+            find reports -maxdepth 1 -type f ! -name '*.recipe.json' -exec cp -f {} "$tmp/" \;
             touch "$tmp/.nojekyll"
             python harness/build_index.py "$tmp" --out "$tmp/index.html"
             git -C "$tmp" add -A
@@ -905,12 +951,51 @@ jobs:
           echo "::error::could not publish reports for $TOOL to gh-pages after 5 attempts"
           exit 1
 
+      # A trial from a URL that published is now a catalogue entry, and the
+      # monthly refresh re-verifies catalogue entries from tools/<slug>/ on
+      # main. So the recipe this run derived and ran is committed there —
+      # the exact manifest and Dockerfile, nothing else — under the slug it
+      # published as. Never over a recipe that is already there: a committed
+      # one may have been tuned by hand (content floors, a kit variant, the
+      # maintainer's name), and the published result was refreshed above
+      # regardless. This job already holds the write token for gh-pages; the
+      # gates themselves ran with none.
+      - name: Commit the recipe a published trial ran (trial from URL)
+        if: always() && steps.deploy.outcome == 'success' && github.event.inputs.mode == 'trial' && github.event.inputs.recipe == '' && github.event.inputs.repo != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
+          SLUG: ${{ steps.attest.outputs.slug }}
+        run: |
+          set -e
+          [ -n "$SLUG" ] || { echo "::warning::no slug to commit the recipe under"; exit 0; }
+          dest="tools/$SLUG"
+          if [ -f "$dest/manifest.yml" ]; then
+            echo "$dest is already committed; the published result was refreshed, the recipe is left as curated"
+            exit 0
+          fi
+          mkdir -p "$dest"
+          cp "$DOCKER_DIR/manifest.yml" "$DOCKER_DIR/Dockerfile" "$dest/"
+          [ -f "$DOCKER_DIR/Dockerfile.fallback" ] && cp "$DOCKER_DIR/Dockerfile.fallback" "$dest/" || true
+          [ -d "$DOCKER_DIR/assets" ] && cp -r "$DOCKER_DIR/assets" "$dest/" || true
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest"
+          git commit -q -m "verified: commit the recipe that published $SLUG (trial from URL, run ${{ github.run_id }})"
+          for i in 1 2 3; do
+            if git push "$remote" HEAD:main; then exit 0; fi
+            git pull --rebase "$remote" main || true
+            sleep 3
+          done
+          echo "::warning::could not commit the recipe for $SLUG; the entry is published, but the monthly refresh will not find its recipe until it is committed"
+
       # An attestation was just published for this tool, so a rejection notice
       # from an earlier, aborted run no longer describes anything. Nothing used
       # to remove it: strsearch sat on main as "rejected" for weeks after
       # it had been published at the top step.
       - name: Clear a stale rejection notice
-        if: always() && env.MODE != 'trial' && steps.deploy.outcome == 'success' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: always() && steps.deploy.outcome == 'success' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

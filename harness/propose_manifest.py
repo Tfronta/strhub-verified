@@ -110,6 +110,40 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
     return new, notes
 
 
+# Which input types add a suffix to a catalogue slug. The autosomal Illumina
+# BAM and the Illumina STR FASTQ are the canonical assays and add nothing; a
+# Y-STR or a nanopore run is a different claim about the same tool and gets
+# its own card. Unlisted types fall back to their last hyphen-segment. Kept
+# in step with TYPE_SLUG_SUFFIX in strhub-web/lib/verified/submission.ts.
+TYPE_SLUG_SUFFIX = {
+    "illumina-bam-hg38": "",
+    "illumina-str-fastq": "",
+    "illumina-bam-hg38-y": "y",
+    "ont-bam-hg38": "ont",
+    "ont-fastq": "ont",
+    "illumina-snp-fastq": "snp",
+    "capillary-fsa": "fsa",
+}
+
+
+def catalogue_slug(name: str, input_type: str | None) -> str:
+    """The slug a trial from a URL is filed under if it is published.
+
+    One card per tool and assay, whose version moves as releases do: the
+    name, and a suffix only for a non-canonical input type. No version and
+    no commit — `hipstr-v0-7` would have lied the day v0.8 was verified, or
+    spawned a second card. The committed entries under tools/ follow the same
+    rule, so a trial of a tool that is already listed lands on its card and
+    refreshes it rather than opening another.
+    """
+    base = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+    suffix = ""
+    if input_type:
+        mapped = TYPE_SLUG_SUFFIX.get(input_type)
+        suffix = mapped if mapped is not None else input_type.split("-")[-1]
+    return (f"{base}-{suffix}" if suffix else base) or "tool"
+
+
 def tool_name_as_written(repo: str, proposal: dict) -> str:
     """The repository's own spelling of its name.
 
@@ -133,9 +167,18 @@ def tool_name_as_written(repo: str, proposal: dict) -> str:
     return max(counts, key=lambda w: (counts[w], w != w.lower()))
 
 
-def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
+def build(proposal: dict, slug: str, submitted_by: str = "third_party",
+          ref_label: str = "") -> dict:
     """Return {"manifest": dict, "manifest_yml": str, "dockerfile": str,
-    "limitations": [...], "readme_gaps": [...]}."""
+    "limitations": [...], "readme_gaps": [...]}.
+
+    `slug` names the run (the artifact, the working directories); the
+    manifest's report.slug is the catalogue slug derived below, which is
+    where the result is filed if it is published. `ref_label` is the tag or
+    release the ref was resolved from, when there was one: that is the version
+    a person cites, and the report shows it large; a bare commit shows its
+    short SHA.
+    """
     repo, ref = proposal["repo"], proposal["ref"]
     name = tool_name_as_written(repo, proposal)
     build_info = proposal.get("build") or {}
@@ -272,11 +315,14 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
     glob, fmt = OUTPUT_GLOB.get(out_fmt or "", ("**/*", "text"))
     outputs = [{"path": glob, "format": fmt, "min_records": 1}]
 
+    # A label that is just the SHA again (the form passes the resolved ref
+    # through when nothing better was found) is not a version.
+    version = ref_label.strip() if ref_label and not ref.startswith(ref_label.strip()) else ref[:7]
     manifest = {
-        "tool": {"name": name, "version": ref[:7], "contact": f"{repo.rstrip('/')}/issues"},
+        "tool": {"name": name, "version": version, "contact": f"{repo.rstrip('/')}/issues"},
         "submission": {"by": submitted_by},
         "source": {"repo": repo, "ref": ref},
-        "report": {"slug": slug},
+        "report": {"slug": catalogue_slug(name, input_type)},
         "environment": env,
         "run": {"cmd": run_cmd, "timeout_minutes": 20},
         "inputs": ({"type": input_type, **({"regions": regions_block} if regions_block else {})}
@@ -296,9 +342,10 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
     if caveat_items:
         manifest["caveats"] = {"source": "detect_recipe", "items": [c[:300] for c in caveat_items[:8]]}
 
-    header = ("# STRhub Verified trial recipe, PROPOSED from the repository by detect_recipe.\n"
-              "# Nobody typed this: every choice is listed under `caveats`. A trial report\n"
-              "# built from it says so, and is never published as an attestation.\n")
+    header = ("# STRhub Verified recipe, PROPOSED from the repository by detect_recipe.\n"
+              "# Nobody typed this: every choice is listed under `caveats`, and the report\n"
+              "# says so. It is published only if the run's verdict is attributable to the\n"
+              "# tool (runs or fails); a verdict that is STRhub's limitation never is.\n")
     return {
         "manifest": manifest,
         "manifest_yml": header + yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True, width=1000),
@@ -324,11 +371,13 @@ def main() -> int:
     ap.add_argument("proposal", help="detect_recipe.py --json output")
     ap.add_argument("--slug", required=True)
     ap.add_argument("--submitted-by", default="third_party", choices=["maintainer", "third_party"])
+    ap.add_argument("--ref-label", default="",
+                    help="the tag or release the ref was resolved from, shown as the version")
     ap.add_argument("--out-dir", default="", help="also write manifest.yml + Dockerfile here")
     ap.add_argument("--recipe-b64-out", default="", help="write the base64 recipe (prepare --recipe-b64) here")
     args = ap.parse_args()
     proposal = json.loads(pathlib.Path(args.proposal).read_text())
-    r = build(proposal, args.slug, args.submitted_by)
+    r = build(proposal, args.slug, args.submitted_by, args.ref_label)
     # The limitations travel back into the proposal file so the report's verdict
     # can read them alongside the README gaps.
     proposal["limitations"] = r["limitations"]
@@ -345,7 +394,8 @@ def main() -> int:
         if r["dockerfile_fallback"]:
             recipe["dockerfile_fallback"] = r["dockerfile_fallback"]
         pathlib.Path(args.recipe_b64_out).write_text(base64.b64encode(json.dumps(recipe).encode()).decode())
-    print(json.dumps({"slug": args.slug, "limitations": r["limitations"],
+    print(json.dumps({"slug": args.slug, "catalogue_slug": r["manifest"]["report"]["slug"],
+                      "limitations": r["limitations"],
                       "example": bool(r["manifest"].get("example")),
                       "input_type": r["manifest"].get("inputs", {}).get("type")}, indent=2))
     return 0

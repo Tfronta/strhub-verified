@@ -161,3 +161,41 @@ def test_a_readme_that_says_nothing_about_input_gets_a_guess_that_says_so(tmp_pa
     assert verdict.decide(stopped, recipe_proposal=proposal)["code"] == "undetermined"
     produced = {"available": True, "installs": True, "runs": True, "io": True, "content": True}
     assert verdict.decide(produced, recipe_proposal=proposal)["code"] == "runs"
+
+
+def test_a_trial_is_filed_under_the_tool_s_catalogue_slug_not_the_run_s_name(tmp_path):
+    # The run is named by whoever dispatched it (trial-<repo>-<ref>); the report
+    # is filed where a published result lives: one card per tool and assay,
+    # with no version or commit in it.
+    r = pm.build(_proposal("hipstr"), "trial-hipstr-b2033bf")
+    m = _valid(r["manifest_yml"], tmp_path)
+    assert m["report"]["slug"] == "hipstr"
+    # The same card a committed HipSTR entry uses, so a trial refreshes it
+    # instead of opening a second one.
+    assert (pathlib.Path(__file__).resolve().parents[2] / "tools" / "hipstr" / "manifest.yml").is_file()
+
+
+def test_catalogue_slug_adds_a_suffix_only_for_a_non_canonical_assay():
+    assert pm.catalogue_slug("HipSTR", "illumina-bam-hg38") == "hipstr"
+    assert pm.catalogue_slug("HipSTR", "illumina-bam-hg38-y") == "hipstr-y"
+    assert pm.catalogue_slug("STRspy", "ont-bam-hg38") == "strspy-ont"
+    assert pm.catalogue_slug("STRait Razor", "illumina-str-fastq") == "strait-razor"
+    # Unlisted types fall back to their last segment; no type, no suffix.
+    assert pm.catalogue_slug("Tool", "some-new-assay") == "tool-assay"
+    assert pm.catalogue_slug("Tool", None) == "tool"
+    assert pm.catalogue_slug("!!", None) == "tool"
+
+
+def test_the_version_is_the_release_the_ref_came_from_else_the_short_sha(tmp_path):
+    p = _proposal("hipstr")
+    sha = p["ref"]
+    # A tag or release label is what a person cites.
+    m = _valid(pm.build(p, "t", ref_label="v0.7")["manifest_yml"], tmp_path)
+    assert m["tool"]["version"] == "v0.7"
+    # No label: the short commit, as before.
+    m = _valid(pm.build(p, "t")["manifest_yml"], tmp_path)
+    assert m["tool"]["version"] == sha[:7]
+    # A "label" that is just the SHA again (the form passes the resolved ref
+    # through when it found nothing better) is not a version.
+    m = _valid(pm.build(p, "t", ref_label=sha)["manifest_yml"], tmp_path)
+    assert m["tool"]["version"] == sha[:7]
