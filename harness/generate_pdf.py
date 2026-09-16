@@ -1083,7 +1083,8 @@ def _format_cmd(raw_cmd: str) -> list[str]:
     return lines
 
 
-def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
+def load_config(manifest_path: str, datasets_path: str | None = None,
+                publishable: bool | None = None) -> dict:
     mpath = pathlib.Path(manifest_path)
     m = yaml.safe_load(mpath.read_text())
 
@@ -1156,6 +1157,12 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
     # Loci (sorted by depth desc — top_loci_by_depth is already most_common())
     loci_with_depth = [(l, d) for l, d in stats.get("top_loci_by_depth", [])]
 
+    # Whether this result is published is the deploy gate's decision on the
+    # verdict, handed in by the workflow. Without it, the old rule holds: a
+    # trial publishes nothing.
+    _published = (publishable if publishable is not None
+                  else report.get("mode") != "trial")
+
     return {
         "slug":           slug,
         "tool_name":      tool_name,
@@ -1167,9 +1174,12 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         "repo_url":       repo_url,
         "commit":         commit,
         "commit_url":     commit_url,
-        # No permalink for a trial: nothing was published, and a link to a
-        # catalogue page that does not exist is a claim that it was.
-        "permalink":      "" if report.get("mode") == "trial" else f"https://strhub.app/verified/{slug}",
+        # A permalink only for a result that is published, and a "not
+        # published" mark on one that is not. Whether it is published is the
+        # deploy gate's decision on the verdict, handed in by the workflow;
+        # how the run was triggered (a trial, a scheduled refresh) is not it.
+        # Without the flag, fall back to the old rule: a trial publishes nothing.
+        "permalink":      f"https://strhub.app/verified/{slug}" if _published else "",
         "ci_run":         report.get("ci_run", ""),
         "gates":          gates,
         "level":          level,
@@ -1198,9 +1208,9 @@ def load_config(manifest_path: str, datasets_path: str | None = None) -> dict:
         # Quoted from the README at the pinned ref; the framing is ours, the
         # content is the author's.
         "author_known_issues": report.get("author_known_issues") or [],
-        # A trial publishes nothing and has no catalogue entry. Unmarked, its
-        # PDF is indistinguishable from an attestation anyone may circulate.
-        "is_trial":       report.get("mode") == "trial",
+        # Unmarked, the PDF of a run that was not published is indistinguishable
+        # from an attestation anyone may circulate.
+        "is_trial":       not _published,
         # Plan B ran: the pinned commit did not build and the manifest's fallback
         # environment (the published image or package the README points at) did.
         "fallback_used":  bool((report.get("environment") or {}).get("fallback_used")),
@@ -1230,9 +1240,13 @@ def main() -> int:
                     help="Path to datasets/index.json (auto-detected if omitted)")
     ap.add_argument("--out",
                     help="Output PDF path (default: reports/<slug>.pdf)")
+    ap.add_argument("--publishable", choices=["true", "false"], default=None,
+                    help="whether the deploy gate will publish this result; "
+                         "sets the permalink and the not-published mark")
     args = ap.parse_args()
 
-    cfg = load_config(args.manifest, args.datasets)
+    publishable = None if args.publishable is None else args.publishable == "true"
+    cfg = load_config(args.manifest, args.datasets, publishable)
 
     out_path = args.out or f"reports/{cfg['slug']}.pdf"
     pathlib.Path(out_path).parent.mkdir(parents=True, exist_ok=True)
