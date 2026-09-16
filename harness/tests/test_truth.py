@@ -161,3 +161,39 @@ def test_every_fact_file_cites_where_each_fact_was_read():
         assert these == keys, f"{name}: facts differ from the others: {these} vs {keys}"
         for k in these:
             assert "value" in facts[k] and facts[k].get("where"), f"{name}: {k} has no cite"
+
+
+def test_what_the_engine_reads_about_input_is_what_the_readme_says():
+    """Phase C: the engine READS the README now, and its reading must equal
+    the facts — not merely avoid contradicting them. The documented kinds,
+    the author's recommendation (or its absence) and the platforms the author
+    advises against are each a fact with a line; the engine has to find the
+    same ones."""
+    for name in NAMES:
+        proposal, _, _ = _everything_the_engine_says(name)
+        facts = _facts(name)
+        st = proposal["input_type"]["statements"]
+        assert proposal["input_type"]["how"] == "read", f"{name}: fell back to counting"
+        assert sorted(i["kind"] for i in st["inputs"]) == sorted(_fact(facts, "documented_inputs")), (
+            f"{name}: read {[i['kind'] for i in st['inputs']]}; fact: {facts['documented_inputs']['where']}")
+        rec = st["recommendation"]["kind"] if st["recommendation"] else None
+        assert rec == _fact(facts, "author_recommends_input"), (
+            f"{name}: read recommendation {rec}; fact: {facts['author_recommends_input']['where']}")
+
+
+def test_hipstr_s_advice_against_long_reads_is_read_off_line_435():
+    """The one advisory sentence in the five repositories, and the one that
+    would turn an ONT run of HipSTR into a false finding about HipSTR."""
+    proposal, _, _ = _everything_the_engine_says("hipstr")
+    against = {(a["platform"], a["line"]) for a in proposal["input_type"]["statements"]["against"]}
+    assert against == {("ont", 435), ("pacbio", 435)}
+    assert "illumina" not in {a["platform"] for a in proposal["input_type"]["statements"]["against"]}
+
+
+def test_an_input_caveat_quotes_the_readme_with_its_line():
+    """The sentence that replaced "the README suggests ont-fastq first"."""
+    _, recipe, _ = _everything_the_engine_says("strspy")
+    note = next(c for c in recipe["manifest"]["caveats"]["items"] if c.startswith("Input:"))
+    assert note.startswith("Input: the README documents BAM and FASTQ (line 44)")
+    assert 'The author recommends BAM (line 295: "Tip: Its good practice to use pre-aligned bams' in note
+    assert "suggests" not in note and "prefers" not in note

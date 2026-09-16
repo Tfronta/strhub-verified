@@ -18,7 +18,13 @@ import detect_recipe as dr
 REPOS = pathlib.Path(__file__).resolve().parents[1] / "testdata" / "repos"
 NAMES = ("hipstr", "straitrazor", "strsearch", "gangstr", "strspy")
 CLAIMS = {"install_method", "published_image", "bioconda_package", "fallback_environment",
-          "run_command", "example_data", "known_issue"}
+          "run_command", "example_data", "known_issue",
+          # Phase C: what the README states about input, read by sentence.
+          "documented_input", "author_recommendation", "platform_advice"}
+#: Cited by SENTENCE: the text is one statement off a line that may hold two
+#: ("designed for Illumina. We do not recommend Nanopore"), so it is contained
+#: in the line rather than equal to it.
+SENTENCE_CLAIMS = {"documented_input", "author_recommendation", "platform_advice"}
 
 
 def _proposal(name):
@@ -56,7 +62,11 @@ def test_a_readme_citation_reads_as_quoted():
         for e in prop["evidence"]:
             if e["kind"] != "readme" or e["claim"] == "known_issue":
                 continue
-            assert e["text"] == lines[e["line"] - 1].strip()[:300], (name, e["claim"], e["line"])
+            line = lines[e["line"] - 1].strip()
+            if e["claim"] in SENTENCE_CLAIMS:
+                assert e["text"] and e["text"] in line, (name, e["claim"], e["line"], e["text"][:60])
+            else:
+                assert e["text"] == line[:300], (name, e["claim"], e["line"])
 
 
 def test_the_command_is_cited_where_the_readme_wrote_it():

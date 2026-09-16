@@ -53,7 +53,11 @@ def test_strsearch_ships_dockerfile_and_examples_and_warns_about_hg19():
     assert r["commands"][0]["cmd"].startswith("python3 pipeline.py from_")
     assert "--fq1" in r["commands"][0]["cmd"] or "--bam" in r["commands"][0]["cmd"]
     assert any("hg19" in w for w in r["input_type"]["warnings"])
-    assert any("try both" in w for w in r["input_type"]["warnings"])
+    # "FASTQ file or BAM-file" (README line 77): both are documented, so both
+    # are candidates — read off the sentence, not inferred from a count.
+    assert r["input_type"]["how"] == "read"
+    assert set(r["input_type"]["candidates"]) >= {"illumina-bam-hg38", "illumina-str-fastq"}
+    assert sorted(i["kind"] for i in r["input_type"]["statements"]["inputs"]) == ["bam", "fastq"]
 
 
 def test_gangstr_builds_the_pinned_commit_and_keeps_the_published_image_as_plan_b():

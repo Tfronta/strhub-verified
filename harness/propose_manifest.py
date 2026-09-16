@@ -146,24 +146,41 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party") -> dict:
     # for: STRspy reads ONT FASTQ or BAM and names FASTQ first, and STRhub has
     # ONT reads only as hg38 BAM slices. A candidate with data beats the best
     # guess without any, since the alternative is a run that never starts.
-    input_note = None
-    if input_type and not datasets_lib.resolve(input_type):
-        with_data = next((c for c in (proposal.get("input_type") or {}).get("candidates", [])
-                          if datasets_lib.resolve(c)), None)
-        if with_data:
-            # Says what STRhub did, not what the README "suggests". The ranking
-            # behind `best` is a keyword count, and a count is not a reading:
-            # for STRspy it put FASTQ first on 7 mentions against 4, while the
-            # README documents both inputs and recommends BAM outright ("its
-            # good practice to use pre-aligned bams"). A report may describe
-            # its own choice; it may not put a preference in the author's mouth.
-            input_note = (f"Input: this run used STRhub's {with_data} reference data. The "
-                          f"repository also describes {input_type}, for which STRhub holds no "
-                          "reference sample; which input the tool is best used with is the "
-                          "author's documentation to say, not this run.")
-            input_type = with_data
-    from_repo = build_info.get("method") == "dockerfile"
     limitations: list[str] = []
+    it = proposal.get("input_type") or {}
+    stmts = it.get("statements") or {}
+    input_type_asked = input_type
+    if input_type and not datasets_lib.resolve(input_type):
+        with_data = next((c for c in it.get("candidates", []) if datasets_lib.resolve(c)), None)
+        if with_data:
+            input_type = with_data
+    # The input caveat quotes what the README says and states what this run
+    # did. Nothing in it is inferred: the kinds, the recommendation and the
+    # lines come from read_input_statements, and when nothing was there to
+    # read the caveat says the type was guessed — which is a limitation the
+    # verdict weighs, not a fact about the tool.
+    input_note = None
+    if input_type:
+        if it.get("how") == "read":
+            docs = stmts.get("inputs") or []
+            kinds = " and ".join(i["kind"].upper() for i in docs)
+            line = docs[0]["line"] if docs else None
+            input_note = (f"Input: the README documents {kinds}"
+                          + (f" (line {line})" if line else "")
+                          + f"; this run used STRhub's {input_type} reference data.")
+            rec = stmts.get("recommendation")
+            if rec:
+                quote = re.sub(r"[*_`]+", "", rec["text"])[:90]
+                input_note += (f" The author recommends {rec['kind'].upper()} "
+                               f"(line {rec['line']}: \"{quote}\").")
+            if input_type_asked and input_type_asked != input_type:
+                input_note += (f" STRhub holds no reference sample as {input_type_asked}, "
+                               "so the other documented kind was used.")
+        else:
+            input_note = (f"Input: no sentence in the README says what the tool takes; "
+                          f"{input_type} was tried on the strength of mentions alone.")
+            limitations.append("input_type_guessed")
+    from_repo = build_info.get("method") == "dockerfile"
     caveat_items: list[str] = []
     dockerfile_fallback_text: str | None = None
 

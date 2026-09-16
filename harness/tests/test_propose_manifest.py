@@ -107,13 +107,16 @@ def test_a_recipe_without_a_plan_b_declares_none(tmp_path):
 
 
 def test_strspy_runs_on_the_input_type_strhub_has_data_for(tmp_path):
-    # The README names FASTQ first and STRhub has ONT reads only as hg38 BAM:
-    # the run uses the BAM and the caveat says so. Nothing is forced past
+    # The README documents FASTQ and BAM on one line and recommends BAM on
+    # another; the caveat quotes both, with their lines. Nothing is forced past
     # that — the documented command runs as documented, config files and all.
     r = pm.build(_proposal("strspy"), "strspy-trial")
     m = _valid(r["manifest_yml"], tmp_path)
     assert m["inputs"]["type"] == "ont-bam-hg38"
-    assert any(c.startswith("Input: this run used STRhub's ont-bam-hg38 reference data") for c in m["caveats"]["items"])
+    note = next(c for c in m["caveats"]["items"] if c.startswith("Input:"))
+    assert note.startswith("Input: the README documents BAM and FASTQ (line 44)")
+    assert "The author recommends BAM (line 295:" in note and "pre-aligned bams" in note
+    assert "***" not in note
     assert "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt" in m["run"]["cmd"]
     assert "no_reference_dataset" not in r["limitations"]
 
@@ -138,3 +141,23 @@ def test_the_tool_is_named_the_way_its_repository_writes_it():
         assert pm.tool_name_as_written(proposal["repo"], proposal) == expected, repo
     # Nothing to go on: the path segment, not an invented capitalisation.
     assert pm.tool_name_as_written("https://github.com/x/mytool", {"readme_text": ""}) == "mytool"
+
+
+def test_a_readme_that_says_nothing_about_input_gets_a_guess_that_says_so(tmp_path):
+    """Phase C3: when the reading finds nothing, say so — never dress a count
+    up as a reading. And a guess that turns out right is not a limitation."""
+    import verdict
+    readme = "# mytool\n\nGenotypes STRs.\n\n```\nmytool sample.bam out.vcf\n```\n"
+    tree = {"tree": [{"path": "Makefile", "type": "blob", "size": 1}], "truncated": False}
+    proposal = dr.detect("x/mytool", "abc", tree, readme, "README.md")
+    assert proposal["input_type"]["how"] == "counted"
+    r = pm.build(proposal, "mytool-trial")
+    m = _valid(r["manifest_yml"], tmp_path)
+    note = next(c for c in m["caveats"]["items"] if c.startswith("Input:"))
+    assert note.startswith("Input: no sentence in the README says what the tool takes")
+    assert "input_type_guessed" in r["limitations"]
+    proposal["limitations"] = r["limitations"]
+    stopped = {"available": True, "installs": True, "runs": False, "io": False, "content": False}
+    assert verdict.decide(stopped, recipe_proposal=proposal)["code"] == "undetermined"
+    produced = {"available": True, "installs": True, "runs": True, "io": True, "content": True}
+    assert verdict.decide(produced, recipe_proposal=proposal)["code"] == "runs"
