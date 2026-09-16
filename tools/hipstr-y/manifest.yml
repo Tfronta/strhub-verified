@@ -1,5 +1,5 @@
 # STRhub Verified manifest — HipSTR (Y-STR variant).
-# Same tool + pinned ref as hipstr-v0-7, but verified against the Y-STR reference
+# Same tool + pinned ref as hipstr-autosomal, but verified against the Y-STR reference
 # dataset (GIAB HG002). Demonstrates the illumina-bam-hg38-y leg end to end.
 # Verification metadata only; STRhub stores no tool source code.
 
@@ -19,7 +19,7 @@ source:
 submission:
   by: third_party
 report:
-  slug: "hipstr-v0-7-y"
+  slug: "hipstr-y"
 environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]

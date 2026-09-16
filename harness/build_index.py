@@ -33,11 +33,12 @@ def _load(reports: pathlib.Path) -> list[dict]:
             r = json.loads(p.read_text())
         except Exception:
             continue
-        # Only attestation reports (strhub-verified/1), not catalogues or datasets,
-        # and never a trial: a rehearsal is not a claim, and this index is what
-        # the public catalogue lists. The workflow already keeps trials off
-        # gh-pages; this is the second lock on the same door.
-        if r.get("schema") == "strhub-verified/1" and r.get("mode", "publish") != "trial":
+        # Only attestation reports (strhub-verified/1), not catalogues, datasets
+        # or recipes. Whether a report belongs on gh-pages at all is decided by
+        # the workflow's deploy gate on the run's verdict, not by how the run
+        # was triggered: a rehearsal that came back "runs" or "fails" is the
+        # same fact as a scheduled re-verification, and lists the same.
+        if r.get("schema") == "strhub-verified/1":
             items.append((p.stem, r))
     return items
 
@@ -85,15 +86,27 @@ def _summary_entry(slug: str, r: dict) -> dict:
         for issues in (r.get("diagnostics") or {}).values()
         for i in issues
     )
+    tool = r.get("tool", {})
+    ref = r.get("source", {}).get("ref_resolved")
     return {
         "slug": slug,
-        "name": r.get("tool", {}).get("name", slug),
+        "name": tool.get("name", slug),
+        # What a person cites (a tag, a release) and the exact commit behind
+        # it. The slug is a stable identity per tool and variant; the version
+        # is what THIS entry was verified at, and moves as releases do.
+        "version": tool.get("version"),
+        "variant": tool.get("variant"),
+        "sha": ref,
         "level": level,
         "label": LABELS.get(level, "not run"),
+        # One of runs / fails / undetermined / out_of_scope. Only the first two
+        # are ever deployed; carried so the catalogue can say which without
+        # re-deriving it from the gates.
+        "verdict": (r.get("verdict") or {}).get("code"),
         "errors_reported": errors_reported,
         "generated": r.get("generated"),
         "source_repo": r.get("source", {}).get("repo"),
-        "source_ref": r.get("source", {}).get("ref_resolved"),
+        "source_ref": ref,
         "ci_run": r.get("ci_run"),
         "distinct_str_loci": stats.get("distinct_str_loci", stats.get("distinct_loci")),
         "distinct_snp_markers": stats.get("distinct_snp_markers"),
@@ -112,7 +125,8 @@ def build_catalogue(reports: pathlib.Path) -> dict:
     """The index.json payload: a versioned list of tool summaries."""
     items = _load(reports)
     return {
-        "schema": "strhub-verified/index/1",
+        # /2: entries carry version, variant, sha and verdict.
+        "schema": "strhub-verified/index/2",
         "generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "count": len(items),
         "tools": [_summary_entry(slug, r) for slug, r in items],

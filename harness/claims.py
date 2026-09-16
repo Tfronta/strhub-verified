@@ -55,7 +55,7 @@ REGISTER: dict[str, tuple[str, str]] = {
     "3badef4c3d59": ("certificate_text", "tree"),  # ships no test or demo data of its own.
     "33eed44a270b": ("diagnose_log", "log"),  # A COPY/ADD line names a file the build cannot see. The container is built from the tool's direc
     "86baeea971be": ("diagnose_log", "run"),  # At least one cause is STRhub's, not the tool's: the container recipe for a generated environmen
-    "c607109d1c34": ("diagnose_log", "manifest"),  # Every cause identified sits in what the submission declared — its pinned versions, package name
+    "9af466e70a45": ("diagnose_log", "manifest"),  # Every cause identified sits in this run's configuration — the pinned versions, package names or buil
     "f87ad4ad59ea": ("diagnose_log", "manifest"),  # The tool declares a binary or proprietary output with no text or tabular export, so the IO and 
     "6759a67a2817": ("diagnose_log", "manifest"),  # The tool declares an interactive or graphical step. The automated runner is headless and cannot
     "e3a029af91e7": ("diagnose_log", "manifest"),  # The tool declares it fetches data over the network while running. A pinned snapshot cannot reco
@@ -67,23 +67,20 @@ REGISTER: dict[str, tuple[str, str]] = {
     "94e9a73cf514": ("diagnose_log", "manifest"),  # The tool needs CUDA hardware. Public CI runners are CPU-only.
     "3d053d897ca4": ("diagnose_log", "manifest"),  # The tool needs a license or licensed data that cannot be published in a public verification run
     "92129cab0cf3": ("diagnose_log", "log"),  # The tool needs a license or licensed reference data that cannot be published in a public verifi
-    "65d555ab9fba": ("diagnose_log", "manifest"),  # These are corrections to the CONFIGURATION this run used, which a third party supplied — not th
     "997283df285e": ("diagnose_log", "log"),  # This tool requires the VCF output path to end in .gz (bgzipped). Change the output path in the 
     "dc6dbb4a5df8": ("generate_pdf", "tree"),  # Recorded automatically from the tool's public files when this run was configured. Not verified 
     "6b4450723321": ("generate_pdf", "tree"),  # This tool ships no demo or test data of its own. STRhub ran the verification using the public r
-    "c7c9908816cf": ("generate_pdf", "manifest"),  # This tool was submitted for verification by somebody other than its maintainer. The maintainer 
     "7ceb34632e90": ("propose_manifest", "tree"),  # # No install method was detected; a bare image so the trial can report # the documentation gap 
     "831100e24df2": ("propose_manifest", "tree"),  # # The repository ships its own Dockerfile (
     "ec6b7b9d5fd5": ("propose_manifest", "readme"),  # ' the README installs; its version is the package's, not necessarily the pinned commit.
     "36152cfaf0d6": ("propose_manifest", "readme"),  # Run command: the README's own command, rewritten to STRhub's mounts; everything it created was 
     "714329de2505": ("propose_manifest", "readme"),  # the README points at; the tool inside it is whatever that image holds, not necessarily the pinn
     "70be7a8f1331": ("propose_manifest", "readme"),  # true # no command found in the README; nothing to run
-    "2653eed3e17b": ("report", "policy"),  # <br><br> This is <b>not</b> a claim that the genotypes are correct, nor that the tool is fit fo
+    "4febb7603b17": ("report", "policy"),  # <br><br> This is <b>not</b> a claim that the genotypes are correct, nor that the tool is fit for cas
     "82688741465a": ("report", "manifest"),  # A container environment, built from the tool's declared install steps rather than from a recipe
     "316572e47dc0": ("report", "tree"),  # Recorded automatically from the tool's public files when this run was configured. **Not verifie
     "0bee1f1f9159": ("report", "run"),  # Test data: no sample from the repository was used, so a public reference sample stood in.
     "8abb5c27a292": ("report", "policy"),  # This is **not** a claim that the genotypes are correct, nor that the tool is fit for casework o
-    "1d5d51eb4ad0": ("report", "manifest"),  # This tool was submitted for verification by somebody other than its maintainer. The maintainer 
     "36231f28bb59": ("report", "readme"),  # What the README does not say:
     "f48849517921": ("verdict", "readme"),  # No command line invoking the tool was found in the README.
     "dc452ca7ae85": ("verdict", "tree"),  # No way to install the tool was found: no Dockerfile, environment file, requirements, setup scri

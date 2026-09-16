@@ -13,7 +13,7 @@ source:
 submission:
   by: third_party
 report:
-  slug: "strsearch-c70179b"
+  slug: "strsearch"
 environment:
   dockerfile: Dockerfile
   os: ["ubuntu-22.04"]
