@@ -24,7 +24,7 @@ def test_committed_tool_outputs_are_single_line(tmp_path):
 
 
 def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
-    src = ROOT / "tools" / "hipstr-autosomal"
+    src = ROOT / "tools" / "hipstr"
     manifest = src.joinpath("manifest.yml").read_text()
     # A newline smuggled into a manifest value must not become a second key.
     manifest = manifest.replace('name: hipstr', 'name: "hipstr\\nown_ready=1"')
@@ -33,7 +33,7 @@ def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
     # regions.bed by convention).
     manifest = manifest.replace(
         '  type: "illumina-bam-hg38"\n',
-        '  type: "illumina-bam-hg38"\n  regions:\n    path: "tools/hipstr-autosomal/assets/regions.bed"\n    provided_by: author\n',
+        '  type: "illumina-bam-hg38"\n  regions:\n    path: "tools/hipstr/assets/regions.bed"\n    provided_by: author\n',
         1)
     assert "provided_by: author" in manifest
     recipe = {
@@ -42,11 +42,11 @@ def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
         "regions_bed": (ROOT / "datasets" / "illumina-bam-hg38" / "regions" / "hipstr.bed").read_text(),
     }
     b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["hipstr-autosomal", "--work", str(tmp_path), "--recipe-b64", b64])
+    rc, kv, err = _run(["hipstr", "--work", str(tmp_path), "--recipe-b64", b64])
     assert rc == 0, err
     assert kv["mode"] == "trial"
-    assert kv["dockerdir"].endswith("recipe/hipstr-autosomal")
-    assert (tmp_path / "recipe" / "hipstr-autosomal" / "Dockerfile").is_file()
+    assert kv["dockerdir"].endswith("recipe/hipstr")
+    assert (tmp_path / "recipe" / "hipstr" / "Dockerfile").is_file()
     assert kv["regions_source"] == "tool"
     assert kv["regions_missing"] == "0"
     assert (tmp_path / "in_external" / "regions.bed").is_file()
