@@ -6,6 +6,7 @@
 tool:
   name: STRait Razor
   version: "v3"
+  variant: "PowerSeq"
   maintainer: "Woerner AE, King JL (UNT Center for Human Identification)"
   contact: "https://github.com/Ahhgust/STRaitRazor/issues"   # failure reports go here
 

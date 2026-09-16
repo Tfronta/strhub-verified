@@ -5,6 +5,9 @@
 tool:
   name: hipstr
   version: v0.7
+  maintainer: tfwillems
+  contact: "https://github.com/tfwillems/HipSTR/issues"
+  variant: "Autosomal (hg38)"
 source:
   repo: "https://github.com/tfwillems/HipSTR"
   ref: b2033bfbb5cf55496b776463bdf2993fa763a4be
@@ -33,4 +36,8 @@ outputs:
     content:
       locus_column: 2
       dna_column: 3
-      min_distinct_loci: 1
+      # A genotype VCF for the autosomal CODIS panel names ~21 STR loci. A floor
+      # well above one keeps "plausible output" from passing on a single row —
+      # the trivial check S6 flagged. Kept far below the observed count so a
+      # real run never trips it.
+      min_distinct_loci: 10
