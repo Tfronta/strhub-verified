@@ -22,6 +22,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
 import diagnose_log  # noqa: E402
 from prepare import unwrap_example  # noqa: E402
+from certificate_text import install_meaning  # noqa: E402
 import verdict as verdict_lib  # noqa: E402
 import upstream  # noqa: E402
 
@@ -155,18 +156,20 @@ def _environment_line(env: dict, code=lambda t: f"`{t}`") -> str:
 
 
 def _install_heading(inst: dict) -> str:
-    return ("Why the pinned commit did not build" if inst.get("fallback_used")
-            else "Why the environment did not build")
+    # Plain words, not the mechanism: "why the pinned commit did not build"
+    # told a reader who did not know what a pinned commit was that something
+    # with a name they did not know had failed.
+    return ("It did not build from source; the run used the README's ready-made environment"
+            if inst.get("fallback_used") else "It did not build from source")
 
 
 def _install_lead(inst: dict, env: dict) -> str:
+    tried = ("STRhub tried to build the tool from its source at the pinned commit, "
+             "following the build steps the repository declares, and the build failed.")
     if inst.get("fallback_used"):
-        return (f"The container could not be built from the declared install steps at the "
-                f"pinned commit; {_fallback_reason(env)} was built instead, and every gate "
-                "below ran on it. What ran is the version that environment holds, not "
-                "necessarily the pinned commit.")
-    return ("The container could not be built from the declared install steps, so "
-            "nothing below the Installs gate ran.")
+        return (f"{tried} {_fallback_reason(env)[0].upper()}{_fallback_reason(env)[1:]} "
+                "was used instead, and every gate below ran on it.")
+    return f"{tried} Nothing below the Installs gate ran."
 
 
 def _primary_build_log(path: str) -> str:
@@ -232,8 +235,10 @@ def _summary_md(report: dict, slug: str) -> str:
         lines += ["", f"## {_install_heading(inst)}", "",
                   _install_lead(inst, report["environment"]),
                   "",
-                  diagnose_log.install_fault_sentence(inst.get("faults") or []),
-                  "",
+                  "What this means:", ""]
+        lines += [f"- **{who}:** {what}" for who, what in
+                  install_meaning(bool(inst.get("fallback_used")), inst.get("faults") or [])]
+        lines += ["", "What failed:", "",
                   "| What happened | Times | Suggested fix |",
                   "|---|---|---|"]
         for issue in inst["diagnostics"]:
@@ -449,10 +454,14 @@ def _summary_html(report: dict, slug: str) -> str:
         build_log = (report.get("logs") or {}).get("build")
         log_link = (f'<p><a href="{esc(build_log)}">Full build output</a></p>'
                     if build_log else "")
+        meaning = "".join(
+            f"<li><b>{esc(who)}:</b> {esc(what)}</li>" for who, what in
+            install_meaning(bool(inst.get("fallback_used")), inst.get("faults") or []))
         install_block = (
             f"<h2>{esc(_install_heading(inst))}</h2>"
             f"<p>{esc(_install_lead(inst, report['environment']))}</p>"
-            f"<p>{esc(diagnose_log.install_fault_sentence(inst.get('faults') or []))}</p>"
+            f"<p><b>What this means</b></p><ul class='stats'>{meaning}</ul>"
+            "<p><b>What failed</b></p>"
             "<table><thead><tr><th>What happened</th><th>Times</th>"
             "<th>Suggested fix</th></tr></thead>"
             f"<tbody>{irows}</tbody></table>{log_link}"

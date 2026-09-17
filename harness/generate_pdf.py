@@ -25,7 +25,7 @@ import tempfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import diagnose_log  # noqa: E402
-from certificate_text import conclusion_items_for  # noqa: E402
+from certificate_text import conclusion_items_for, install_meaning  # noqa: E402
 
 import yaml
 from reportlab.lib import colors
@@ -773,22 +773,29 @@ def build_body(cfg):
     if inst.get("diagnostics"):
         # Plan B: the gate passed on the published environment the README
         # points at, and this section explains the build that failed before it.
+        tried = ("STRhub tried to build the tool from its source at the pinned commit, "
+                 "following the build steps the repository declares, and the build failed.")
         if inst.get("fallback_used"):
-            els.append(section_num(str(sec), "Why the Pinned Commit Did Not Build"))
-            lead = ("The container could not be built from the declared install steps at "
-                    f"the pinned commit; {cfg.get('fallback_reason') or 'the fallback environment'} "
-                    "was built instead, and every gate below ran on it. What ran is the "
-                    "version that environment holds, not necessarily the pinned commit.")
+            els.append(section_num(str(sec), "Not Built From Source: the README's Ready-Made Environment Ran"))
+            reason = cfg.get("fallback_reason") or "the fallback environment"
+            lead = f"{tried} {reason[0].upper()}{reason[1:]} was used instead, and every gate below ran on it."
         else:
-            els.append(section_num(str(sec), "Why the Environment Did Not Build"))
-            lead = ("The container could not be built from the declared install steps, "
-                    "so nothing below the Installs gate ran.")
+            els.append(section_num(str(sec), "Not Built From Source"))
+            lead = f"{tried} Nothing below the Installs gate ran."
         sec += 1
         els.append(Paragraph(lead, ST["body"]))
         els.append(vspace(2))
-        els.append(Paragraph(diagnose_log.install_fault_sentence(inst.get("faults") or []),
-                             ST["body"]))
+        # In the reader's own terms, before the table of causes: what it means
+        # for someone running it, a reviewer holding a manuscript, its maintainer.
+        meaning_els = [Paragraph("<b>What this means</b>", ST["body"])]
+        for who, what in install_meaning(bool(inst.get("fallback_used")), inst.get("faults") or []):
+            meaning_els.append(Paragraph(
+                f'<font color="#9ca3af">–</font>  <b>{esc(who)}:</b> {esc(what)}',
+                S("im", fontSize=8.5, textColor=GRAY, leading=14, leftIndent=10, spaceAfter=1)))
+        els.append(boxed(meaning_els))
         els.append(vspace(3))
+        els.append(Paragraph("<b>What failed</b>", ST["body"]))
+        els.append(vspace(2))
         ihead = [Paragraph(f"<b>{h}</b>", ST["tbl_cell"])
                  for h in ("What happened", "Suggested fix")]
         irows = [ihead]
