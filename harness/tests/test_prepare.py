@@ -83,3 +83,16 @@ def test_a_declared_plan_b_that_is_missing_is_a_warning_not_a_silent_nothing(tmp
 def test_garbage_recipe_stops_the_run(tmp_path):
     rc, _, err = _run(["x", "--work", str(tmp_path), "--recipe-b64", "!!not-base64"])
     assert rc != 0 and "::error::" in err
+
+
+def test_the_tools_own_command_comes_back_out_of_the_wrapper():
+    """The report names what the gates ran. The wrapper around a README command
+    is STRhub's plumbing — marking the time, copying files — and a reader shown
+    the whole line cannot tell which part is the tool's."""
+    import prepare
+
+    cmd = "./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --str-vcf str_calls.vcf.gz"
+    wrapped = prepare.example_wrapper(cmd, "/opt/tool")
+    assert prepare.unwrap_example(wrapped) == (cmd, "/opt/tool")
+    # A committed manifest's command is not wrapped and comes back as it is.
+    assert prepare.unwrap_example("  GangSTR --bam in.bam   --out out ") == ("GangSTR --bam in.bam --out out", None)

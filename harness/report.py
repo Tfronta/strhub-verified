@@ -21,6 +21,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
 import diagnose_log  # noqa: E402
+from prepare import unwrap_example  # noqa: E402
 import verdict as verdict_lib  # noqa: E402
 import upstream  # noqa: E402
 
@@ -48,6 +49,29 @@ MEANING = {
                "(declared columns, DNA sequences, integer read counts, and "
                "enough recognisable forensic loci)",
 }
+
+
+#: How the summary names each evidence claim. Every kind detect_recipe emits
+#: needs a line here, or the reader gets the raw id ("platform_advice").
+CLAIM_LABELS = {
+    "install_method": "Install method", "published_image": "Published image",
+    "bioconda_package": "Bioconda package", "fallback_environment": "Fallback environment",
+    "run_command": "Run command", "example_data": "Example data", "known_issue": "Known issue",
+    "documented_input": "Documented input", "author_recommendation": "Author's recommendation",
+    "platform_advice": "Platform advice",
+}
+EVIDENCE_LEAD = ("What this run's configuration rests on, each item at the verified commit. "
+                 "Open any of them to check the claim it supports.")
+NEEDED_LEAD = ("The result above describes a run configured as follows. Anyone "
+               "repeating it needs the same things.")
+# Word for word the certificate's sentence (generate_pdf), so the two renderings
+# of one note stay one registered claim.
+CAVEATS_LEAD = ("Recorded automatically from the tool's public files when this run was "
+                "configured. Not verified by execution, and not part of the gates "
+                "above. Useful for what to check by hand.")
+RUN_LEAD = ("Executed verbatim inside the container, at the pinned commit. Paths "
+            "under /data are STRhub's mounts: the input sample, the reference "
+            "genome and the output directory.")
 
 
 def _status(flag: str) -> bool:
@@ -153,6 +177,17 @@ def _primary_build_log(path: str) -> str:
     return p.read_text(errors="replace").split(FALLBACK_MARKER, 1)[0]
 
 
+def _run_record(m: dict) -> dict | None:
+    """`run.cmd` for the report: the tool's own command, out of the wrapper a
+    proposed recipe puts around it, and the directory it ran from when the
+    wrapper named one."""
+    cmd = (m.get("run") or {}).get("cmd")
+    if not cmd:
+        return None
+    inner, cwd = unwrap_example(cmd)
+    return {"cmd": inner, **({"cwd": cwd} if cwd else {})}
+
+
 def _summary_md(report: dict, slug: str) -> str:
     """A human-readable attestation summary: what STRhub shows the user."""
     tool = report["tool"]
@@ -174,6 +209,9 @@ def _summary_md(report: dict, slug: str) -> str:
         lines.append(f"- Upstream: {up_note}")
     if report.get("ci_run"):
         lines.append(f"- CI run: {report['ci_run']}")
+    run = report.get("run") or {}
+    if run.get("cmd"):
+        lines += ["", "## Command that ran", "", RUN_LEAD, "", "```", run["cmd"], "```"]
     lines += [
         "",
         "## Gates",
@@ -332,22 +370,17 @@ def _summary_md(report: dict, slug: str) -> str:
     # something, and the useful question is what.
     ev = report.get("evidence") or []
     if ev:
-        lines += ["", "## Evidence", "",
-                  "What this run's configuration rests on, each item at the verified commit. "
-                  "Open any of them to check the claim it supports."]
-        label = {"install_method": "Install method", "published_image": "Published image",
-                 "bioconda_package": "Bioconda package", "fallback_environment": "Fallback environment",
-                 "run_command": "Run command", "example_data": "Example data", "known_issue": "Known issue"}
+        lines += ["", "## Evidence", "", EVIDENCE_LEAD]
         for e in ev:
             where = f"`{e['path']}`" + (f" line {e['line']}" if e.get("line") else "")
-            txt = f" — `{e['text'][:80]}`" if e.get("text") and e["kind"] == "readme" else ""
-            lines.append(f"- {label.get(e['claim'], e['claim'])}: [{where}]({e['url']}){txt}")
+            # Whole, not clipped: the platform advice is the one line a reader
+            # most needs entire, since the run may have gone against it.
+            txt = f" — `{e['text']}`" if e.get("text") and e["kind"] == "readme" else ""
+            lines.append(f"- {CLAIM_LABELS.get(e['claim'], e['claim'])}: [{where}]({e['url']}){txt}")
 
     needed = report.get("needed_beyond_repo") or []
     if needed:
-        lines += ["", "## What this run needed beyond the repository", "",
-                  "The result above describes a run configured as follows. Anyone "
-                  "repeating it needs the same things.", ""]
+        lines += ["", "## What this run needed beyond the repository", "", NEEDED_LEAD, ""]
         for item in needed:
             lines.append(f"- {item}")
 
@@ -438,6 +471,20 @@ def _summary_html(report: dict, slug: str) -> str:
             "not establish any of this by running the tool; it is the author's own note "
             "about their own software.</p>" + quotes)
 
+    # The verdict the page leads with. A copy that omits it can read as a pass
+    # while the page it mirrors says "Fails".
+    v = report.get("verdict") or {}
+    verdict_block = (f"<p><b>Verdict: {esc(v['title'])}.</b> {esc(v['reason'])}</p>"
+                     if v.get("title") and v.get("reason") else "")
+
+    # The command the gates ran — the certificate's "Exact Run Command".
+    run = report.get("run") or {}
+    run_block = (
+        f"<h2>Command that ran</h2><p>{esc(RUN_LEAD)}</p>"
+        f"<pre><code>{esc(run['cmd'])}</code></pre>"
+        if run.get("cmd") else ""
+    )
+
     content_block = ""
     outs = report.get("content_detail", {}).get("outputs", [])
     stats = outs[0].get("stats") if outs and isinstance(outs[0], dict) else None
@@ -445,22 +492,44 @@ def _summary_html(report: dict, slug: str) -> str:
         str_loci = stats.get("str_loci", stats.get("loci", []))
         n_str = stats.get("distinct_str_loci", len(str_loci))
         n_snp = stats.get("distinct_snp_markers", 0)
-        sample = ", ".join(str_loci[:18]) + (" …" if len(str_loci) > 18 else "")
-        top = ", ".join(f"{l} ({d})" for l, d in stats.get("top_loci_by_depth", [])[:6])
         markers_li = f"<li>STR loci detected: <b>{esc(n_str)}</b>"
         if n_snp:
             markers_li += (f" &middot; identity SNPs (rsNNNN): <b>{esc(n_snp)}</b> "
                            f"(total panel markers: {esc(stats.get('distinct_loci', 0))})")
         markers_li += "</li>"
+        # Which file, from the IO gate: the content gate describes the same one.
+        io_outs = (report.get("io_detail") or {}).get("outputs") or []
+        io0 = io_outs[0] if io_outs and isinstance(io_outs[0], dict) else {}
+        file_li = ""
+        if io0.get("resolved") or io0.get("path"):
+            fmt = f" ({esc(str(io0.get('format')).upper())})" if io0.get("format") else ""
+            file_li = f"<li>Output file: <code>{esc(io0.get('resolved') or io0.get('path'))}</code>{fmt}</li>"
+        given, hit = stats.get("regions_given"), stats.get("regions_hit")
+        coverage_li = (f"<li>Panel loci called: <b>{esc(hit)}</b> of {esc(given)}</li>"
+                       if isinstance(given, int) and isinstance(hit, int) and given > 0 else "")
+        # Every locus with its depth, as the certificate's appendix has it: a
+        # reader sees the shape of the output, not six names and an ellipsis.
+        depth = stats.get("top_loci_by_depth") or []
+        depth_table = ""
+        if depth:
+            mx = max((d for _, d in depth), default=0) or 1
+            drows = "".join(
+                f"<tr><td><code>{esc(l)}</code></td><td>{esc(d)}</td>"
+                f"<td><span class=\"bar\" style=\"width:{max(1, round(100 * d / mx))}%\"></span></td></tr>"
+                for l, d in depth)
+            depth_table = ("<h3>Read depth per locus</h3>"
+                           "<table class=\"depth\"><thead><tr><th>Locus</th><th>Reads</th><th></th></tr></thead>"
+                           f"<tbody>{drows}</tbody></table>")
         content_block = f"""
     <h2>Output content (plausibility evidence)</h2>
     <ul class="stats">
+      {file_li}
       <li>Sequence records: <b>{esc(stats.get('rows', 0))}</b> (malformed: {esc(stats.get('malformed_rows', 0))})</li>
       {markers_li}
-      <li>Total reads across calls: <b>{esc(stats.get('total_reads', 0))}</b> (deepest single sequence: {esc(stats.get('max_sequence_depth', 0))})</li>
-      {'<li>STR loci: ' + esc(sample) + '</li>' if str_loci else ''}
-      {'<li>Top markers by read depth: ' + esc(top) + '</li>' if top else ''}
-    </ul>"""
+      <li>Total reads across calls: <b>{esc(stats.get('total_reads', 0))}</b> (deepest single locus: {esc(stats.get('max_sequence_depth', 0))})</li>
+      {coverage_li}
+      {'<li>STR loci: ' + esc(", ".join(str_loci)) + '</li>' if str_loci else ''}
+    </ul>{depth_table}"""
 
     # Verification matrix (own / external legs).
     # Legs where fixture_source=="strhub" are omitted: both legs run on the same
@@ -569,6 +638,35 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<ul class='stats'>{items}</ul>"
         )
 
+    # What the run rests on, what it needed, what was read rather than run:
+    # the page and the certificate carry all three, and this copy did not.
+    evidence_block = ""
+    ev = report.get("evidence") or []
+    if ev:
+        items = []
+        for e in ev:
+            where = esc(e["path"]) + (f" line {esc(e['line'])}" if e.get("line") else "")
+            quote = (f" — <code>{esc(e['text'])}</code>"
+                     if e.get("text") and e.get("kind") == "readme" else "")
+            items.append(f"<li>{esc(CLAIM_LABELS.get(e['claim'], e['claim']))}: "
+                         f"<a href=\"{esc(e['url'])}\">{where}</a>{quote}</li>")
+        evidence_block = (f"<h2>Evidence</h2><p>{esc(EVIDENCE_LEAD)}</p>"
+                          f"<ul class='stats'>{''.join(items)}</ul>")
+
+    needed_block = ""
+    needed = report.get("needed_beyond_repo") or []
+    if needed:
+        needed_block = (
+            f"<h2>What this run needed beyond the repository</h2><p>{esc(NEEDED_LEAD)}</p>"
+            f"<ul class='stats'>{''.join(f'<li>{esc(i)}</li>' for i in needed)}</ul>")
+
+    caveats_block = ""
+    cav = report.get("caveats") or {}
+    if cav.get("items"):
+        caveats_block = (
+            f"<h2>Notes from reading the repository</h2><p>{esc(CAVEATS_LEAD)}</p>"
+            f"<ul class='stats'>{''.join(f'<li>{esc(i)}</li>' for i in cav['items'])}</ul>")
+
     ci = (f'<a href="{esc(report["ci_run"])}">CI run</a>'
           if report.get("ci_run") else "")
     return f"""<!doctype html>
@@ -588,19 +686,26 @@ def _summary_html(report: dict, slug: str) -> str:
   .meta li, .stats li {{ margin:.15rem 0; }}
   .scope {{ background:#f3f4f6; border-left:4px solid {badge}; padding:.8rem 1rem; border-radius:6px; }}
   code {{ background:#eef0f2; padding:.1rem .3rem; border-radius:4px; }}
+  pre {{ background:#eef0f2; padding:.8rem 1rem; border-radius:6px; overflow-x:auto; white-space:pre-wrap; word-break:break-all; font-size:.85rem; }}
+  pre code {{ background:none; padding:0; }}
+  table.depth td {{ padding:.25rem .6rem; }}
+  table.depth td:nth-child(2) {{ text-align:right; font-variant-numeric:tabular-nums; width:5rem; }}
+  table.depth td:nth-child(3) {{ width:50%; }}
+  .bar {{ display:inline-block; height:.6rem; background:{badge}; border-radius:3px; vertical-align:middle; }}
   nav {{ margin-bottom:1rem; }}
   @media (prefers-color-scheme: dark) {{
     body {{ background:#0d1117; color:#e6edf3; }}
     a {{ color:#58a6ff; }}
     th, td {{ border-bottom:1px solid #30363d; }}
     .scope {{ background:#161b22; }}
-    code {{ background:#21262d; }}
+    code, pre {{ background:#21262d; }}
   }}
 </style></head><body>
 <nav><a href="index.html">← All tools</a></nav>
 <h1>STRhub Verified · {esc(tool['name'])}</h1>
 <p><span class="badge">{esc(LABELS.get(level, 'not run'))}</span></p>
 <p>{esc(MEANING.get(level, ''))}.</p>
+{verdict_block}
 <ul class="meta">
   <li>Variant: <code>{esc(slug)}</code></li>
   <li>Source: <code>{esc(report['source']['repo'])}</code> @ <code>{esc(report['source']['ref_resolved'])}</code></li>
@@ -609,6 +714,7 @@ def _summary_html(report: dict, slug: str) -> str:
   {upstream_li}
   {f'<li>{ci}</li>' if ci else ''}
 </ul>
+{run_block}
 <h2>Gates</h2>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table>
@@ -620,6 +726,9 @@ def _summary_html(report: dict, slug: str) -> str:
 {errors_block}
 {manual_block}
 {readme_block}
+{evidence_block}
+{needed_block}
+{caveats_block}
 <h2>Scope</h2>
 <p class="scope">{esc(report['scope'])}<br><br>
 This is <b>not</b> a claim that the genotypes are correct, nor that the tool is
@@ -794,6 +903,11 @@ def main() -> int:
                         if args.environment_built == "fallback" else m["environment"]),
         "generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "ci_run": args.run_url,
+        # What the gates ran, as the tool saw it. The certificate has printed
+        # the command since the start; the page could not, because the JSON
+        # never carried it, so a reader of a published attestation had to open
+        # the log to learn what was executed.
+        "run": _run_record(m),
         "gates": gates,
         "level": level,
         "io_detail": io_detail,
