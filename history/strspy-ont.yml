@@ -1,0 +1,81 @@
+# STRspy v2.0 through the issues its first user opened.
+#
+# A history check: the same tool at the commits that bracket a reported bug,
+# and what each one should do according to the issue. The check runs each
+# commit through the engine and holds the result to the expectation; where
+# they disagree, either the expectation was wrong or the engine misses what
+# the user found, and both are worth knowing. docs/PLAN-Version-History.md,
+# tanda 4.
+#
+# The sources are unique379r/strspy#12 (2026-03-24, four bugs), the fix in
+# Tfronta's PR #13 (never merged), unique379r/strspy#14 (2026-04-21, five bugs
+# with the fork that fixes them), and the author's commits of 2026-04-06 and
+# 2026-05-04 on branch STRspy2.0. Bug 5 (BuildDB writes `D10S1248mod.fa` and
+# STRspy looks for `D10S1248.fa`) was still open on 2026-05-04.
+#
+# Two instruments, and they see different bugs. `committed` runs the recipe
+# under tools/strspy-ont/ re-pointed at the commit: a curated environment
+# that calls src/STRspy_Normal_v2.0_Args.sh directly, so it never touches the
+# wrapper (bug 1) and sees the database bugs (2-5) through the run's own
+# errors. `proposed` runs what a new user would: the recipe the engine reads
+# off the repository at that commit, README command included — which is the
+# wrapper. A `proposed` case whose verdict is the tool's publishes, and lands
+# in the tool's history as the commit it is.
+
+tool: strspy-ont
+repo: https://github.com/unique379r/strspy
+cases:
+  - ref: e069e19c304720f92587199f66c9e18360e944ef
+    label: "v2.0 as first pushed (2026-02-21)"
+    run: committed
+    because: >-
+      No prebuilt database in the repository yet (it arrives 2026-04-06), and
+      the one BuildDB would generate has bugs 2-4 (#12). The curated recipe
+      unzips db-v2/STRspy2.0-DB.zip, which does not exist here.
+    expect:
+      verdict: fails
+
+  - ref: e069e19c304720f92587199f66c9e18360e944ef
+    label: "v2.0 as first pushed (2026-02-21), the README's own command"
+    run: proposed
+    because: >-
+      Bug 1 (#12, #14): the wrapper STRspy_run_v2.0_Args.sh checks for the
+      v1.1 file names and exits with "please make sure you are in the same
+      directory of STRspy" before doing anything.
+    expect:
+      verdict: fails
+      log_contains: "please make sure you are in the same directory"
+
+  - ref: 4ee9f7c2fdbe3accf23a4450894cd24c1a49ab8f
+    label: "after the author's reply to #12: prebuilt database added (2026-04-06)"
+    run: committed
+    because: >-
+      The author wrote "all other bugs have been addressed"; #14 (2026-04-21)
+      found bugs 1-5 still present. With the prebuilt database the run gets
+      further, and bug 5 (mod-suffixed FASTA names) leaves minimap2 without a
+      reference for 14 loci, which the run reports as files it cannot open.
+    expect:
+      verdict: runs
+      diagnostics: [cannot_open]
+
+  - ref: f7e0897b8283cbf8cdae73c6a22b7b938dc8f377
+    label: "wrapper fixed: bug 1 closed (2026-05-04 19:26)"
+    run: proposed
+    because: >-
+      "Update script to use version 2.0 argument files" is the fix for bug 1.
+      A new user following the README now gets past the wrapper, into the
+      Normal script, and meets the database bugs there.
+    expect:
+      verdict: runs
+      log_not_contains: "please make sure you are in the same directory"
+
+  - ref: dafdee7e7e5672c8dc732e8577dbe153f53a12f5
+    label: "BuildDB fixes: bugs 2-4 closed, bug 5 open (2026-05-04 19:47)"
+    run: committed
+    because: >-
+      What the catalogue verified on 2026-09-15: runs, writes its counts,
+      and reports 18 loci whose alignment it cannot open — bug 5, still open.
+    expect:
+      verdict: runs
+      level: io
+      diagnostics: [cannot_open]
