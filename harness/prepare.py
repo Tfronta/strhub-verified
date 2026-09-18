@@ -25,6 +25,7 @@ import base64
 import json
 import os
 import pathlib
+import re
 import shutil
 import sys
 import urllib.request
@@ -298,6 +299,22 @@ def example_wrapper(cmd: str, cwd: str) -> str:
         "while IFS= read -r f; do mkdir -p \"/data/out/$(dirname \"$f\")\" && cp \"$f\" \"/data/out/$f\"; done; "
         "exit $rc"
     )
+
+
+_WRAPPED = re.compile(r"^cd (?P<cwd>'[^']*'|\S+) && touch /tmp/\.strhub_mark && \( (?P<cmd>.+?) \); rc=\$\?; ")
+
+
+def unwrap_example(cmd: str) -> tuple[str, str | None]:
+    """The tool's own command back out of `example_wrapper`, with the directory
+    it ran from; an unwrapped command comes back as it is, with no directory.
+
+    The report names what the gates ran. The wrapper is STRhub's plumbing
+    around that — marking the time, copying files — and a reader shown the
+    whole line cannot tell which part is the tool's."""
+    m = _WRAPPED.match(" ".join(cmd.split()))
+    if not m:
+        return " ".join(cmd.split()), None
+    return m.group("cmd"), m.group("cwd").strip("'")
 
 
 def _output_value(value) -> str:
