@@ -95,3 +95,26 @@ def test_a_build_that_runs_autoconf_without_install_is_the_repositorys_to_fix():
     assert "autotools_aux_missing" in ids(log)
     assert d.fault_of("autotools_aux_missing") == "author"
     assert "Re-verifying after correcting them is free" in d.install_fault_sentence(["author"])
+
+
+def test_a_file_the_build_reads_but_the_commit_lacks_is_named_and_is_the_repositorys():
+    # The first history check: STRspy's curated recipe unzips the database the
+    # author added six weeks after v2.0. At the first v2.0 commit the build
+    # stopped there and the report said the cause could not be classified.
+    log = ("#11 [7/8] RUN unzip -oq db-v2/STRspy2.0-DB.zip -d db\n"
+           "#11 0.139 unzip:  cannot find or open db-v2/STRspy2.0-DB.zip, db-v2/STRspy2.0-DB.zip.zip or db-v2/STRspy2.0-DB.zip.ZIP.\n")
+    found = ids(log)
+    assert "repo_file_missing" in found
+    assert found["repo_file_missing"]["examples"] == ["db-v2/STRspy2.0-DB.zip"]
+    assert d.fault_of("repo_file_missing") == "author"
+
+
+def test_the_image_the_build_was_meant_to_produce_is_not_a_base_image_we_failed_to_pull():
+    # After a failed build, `docker run toolimg:ci` printed "pull access denied
+    # for toolimg", which read as a base image STRhub could not pull — ours to
+    # fix, on a run that never happened. The run legs no longer run without an
+    # image; the rule must not misread the line either.
+    assert "base_image_missing" not in ids(
+        "docker: Error response from daemon: pull access denied for toolimg, repository does not exist\n")
+    assert "base_image_missing" in ids(
+        "docker: Error response from daemon: pull access denied for ghcr.io/x/y, repository does not exist\n")

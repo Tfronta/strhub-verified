@@ -505,9 +505,13 @@ jobs:
           build "$DOCKER_FALLBACK" && echo "environment=fallback" >> "$GITHUB_OUTPUT"
 
       # --- Matrix leg: own data (the badge ladder uses THIS leg) -------------
+      # No image, no run. Without the second condition on each run leg, a
+      # failed build was followed by `docker run toolimg:ci`, whose "pull
+      # access denied" was then diagnosed as a base image STRhub could not
+      # pull: a fault of ours, reported on a run that never happened.
       - id: runs
         name: "Gate · Runs (own data)"
-        if: steps.m.outputs.own_ready == '1'
+        if: steps.m.outputs.own_ready == '1' && steps.installs.outcome == 'success'
         continue-on-error: true
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         env:
@@ -565,7 +569,7 @@ jobs:
       # not suit it, and vice versa.
       - id: runs_example
         name: "Reproduces own example"
-        if: steps.m.outputs.example_ready == '1'
+        if: steps.m.outputs.example_ready == '1' && steps.installs.outcome == 'success'
         continue-on-error: true
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         env:
@@ -599,7 +603,7 @@ jobs:
       # --- Matrix leg: external typed dataset (N/A if no compatible dataset) --
       - id: runs_ext
         name: "Runs (external data)"
-        if: steps.m.outputs.external_ready == '1'
+        if: steps.m.outputs.external_ready == '1' && steps.installs.outcome == 'success'
         continue-on-error: true
         timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
         env:

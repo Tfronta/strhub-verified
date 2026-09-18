@@ -13,6 +13,11 @@
 # 2026-05-04 on branch STRspy2.0. Bug 5 (BuildDB writes `D10S1248mod.fa` and
 # STRspy looks for `D10S1248.fa`) was still open on 2026-05-04.
 #
+# What the first run found (2026-09-18) is written into the cases below,
+# where it corrected an expectation. The short version: bug 1 is open at the
+# head of STRspy2.0 — the commit named as its fix changed the file names the
+# wrapper checks for, not the directory it checks in.
+#
 # Two instruments, and they see different bugs. `committed` runs the recipe
 # under tools/strspy-ont/ re-pointed at the commit: a curated environment
 # that calls src/STRspy_Normal_v2.0_Args.sh directly, so it never touches the
@@ -34,6 +39,9 @@ cases:
       unzips db-v2/STRspy2.0-DB.zip, which does not exist here.
     expect:
       verdict: fails
+      level: available
+      diagnostics: [repo_file_missing]
+      no_diagnostics: [base_image_missing]
 
   - ref: e069e19c304720f92587199f66c9e18360e944ef
     label: "v2.0 as first pushed (2026-02-21), the README's own command"
@@ -58,16 +66,36 @@ cases:
       verdict: runs
       diagnostics: [cannot_open]
 
+  # The first run of this check (2026-09-18) found the expectation below
+  # wrong, and the history right: "Update script to use version 2.0 argument
+  # files" changes the names the wrapper checks for (v1.1 -> v2.0) but keeps
+  # checking for them in the repository root, and the scripts live in src/.
+  # The wrapper still exits on the same line. Bug 1 is not fixed by this
+  # commit, nor by the head of STRspy2.0 (dafdee7, the next case); the fix
+  # that works is the one in Tfronta's PR #13, which checks src/, unmerged.
   - ref: f7e0897b8283cbf8cdae73c6a22b7b938dc8f377
-    label: "wrapper fixed: bug 1 closed (2026-05-04 19:26)"
+    label: "'wrapper fixed' (2026-05-04 19:26): the names change, the path does not"
     run: proposed
     because: >-
-      "Update script to use version 2.0 argument files" is the fix for bug 1.
-      A new user following the README now gets past the wrapper, into the
-      Normal script, and meets the database bugs there.
+      The commit the author calls the fix for bug 1. It checks for
+      STRspy_Normal_v2.0_Args.sh in the repository root and runs
+      src/STRspy_Normal_v2.0_Args.sh; the file is in src/, so the check
+      still fails and the wrapper still exits before doing anything.
     expect:
-      verdict: runs
-      log_not_contains: "please make sure you are in the same directory"
+      verdict: fails
+      level: installs
+      log_contains: "please make sure you are in the same directory"
+
+  - ref: dafdee7e7e5672c8dc732e8577dbe153f53a12f5
+    label: "head of STRspy2.0 (2026-05-04 19:47), the README's own command"
+    run: proposed
+    because: >-
+      Bug 1 as a new user meets it today: the wrapper at the head of the
+      branch is the one from f7e0897, and exits on the same line.
+    expect:
+      verdict: fails
+      level: installs
+      log_contains: "please make sure you are in the same directory"
 
   - ref: dafdee7e7e5672c8dc732e8577dbe153f53a12f5
     label: "BuildDB fixes: bugs 2-4 closed, bug 5 open (2026-05-04 19:47)"
