@@ -12,9 +12,9 @@ What stopped it, and what can be done:
 
 - Source: `https://github.com/unique379r/strspy` @ `e069e19c304720f92587199f66c9e18360e944ef`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-18T13:15:23+00:00
+- Generated: 2026-09-18T13:29:44+00:00
 - Upstream: The verified commit is 14 commit(s) behind `main`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35348931517
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35350365470
 
 ## Command that ran
 
