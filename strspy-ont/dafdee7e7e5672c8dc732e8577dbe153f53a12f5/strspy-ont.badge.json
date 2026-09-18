@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "STRhub Verified",
-  "message": "Installs",
+  "message": "Runs + Expected IO (errors reported)",
   "color": "yellow"
 }
