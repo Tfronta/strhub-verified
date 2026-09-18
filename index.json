@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-09-18T13:29:52+00:00",
+  "generated": "2026-09-18T13:30:20+00:00",
   "count": 8,
   "tools": [
     {
@@ -381,12 +381,12 @@
           "version": "f7e0897",
           "variant": null,
           "committed": "2026-05-04T19:26:27Z",
-          "generated": "2026-09-18T13:15:02+00:00",
+          "generated": "2026-09-18T13:30:16+00:00",
           "level": "installs",
           "label": "Installs",
           "verdict": "fails",
           "errors_reported": false,
-          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35348938454",
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35350371244",
           "report": "strspy-ont/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/strspy-ont.json",
           "page": "strspy-ont/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/strspy-ont.html",
           "pdf": "strspy-ont/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/strspy-ont.pdf"
