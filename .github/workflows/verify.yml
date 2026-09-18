@@ -61,6 +61,15 @@ on:
         type: string
         required: false
         default: ""
+      # A trial from a URL publishes when its verdict is the tool's — unless
+      # whoever dispatched it says not to. The history check says not to for
+      # a case that would replace a curated result at the same commit with
+      # the README-command run of it: both are true, one is the catalogue's.
+      publish:
+        description: "Trial from URL: 'false' keeps the result out of the catalogue whatever the verdict"
+        type: string
+        required: false
+        default: "true"
   pull_request:
     paths:
       - "tools/**"
@@ -742,6 +751,7 @@ jobs:
           # the only kind of trial that may publish. Same test as the propose
           # step's condition.
           URL_TRIAL: ${{ github.event.inputs.mode == 'trial' && github.event.inputs.recipe == '' && github.event.inputs.repo != '' }}
+          TRIAL_PUBLISH: ${{ github.event.inputs.publish || 'true' }}
           # A pull request's run is a check, never a publication, whatever it
           # finds — so its PDF must not carry a permalink either.
           EVENT_NAME: ${{ github.event_name }}
@@ -803,7 +813,9 @@ jobs:
           r = json.loads(reports[0].read_text()) if reports else {}
           verdict = (r.get("verdict") or {}).get("code", "")
           slug = (r.get("report") or {}).get("slug") or (reports[0].stem if reports else "")
-          may_publish = os.environ.get("MODE") != "trial" or os.environ.get("URL_TRIAL") == "true"
+          may_publish = (os.environ.get("MODE") != "trial"
+                         or (os.environ.get("URL_TRIAL") == "true"
+                             and os.environ.get("TRIAL_PUBLISH", "true") != "false"))
           publishable = (verdict in ("runs", "fails") and may_publish
                          and os.environ.get("EVENT_NAME") != "pull_request")
           print(f"verdict={verdict}")
