@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-09-18T20:49:17+00:00",
+  "generated": "2026-09-18T20:50:15+00:00",
   "count": 8,
   "tools": [
     {
@@ -383,19 +383,19 @@
     {
       "slug": "strspy-ont",
       "name": "STRspy",
-      "version": "f7e0897",
+      "version": "v2.0",
       "variant": null,
-      "sha": "f7e0897b8283cbf8cdae73c6a22b7b938dc8f377",
-      "committed": "2026-05-04T19:26:27Z",
+      "sha": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
+      "committed": "2026-05-04T19:47:38Z",
       "instrument": "documented",
       "level": "installs",
       "label": "Installs",
       "verdict": "fails",
       "errors_reported": false,
-      "generated": "2026-09-18T13:30:16+00:00",
+      "generated": "2026-09-18T20:50:11+00:00",
       "source_repo": "https://github.com/unique379r/strspy",
-      "source_ref": "f7e0897b8283cbf8cdae73c6a22b7b938dc8f377",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35350371244",
+      "source_ref": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35393392219",
       "distinct_str_loci": null,
       "distinct_snp_markers": null,
       "total_reads": null,
@@ -409,6 +409,22 @@
       "report": "strspy-ont.json",
       "page": "strspy-ont.html",
       "versions": [
+        {
+          "sha": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
+          "instrument": "documented",
+          "version": "v2.0",
+          "variant": null,
+          "committed": "2026-05-04T19:47:38Z",
+          "generated": "2026-09-18T20:50:11+00:00",
+          "level": "installs",
+          "label": "Installs",
+          "verdict": "fails",
+          "errors_reported": false,
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35393392219",
+          "report": "strspy-ont/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/strspy-ont.json",
+          "page": "strspy-ont/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/strspy-ont.html",
+          "pdf": "strspy-ont/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/strspy-ont.pdf"
+        },
         {
           "sha": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
           "instrument": "curated",
