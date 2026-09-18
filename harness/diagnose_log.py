@@ -520,7 +520,11 @@ AUTHOR_FIXABLE = {"bad_option", "cmd_not_found", "missing_module", "import_error
                   # Build failures that live in what the submission declared:
                   # its pins, its package names, its own Dockerfile lines.
                   "pip_unresolvable", "apt_no_package", "conda_unsatisfiable",
-                  "missing_header", "build_file_missing", "checkout_failed"}
+                  "missing_header", "build_file_missing", "checkout_failed",
+                  # The build the repository itself declares runs autoconf
+                  # without `-i` (GangSTR's CMakeLists does this to htslib), so
+                  # the failure is in those steps and the fix is one flag.
+                  "autotools_aux_missing"}
 
 # Ours. Not a fault of the tool or of the submission, and never something to ask
 # its author to fix — STRhub picks the base image for a generated container, so

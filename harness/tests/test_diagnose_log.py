@@ -82,3 +82,16 @@ def test_autotools_missing_aux_files_is_named_with_the_file():
     assert got["autotools_aux_missing"]["count"] == 2
     assert got["autotools_aux_missing"]["examples"] == ["config.sub", "config.guess"]
     assert "autoreconf" in got["autotools_aux_missing"]["suggestion"]
+
+
+def test_a_build_that_runs_autoconf_without_install_is_the_repositorys_to_fix():
+    # GangSTR's CMakeLists runs plain `autoreconf` on htslib 1.11, which needs
+    # `autoreconf -i`; the step is the repository's own and the fix is one flag.
+    # Unclassified, the report said "the cause could not be classified", which
+    # told the maintainer nothing.
+    log = ("#10 33.43 configure.ac: error: required file 'config.sub' not found\n"
+           "#10 33.44 configure.ac: error: required file 'config.guess' not found\n"
+           "#10 33.44 configure.ac:   try running autoreconf --install\n")
+    assert "autotools_aux_missing" in ids(log)
+    assert d.fault_of("autotools_aux_missing") == "author"
+    assert "Re-verifying after correcting them is free" in d.install_fault_sentence(["author"])

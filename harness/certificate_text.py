@@ -8,6 +8,8 @@ decides whether it may be said at all.
 """
 from __future__ import annotations
 
+import diagnose_log
+
 
 def test_data_item(cfg: dict, ds_name: str) -> tuple[str, str]:
     """What the run used for input, and — only on evidence — whether the
@@ -100,3 +102,34 @@ def conclusion_items_for(cfg: dict) -> list[tuple[str, str]]:
          "this verification result independently."),
     ]
     return items
+
+
+def install_meaning(fallback_used: bool, faults: list[str]) -> list[tuple[str, str]]:
+    """What a failed build means for each reader, in their own terms.
+
+    The report used to say "plan B: the published image ... after the build
+    from the pinned commit failed" and stop. That is the mechanism, in the
+    engine's words, and nobody who opens a certificate asked about the
+    mechanism. Three readers do open it — someone about to run the tool, a
+    reviewer holding a manuscript, its maintainer — and each needs one
+    sentence in their own terms. The maintainer's is the fault sentence, which
+    already says whose side the cause is on; the other two claim only what
+    the run established: that a build from source stopped, and (on plan B)
+    that the ready-made environment ran.
+    """
+    if fallback_used:
+        run = ("A build from source at this commit fails in a clean environment; the "
+               "cause is below. The ready-made environment the README points at does "
+               "work: it is what this run used.")
+        review = ("This result describes the software inside that environment, whatever "
+                  "its publisher last put there, and not the pinned commit, which is the "
+                  "version a manuscript would cite.")
+    else:
+        run = ("A build from source at this commit fails in a clean environment; the "
+               "cause and a suggested fix are below.")
+        review = ("Nothing ran, so this says nothing about the software's output. It "
+                  "records that this attempt to build it stopped, and whose side the "
+                  "cause is on.")
+    return [("If you are trying to run it", run),
+            ("If you are reviewing a paper", review),
+            ("If you maintain it", diagnose_log.install_fault_sentence(faults))]
