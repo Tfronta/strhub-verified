@@ -1186,6 +1186,13 @@ def main() -> int:
         color = "yellow"
         message = f"{message} (errors reported)"
 
+    # A run nobody knew how to complete measured the documentation, not the
+    # tool: its badge says so instead of the rung it happened to reach
+    # ("Installs" on a run that stopped for want of a command reads as the
+    # tool's own result). Grey, because it is neither a pass nor a failure.
+    if report["verdict"]["code"] == "undetermined":
+        color, message = "lightgrey", verdict_lib.TITLES["undetermined"]
+
     # A result of a recipe STRhub wrote must not read as the tool's own on
     # the one artifact that travels alone.
     if report["instrument"] not in BADGE_INSTRUMENTS:

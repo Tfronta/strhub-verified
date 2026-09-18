@@ -116,8 +116,9 @@ def _summary_entry(slug: str, r: dict) -> dict:
         "instrument": instrument_of_report(r),
         "level": level,
         "label": LABELS.get(level, "not run"),
-        # One of runs / fails / undetermined / out_of_scope. Only the first two
-        # are ever deployed; carried so the catalogue can say which without
+        # One of runs / fails / undetermined / out_of_scope. The first three
+        # deploy (out_of_scope never does); carried so the catalogue can lead
+        # an undetermined entry with the verdict rather than a level, without
         # re-deriving it from the gates.
         "verdict": (r.get("verdict") or {}).get("code"),
         "errors_reported": errors_reported,
