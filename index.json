@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-09-18T13:15:05+00:00",
+  "generated": "2026-09-18T13:15:27+00:00",
   "count": 13,
   "tools": [
     {
@@ -540,6 +540,21 @@
           "report": "strspy-ont/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/strspy-ont.json",
           "page": "strspy-ont/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/strspy-ont.html",
           "pdf": "strspy-ont/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/strspy-ont.pdf"
+        },
+        {
+          "sha": "e069e19c304720f92587199f66c9e18360e944ef",
+          "version": "e069e19",
+          "variant": null,
+          "committed": "2026-02-21T21:12:13Z",
+          "generated": "2026-09-18T13:15:23+00:00",
+          "level": "installs",
+          "label": "Installs",
+          "verdict": "fails",
+          "errors_reported": false,
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35348931517",
+          "report": "strspy-ont/e069e19c304720f92587199f66c9e18360e944ef/strspy-ont.json",
+          "page": "strspy-ont/e069e19c304720f92587199f66c9e18360e944ef/strspy-ont.html",
+          "pdf": "strspy-ont/e069e19c304720f92587199f66c9e18360e944ef/strspy-ont.pdf"
         }
       ]
     },
