@@ -16,6 +16,24 @@ source:
 # and the report has to attribute them that way.
 submission:
   by: third_party
+# Written by STRhub, not read off the repository: a note under the documented
+# result, never the badge. Each workaround is a departure from the README a
+# first-time user would have to discover (docs/PLAN-Documented-Is-The-Badge.md).
+recipe:
+  origin: curated
+  workarounds:
+    - what: "Creates the conda environment straight from setup/STRspy_2.0_env.yml."
+      instead_of: "bash setup/STRspy_2.0.setup.sh, the documented installer."
+      why: "The installer stops at `read ans` for a confirmation; it hangs unattended."
+    - what: "Unzips the prebuilt database db-v2/STRspy2.0-DB.zip and deletes the macOS files it ships with (__MACOSX, ._*, .DS_Store)."
+      instead_of: "Nothing documented: the README does not mention the prebuilt database; the author offered it in issue #12."
+      why: "The stray files match the per-locus FASTA/BED globs and pollute the run."
+    - what: "Writes config/ToolsConfig.txt directly, with the tool paths of the environment."
+      instead_of: "bash setup/GenerateToolConfig.sh followed by mv setup/UserToolsConfig.txt config/, as documented."
+      why: "The script writes UserToolsConfig.txt to the current directory, so the documented mv fails, and the wrapper expects ToolsConfig.txt."
+    - what: "Runs src/STRspy_Normal_v2.0_Args.sh directly, with the flags its own -h lists."
+      instead_of: "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt, the only documented command."
+      why: "The wrapper checks for the scripts in the repository root, where they are not (they are in src/), and exits: 'please make sure you are in the same directory of STRspy'."
 report:
   slug: "strspy-ont"
 environment:

@@ -25,7 +25,10 @@ import tempfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import diagnose_log  # noqa: E402
-from certificate_text import conclusion_items_for, install_meaning  # noqa: E402
+from certificate_text import (  # noqa: E402
+    conclusion_items_for, install_meaning, instrument_of_report, workaround_lines,
+    INSTRUMENT_LINE, CURATED_HEADING, CURATED_LEAD,
+)
 
 import yaml
 from reportlab.lib import colors
@@ -491,6 +494,10 @@ def build_body(cfg):
         ("Commit (pinned)", link(cfg["commit_url"], cfg["commit"])),
         ("Container OS",    cfg.get("container_os", "ubuntu-22.04")),
         ("Marker panel",    cfg.get("panel", "—")),
+        # Which instrument: the repository's own instructions may stand behind
+        # the badge; a recipe STRhub wrote is a note, and the certificate says
+        # so where the reader looks for what was run.
+        ("Recipe",          INSTRUMENT_LINE.get(cfg.get("instrument", ""), "—")),
         ("Verified on",     (cfg["ver_date"] + ("  " + ver_time if ver_time else "")).strip()),
         ("CI run",          link(cfg["ci_run"]) if cfg.get("ci_run") else "—"),
     ]
@@ -875,6 +882,20 @@ def build_body(cfg):
         sec += 1
         els.append(boxed(need_els))
 
+    # What STRhub's recipe did that the README does not. Its own section,
+    # after what the run needed and before the notes: a reader has just been
+    # told the run was configured by hand, and this is the list — each item a
+    # departure a first-time user would have to discover, and a recommendation.
+    if cfg.get("instrument") == "curated":
+        cur_els = [Paragraph(CURATED_LEAD, ST["body"]), vspace(2)]
+        cur_els += [Paragraph(
+            f'<font color="#9ca3af">–</font>  {esc(item)}',
+            S("cw", fontSize=8.5, textColor=GRAY, leading=14,
+              leftIndent=10, spaceAfter=1)) for item in (cfg.get("workarounds") or ["(not itemised for this recipe)"])]
+        els.append(section_num(str(sec), CURATED_HEADING))
+        sec += 1
+        els.append(boxed(cur_els))
+
     # Notes from reading the repository. A section of its own because the label
     # is the point: nothing here was established by running the tool, so it must
     # not sit inside Verification Gates or Errors Reported, where everything else
@@ -1233,6 +1254,10 @@ def load_config(manifest_path: str, datasets_path: str | None = None,
         # Read off the repository when the run was configured, not produced by it.
         "caveats":        report.get("caveats") or {},
         "needed_beyond_repo": report.get("needed_beyond_repo") or [],
+        # Which instrument, and what a curated recipe did that the README
+        # does not (docs/PLAN-Documented-Is-The-Badge.md).
+        "instrument":     instrument_of_report(report) if report else "",
+        "workarounds":    workaround_lines(report) if report else [],
         "log_filename":   (report.get("logs") or {}).get("external")
                           or (report.get("logs") or {}).get("own", ""),
     }

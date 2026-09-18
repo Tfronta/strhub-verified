@@ -223,6 +223,28 @@ jobs:
               subprocess.run(["gh", "issue", "create", "--title", title, "--body", body, "--label", "upstream"], check=False)
           PY
 
+  # The documented instrument, once a month, for every tool whose only
+  # recipe is STRhub's: a trial from the repository's URL at the pinned
+  # commit, published on the usual terms, which is what the badge rests on
+  # (docs/PLAN-Documented-Is-The-Badge.md). The curated runs in the matrix
+  # below land under curated/ as notes.
+  documented:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: write        # dispatches the trials
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install -q pyyaml
+      - name: Dispatch a trial of the repository's own instructions for every curated tool
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python harness/documented_refresh.py --dispatch --json documented.json
+
   verify:
     needs: resolve
     runs-on: ubuntu-22.04   # free, unlimited on public repos

@@ -22,7 +22,10 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
 import diagnose_log  # noqa: E402
 from prepare import unwrap_example  # noqa: E402
-from certificate_text import install_meaning  # noqa: E402
+from certificate_text import (  # noqa: E402
+    install_meaning, instrument_of, instrument_of_report, workaround_lines,
+    INSTRUMENT_LINE, BADGE_INSTRUMENTS, CURATED_HEADING, CURATED_LEAD, CURATED_NEEDED,
+)
 import verdict as verdict_lib  # noqa: E402
 import upstream  # noqa: E402
 
@@ -73,7 +76,6 @@ CAVEATS_LEAD = ("Recorded automatically from the tool's public files when this r
 RUN_LEAD = ("Executed verbatim inside the container, at the pinned commit. Paths "
             "under /data are STRhub's mounts: the input sample, the reference "
             "genome and the output directory.")
-
 
 def _status(flag: str) -> bool:
     # Accept GitHub Actions step outcomes ("success") alongside our own words.
@@ -210,6 +212,7 @@ def _summary_md(report: dict, slug: str) -> str:
     up_note = upstream.note(report.get("upstream"))
     if up_note:
         lines.append(f"- Upstream: {up_note}")
+    lines.append(f"- Recipe: {INSTRUMENT_LINE[instrument_of_report(report)]}")
     if report.get("ci_run"):
         lines.append(f"- CI run: {report['ci_run']}")
     run = report.get("run") or {}
@@ -388,6 +391,10 @@ def _summary_md(report: dict, slug: str) -> str:
         lines += ["", "## What this run needed beyond the repository", "", NEEDED_LEAD, ""]
         for item in needed:
             lines.append(f"- {item}")
+
+    if instrument_of_report(report) == "curated":
+        lines += ["", f"## {CURATED_HEADING}", "", CURATED_LEAD, ""]
+        lines += [f"- {w}" for w in workaround_lines(report)] or ["- (not itemised for this recipe)"]
 
     cav = report.get("caveats") or {}
     if cav.get("items"):
@@ -669,6 +676,12 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<h2>What this run needed beyond the repository</h2><p>{esc(NEEDED_LEAD)}</p>"
             f"<ul class='stats'>{''.join(f'<li>{esc(i)}</li>' for i in needed)}</ul>")
 
+    curated_block = ""
+    if instrument_of_report(report) == "curated":
+        items = "".join(f"<li>{esc(w)}</li>" for w in workaround_lines(report)) or "<li>(not itemised for this recipe)</li>"
+        curated_block = (f"<h2>{esc(CURATED_HEADING)}</h2><p>{esc(CURATED_LEAD)}</p>"
+                         f"<ul class='stats'>{items}</ul>")
+
     caveats_block = ""
     cav = report.get("caveats") or {}
     if cav.get("items"):
@@ -721,6 +734,7 @@ def _summary_html(report: dict, slug: str) -> str:
   <li>Environment: {_environment_line({**report['environment'], 'os': [esc(o) for o in report['environment'].get('os', [])]}, code=lambda t: f"<code>{esc(t)}</code>")}</li>
   <li>Generated: {esc(report['generated'])}</li>
   {upstream_li}
+  <li>Recipe: {esc(INSTRUMENT_LINE[instrument_of_report(report)])}</li>
   {f'<li>{ci}</li>' if ci else ''}
 </ul>
 {run_block}
@@ -737,6 +751,7 @@ def _summary_html(report: dict, slug: str) -> str:
 {readme_block}
 {evidence_block}
 {needed_block}
+{curated_block}
 {caveats_block}
 <h2>Scope</h2>
 <p class="scope">{esc(report['scope'])}<br><br>
@@ -917,6 +932,14 @@ def main() -> int:
         # never carried it, so a reader of a published attestation had to open
         # the log to learn what was executed.
         "run": _run_record(m),
+        # Which instrument this is, and — for a recipe somebody wrote — what it
+        # does that the repository's instructions do not. The badge may rest
+        # only on `documented` or `maintainer`; `curated` is STRhub's note.
+        "instrument": instrument_of(m),
+        "recipe": {"origin": (m.get("recipe") or {}).get("origin")
+                             or {"documented": "proposed"}.get(instrument_of(m), instrument_of(m)),
+                   **({"workarounds": m["recipe"]["workarounds"]}
+                      if (m.get("recipe") or {}).get("workarounds") else {})},
         "gates": gates,
         "level": level,
         "io_detail": io_detail,
@@ -993,6 +1016,8 @@ def main() -> int:
         needed.append(
             "A container environment, supplied with the submission."
         )
+    elif instrument_of(m) == "curated":
+        needed.append(CURATED_NEEDED)
     if needed:
         report["needed_beyond_repo"] = needed
 
@@ -1161,6 +1186,10 @@ def main() -> int:
         color = "yellow"
         message = f"{message} (errors reported)"
 
+    # A result of a recipe STRhub wrote must not read as the tool's own on
+    # the one artifact that travels alone.
+    if report["instrument"] not in BADGE_INSTRUMENTS:
+        message = f"{message} · STRhub's recipe"
     badge = {"schemaVersion": 1, "label": "STRhub Verified",
              "message": message, "color": color}
     (reports / f"{slug}.badge.json").write_text(json.dumps(badge, indent=2))

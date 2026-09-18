@@ -23,6 +23,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import publish_layout  # noqa: E402
+from certificate_text import instrument_of_report  # noqa: E402
 
 LABELS = {"none": "not run", "available": "Available", "installs": "Installs",
           "runs": "Runs", "io": "Runs + Expected IO",
@@ -108,6 +109,11 @@ def _summary_entry(slug: str, r: dict) -> dict:
         # distinct from `generated`, which is when it was verified. Absent on
         # reports from before it was recorded.
         "committed": r.get("source", {}).get("committed"),
+        # Which instrument produced it: `documented` or `maintainer` may stand
+        # behind the badge; `curated` (a recipe STRhub wrote) is a note, and
+        # an entry whose alias is one says so here so the web can show it as
+        # not verified as documented. See docs/PLAN-Documented-Is-The-Badge.md.
+        "instrument": instrument_of_report(r),
         "level": level,
         "label": LABELS.get(level, "not run"),
         # One of runs / fails / undetermined / out_of_scope. Only the first two
@@ -133,12 +139,14 @@ def _summary_entry(slug: str, r: dict) -> dict:
 
 
 def _version_entry(slug: str, sha: str | None, r: dict, prefix: str) -> dict:
-    """One row of a tool's history: the commit, both dates, the result, and
-    where its files are. `prefix` is the directory the set lives in, or ""
-    for a set that only exists at the root (published before the layout)."""
+    """One row of a tool's history: the commit, the instrument, both dates,
+    the result, and where its files are. `prefix` is the directory the set
+    lives in, or "" for a set that only exists at the root (published before
+    the layout)."""
     e = _summary_entry(slug, r)
     return {
         "sha": sha,
+        "instrument": e["instrument"],
         "version": e["version"],
         "variant": e["variant"],
         "committed": e["committed"],
@@ -160,7 +168,9 @@ def versions_of(reports: pathlib.Path, slug: str, root: dict) -> list[dict]:
     found = publish_layout.scan(reports, slug)
     if not found:
         return [_version_entry(slug, root.get("source", {}).get("ref_resolved"), root, "")]
-    return [_version_entry(slug, sha, r, f"{slug}/{sha}/") for sha, r in found]
+    return [_version_entry(slug, sha, r, f"{slug}/{sha}/"
+                           + (f"{publish_layout.CURATED_DIR}/" if inst == "curated" else ""))
+            for sha, inst, r in found]
 
 
 def build_catalogue(reports: pathlib.Path) -> dict:

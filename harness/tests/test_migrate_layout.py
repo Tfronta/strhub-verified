@@ -39,6 +39,8 @@ def _site(tmp_path, extra=None):
              "generated": generated, "gates": {}, "scope": "x",
              "datasets": [{"leg": "external", "type": types[0], "available": True, "passed": True}],
              "logs": {leg: f"{slug}.log-{leg}.txt" for leg in logs}}
+        if slug == "hipstr":   # the one set that came from a trial from the URL
+            r["caveats"] = {"source": "detect_recipe", "items": ["x"]}
         (site / f"{slug}.json").write_text(json.dumps(r))
         (site / f"{slug}.html").write_text(
             f"<title>STRhub Verified · {name} ({slug})</title><li>Variant: <code>{slug}</code></li>"
@@ -84,20 +86,25 @@ def test_applying_lays_every_tool_out_by_commit_with_aliases_on_the_newest(tmp_p
         assert not list(site.glob(f"{legacy}.*")), legacy
     assert sorted(done["touched"]) == ["gangstr", "hipstr", "hipstr-y", "strait-razor-forenseq",
                                        "strait-razor-powerseq", "straitrazor", "strsearch", "strspy-ont"]
-    assert (site / "hipstr" / B2033 / "hipstr.json").exists()
+    # Hand-written recipes land under curated/; the one trial from the URL at its commit's root.
+    assert (site / "hipstr" / B2033 / "curated" / "hipstr.json").exists()
     assert (site / "hipstr" / E12E9 / "hipstr.json").exists()      # the bare root set, folded in
-    assert (site / "hipstr-y" / B2033 / "hipstr-y.json").exists()
-    assert (site / "straitrazor" / B618 / "straitrazor.json").exists()
-    # The alias is the newest COMMIT: hipstr at 12e989b (2026), not the later-verified v0.7 (2019).
+    assert (site / "hipstr-y" / B2033 / "curated" / "hipstr-y.json").exists()
+    assert (site / "straitrazor" / B618 / "curated" / "straitrazor.json").exists()
+    # The alias is the newest commit AMONG THE RUNS THAT MAY STAND BEHIND THE BADGE:
+    # hipstr's documented run at 12e989b, not the later-verified curated v0.7.
     alias = json.loads((site / "hipstr.json").read_text())
     assert alias["source"]["ref_resolved"] == E12E9 and alias["source"]["committed"] == DATES[E12E9]
-    assert json.loads((site / "hipstr-y.json").read_text())["source"]["ref_resolved"] == B2033
+    assert alias["caveats"]["source"] == "detect_recipe"
+    # A tool with only curated runs keeps a curated alias, marked as such.
+    y = json.loads((site / "hipstr-y.json").read_text())
+    assert y["source"]["ref_resolved"] == B2033 and pl.instrument_of_report(y) == "curated"
 
 
 def test_moved_sets_are_renamed_inside_and_out(tmp_path):
     site = _site(tmp_path)
     ml.migrate(site, resolve=_resolve, apply=True)
-    d = site / "hipstr" / B2033
+    d = site / "hipstr" / B2033 / "curated"
     assert sorted(p.name for p in d.iterdir()) == [
         "hipstr.badge.json", "hipstr.html", "hipstr.json", "hipstr.log-build.txt",
         "hipstr.log-external.txt", "hipstr.log-own.txt", "hipstr.pdf", "hipstr.summary.md"]
@@ -120,8 +127,11 @@ def test_the_index_afterwards_lists_only_todays_slugs_with_their_history(tmp_pat
     assert sorted(t["slug"] for t in cat["tools"]) == ["gangstr", "hipstr", "hipstr-y", "strait-razor-forenseq",
                                                        "strait-razor-powerseq", "straitrazor", "strsearch", "strspy-ont"]
     hipstr = next(t for t in cat["tools"] if t["slug"] == "hipstr")
-    assert [v["sha"] for v in hipstr["versions"]] == [E12E9, B2033]
+    assert [(v["sha"], v["instrument"]) for v in hipstr["versions"]] == [(E12E9, "documented"), (B2033, "curated")]
     assert hipstr["versions"][1]["version"] == "v0.7" and hipstr["versions"][1]["committed"] == DATES[B2033]
+    assert hipstr["versions"][1]["report"] == f"hipstr/{B2033}/curated/hipstr.json"
+    assert hipstr["instrument"] == "documented"
+    assert next(t for t in cat["tools"] if t["slug"] == "strspy-ont")["instrument"] == "curated"
 
 
 def test_a_slug_the_table_does_not_know_is_reported_and_left_alone(tmp_path):
@@ -149,8 +159,10 @@ def test_a_deploy_after_the_migration_lands_beside_the_migrated_commits(tmp_path
     older = "0" * 40
     (run / "hipstr.json").write_text(json.dumps({
         "schema": "strhub-verified/1", "tool": {"name": "HipSTR", "version": "v0.6"}, "level": "runs",
+        "instrument": "documented",
         "source": {"repo": "https://github.com/x/hipstr", "ref": older, "ref_resolved": older, "committed": "2018-01-01T00:00:00Z"},
         "generated": "2026-09-19T00:00:00+00:00", "gates": {}, "scope": "x"}))
     (run / "hipstr.html").write_text("x")
     done = pl.place(site, run, "hipstr", resolve=_resolve)
-    assert done["alias"] == E12E9 and done["versions"] == [E12E9, B2033, older]
+    assert done["alias"] == E12E9 and done["alias_instrument"] == "documented"
+    assert done["versions"] == [(E12E9, "documented"), (B2033, "curated"), (older, "documented")]
