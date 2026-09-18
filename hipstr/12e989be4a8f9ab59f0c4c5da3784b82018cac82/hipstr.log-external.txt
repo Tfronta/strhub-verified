@@ -1,0 +1,971 @@
+Detected 1 BAM/CRAM files
+BAMs/CRAMs contain unique read group IDs for 1 unique libraries and 1 unique samples
+Reading region file /data/in/regions.bed
+Region file contains 24 regions
+
+Processing region chr1 230769615 230769683
+Adapter trimming removed
+	7 likely adapter bases from 1/176 R1 reads (0.57%)
+	21 likely adapter bases from 3/190 R2 reads (1.6%)
+366 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	4 had low base quality scores
+	0 did not have a unique mapping
+	2 did not have a mate pair
+	360 PASSED ALL FILTERS
+Found 360 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 359 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953462, P_DOWN=0.00773189, P_UP=0.00773189]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00773189, P_UP=0.00773189]
+Left aligning reads
+Generating candidate haplotypes
+	CCAAATATATATACA...AACACACACACA CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA CATCACACAGTTGAC...AACACAGGCTTG 
+	                               CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA                                            
+	                               CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCATCTATCTATCTATCTA                                     
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Identified 1 new right flank haplotype(s)
+	CATCATACAGTTGACCCTTGAGCAACACAGGCTTG	1
+	CATCACACAGTTGACCCTTGAGCAACACAGGCTTG	REF_SEQ
+
+Realigning 220 out of 220 read pools to polish flanking sequences
+Allele counts
+	CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 0
+	CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 1
+	CCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCATCTATCTATCTATCTA 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.014004 seconds
+ SNP info extraction = 0.000187 seconds
+ Stutter estimation  = 0.000396 seconds
+ Genotyping          = 0.261943 seconds
+	 Left alignment        = 0.047279 seconds
+	 Haplotype generation  = 0.001058 seconds
+	 Haplotype alignment   = 0.152356 seconds
+	 Flank assembly        = 0.001239 seconds
+	 Posterior computation = 0.000166 seconds
+	 Alignment traceback   = 0.056294 seconds
+
+Processing region chr10 129294243 129294295
+Adapter trimming removed
+	0 likely adapter bases from 0/139 R1 reads (0%)
+	7 likely adapter bases from 1/178 R2 reads (0.56%)
+316 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	3 had low base quality scores
+	0 did not have a unique mapping
+	3 did not have a mate pair
+	310 PASSED ALL FILTERS
+Found 310 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 309 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.965184, P_DOWN=0.015467, P_UP=0.0202918]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00907258, P_UP=0.00907258]
+Left aligning reads
+Generating candidate haplotypes
+	ACAAACATATTAATG...AAATGAGTGAGT GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA             ATGAAGACAATACAA...GTTCCTTTAATA 
+	                               GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA                                    
+	                               GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA                                
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA 0
+	GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA 1
+	GGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAAGGAA 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.012358 seconds
+ SNP info extraction = 0.000136 seconds
+ Stutter estimation  = 0.000896 seconds
+ Genotyping          = 0.111174 seconds
+	 Left alignment        = 0.030416 seconds
+	 Haplotype generation  = 0.001016 seconds
+	 Haplotype alignment   = 0.051991 seconds
+	 Flank assembly        = 0.001106 seconds
+	 Posterior computation = 3.7e-05 seconds
+	 Alignment traceback   = 0.024459 seconds
+
+Processing region chr11 2171087 2171115
+Adapter trimming removed
+	0 likely adapter bases from 0/163 R1 reads (0%)
+	7 likely adapter bases from 1/120 R2 reads (0.83%)
+283 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	4 had low base quality scores
+	0 did not have a unique mapping
+	3 did not have a mate pair
+	276 PASSED ALL FILTERS
+Found 276 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 275 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953462, P_DOWN=0.00650606, P_UP=0.00650606]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00650606, P_UP=0.00650606]
+Left aligning reads
+Generating candidate haplotypes
+	GAGTGCAGGTCACAG...GACTCCATGGTG AATGAATGAATGAATGAATGAATGAATG            AGGGAAATAAGGGAG...CAATGGGAATCA 
+	                               AATGAATGAATGAATGAATGAATGATGAATGAATGAATG                                
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	AATGAATGAATGAATGAATGAATGAATG 1
+	AATGAATGAATGAATGAATGAATGATGAATGAATGAATG 1
+Locus timing:
+ BAM seek time       = 4e-06 seconds
+ Read filtering      = 0.011722 seconds
+ SNP info extraction = 0.000119 seconds
+ Stutter estimation  = 0.000288 seconds
+ Genotyping          = 0.070023 seconds
+	 Left alignment        = 0.013712 seconds
+	 Haplotype generation  = 0.00075 seconds
+	 Haplotype alignment   = 0.031623 seconds
+	 Flank assembly        = 0.001092 seconds
+	 Posterior computation = 1.5e-05 seconds
+	 Alignment traceback   = 0.02121 seconds
+
+Processing region chr12 5983968 5984044
+Adapter trimming removed
+	90 likely adapter bases from 14/268 R1 reads (5.2%)
+	123 likely adapter bases from 18/204 R2 reads (8.8%)
+472 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	1 had low base quality scores
+	1 did not have a unique mapping
+	13 did not have a mate pair
+	457 PASSED ALL FILTERS
+Found 457 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 456 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953462, P_DOWN=0.00692207, P_UP=0.00692207]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00692207, P_UP=0.00692207]
+Left aligning reads
+Generating candidate haplotypes
+	GATAGGACAGATGAT...AGGATGGATGGA TAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGA TCAATCCAAGTCACA...ATTCTTATCATC 
+	                               TAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATAGA                                        
+	                               TAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGA                                
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	TAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGATAGA 0
+	TAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGATAGA 1
+	TAGATGGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGATAGA 1
+Locus timing:
+ BAM seek time       = 6e-06 seconds
+ Read filtering      = 0.015545 seconds
+ SNP info extraction = 0.00019 seconds
+ Stutter estimation  = 0.000367 seconds
+ Genotyping          = 0.215542 seconds
+	 Left alignment        = 0.03156 seconds
+	 Haplotype generation  = 0.001697 seconds
+	 Haplotype alignment   = 0.12182 seconds
+	 Flank assembly        = 0.001319 seconds
+	 Posterior computation = 5e-05 seconds
+	 Alignment traceback   = 0.056411 seconds
+
+Processing region chr12 12297019 12297095
+Adapter trimming removed
+	131 likely adapter bases from 20/185 R1 reads (11%)
+	25 likely adapter bases from 4/182 R2 reads (2.2%)
+365 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	5 had low base quality scores
+	0 did not have a unique mapping
+	11 did not have a mate pair
+	349 PASSED ALL FILTERS
+Found 349 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 349 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.999, P_DOWN=0.0382987, P_UP=0.0201946]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00913435, P_UP=0.00913435]
+Left aligning reads
+Generating candidate haplotypes
+	GAGAAAGAATCAACA...GGATGCATAGGT AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGAT GAGAGGGGATTTATT...TAGCTCAAGTGA 
+	                               AGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGAT                                            
+	                               AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGAT                                        
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGACAGAT 0
+	AGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGAT 1
+	AGATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGACAGACAGACAGACAGACAGACAGAT 1
+Locus timing:
+ BAM seek time       = 3e-06 seconds
+ Read filtering      = 0.013344 seconds
+ SNP info extraction = 0.000176 seconds
+ Stutter estimation  = 0.001006 seconds
+ Genotyping          = 0.157492 seconds
+	 Left alignment        = 0.041506 seconds
+	 Haplotype generation  = 0.001098 seconds
+	 Haplotype alignment   = 0.07374 seconds
+	 Flank assembly        = 0.001138 seconds
+	 Posterior computation = 4.1e-05 seconds
+	 Alignment traceback   = 0.037329 seconds
+
+Processing region chr13 82148024 82148068
+Adapter trimming removed
+	19 likely adapter bases from 3/162 R1 reads (1.9%)
+	20 likely adapter bases from 3/165 R2 reads (1.8%)
+327 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	4 had low base quality scores
+	0 did not have a unique mapping
+	5 did not have a mate pair
+	318 PASSED ALL FILTERS
+Found 318 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 2 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 316 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.978133, P_DOWN=0.0170229, P_UP=0.0215129]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00716108, P_UP=0.00716108]
+Left aligning reads
+Generating candidate haplotypes
+	ACCCATCTAACGCCT...TTACAAATACAT TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCA     ATCAATCATCTATCT...GTCTGTCTTTTT 
+	                               TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT                                
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Identified 1 new left flank haplotype(s)
+	ACCCATCTAATGCCTATCTGTATTTACAAATACAT	1
+	ACCCATCTAACGCCTATCTGTATTTACAAATACAT	REF_SEQ
+
+Realigning 210 out of 210 read pools to polish flanking sequences
+Allele counts
+	TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCA 1
+	TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.012994 seconds
+ SNP info extraction = 0.000148 seconds
+ Stutter estimation  = 0.000946 seconds
+ Genotyping          = 0.127461 seconds
+	 Left alignment        = 0.011682 seconds
+	 Haplotype generation  = 0.000688 seconds
+	 Haplotype alignment   = 0.074354 seconds
+	 Flank assembly        = 0.001276 seconds
+	 Posterior computation = 6.8e-05 seconds
+	 Alignment traceback   = 0.036881 seconds
+
+Processing region chr15 96831013 96831039
+Adapter trimming removed
+	7 likely adapter bases from 1/194 R1 reads (0.52%)
+	7 likely adapter bases from 1/219 R2 reads (0.46%)
+413 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	3 had low base quality scores
+	0 did not have a unique mapping
+	7 did not have a mate pair
+	403 PASSED ALL FILTERS
+Found 403 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 2 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 401 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953462, P_DOWN=0.00713373, P_UP=0.00713373]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00713373, P_UP=0.00713373]
+Left aligning reads
+Generating candidate haplotypes
+	ATTTGGGTTATTAAT...CTCCTTACAATT TTCTTTTCTTTTCTTTTCTTTTCTTT                                    GAGACTGAGTCTTGC...CCAGGCTGGAGT 
+	                               TTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT                                                         
+	                               TTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT                                
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	TTCTTTTCTTTTCTTTTCTTTTCTTT 0
+	TTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT 1
+	TTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTTTCTTT 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.01414 seconds
+ SNP info extraction = 0.000169 seconds
+ Stutter estimation  = 0.000283 seconds
+ Genotyping          = 0.121864 seconds
+	 Left alignment        = 0.031438 seconds
+	 Haplotype generation  = 0.000933 seconds
+	 Haplotype alignment   = 0.055488 seconds
+	 Flank assembly        = 0.001275 seconds
+	 Posterior computation = 4.1e-05 seconds
+	 Alignment traceback   = 0.030622 seconds
+
+Processing region chr16 86352701 86352745
+Adapter trimming removed
+	26 likely adapter bases from 4/207 R1 reads (1.9%)
+	44 likely adapter bases from 7/176 R2 reads (4%)
+383 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	3 had low base quality scores
+	1 did not have a unique mapping
+	4 did not have a mate pair
+	375 PASSED ALL FILTERS
+Found 375 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 4 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 371 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.967252, P_DOWN=0.0114061, P_UP=0.0130448]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.0059347, P_UP=0.0059347]
+Left aligning reads
+Generating candidate haplotypes
+	TCTTCCCTAGATCAA...GACAGACAGGTG GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA TCATTGAAAGACAAA...GGATGATAGATA 
+	                               GATAGATAGATAGATAGATAGATAGATAGATAGATAGATA                                    
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Identified 1 new right flank haplotype(s)
+	TCATTGAAAGACAAACCAGAGATGGATGATAGATA	1
+	TCATTGAAAGACAAAACAGAGATGGATGATAGATA	REF_SEQ
+
+Realigning 198 out of 198 read pools to polish flanking sequences
+Allele counts
+	GATAGATAGATAGATAGATAGATAGATAGATAGATAGATAGATA 1
+	GATAGATAGATAGATAGATAGATAGATAGATAGATAGATA 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.014227 seconds
+ SNP info extraction = 0.000158 seconds
+ Stutter estimation  = 0.000635 seconds
+ Genotyping          = 0.127785 seconds
+	 Left alignment        = 0.015031 seconds
+	 Haplotype generation  = 0.000944 seconds
+	 Haplotype alignment   = 0.075782 seconds
+	 Flank assembly        = 0.001264 seconds
+	 Posterior computation = 9.3e-05 seconds
+	 Alignment traceback   = 0.031354 seconds
+
+Processing region chr18 63281666 63281738
+Adapter trimming removed
+	0 likely adapter bases from 0/271 R1 reads (0%)
+	27 likely adapter bases from 3/266 R2 reads (1.1%)
+535 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	8 had low base quality scores
+	0 did not have a unique mapping
+	7 did not have a mate pair
+	520 PASSED ALL FILTERS
+Found 520 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 3 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 517 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.999, P_DOWN=0.0532916, P_UP=0.0135704]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00647477, P_UP=0.00647477]
+Left aligning reads
+Generating candidate haplotypes
+	ACTTCACTCTGAGTG...AGACCTTGTCTC AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA AAAGAGAGAGGAAAG...AAAGAAAAGAAA 
+	                               AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA                                        
+	                               AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA                                    
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA 0
+	AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA 1
+	AGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAA 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.018505 seconds
+ SNP info extraction = 0.000221 seconds
+ Stutter estimation  = 0.001527 seconds
+ Genotyping          = 0.161114 seconds
+	 Left alignment        = 0.035246 seconds
+	 Haplotype generation  = 0.001236 seconds
+	 Haplotype alignment   = 0.074246 seconds
+	 Flank assembly        = 0.001653 seconds
+	 Posterior computation = 6.4e-05 seconds
+	 Alignment traceback   = 0.045182 seconds
+
+Processing region chr19 29926234 29926298
+Adapter trimming removed
+	0 likely adapter bases from 0/142 R1 reads (0%)
+	14 likely adapter bases from 1/169 R2 reads (0.59%)
+309 reads overlapped region, of which 
+	0 were hard clipped
+	2 had an 'N' base call
+	7 had low base quality scores
+	0 did not have a unique mapping
+	11 did not have a mate pair
+	289 PASSED ALL FILTERS
+Found 289 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 289 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.828294, P_DOWN=0.00967849, P_UP=0.00967849]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00967849, P_UP=0.00967849]
+Left aligning reads
+Generating candidate haplotypes
+	ACCCGAATAAAAATC...TTCTTCCTCTCT CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT CAACAGAATCTTATT...CAGGCTGGAGTG 
+	                               CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT                                        
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT 1
+	CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTTCCTACCTTCTTTCCTT 1
+Locus timing:
+ BAM seek time       = 4e-06 seconds
+ Read filtering      = 0.01159 seconds
+ SNP info extraction = 0.000161 seconds
+ Stutter estimation  = 0.000284 seconds
+ Genotyping          = 0.098954 seconds
+	 Left alignment        = 0.012813 seconds
+	 Haplotype generation  = 0.000771 seconds
+	 Haplotype alignment   = 0.050625 seconds
+	 Flank assembly        = 0.001059 seconds
+	 Posterior computation = 1.7e-05 seconds
+	 Alignment traceback   = 0.031639 seconds
+
+Processing region chr2 1489652 1489684
+Adapter trimming removed
+	15 likely adapter bases from 1/115 R1 reads (0.87%)
+	15 likely adapter bases from 1/150 R2 reads (0.67%)
+264 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	1 had low base quality scores
+	0 did not have a unique mapping
+	8 did not have a mate pair
+	255 PASSED ALL FILTERS
+Found 255 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 0 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 255 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953462, P_DOWN=0.0069894, P_UP=0.0069894]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.0069894, P_UP=0.0069894]
+Left aligning reads
+Generating candidate haplotypes
+	CTGGCACAGAACAGG...GAACCCTCACTG AATGAATGAATGAAT...AATGAATGAATG TTTGGGCAAATAAAC...GGACAGAAGGGC 
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	AATGAATGAATGAATGAATGAATGAATGAATG 2
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.010734 seconds
+ SNP info extraction = 0.000117 seconds
+ Stutter estimation  = 0.000112 seconds
+ Genotyping          = 0.028639 seconds
+	 Left alignment        = 0.00128 seconds
+	 Haplotype generation  = 0.000571 seconds
+	 Haplotype alignment   = 0.01133 seconds
+	 Flank assembly        = 0.000991 seconds
+	 Posterior computation = 6e-06 seconds
+	 Alignment traceback   = 0.013064 seconds
+
+Processing region chr2 68011946 68011994
+Adapter trimming removed
+	28 likely adapter bases from 1/223 R1 reads (0.45%)
+	0 likely adapter bases from 0/218 R2 reads (0%)
+441 reads overlapped region, of which 
+	0 were hard clipped
+	2 had an 'N' base call
+	4 had low base quality scores
+	0 did not have a unique mapping
+	6 did not have a mate pair
+	429 PASSED ALL FILTERS
+Found 429 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 428 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953462, P_DOWN=0.00516308, P_UP=0.00516308]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00516308, P_UP=0.00516308]
+Left aligning reads
+Generating candidate haplotypes
+	CATGAGCCAGGAACT...TCTATGAAAACT TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA         TATCATAACACCACA...GCTCCAATTTAA 
+	                               TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA                                            
+	                               TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTA                                
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 0
+	TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 1
+	TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATTTATCTATCTA 1
+Locus timing:
+ BAM seek time       = 2e-06 seconds
+ Read filtering      = 0.015809 seconds
+ SNP info extraction = 0.000233 seconds
+ Stutter estimation  = 0.000485 seconds
+ Genotyping          = 0.13089 seconds
+	 Left alignment        = 0.031678 seconds
+	 Haplotype generation  = 0.001048 seconds
+	 Haplotype alignment   = 0.064082 seconds
+	 Flank assembly        = 0.001521 seconds
+	 Posterior computation = 4.6e-05 seconds
+	 Alignment traceback   = 0.029898 seconds
+
+Processing region chr2 218014858 218014950
+Adapter trimming removed
+	7 likely adapter bases from 1/141 R1 reads (0.71%)
+	7 likely adapter bases from 1/129 R2 reads (0.78%)
+269 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	3 had low base quality scores
+	0 did not have a unique mapping
+	2 did not have a mate pair
+	264 PASSED ALL FILTERS
+Found 264 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 263 reads and 0 out of 1 samples
+Skipping locus with too few informative reads for stutter training: TOTAL=62, MIN=100
+Locus timing:
+ BAM seek time       = 2e-06 seconds
+ Read filtering      = 0.00959 seconds
+ SNP info extraction = 0.000147 seconds
+ Stutter estimation  = 2.5e-05 seconds
+
+Processing region chr21 19181972 19182099
+Skipping region as the reference allele length exceeds the threshold (127 vs 100)
+You can increase this threshold using the --max-str-len option
+Processing region chr21 43636209 43636269
+Adapter trimming removed
+	0 likely adapter bases from 0/233 R1 reads (0%)
+	12 likely adapter bases from 2/224 R2 reads (0.89%)
+457 reads overlapped region, of which 
+	0 were hard clipped
+	1 had an 'N' base call
+	7 had low base quality scores
+	0 did not have a unique mapping
+	16 did not have a mate pair
+	433 PASSED ALL FILTERS
+Found 433 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 432 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.833072, P_DOWN=0.00751801, P_UP=0.00751801]
+	OUT_FRAME[P_GEOM(bp) =0.616573, P_DOWN=0.0429524, P_UP=0.0300717]
+Left aligning reads
+Generating candidate haplotypes
+	CAAGACACCATCTCA...AAAAAAGAAAGA AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA AAAAACGAAGGGGAA...AATCATAAACAT 
+	                               AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA                                          
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA 1
+	AAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGAAAAGA 1
+Locus timing:
+ BAM seek time       = 4e-06 seconds
+ Read filtering      = 0.015086 seconds
+ SNP info extraction = 0.000241 seconds
+ Stutter estimation  = 0.000636 seconds
+ Genotyping          = 0.095812 seconds
+	 Left alignment        = 0.014744 seconds
+	 Haplotype generation  = 0.000777 seconds
+	 Haplotype alignment   = 0.044113 seconds
+	 Flank assembly        = 0.004684 seconds
+	 Posterior computation = 2.6e-05 seconds
+	 Alignment traceback   = 0.028985 seconds
+
+Processing region chr22 37140286 37140337
+Adapter trimming removed
+	14 likely adapter bases from 2/205 R1 reads (0.98%)
+	14 likely adapter bases from 2/222 R2 reads (0.9%)
+427 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	6 had low base quality scores
+	2 did not have a unique mapping
+	4 did not have a mate pair
+	415 PASSED ALL FILTERS
+Found 415 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 414 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953462, P_DOWN=0.00560629, P_UP=0.00560629]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00560629, P_UP=0.00560629]
+Left aligning reads
+Generating candidate haplotypes
+	ATGGGGGCTAGATTT...GATAGTAGTCTC ATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT GTTATAAAAATATTG...ACATTCGCGTGA 
+	                               ATTATTATTATTATTATTATTATTATTATTACTATTATT                                            
+	                               ATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT                                      
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	ATTATTATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT 0
+	ATTATTATTATTATTATTATTATTATTATTACTATTATT 1
+	ATTATTATTATTATTATTATTATTATTATTATTATTACTATTATT 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.014391 seconds
+ SNP info extraction = 0.000185 seconds
+ Stutter estimation  = 0.000662 seconds
+ Genotyping          = 0.117394 seconds
+	 Left alignment        = 0.027639 seconds
+	 Haplotype generation  = 0.001014 seconds
+	 Haplotype alignment   = 0.055067 seconds
+	 Flank assembly        = 0.001413 seconds
+	 Posterior computation = 4.5e-05 seconds
+	 Alignment traceback   = 0.02998 seconds
+
+Processing region chr3 45540738 45540802
+Adapter trimming removed
+	74 likely adapter bases from 10/231 R1 reads (4.3%)
+	30 likely adapter bases from 5/205 R2 reads (2.4%)
+434 reads overlapped region, of which 
+	0 were hard clipped
+	1 had an 'N' base call
+	6 had low base quality scores
+	0 did not have a unique mapping
+	5 did not have a mate pair
+	422 PASSED ALL FILTERS
+Found 422 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 3 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 419 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.978452, P_DOWN=0.0128906, P_UP=0.0149098]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00712415, P_UP=0.00712415]
+Left aligning reads
+Generating candidate haplotypes
+	CTTATACTCATGAAA...GGCTTGCATGTA TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA     TGAGACAGGGTCTTG...CCCAGATTGGAC 
+	                               TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA                                    
+	                               TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA                                
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 0
+	TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 1
+	TCTATCTGTCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.014973 seconds
+ SNP info extraction = 0.000161 seconds
+ Stutter estimation  = 0.000505 seconds
+ Genotyping          = 0.145364 seconds
+	 Left alignment        = 0.022326 seconds
+	 Haplotype generation  = 0.001031 seconds
+	 Haplotype alignment   = 0.074211 seconds
+	 Flank assembly        = 0.001417 seconds
+	 Posterior computation = 4.7e-05 seconds
+	 Alignment traceback   = 0.0436 seconds
+
+Processing region chr4 154587735 154587823
+Adapter trimming removed
+	5 likely adapter bases from 1/236 R1 reads (0.42%)
+	5 likely adapter bases from 1/253 R2 reads (0.4%)
+489 reads overlapped region, of which 
+	0 were hard clipped
+	2 had an 'N' base call
+	6 had low base quality scores
+	1 did not have a unique mapping
+	2 did not have a mate pair
+	478 PASSED ALL FILTERS
+Found 478 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 477 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.828003, P_DOWN=0.00967849, P_UP=0.00967849]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00967849, P_UP=0.00967849]
+Left aligning reads
+Generating candidate haplotypes
+	TGTCTGTAATTGCCA...GAAAGGAAGAAA GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA         CTAGCTTGTAAATAT...TTATTTTGGTTA 
+	                               GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA                                
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA 1
+	GGAAGGAAGGAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAAAGAGAAAAAAGAAAGAAAGAAA 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.015265 seconds
+ SNP info extraction = 0.000203 seconds
+ Stutter estimation  = 0.00029 seconds
+ Genotyping          = 0.234376 seconds
+	 Left alignment        = 0.040181 seconds
+	 Haplotype generation  = 0.000869 seconds
+	 Haplotype alignment   = 0.106147 seconds
+	 Flank assembly        = 0.001513 seconds
+	 Posterior computation = 2.8e-05 seconds
+	 Alignment traceback   = 0.082613 seconds
+
+Processing region chr5 123775555 123775599
+Adapter trimming removed
+	7 likely adapter bases from 1/203 R1 reads (0.49%)
+	0 likely adapter bases from 0/203 R2 reads (0%)
+406 reads overlapped region, of which 
+	0 were hard clipped
+	1 had an 'N' base call
+	2 had low base quality scores
+	1 did not have a unique mapping
+	2 did not have a mate pair
+	400 PASSED ALL FILTERS
+Found 400 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 399 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.959079, P_DOWN=0.0178828, P_UP=0.0125202]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00626011, P_UP=0.00626011]
+Left aligning reads
+Generating candidate haplotypes
+	TTTGTATCTTTATCT...ATTTATACCTCT ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT     TCAAAATATTACATA...AAAGAGGAAAAT 
+	                               ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT                                
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Identified 1 new right flank haplotype(s)
+	TCAAAATATTACGTAAGGATACCAAAGAGGAAAAT	1
+	TCAAAATATTACATAAGGATACCAAAGAGGAAAAT	REF_SEQ
+
+Realigning 180 out of 180 read pools to polish flanking sequences
+Allele counts
+	ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT 0
+	ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT 2
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.014243 seconds
+ SNP info extraction = 0.00018 seconds
+ Stutter estimation  = 0.000313 seconds
+ Genotyping          = 0.1286 seconds
+	 Left alignment        = 0.021602 seconds
+	 Haplotype generation  = 0.000792 seconds
+	 Haplotype alignment   = 0.062136 seconds
+	 Flank assembly        = 0.001498 seconds
+	 Posterior computation = 9.4e-05 seconds
+	 Alignment traceback   = 0.03972 seconds
+
+Processing region chr5 150076323 150076375
+Adapter trimming removed
+	9 likely adapter bases from 1/140 R1 reads (0.71%)
+	0 likely adapter bases from 0/142 R2 reads (0%)
+282 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	1 had low base quality scores
+	0 did not have a unique mapping
+	5 did not have a mate pair
+	276 PASSED ALL FILTERS
+Found 276 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 275 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.956043, P_DOWN=0.0157842, P_UP=0.0219954]
+	OUT_FRAME[P_GEOM(bp) =0.247887, P_DOWN=0.00964059, P_UP=0.0283905]
+Left aligning reads
+Generating candidate haplotypes
+	ATTTCCTGTGTCAGA...TAAGTACTTCCT ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT AATCTATCTATCTTC...AAGGCAGTTACT 
+	                               ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT                                            
+	                               ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT                                        
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT 0
+	ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT 1
+	ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT 1
+Locus timing:
+ BAM seek time       = 3e-06 seconds
+ Read filtering      = 0.010734 seconds
+ SNP info extraction = 0.000156 seconds
+ Stutter estimation  = 0.001292 seconds
+ Genotyping          = 0.08093 seconds
+	 Left alignment        = 0.01852 seconds
+	 Haplotype generation  = 0.000868 seconds
+	 Haplotype alignment   = 0.036827 seconds
+	 Flank assembly        = 0.001073 seconds
+	 Posterior computation = 3.4e-05 seconds
+	 Alignment traceback   = 0.021874 seconds
+
+Processing region chr6 88277143 88277245
+Skipping region as the reference allele length exceeds the threshold (102 vs 100)
+You can increase this threshold using the --max-str-len option
+Processing region chr6 91740224 91740272
+Adapter trimming removed
+	31 likely adapter bases from 4/188 R1 reads (2.1%)
+	37 likely adapter bases from 5/187 R2 reads (2.7%)
+373 reads overlapped region, of which 
+	0 were hard clipped
+	1 had an 'N' base call
+	5 had low base quality scores
+	0 did not have a unique mapping
+	6 did not have a mate pair
+	361 PASSED ALL FILTERS
+Found 361 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 360 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953583, P_DOWN=0.0137433, P_UP=0.093496]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00603418, P_UP=0.00603418]
+Left aligning reads
+Generating candidate haplotypes
+	CATAATTGTATGAGC...ATAATAAATCCT ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT     GATCTATCAATCTAT...CCATCCTTGCAC 
+	                               ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT                                        
+	                               ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT                                
+Aligning reads to each candidate haplotype
+Recomputing sample posteriors after removing 1 uncalled alleles across 1 blocks
+Reassembling flanking sequences
+Allele counts
+	ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT 1
+	ATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCT 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.013304 seconds
+ SNP info extraction = 0.00017 seconds
+ Stutter estimation  = 0.00124 seconds
+ Genotyping          = 0.09392 seconds
+	 Left alignment        = 0.016347 seconds
+	 Haplotype generation  = 0.00106 seconds
+	 Haplotype alignment   = 0.049723 seconds
+	 Flank assembly        = 0.001252 seconds
+	 Posterior computation = 8.2e-05 seconds
+	 Alignment traceback   = 0.023093 seconds
+
+Processing region chr7 84160225 84160277
+Adapter trimming removed
+	23 likely adapter bases from 4/224 R1 reads (1.8%)
+	39 likely adapter bases from 6/199 R2 reads (3%)
+417 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	1 had low base quality scores
+	1 did not have a unique mapping
+	9 did not have a mate pair
+	406 PASSED ALL FILTERS
+Found 406 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 1 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 405 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953462, P_DOWN=0.00699318, P_UP=0.00699318]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00699318, P_UP=0.00699318]
+Left aligning reads
+Generating candidate haplotypes
+	TATTTAGTGAGATTA...TATCAATCTGTC TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC GTTAGTTCGTTCTAA...AAGTGTTCTATC 
+	                               TATCTATCTATCTATCTATCTATCTATCTATC                                                    
+	                               TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC                                            
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Identified 1 new left flank haplotype(s)
+	TATTTAGTGAGATAAAAAAAAACTATCAATCTGTC	1
+	TATTTAGTGAGATTAAAAAAAACTATCAATCTGTC	REF_SEQ
+
+Identified 1 new right flank haplotype(s)
+	GTTAGTTCATTCTAAACTATGACAAGTGTTCTATC	1
+	GTTAGTTCGTTCTAAACTATGACAAGTGTTCTATC	REF_SEQ
+
+Realigning 191 out of 191 read pools to polish flanking sequences
+Allele counts
+	TATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATC 0
+	TATCTATCTATCTATCTATCTATCTATCTATC 1
+	TATCTATCTATCTATCTATCTATCTATCTATCTATCTATC 1
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.015272 seconds
+ SNP info extraction = 0.00021 seconds
+ Stutter estimation  = 0.000404 seconds
+ Genotyping          = 0.242211 seconds
+	 Left alignment        = 0.024346 seconds
+	 Haplotype generation  = 0.001022 seconds
+	 Haplotype alignment   = 0.167336 seconds
+	 Flank assembly        = 0.001802 seconds
+	 Posterior computation = 0.000549 seconds
+	 Alignment traceback   = 0.042477 seconds
+
+Processing region chr8 124894864 124894916
+Adapter trimming removed
+	0 likely adapter bases from 0/186 R1 reads (0%)
+	0 likely adapter bases from 0/167 R2 reads (0%)
+352 reads overlapped region, of which 
+	0 were hard clipped
+	0 had an 'N' base call
+	2 had low base quality scores
+	0 did not have a unique mapping
+	2 did not have a mate pair
+	348 PASSED ALL FILTERS
+Found 348 fully paired reads and 0 unpaired reads for downstream analyses
+Removed 2 sets of PCR duplicate reads
+Phased SNPs add info for 0 out of 346 reads and 0 out of 1 samples
+Building EM stutter model
+Training EM stutter model
+Learned stutter model 
+	IN_FRAME [P_GEOM(rep)=0.953462, P_DOWN=0.00590191, P_UP=0.00590191]
+	OUT_FRAME[P_GEOM(bp) =0.953461, P_DOWN=0.00590191, P_UP=0.00590191]
+Left aligning reads
+Generating candidate haplotypes
+	TATATGTATTTTTGT...TGTACATTCGTA TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA TTCCCCACAGTGAAA...CAGGATAGGTAA 
+	                               TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA                                    
+Aligning reads to each candidate haplotype
+Reassembling flanking sequences
+Allele counts
+	TCTATCTGTCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 0
+	TCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTATCTA 2
+Locus timing:
+ BAM seek time       = 5e-06 seconds
+ Read filtering      = 0.013609 seconds
+ SNP info extraction = 0.000189 seconds
+ Stutter estimation  = 0.000218 seconds
+ Genotyping          = 0.077189 seconds
+	 Left alignment        = 0.022028 seconds
+	 Haplotype generation  = 0.000813 seconds
+	 Haplotype alignment   = 0.032029 seconds
+	 Flank assembly        = 0.001226 seconds
+	 Posterior computation = 1.7e-05 seconds
+	 Alignment traceback   = 0.019226 seconds
+
+
+
+
+------HipSTR Execution Summary------
+Skipped 2 loci whose lengths were above the maximum threshold.
+	 If this is a sizeable portion of your loci, see the --max-str-len command line option
+Skipped 1 loci with too few reads for stutter model model training or genotyping.
+	 If this is a sizeable portion of your loci, see the --min-reads command line option
+Stutter model training succeeded for 21/21 loci
+Genotyping succeeded for 21/21 loci
+
+Approximate timing breakdown
+ BAM seek time       = 9.8e-05 seconds
+ Read filtering      = 0.301439 seconds
+ SNP info extraction = 0.003857 seconds
+ Stutter estimation  = 0.01281 seconds
+ Genotyping          = 2.82868 seconds
+	 Left alignment        = 0.511374 seconds
+	 Haplotype generation  = 0.020056 seconds
+	 Haplotype alignment   = 1.46503 seconds
+	 Flank assembly        = 0.030811 seconds
+	 Posterior computation = 0.001566 seconds
+	 Alignment traceback   = 0.745911 seconds
+HipSTR execution finished: Total runtime = 17.4338 sec
+-----------------
+
+

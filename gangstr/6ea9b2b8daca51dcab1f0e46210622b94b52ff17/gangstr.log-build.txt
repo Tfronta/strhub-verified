@@ -1,0 +1,1772 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.10kB done
+#1 DONE 0.0s
+
+#2 [auth] continuumio/miniconda3:pull token for registry-1.docker.io
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/continuumio/miniconda3:24.11.1-0
+#3 DONE 0.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/8] FROM docker.io/continuumio/miniconda3:24.11.1-0@sha256:6a66425f001f739d4778dd732e020afeb06175f49478fafc3ec673658d61550b
+#5 resolve docker.io/continuumio/miniconda3:24.11.1-0@sha256:6a66425f001f739d4778dd732e020afeb06175f49478fafc3ec673658d61550b done
+#5 sha256:a085163b980c657c8d4174e7c549f879ee71c3d360136d1d9ee3c3cf529ae990 5.48kB / 5.48kB done
+#5 sha256:bc0965b23a04fe7f2d9fb20f597008fcf89891de1c705ffc1c80483a1f098e4f 14.68MB / 28.23MB 0.1s
+#5 sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 2.10MB / 62.53MB 0.1s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 2.19MB / 154.10MB 0.1s
+#5 sha256:6a66425f001f739d4778dd732e020afeb06175f49478fafc3ec673658d61550b 2.36kB / 2.36kB done
+#5 sha256:bf95f579953e5bd7012a5b3c01404622410613c77169d29ddb4e2b9bd95a98d4 869B / 869B done
+#5 sha256:bc0965b23a04fe7f2d9fb20f597008fcf89891de1c705ffc1c80483a1f098e4f 28.23MB / 28.23MB 0.1s done
+#5 sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 5.24MB / 62.53MB 0.2s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 33.03MB / 154.10MB 0.2s
+#5 extracting sha256:bc0965b23a04fe7f2d9fb20f597008fcf89891de1c705ffc1c80483a1f098e4f 0.1s
+#5 sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 20.45MB / 62.53MB 0.3s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 59.77MB / 154.10MB 0.3s
+#5 sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 62.53MB / 62.53MB 0.4s done
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 106.95MB / 154.10MB 0.5s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 133.17MB / 154.10MB 0.6s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 154.10MB / 154.10MB 0.7s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 154.10MB / 154.10MB 0.7s done
+#5 extracting sha256:bc0965b23a04fe7f2d9fb20f597008fcf89891de1c705ffc1c80483a1f098e4f 1.2s done
+#5 extracting sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c
+#5 extracting sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 2.0s done
+#5 extracting sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d
+#5 extracting sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 4.2s done
+#5 DONE 10.4s
+
+#6 [2/8] RUN apt-get update && apt-get install -y --no-install-recommends         git ca-certificates     && rm -rf /var/lib/apt/lists/*
+#6 0.188 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#6 0.207 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#6 0.211 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+#6 0.276 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+#6 0.345 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+#6 0.387 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [338 kB]
+#6 1.209 Fetched 9377 kB in 1s (9005 kB/s)
+#6 1.209 Reading package lists...
+#6 1.713 Reading package lists...
+#6 2.199 Building dependency tree...
+#6 2.332 Reading state information...
+#6 2.437 The following additional packages will be installed:
+#6 2.438   git-man
+#6 2.439 Suggested packages:
+#6 2.439   gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+#6 2.439   gitk gitweb git-cvs git-mediawiki git-svn
+#6 2.439 Recommended packages:
+#6 2.439   patch less
+#6 2.466 The following packages will be upgraded:
+#6 2.466   ca-certificates git git-man
+#6 2.500 3 upgraded, 0 newly installed, 0 to remove and 68 not upgraded.
+#6 2.500 Need to get 9480 kB of archives.
+#6 2.500 After this operation, 9216 B of additional disk space will be used.
+#6 2.500 Get:1 http://deb.debian.org/debian-security bookworm-security/main amd64 ca-certificates all 20250419~deb12u1 [162 kB]
+#6 2.517 Get:2 http://deb.debian.org/debian bookworm/main amd64 git-man all 1:2.39.5-0+deb12u3 [2053 kB]
+#6 2.536 Get:3 http://deb.debian.org/debian bookworm/main amd64 git amd64 1:2.39.5-0+deb12u3 [7264 kB]
+#6 2.673 debconf: delaying package configuration, since apt-utils is not installed
+#6 2.698 Fetched 9480 kB in 0s (98.8 MB/s)
+#6 2.714 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 12332 files and directories currently installed.)
+#6 2.725 Preparing to unpack .../ca-certificates_20250419~deb12u1_all.deb ...
+#6 2.727 Unpacking ca-certificates (20250419~deb12u1) over (20230311) ...
+#6 2.841 Preparing to unpack .../git-man_1%3a2.39.5-0+deb12u3_all.deb ...
+#6 2.844 Unpacking git-man (1:2.39.5-0+deb12u3) over (1:2.39.5-0+deb12u1) ...
+#6 2.940 Preparing to unpack .../git_1%3a2.39.5-0+deb12u3_amd64.deb ...
+#6 2.957 Unpacking git (1:2.39.5-0+deb12u3) over (1:2.39.5-0+deb12u1) ...
+#6 3.397 Setting up ca-certificates (20250419~deb12u1) ...
+#6 3.471 debconf: unable to initialize frontend: Dialog
+#6 3.471 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#6 3.471 debconf: falling back to frontend: Readline
+#6 3.479 debconf: unable to initialize frontend: Readline
+#6 3.479 debconf: (This frontend requires a controlling tty.)
+#6 3.479 debconf: falling back to frontend: Teletype
+#6 5.259 Updating certificates in /etc/ssl/certs...
+#6 6.310 rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+#6 6.318 23 added, 13 removed; done.
+#6 6.334 Setting up git-man (1:2.39.5-0+deb12u3) ...
+#6 6.336 Setting up git (1:2.39.5-0+deb12u3) ...
+#6 6.345 Processing triggers for ca-certificates (20250419~deb12u1) ...
+#6 6.350 Updating certificates in /etc/ssl/certs...
+#6 7.033 0 added, 0 removed; done.
+#6 7.033 Running hooks in /etc/ca-certificates/update.d...
+#6 7.034 done.
+#6 DONE 7.1s
+
+#7 [3/8] WORKDIR /opt
+#7 DONE 0.1s
+
+#8 [4/8] RUN git clone https://github.com/gymreklab/gangstr.git tool     && cd tool && git checkout "6ea9b2b8daca51dcab1f0e46210622b94b52ff17"     && git submodule update --init --recursive
+#8 0.153 Cloning into 'tool'...
+#8 0.669 Note: switching to '6ea9b2b8daca51dcab1f0e46210622b94b52ff17'.
+#8 0.669 
+#8 0.669 You are in 'detached HEAD' state. You can look around, make experimental
+#8 0.669 changes and commit them, and you can discard any commits you make in this
+#8 0.669 state without impacting any branches by switching back to a branch.
+#8 0.669 
+#8 0.669 If you want to create a new branch to retain commits you create, you may
+#8 0.669 do so (now or later) by using -c with the switch command. Example:
+#8 0.669 
+#8 0.669   git switch -c <new-branch-name>
+#8 0.669 
+#8 0.669 Or undo this operation with:
+#8 0.669 
+#8 0.669   git switch -
+#8 0.669 
+#8 0.669 Turn off this advice by setting config variable advice.detachedHead to false
+#8 0.669 
+#8 0.669 HEAD is now at 6ea9b2b Added conda to readme
+#8 DONE 0.7s
+
+#9 [5/8] WORKDIR /opt/tool
+#9 DONE 0.0s
+
+#10 [6/8] RUN conda install -c bioconda -c conda-forge gangstr=2.5.0 --yes
+#10 0.750 Channels:
+#10 0.750  - bioconda
+#10 0.750  - conda-forge
+#10 0.750  - defaults
+#10 0.750 Platform: linux-64
+#10 0.750 Collecting package metadata (repodata.json): ...working... done
+#10 22.48 Solving environment: ...working... done
+#10 27.33 
+#10 27.33 ## Package Plan ##
+#10 27.33 
+#10 27.33   environment location: /opt/conda
+#10 27.33 
+#10 27.33   added / updated specs:
+#10 27.33     - gangstr=2.5.0
+#10 27.33 
+#10 27.33 
+#10 27.33 The following packages will be downloaded:
+#10 27.33 
+#10 27.33     package                    |            build
+#10 27.33     ---------------------------|-----------------
+#10 27.33     c-ares-1.34.8              |       hebe6cf0_2         223 KB  conda-forge
+#10 27.33     ca-certificates-2026.7.22  |       hbd8a1cb_0         129 KB  conda-forge
+#10 27.33     certifi-2026.7.22          |     pyhd8ed1ab_0         134 KB  conda-forge
+#10 27.33     conda-24.11.3              |  py312h7900ff3_0         1.1 MB  conda-forge
+#10 27.33     gangstr-2.5.0              |      h7337834_10         261 KB  bioconda
+#10 27.33     gsl-2.7                    |       he838d99_0         3.2 MB  conda-forge
+#10 27.33     htslib-1.23.1              |       h633afcb_0         1.1 MB  bioconda
+#10 27.33     libarchive-3.7.7           |       h75ea233_4         846 KB  conda-forge
+#10 27.33     libblas-3.11.0             |11_h4a7cf45_openblas          18 KB  conda-forge
+#10 27.33     libbrotlicommon-1.2.0      |       h39a168f_4          79 KB  conda-forge
+#10 27.33     libbrotlidec-1.2.0         |       ha411449_4          34 KB  conda-forge
+#10 27.33     libbrotlienc-1.2.0         |       h018ffa1_4         291 KB  conda-forge
+#10 27.33     libcblas-3.11.0            |11_h0358290_openblas          18 KB  conda-forge
+#10 27.33     libcurl-8.19.0             |       ha05a353_0         488 KB
+#10 27.33     libdeflate-1.26            |       h351257e_0          73 KB  conda-forge
+#10 27.33     libgcc-15.2.0              |       h767d61c_6         804 KB  conda-forge
+#10 27.33     libgcc-ng-15.2.0           |       h69a702a_6          29 KB  conda-forge
+#10 27.33     libgfortran-15.2.0         |      h69a702a_20          27 KB  conda-forge
+#10 27.33     libgfortran5-15.2.0        |      h68bc16d_20         2.4 MB  conda-forge
+#10 27.33     libgomp-15.2.0             |       h767d61c_6         438 KB  conda-forge
+#10 27.33     libidn2-2.3.8              |       hfac485b_1         136 KB  conda-forge
+#10 27.33     libkrb5-1.22.1             |       h6d2bf13_0         789 KB
+#10 27.33     liblapack-3.11.0           |11_h47877c9_openblas          18 KB  conda-forge
+#10 27.33     liblzma-5.8.3              |       hb03c661_1         110 KB  conda-forge
+#10 27.33     liblzma-devel-5.8.3        |       hb03c661_1         480 KB  conda-forge
+#10 27.33     libmamba-1.5.11            |       hfe524e5_1         1.9 MB
+#10 27.33     libmambapy-1.5.11          |  py312haf1ee3a_1         340 KB
+#10 27.33     libnghttp2-1.67.1          |       had1ee68_0         651 KB  conda-forge
+#10 27.33     libopenblas-0.3.34         |pthreads_h94d23a6_0         5.7 MB  conda-forge
+#10 27.33     libsolv-0.7.39             |       h72ddc62_1         516 KB  conda-forge
+#10 27.33     libssh2-1.11.1             |       h6154650_1         299 KB  conda-forge
+#10 27.33     libstdcxx-15.2.0           |       h8f9b012_6         3.7 MB  conda-forge
+#10 27.33     libunistring-0.9.10        |       h7f98852_0         1.4 MB  conda-forge
+#10 27.33     libxcb-1.17.0              |       hb83e432_2         386 KB  conda-forge
+#10 27.33     libxml2-2.13.9             |       h2c43086_0         669 KB
+#10 27.33     libzlib-1.3.2              |       h25fd6f3_3          62 KB  conda-forge
+#10 27.33     lmdb-0.9.35                |       h25c0377_0         290 KB  conda-forge
+#10 27.33     lz4-c-1.10.0               |       hee9eb32_2         178 KB  conda-forge
+#10 27.33     lzo-2.10                   |    hebe6cf0_1003         187 KB  conda-forge
+#10 27.33     nlopt-2.8.0                |  py312h69683c5_2         393 KB  conda-forge
+#10 27.33     numpy-2.5.3                |  py312he827f4e_0         8.8 MB  conda-forge
+#10 27.33     openssl-3.6.4              |       h781a0a9_0         3.1 MB  conda-forge
+#10 27.33     pcre2-10.47                |       h8b3dc9c_1         1.2 MB  conda-forge
+#10 27.33     pthread-stubs-0.4          |    h7cc23a3_1004           9 KB  conda-forge
+#10 27.33     python-3.12.9              |       h5148396_0        34.7 MB
+#10 27.33     python_abi-3.12            |          4_cp312           5 KB
+#10 27.33     sqlite-3.50.2              |       hb25bd0a_1         1.1 MB
+#10 27.33     tk-8.6.15                  |       h54e0aa7_0         3.4 MB
+#10 27.33     xorg-libx11-1.8.13         |       he1eb515_1         820 KB  conda-forge
+#10 27.33     xorg-libxau-1.0.12         |       h7cc23a3_2          18 KB  conda-forge
+#10 27.33     xorg-libxdmcp-1.1.5        |       hb03c661_2          21 KB  conda-forge
+#10 27.33     xz-5.8.3                   |       ha02ee65_1          23 KB  conda-forge
+#10 27.33     xz-gpl-tools-5.8.3         |       ha02ee65_1          39 KB  conda-forge
+#10 27.33     xz-tools-5.8.3             |       hb03c661_1          94 KB  conda-forge
+#10 27.33     zlib-1.3.2                 |       h25fd6f3_3          94 KB  conda-forge
+#10 27.33     zstandard-0.25.0           |  py312h1b36aeb_4         456 KB  conda-forge
+#10 27.33     zstd-1.5.7                 |       hb78ec9c_7         587 KB  conda-forge
+#10 27.33     ------------------------------------------------------------
+#10 27.33                                            Total:        84.0 MB
+#10 27.33 
+#10 27.33 The following NEW packages will be INSTALLED:
+#10 27.33 
+#10 27.33   gangstr            bioconda/linux-64::gangstr-2.5.0-h7337834_10 
+#10 27.33   gsl                conda-forge/linux-64::gsl-2.7-he838d99_0 
+#10 27.33   htslib             bioconda/linux-64::htslib-1.23.1-h633afcb_0 
+#10 27.33   libblas            conda-forge/linux-64::libblas-3.11.0-11_h4a7cf45_openblas 
+#10 27.33   libbrotlicommon    conda-forge/linux-64::libbrotlicommon-1.2.0-h39a168f_4 
+#10 27.33   libbrotlidec       conda-forge/linux-64::libbrotlidec-1.2.0-ha411449_4 
+#10 27.33   libbrotlienc       conda-forge/linux-64::libbrotlienc-1.2.0-h018ffa1_4 
+#10 27.33   libcblas           conda-forge/linux-64::libcblas-3.11.0-11_h0358290_openblas 
+#10 27.33   libdeflate         conda-forge/linux-64::libdeflate-1.26-h351257e_0 
+#10 27.33   libgcc             conda-forge/linux-64::libgcc-15.2.0-h767d61c_6 
+#10 27.33   libgfortran        conda-forge/linux-64::libgfortran-15.2.0-h69a702a_20 
+#10 27.33   libgfortran5       conda-forge/linux-64::libgfortran5-15.2.0-h68bc16d_20 
+#10 27.33   libidn2            conda-forge/linux-64::libidn2-2.3.8-hfac485b_1 
+#10 27.33   libkrb5            pkgs/main/linux-64::libkrb5-1.22.1-h6d2bf13_0 
+#10 27.33   liblapack          conda-forge/linux-64::liblapack-3.11.0-11_h47877c9_openblas 
+#10 27.33   liblzma            conda-forge/linux-64::liblzma-5.8.3-hb03c661_1 
+#10 27.33   liblzma-devel      conda-forge/linux-64::liblzma-devel-5.8.3-hb03c661_1 
+#10 27.33   libopenblas        conda-forge/linux-64::libopenblas-0.3.34-pthreads_h94d23a6_0 
+#10 27.33   libstdcxx          conda-forge/linux-64::libstdcxx-15.2.0-h8f9b012_6 
+#10 27.33   libunistring       conda-forge/linux-64::libunistring-0.9.10-h7f98852_0 
+#10 27.33   libxcb             conda-forge/linux-64::libxcb-1.17.0-hb83e432_2 
+#10 27.33   libzlib            conda-forge/linux-64::libzlib-1.3.2-h25fd6f3_3 
+#10 27.33   lmdb               conda-forge/linux-64::lmdb-0.9.35-h25c0377_0 
+#10 27.33   lzo                conda-forge/linux-64::lzo-2.10-hebe6cf0_1003 
+#10 27.33   nlopt              conda-forge/linux-64::nlopt-2.8.0-py312h69683c5_2 
+#10 27.33   numpy              conda-forge/linux-64::numpy-2.5.3-py312he827f4e_0 
+#10 27.33   pthread-stubs      conda-forge/linux-64::pthread-stubs-0.4-h7cc23a3_1004 
+#10 27.33   python_abi         pkgs/main/linux-64::python_abi-3.12-4_cp312 
+#10 27.33   xorg-libx11        conda-forge/linux-64::xorg-libx11-1.8.13-he1eb515_1 
+#10 27.33   xorg-libxau        conda-forge/linux-64::xorg-libxau-1.0.12-h7cc23a3_2 
+#10 27.33   xorg-libxdmcp      conda-forge/linux-64::xorg-libxdmcp-1.1.5-hb03c661_2 
+#10 27.33   xz-gpl-tools       conda-forge/linux-64::xz-gpl-tools-5.8.3-ha02ee65_1 
+#10 27.33   xz-tools           conda-forge/linux-64::xz-tools-5.8.3-hb03c661_1 
+#10 27.33 
+#10 27.33 The following packages will be UPDATED:
+#10 27.33 
+#10 27.33   c-ares                pkgs/main::c-ares-1.19.1-h5eee18b_0 --> conda-forge::c-ares-1.34.8-hebe6cf0_2 
+#10 27.33   ca-certificates    pkgs/main/linux-64::ca-certificates-2~ --> conda-forge/noarch::ca-certificates-2026.7.22-hbd8a1cb_0 
+#10 27.33   certifi            pkgs/main/linux-64::certifi-2024.8.30~ --> conda-forge/noarch::certifi-2026.7.22-pyhd8ed1ab_0 
+#10 27.33   conda              pkgs/main::conda-24.11.1-py312h06a430~ --> conda-forge::conda-24.11.3-py312h7900ff3_0 
+#10 27.33   libarchive         pkgs/main::libarchive-3.7.4-hfab0078_0 --> conda-forge::libarchive-3.7.7-h75ea233_4 
+#10 27.33   libcurl                                  8.9.1-h251f7ec_0 --> 8.19.0-ha05a353_0 
+#10 27.33   libgcc-ng          pkgs/main::libgcc-ng-11.2.0-h1234567_1 --> conda-forge::libgcc-ng-15.2.0-h69a702a_6 
+#10 27.33   libgomp              pkgs/main::libgomp-11.2.0-h1234567_1 --> conda-forge::libgomp-15.2.0-h767d61c_6 
+#10 27.33   libmamba                                1.5.11-hfe524e5_0 --> 1.5.11-hfe524e5_1 
+#10 27.33   libmambapy                         1.5.11-py312haf1ee3a_0 --> 1.5.11-py312haf1ee3a_1 
+#10 27.33   libnghttp2         pkgs/main::libnghttp2-1.57.0-h2d74bed~ --> conda-forge::libnghttp2-1.67.1-had1ee68_0 
+#10 27.33   libsolv              pkgs/main::libsolv-0.7.24-he621ea3_1 --> conda-forge::libsolv-0.7.39-h72ddc62_1 
+#10 27.33   libssh2              pkgs/main::libssh2-1.11.1-h251f7ec_0 --> conda-forge::libssh2-1.11.1-h6154650_1 
+#10 27.33   libxml2                                 2.13.5-hfdd30dd_0 --> 2.13.9-h2c43086_0 
+#10 27.33   lz4-c                   pkgs/main::lz4-c-1.9.4-h6a678d5_1 --> conda-forge::lz4-c-1.10.0-hee9eb32_2 
+#10 27.33   openssl              pkgs/main::openssl-3.0.15-h5eee18b_0 --> conda-forge::openssl-3.6.4-h781a0a9_0 
+#10 27.33   pcre2                   pkgs/main::pcre2-10.42-hebb0a14_1 --> conda-forge::pcre2-10.47-h8b3dc9c_1 
+#10 27.33   python                                  3.12.8-h5148396_0 --> 3.12.9-h5148396_0 
+#10 27.33   sqlite                                  3.45.3-h5eee18b_0 --> 3.50.2-hb25bd0a_1 
+#10 27.33   tk                                      8.6.14-h39e8969_0 --> 8.6.15-h54e0aa7_0 
+#10 27.33   xz                         pkgs/main::xz-5.4.6-h5eee18b_1 --> conda-forge::xz-5.8.3-ha02ee65_1 
+#10 27.33   zlib                    pkgs/main::zlib-1.2.13-h5eee18b_1 --> conda-forge::zlib-1.3.2-h25fd6f3_3 
+#10 27.33   zstandard          pkgs/main::zstandard-0.23.0-py312h2c3~ --> conda-forge::zstandard-0.25.0-py312h1b36aeb_4 
+#10 27.33   zstd                     pkgs/main::zstd-1.5.6-hc292b87_0 --> conda-forge::zstd-1.5.7-hb78ec9c_7 
+#10 27.33 
+#10 27.34 
+#10 27.34 
+#10 27.34 Downloading and Extracting Packages: ...working...python-3.12.9        | 34.7 MB   |            |   0% 
+#10 27.34 numpy-2.5.3          | 8.8 MB    |            |   0% [A
+#10 27.34 
+#10 27.34 libopenblas-0.3.34   | 5.7 MB    |            |   0% [A[A
+#10 27.34 
+#10 27.34 
+#10 27.34 libstdcxx-15.2.0     | 3.7 MB    |            |   0% [A[A[A
+#10 27.34 
+#10 27.34 
+#10 27.34 
+#10 27.34 tk-8.6.15            | 3.4 MB    |            |   0% [A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 gsl-2.7              | 3.2 MB    |            |   0% [A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 openssl-3.6.4        | 3.1 MB    |            |   0% [A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 libgfortran5-15.2.0  | 2.4 MB    |            |   0% [A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 libmamba-1.5.11      | 1.9 MB    |            |   0% [A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 libunistring-0.9.10  | 1.4 MB    |            |   0% [A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 pcre2-10.47          | 1.2 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 htslib-1.23.1        | 1.1 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 conda-24.11.3        | 1.1 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 sqlite-3.50.2        | 1.1 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 libarchive-3.7.7     | 846 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 xorg-libx11-1.8.13   | 820 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 libgcc-15.2.0        | 804 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 libkrb5-1.22.1       | 789 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 libxml2-2.13.9       | 669 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35 
+#10 27.35  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 34.7 MB   |            |   1% 
+#10 27.44 
+#10 27.44 libopenblas-0.3.34   | 5.7 MB    | #5         |  15% [A[A
+#10 27.44 numpy-2.5.3          | 8.8 MB    | #5         |  16% [A
+#10 27.44 
+#10 27.44 
+#10 27.44 libstdcxx-15.2.0     | 3.7 MB    | ##         |  20% [A[A[A
+#10 27.48 
+#10 27.48 
+#10 27.48 
+#10 27.48 tk-8.6.15            | 3.4 MB    |            |   0% [A[A[A[Apython-3.12.9        | 34.7 MB   | #5         |  16% 
+#10 27.54 numpy-2.5.3          | 8.8 MB    | #######2   |  72% [A
+#10 27.54 
+#10 27.54 libopenblas-0.3.34   | 5.7 MB    | #########5 |  96% [A[A
+#10 27.58 
+#10 27.58 
+#10 27.58 libstdcxx-15.2.0     | 3.7 MB    | ########## | 100% [A[A[A
+#10 27.58 
+#10 27.58 
+#10 27.58 libstdcxx-15.2.0     | 3.7 MB    | ########## | 100% [A[A[A
+#10 27.61 
+#10 27.61 
+#10 27.61 
+#10 27.61 
+#10 27.61 gsl-2.7              | 3.2 MB    |            |   0% [A[A[A[A[A
+#10 27.63 
+#10 27.63 
+#10 27.63 
+#10 27.63 tk-8.6.15            | 3.4 MB    | ########## | 100% [A[A[A[A
+#10 27.63 
+#10 27.63 
+#10 27.63 
+#10 27.63 tk-8.6.15            | 3.4 MB    | ########## | 100% [A[A[A[Apython-3.12.9        | 34.7 MB   | ##9        |  29% 
+#10 27.66 
+#10 27.66 libopenblas-0.3.34   | 5.7 MB    | ########## | 100% [A[A
+#10 27.69 
+#10 27.69 
+#10 27.69 
+#10 27.69 
+#10 27.69 
+#10 27.69 
+#10 27.69 libgfortran5-15.2.0  | 2.4 MB    |            |   1% [A[A[A[A[A[A[A
+#10 27.69 
+#10 27.69 
+#10 27.69 
+#10 27.69 
+#10 27.69 
+#10 27.69 openssl-3.6.4        | 3.1 MB    |            |   1% [A[A[A[A[A[A
+#10 27.71 
+#10 27.71 
+#10 27.71 
+#10 27.71 
+#10 27.71 gsl-2.7              | 3.2 MB    | #########5 |  95% [A[A[A[A[Apython-3.12.9        | 34.7 MB   | ####       |  40% 
+#10 27.79 
+#10 27.79 
+#10 27.79 
+#10 27.79 
+#10 27.79 
+#10 27.79 openssl-3.6.4        | 3.1 MB    | #######7   |  77% [A[A[A[A[A[A
+#10 27.81 
+#10 27.81 
+#10 27.81 
+#10 27.81 
+#10 27.82 gsl-2.7              | 3.2 MB    | ########## | 100% [A[A[A[A[A
+#10 27.83 numpy-2.5.3          | 8.8 MB    | ########## | 100% [A
+#10 27.83 
+#10 27.83 
+#10 27.83 
+#10 27.83 
+#10 27.83 
+#10 27.83 
+#10 27.83 libgfortran5-15.2.0  | 2.4 MB    | ########## | 100% [A[A[A[A[A[A[A
+#10 27.84 
+#10 27.84 
+#10 27.84 
+#10 27.84 
+#10 27.84 
+#10 27.84 
+#10 27.84 libgfortran5-15.2.0  | 2.4 MB    | ########## | 100% [A[A[A[A[A[A[A
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 openssl-3.6.4        | 3.1 MB    | ########## | 100% [A[A[A[A[A[Apython-3.12.9        | 34.7 MB   | #####      |  51% 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 libunistring-0.9.10  | 1.4 MB    | 1          |   1% [A[A[A[A[A[A[A[A[A
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 
+#10 27.86 pcre2-10.47          | 1.2 MB    | 1          |   1% [A[A[A[A[A[A[A[A[A[A
+#10 27.89 
+#10 27.89 
+#10 27.89 
+#10 27.89 
+#10 27.89 
+#10 27.89 
+#10 27.89 
+#10 27.89 
+#10 27.89 
+#10 27.89 
+#10 27.89 htslib-1.23.1        | 1.1 MB    | 1          |   1% [A[A[A[A[A[A[A[A[A[A[A
+#10 27.90 
+#10 27.90 
+#10 27.90 
+#10 27.90 
+#10 27.90 
+#10 27.90 
+#10 27.90 
+#10 27.90 libmamba-1.5.11      | 1.9 MB    |            |   1% [A[A[A[A[A[A[A[A
+#10 27.93 
+#10 27.93 
+#10 27.93 
+#10 27.93 
+#10 27.93 
+#10 27.93 
+#10 27.93 
+#10 27.93 
+#10 27.93 
+#10 27.93 pcre2-10.47          | 1.2 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+#10 27.94 
+#10 27.94 
+#10 27.94 
+#10 27.94 
+#10 27.94 
+#10 27.94 
+#10 27.94 
+#10 27.94 
+#10 27.94 libunistring-0.9.10  | 1.4 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 htslib-1.23.1        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 
+#10 27.96 conda-24.11.3        | 1.1 MB    | 1          |   1% [A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 34.7 MB   | ######1    |  61% 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 
+#10 27.99 libarchive-3.7.7     | 846 KB    | 1          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 
+#10 28.00 sqlite-3.50.2        | 1.1 MB    | 1          |   1% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.02 
+#10 28.02 
+#10 28.02 
+#10 28.02 
+#10 28.02 
+#10 28.02 
+#10 28.02 
+#10 28.02 
+#10 28.02 
+#10 28.02 
+#10 28.02 
+#10 28.02 conda-24.11.3        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 libmamba-1.5.11      | 1.9 MB    | ########## | 100% [A[A[A[A[A[A[A[A
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 
+#10 28.04 libmamba-1.5.11      | 1.9 MB    | ########## | 100% [A[A[A[A[A[A[A[A
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 
+#10 28.05 libarchive-3.7.7     | 846 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 
+#10 28.07 xorg-libx11-1.8.13   | 820 KB    | 1          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 libgcc-15.2.0        | 804 KB    | 1          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 
+#10 28.08 sqlite-3.50.2        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.08 
+#10 28.08 
+#10 28.08 libstdcxx-15.2.0     | 3.7 MB    | ########## | 100% [A[A[Apython-3.12.9        | 34.7 MB   | #######    |  71% 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 
+#10 28.11 xorg-libx11-1.8.13   | 820 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 libxml2-2.13.9       | 669 KB    | 2          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 libgcc-15.2.0        | 804 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 
+#10 28.12 libkrb5-1.22.1       | 789 KB    | 2          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 libxml2-2.13.9       | 669 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16 
+#10 28.16  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 
+#10 28.17 libkrb5-1.22.1       | 789 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 34.7 MB   | ########   |  81% 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20 
+#10 28.20  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 34.7 MB   | #########3 |  93% 
+#10 28.49 
+#10 28.49 libopenblas-0.3.34   | 5.7 MB    | ########## | 100% [A[Apython-3.12.9        | 34.7 MB   | ########## | 100% 
+#10 28.66 
+#10 28.66 
+#10 28.66 
+#10 28.66 tk-8.6.15            | 3.4 MB    | ########## | 100% [A[A[A[A
+#10 28.72 
+#10 28.72 
+#10 28.72 
+#10 28.72 
+#10 28.72 
+#10 28.72 
+#10 28.72 libgfortran5-15.2.0  | 2.4 MB    | ########## | 100% [A[A[A[A[A[A[A
+#10 28.86 
+#10 28.86 
+#10 28.86 
+#10 28.86 
+#10 28.86 
+#10 28.86 openssl-3.6.4        | 3.1 MB    | ########## | 100% [A[A[A[A[A[A
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 pcre2-10.47          | 1.2 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 
+#10 29.04 pcre2-10.47          | 1.2 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+#10 29.15 
+#10 29.15 
+#10 29.15 
+#10 29.15 
+#10 29.15 gsl-2.7              | 3.2 MB    | ########## | 100% [A[A[A[A[A
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 htslib-1.23.1        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 
+#10 29.23 htslib-1.23.1        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 libunistring-0.9.10  | 1.4 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 
+#10 29.32 libunistring-0.9.10  | 1.4 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+#10 29.44 
+#10 29.44 
+#10 29.44 
+#10 29.44 
+#10 29.44 
+#10 29.44 
+#10 29.44 
+#10 29.44 libmamba-1.5.11      | 1.9 MB    | ########## | 100% [A[A[A[A[A[A[A[A
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 libarchive-3.7.7     | 846 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 
+#10 29.53 libarchive-3.7.7     | 846 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 sqlite-3.50.2        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 
+#10 29.58 sqlite-3.50.2        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 conda-24.11.3        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 
+#10 29.65 conda-24.11.3        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.68 numpy-2.5.3          | 8.8 MB    | ########## | 100% [A
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 libgcc-15.2.0        | 804 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 
+#10 29.73 libgcc-15.2.0        | 804 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 libxml2-2.13.9       | 669 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 
+#10 29.76 libxml2-2.13.9       | 669 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 
+#10 29.79 xorg-libx11-1.8.13   | 820 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 xorg-libx11-1.8.13   | 820 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 libkrb5-1.22.1       | 789 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 
+#10 29.83 libkrb5-1.22.1       | 789 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85 
+#10 29.85  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 34.7 MB   | ########## | 100% 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                       [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A                                                     
+#10 31.17                                                      [A
+#10 31.17 
+#10 31.17                                                      [A[A
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 [A
+#10 31.17 
+#10 31.17 [A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 [A
+#10 31.17 
+#10 31.17 [A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 
+#10 31.17 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A done
+#10 31.17 Preparing transaction: - \ done
+#10 31.38 Verifying transaction: / - \ | / - \ | / - done
+#10 32.43 Executing transaction: | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - done
+#10 DONE 39.0s
+
+#11 [7/8] RUN command -v GangSTR
+#11 0.130 /opt/conda/bin/GangSTR
+#11 DONE 0.1s
+
+#12 [8/8] WORKDIR /work
+#12 DONE 0.0s
+
+#13 exporting to image
+#13 exporting layers
+#13 exporting layers 6.5s done
+#13 writing image sha256:676608bbb3fdb96363a71d5cac3ddce44f0cfb9160346e28c4a311c0a9736f54 done
+#13 naming to docker.io/library/toolimg:ci done
+#13 DONE 6.5s

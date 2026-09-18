@@ -1,0 +1,342 @@
+{
+  "schema": "strhub-verified/1",
+  "mode": "publish",
+  "tool": {
+    "name": "GangSTR",
+    "version": "v2.5"
+  },
+  "submission": {
+    "by": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/gymreklab/gangstr",
+    "ref": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+    "ref_resolved": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+    "committed": "2021-04-19T19:30:11Z"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ]
+  },
+  "generated": "2026-09-15T19:53:01+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016057251",
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": true,
+    "io": true,
+    "content": true
+  },
+  "level": "content",
+  "io_detail": {
+    "gate": "io",
+    "passed": true,
+    "outputs": [
+      {
+        "path": "output.vcf",
+        "format": "vcf",
+        "checks": {
+          "confined": true,
+          "exists": true,
+          "non_empty": true,
+          "parses_as_vcf": true,
+          "min_records": true
+        },
+        "resolved": "output.vcf",
+        "records": 24,
+        "passed": true
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": true,
+    "outputs": [
+      {
+        "path": "output.vcf",
+        "resolved": "output.vcf",
+        "mode": "auto",
+        "checks": {
+          "records_present": true,
+          "genotypes_called": true,
+          "given_loci_recognised": true
+        },
+        "stats": {
+          "rows": 24,
+          "header_row_dropped": false,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 24,
+          "distinct_str_loci": 24,
+          "distinct_snp_markers": 0,
+          "loci": [
+            "CSF1PO",
+            "D10S1248",
+            "D12S391",
+            "D13S317",
+            "D16S539",
+            "D18S51",
+            "D19S433",
+            "D1S1656",
+            "D21S11",
+            "D22S1045",
+            "D2S1338",
+            "D2S441",
+            "D3S1358",
+            "D5S818",
+            "D6S1043",
+            "D7S820",
+            "D8S1179",
+            "FGA",
+            "PentaD",
+            "PentaE",
+            "SE33",
+            "TH01",
+            "TPOX",
+            "vWA"
+          ],
+          "str_loci": [
+            "CSF1PO",
+            "D10S1248",
+            "D12S391",
+            "D13S317",
+            "D16S539",
+            "D18S51",
+            "D19S433",
+            "D1S1656",
+            "D21S11",
+            "D22S1045",
+            "D2S1338",
+            "D2S441",
+            "D3S1358",
+            "D5S818",
+            "D6S1043",
+            "D7S820",
+            "D8S1179",
+            "FGA",
+            "PentaD",
+            "PentaE",
+            "SE33",
+            "TH01",
+            "TPOX",
+            "vWA"
+          ],
+          "snp_markers": [],
+          "total_reads": 10738,
+          "max_sequence_depth": 757,
+          "top_loci_by_depth": [
+            [
+              "D18S51",
+              757
+            ],
+            [
+              "D16S539",
+              618
+            ],
+            [
+              "PentaD",
+              613
+            ],
+            [
+              "D5S818",
+              589
+            ],
+            [
+              "D6S1043",
+              585
+            ],
+            [
+              "D7S820",
+              579
+            ],
+            [
+              "D3S1358",
+              575
+            ],
+            [
+              "D8S1179",
+              558
+            ],
+            [
+              "D2S441",
+              517
+            ],
+            [
+              "vWA",
+              495
+            ],
+            [
+              "D10S1248",
+              460
+            ],
+            [
+              "PentaE",
+              456
+            ],
+            [
+              "D13S317",
+              442
+            ],
+            [
+              "CSF1PO",
+              435
+            ],
+            [
+              "D22S1045",
+              429
+            ],
+            [
+              "D19S433",
+              361
+            ],
+            [
+              "TPOX",
+              328
+            ],
+            [
+              "SE33",
+              328
+            ],
+            [
+              "TH01",
+              306
+            ],
+            [
+              "D21S11",
+              282
+            ],
+            [
+              "D12S391",
+              281
+            ],
+            [
+              "D1S1656",
+              268
+            ],
+            [
+              "FGA",
+              254
+            ],
+            [
+              "D2S1338",
+              222
+            ]
+          ],
+          "called_genotypes": 24,
+          "regions_given": 24,
+          "regions_hit": 24
+        },
+        "passed": true
+      }
+    ]
+  },
+  "example_detail": null,
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": true,
+      "io": true,
+      "content": true,
+      "passed": true,
+      "fixture_source": "strhub"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-bam-hg38",
+      "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
+      "io": true,
+      "content": true,
+      "passed": true
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": false,
+      "io": false,
+      "content": null,
+      "passed": false,
+      "matches_expected": null,
+      "produced_count": null
+    }
+  ],
+  "regions": {
+    "source": "strhub",
+    "panel_size": 24
+  },
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bdependenc(y|ies)\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "upstream": {
+    "checked": "2026-09-15T19:53:01+00:00",
+    "repo_exists": true,
+    "ref_exists": true,
+    "default_branch": "master",
+    "status": "identical",
+    "behind_by": 0
+  },
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 10,
+    "examples": [
+      "test/HTT.bed",
+      "test/alignment/nc190_25.sorted.bam",
+      "test/alignment/nc10_25.sorted.bam",
+      "test/alignment/nc30_15.sorted.bam",
+      "experimental/supplement_bed/hg38_codis.bed"
+    ]
+  },
+  "logs": {
+    "own": "gangstr.log-own.txt",
+    "external": "gangstr.log-external.txt",
+    "build": "gangstr.log-build.txt"
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  },
+  "verdict": {
+    "code": "runs",
+    "title": "Runs",
+    "basis": "gates",
+    "reason": "The tool installed and its run produced its documented output.",
+    "readme_gaps": [],
+    "blockers": []
+  }
+}
