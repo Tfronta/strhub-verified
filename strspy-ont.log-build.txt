@@ -1,489 +1,489 @@
 #0 building with "default" instance using docker driver
 
 #1 [internal] load build definition from Dockerfile
-#1 transferring dockerfile: 2.22kB done
-#1 DONE 0.0s
+#1 transferring dockerfile:
+#1 transferring dockerfile: 760B done
+#1 DONE 2.4s
 
-#2 [auth] mambaorg/micromamba:pull token for registry-1.docker.io
-#2 DONE 0.0s
+#2 [internal] load metadata for docker.io/mambaorg/micromamba:1.5.8
+#2 ...
 
-#3 [internal] load metadata for docker.io/mambaorg/micromamba:1.5.8
-#3 DONE 0.4s
+#3 [auth] mambaorg/micromamba:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/mambaorg/micromamba:1.5.8
+#2 DONE 1.4s
 
 #4 [internal] load .dockerignore
 #4 transferring context: 2B done
 #4 DONE 0.0s
 
-#5 [1/8] FROM docker.io/mambaorg/micromamba:1.5.8@sha256:475730daef12ff9c0733e70092aeeefdf4c373a584c952dac3f7bdb739601990
-#5 resolve docker.io/mambaorg/micromamba:1.5.8@sha256:475730daef12ff9c0733e70092aeeefdf4c373a584c952dac3f7bdb739601990 done
-#5 sha256:475730daef12ff9c0733e70092aeeefdf4c373a584c952dac3f7bdb739601990 2.36kB / 2.36kB done
+#5 [1/7] FROM docker.io/mambaorg/micromamba:1.5.8@sha256:475730daef12ff9c0733e70092aeeefdf4c373a584c952dac3f7bdb739601990
+#5 resolve docker.io/mambaorg/micromamba:1.5.8@sha256:475730daef12ff9c0733e70092aeeefdf4c373a584c952dac3f7bdb739601990 0.0s done
+#5 sha256:c9a3dce55fa977c4811896aae460a280c5e10b6babb0166e7df22869d05cca09 0B / 122.68kB 0.1s
 #5 sha256:d8ec36f8766297e87963bb22d089a6bac98e23b7cae3e5a717bfa62da8c2933f 6.29kB / 6.29kB done
-#5 sha256:c9a3dce55fa977c4811896aae460a280c5e10b6babb0166e7df22869d05cca09 122.68kB / 122.68kB 0.1s done
-#5 sha256:8d1e1fc2982befe8a4222f190deb1dd1a465bdcd39d08e540b227dc2c78671b7 0B / 521B 0.1s
+#5 sha256:e4fff0779e6ddd22366469f08626c3ab1884b5cbe1719b26da238c95f247b305 0B / 29.13MB 0.1s
+#5 sha256:c53a092f01542f27743b8e5eb6380a3f6c4126e1454bb229adc803c6159b236e 6.06MB / 6.06MB 0.1s
 #5 sha256:69197a394b85ad1e7ce2398cdaffa75c12e5cd9dcc8529651342818e7b239e59 2.56kB / 2.56kB done
-#5 sha256:e4fff0779e6ddd22366469f08626c3ab1884b5cbe1719b26da238c95f247b305 7.34MB / 29.13MB 0.1s
-#5 sha256:c53a092f01542f27743b8e5eb6380a3f6c4126e1454bb229adc803c6159b236e 4.11MB / 6.06MB 0.1s
-#5 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.1s done
-#5 sha256:8d1e1fc2982befe8a4222f190deb1dd1a465bdcd39d08e540b227dc2c78671b7 521B / 521B 0.1s done
-#5 sha256:e4fff0779e6ddd22366469f08626c3ab1884b5cbe1719b26da238c95f247b305 29.13MB / 29.13MB 0.2s done
-#5 sha256:c53a092f01542f27743b8e5eb6380a3f6c4126e1454bb229adc803c6159b236e 6.06MB / 6.06MB 0.1s done
+#5 sha256:475730daef12ff9c0733e70092aeeefdf4c373a584c952dac3f7bdb739601990 2.36kB / 2.36kB done
+#5 sha256:c9a3dce55fa977c4811896aae460a280c5e10b6babb0166e7df22869d05cca09 122.68kB / 122.68kB 0.2s
+#5 sha256:e4fff0779e6ddd22366469f08626c3ab1884b5cbe1719b26da238c95f247b305 17.83MB / 29.13MB 0.2s
+#5 sha256:e4fff0779e6ddd22366469f08626c3ab1884b5cbe1719b26da238c95f247b305 29.13MB / 29.13MB 0.4s
+#5 sha256:c9a3dce55fa977c4811896aae460a280c5e10b6babb0166e7df22869d05cca09 122.68kB / 122.68kB 0.4s done
+#5 sha256:e4fff0779e6ddd22366469f08626c3ab1884b5cbe1719b26da238c95f247b305 29.13MB / 29.13MB 0.4s done
+#5 sha256:c53a092f01542f27743b8e5eb6380a3f6c4126e1454bb229adc803c6159b236e 6.06MB / 6.06MB 0.4s done
 #5 extracting sha256:e4fff0779e6ddd22366469f08626c3ab1884b5cbe1719b26da238c95f247b305 0.1s
-#5 sha256:27dded3b689263d0fa2c4007a9a20c455f8c57d3a07dea42b747bf8fcae1fbae 283B / 283B 0.1s done
-#5 sha256:514e6f58a3981e58d107f52f42ddac4b4630ad6856303762cc8687e81c6411f9 214B / 214B 0.2s done
-#5 sha256:f14bee2f36c553c162791b50a3033087beeb8efd64c469c55b4b213655f9ce8e 683B / 683B 0.2s done
-#5 sha256:5ff289cba971d27fd2ed5c6e13cd944739ec9489998da93400bccf66d7c03d91 3.78kB / 3.78kB 0.2s done
-#5 sha256:1002294c9bed4933726f7a34c01d526e5c57a16d1ef0d5e12d144429ef7a4a2c 346B / 346B 0.2s done
-#5 sha256:38b0c124d9b4103abdce4bfb08bc6e310b4dc3ffb27978d77350e7955ddec8b2 645B / 645B 0.2s done
-#5 extracting sha256:e4fff0779e6ddd22366469f08626c3ab1884b5cbe1719b26da238c95f247b305 1.1s done
+#5 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.5s done
+#5 sha256:8d1e1fc2982befe8a4222f190deb1dd1a465bdcd39d08e540b227dc2c78671b7 521B / 521B 0.5s done
+#5 sha256:27dded3b689263d0fa2c4007a9a20c455f8c57d3a07dea42b747bf8fcae1fbae 0B / 283B 0.5s
+#5 sha256:5ff289cba971d27fd2ed5c6e13cd944739ec9489998da93400bccf66d7c03d91 0B / 3.78kB 0.5s
+#5 sha256:27dded3b689263d0fa2c4007a9a20c455f8c57d3a07dea42b747bf8fcae1fbae 283B / 283B 0.6s done
+#5 sha256:5ff289cba971d27fd2ed5c6e13cd944739ec9489998da93400bccf66d7c03d91 3.78kB / 3.78kB 0.6s done
+#5 sha256:38b0c124d9b4103abdce4bfb08bc6e310b4dc3ffb27978d77350e7955ddec8b2 0B / 645B 0.6s
+#5 sha256:514e6f58a3981e58d107f52f42ddac4b4630ad6856303762cc8687e81c6411f9 214B / 214B 0.6s
+#5 sha256:f14bee2f36c553c162791b50a3033087beeb8efd64c469c55b4b213655f9ce8e 0B / 683B 0.6s
+#5 sha256:38b0c124d9b4103abdce4bfb08bc6e310b4dc3ffb27978d77350e7955ddec8b2 645B / 645B 0.6s done
+#5 sha256:514e6f58a3981e58d107f52f42ddac4b4630ad6856303762cc8687e81c6411f9 214B / 214B 0.6s done
+#5 sha256:f14bee2f36c553c162791b50a3033087beeb8efd64c469c55b4b213655f9ce8e 683B / 683B 0.6s done
+#5 sha256:1002294c9bed4933726f7a34c01d526e5c57a16d1ef0d5e12d144429ef7a4a2c 346B / 346B 0.7s done
+#5 extracting sha256:e4fff0779e6ddd22366469f08626c3ab1884b5cbe1719b26da238c95f247b305 0.8s done
+#5 extracting sha256:c9a3dce55fa977c4811896aae460a280c5e10b6babb0166e7df22869d05cca09
 #5 extracting sha256:c9a3dce55fa977c4811896aae460a280c5e10b6babb0166e7df22869d05cca09 done
 #5 extracting sha256:c53a092f01542f27743b8e5eb6380a3f6c4126e1454bb229adc803c6159b236e
 #5 extracting sha256:c53a092f01542f27743b8e5eb6380a3f6c4126e1454bb229adc803c6159b236e 0.1s done
+#5 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
 #5 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 done
-#5 extracting sha256:8d1e1fc2982befe8a4222f190deb1dd1a465bdcd39d08e540b227dc2c78671b7
 #5 extracting sha256:8d1e1fc2982befe8a4222f190deb1dd1a465bdcd39d08e540b227dc2c78671b7 done
 #5 extracting sha256:27dded3b689263d0fa2c4007a9a20c455f8c57d3a07dea42b747bf8fcae1fbae done
 #5 extracting sha256:5ff289cba971d27fd2ed5c6e13cd944739ec9489998da93400bccf66d7c03d91 done
 #5 extracting sha256:514e6f58a3981e58d107f52f42ddac4b4630ad6856303762cc8687e81c6411f9 done
 #5 extracting sha256:f14bee2f36c553c162791b50a3033087beeb8efd64c469c55b4b213655f9ce8e done
+#5 extracting sha256:38b0c124d9b4103abdce4bfb08bc6e310b4dc3ffb27978d77350e7955ddec8b2
 #5 extracting sha256:38b0c124d9b4103abdce4bfb08bc6e310b4dc3ffb27978d77350e7955ddec8b2 done
 #5 extracting sha256:1002294c9bed4933726f7a34c01d526e5c57a16d1ef0d5e12d144429ef7a4a2c done
-#5 DONE 4.9s
+#5 DONE 10.6s
 
-#6 [2/8] RUN apt-get update && apt-get install -y --no-install-recommends         git ca-certificates unzip     && rm -rf /var/lib/apt/lists/*
-#6 0.182 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
-#6 0.200 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
-#6 0.208 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
-#6 0.262 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
-#6 0.332 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
-#6 0.361 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [339 kB]
-#6 1.096 Fetched 9378 kB in 1s (10.1 MB/s)
-#6 1.096 Reading package lists...
-#6 1.516 Reading package lists...
-#6 1.930 Building dependency tree...
-#6 2.016 Reading state information...
-#6 2.109 The following additional packages will be installed:
-#6 2.109   git-man libbrotli1 libcurl3-gnutls liberror-perl libexpat1 libgdbm-compat4
-#6 2.109   libgdbm6 libgssapi-krb5-2 libk5crypto3 libkeyutils1 libkrb5-3
-#6 2.110   libkrb5support0 libldap-2.5-0 libnghttp2-14 libperl5.36 libpsl5 librtmp1
-#6 2.110   libsasl2-2 libsasl2-modules-db libssh2-1 libssl3 openssl perl perl-base
-#6 2.110   perl-modules-5.36
-#6 2.111 Suggested packages:
-#6 2.111   gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
-#6 2.111   gitk gitweb git-cvs git-mediawiki git-svn gdbm-l10n krb5-doc krb5-user
-#6 2.111   sensible-utils perl-doc libterm-readline-gnu-perl
-#6 2.111   | libterm-readline-perl-perl make libtap-harness-archive-perl zip
-#6 2.111 Recommended packages:
-#6 2.111   patch less ssh-client krb5-locales libldap-common publicsuffix
-#6 2.111   libsasl2-modules netbase
-#6 2.252 The following NEW packages will be installed:
-#6 2.253   ca-certificates git git-man libbrotli1 libcurl3-gnutls liberror-perl
-#6 2.253   libexpat1 libgdbm-compat4 libgdbm6 libgssapi-krb5-2 libk5crypto3
-#6 2.253   libkeyutils1 libkrb5-3 libkrb5support0 libldap-2.5-0 libnghttp2-14
-#6 2.253   libperl5.36 libpsl5 librtmp1 libsasl2-2 libsasl2-modules-db libssh2-1
-#6 2.254   libssl3 openssl perl perl-modules-5.36 unzip
-#6 2.255 The following packages will be upgraded:
-#6 2.255   perl-base
-#6 2.286 1 upgraded, 27 newly installed, 0 to remove and 40 not upgraded.
-#6 2.286 Need to get 24.1 MB of archives.
-#6 2.286 After this operation, 112 MB of additional disk space will be used.
-#6 2.286 Get:1 http://deb.debian.org/debian bookworm/main amd64 perl-base amd64 5.36.0-7+deb12u3 [1608 kB]
-#6 2.322 Get:2 http://deb.debian.org/debian bookworm/main amd64 perl-modules-5.36 all 5.36.0-7+deb12u3 [2815 kB]
-#6 2.333 Get:3 http://deb.debian.org/debian bookworm/main amd64 libgdbm6 amd64 1.23-3 [72.2 kB]
-#6 2.335 Get:4 http://deb.debian.org/debian bookworm/main amd64 libgdbm-compat4 amd64 1.23-3 [48.2 kB]
-#6 2.335 Get:5 http://deb.debian.org/debian bookworm/main amd64 libperl5.36 amd64 5.36.0-7+deb12u3 [4196 kB]
-#6 2.352 Get:6 http://deb.debian.org/debian bookworm/main amd64 perl amd64 5.36.0-7+deb12u3 [239 kB]
-#6 2.353 Get:7 http://deb.debian.org/debian bookworm/main amd64 libssl3 amd64 3.0.20-1~deb12u2 [2036 kB]
-#6 2.360 Get:8 http://deb.debian.org/debian bookworm/main amd64 openssl amd64 3.0.20-1~deb12u2 [1439 kB]
-#6 2.366 Get:9 http://deb.debian.org/debian-security bookworm-security/main amd64 ca-certificates all 20250419~deb12u1 [162 kB]
-#6 2.366 Get:10 http://deb.debian.org/debian bookworm/main amd64 libbrotli1 amd64 1.0.9-2+b6 [275 kB]
-#6 2.368 Get:11 http://deb.debian.org/debian bookworm/main amd64 libkrb5support0 amd64 1.20.1-2+deb12u5 [33.2 kB]
-#6 2.368 Get:12 http://deb.debian.org/debian bookworm/main amd64 libk5crypto3 amd64 1.20.1-2+deb12u5 [79.7 kB]
-#6 2.369 Get:13 http://deb.debian.org/debian bookworm/main amd64 libkeyutils1 amd64 1.6.3-2 [8808 B]
-#6 2.369 Get:14 http://deb.debian.org/debian bookworm/main amd64 libkrb5-3 amd64 1.20.1-2+deb12u5 [332 kB]
-#6 2.371 Get:15 http://deb.debian.org/debian bookworm/main amd64 libgssapi-krb5-2 amd64 1.20.1-2+deb12u5 [135 kB]
-#6 2.372 Get:16 http://deb.debian.org/debian bookworm/main amd64 libsasl2-modules-db amd64 2.1.28+dfsg-10 [20.3 kB]
-#6 2.372 Get:17 http://deb.debian.org/debian bookworm/main amd64 libsasl2-2 amd64 2.1.28+dfsg-10 [59.7 kB]
-#6 2.375 Get:18 http://deb.debian.org/debian bookworm/main amd64 libldap-2.5-0 amd64 2.5.13+dfsg-5 [183 kB]
-#6 2.376 Get:19 http://deb.debian.org/debian bookworm/main amd64 libnghttp2-14 amd64 1.52.0-1+deb12u3 [72.4 kB]
-#6 2.377 Get:20 http://deb.debian.org/debian bookworm/main amd64 libpsl5 amd64 0.21.2-1 [58.7 kB]
-#6 2.377 Get:21 http://deb.debian.org/debian bookworm/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2+b2 [60.8 kB]
-#6 2.381 Get:22 http://deb.debian.org/debian-security bookworm-security/main amd64 libssh2-1 amd64 1.10.0-3+deb12u1 [176 kB]
-#6 2.382 Get:23 http://deb.debian.org/debian bookworm/main amd64 libcurl3-gnutls amd64 7.88.1-10+deb12u15 [386 kB]
-#6 2.384 Get:24 http://deb.debian.org/debian-security bookworm-security/main amd64 libexpat1 amd64 2.5.0-1+deb12u3 [104 kB]
-#6 2.385 Get:25 http://deb.debian.org/debian bookworm/main amd64 liberror-perl all 0.17029-2 [29.0 kB]
-#6 2.385 Get:26 http://deb.debian.org/debian bookworm/main amd64 git-man all 1:2.39.5-0+deb12u3 [2053 kB]
-#6 2.394 Get:27 http://deb.debian.org/debian bookworm/main amd64 git amd64 1:2.39.5-0+deb12u3 [7264 kB]
-#6 2.421 Get:28 http://deb.debian.org/debian-security bookworm-security/main amd64 unzip amd64 6.0-28+deb12u1 [167 kB]
-#6 2.519 debconf: delaying package configuration, since apt-utils is not installed
-#6 2.540 Fetched 24.1 MB in 0s (150 MB/s)
-#6 2.555 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6089 files and directories currently installed.)
-#6 2.561 Preparing to unpack .../perl-base_5.36.0-7+deb12u3_amd64.deb ...
-#6 2.574 Unpacking perl-base (5.36.0-7+deb12u3) over (5.36.0-7+deb12u1) ...
-#6 3.202 Setting up perl-base (5.36.0-7+deb12u3) ...
-#6 3.226 Selecting previously unselected package perl-modules-5.36.
-#6 3.226 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6089 files and directories currently installed.)
-#6 3.232 Preparing to unpack .../00-perl-modules-5.36_5.36.0-7+deb12u3_all.deb ...
-#6 3.233 Unpacking perl-modules-5.36 (5.36.0-7+deb12u3) ...
-#6 3.565 Selecting previously unselected package libgdbm6:amd64.
-#6 3.566 Preparing to unpack .../01-libgdbm6_1.23-3_amd64.deb ...
-#6 3.568 Unpacking libgdbm6:amd64 (1.23-3) ...
-#6 3.588 Selecting previously unselected package libgdbm-compat4:amd64.
-#6 3.589 Preparing to unpack .../02-libgdbm-compat4_1.23-3_amd64.deb ...
-#6 3.590 Unpacking libgdbm-compat4:amd64 (1.23-3) ...
-#6 3.608 Selecting previously unselected package libperl5.36:amd64.
-#6 3.609 Preparing to unpack .../03-libperl5.36_5.36.0-7+deb12u3_amd64.deb ...
-#6 3.610 Unpacking libperl5.36:amd64 (5.36.0-7+deb12u3) ...
-#6 3.920 Selecting previously unselected package perl.
-#6 3.921 Preparing to unpack .../04-perl_5.36.0-7+deb12u3_amd64.deb ...
-#6 3.927 Unpacking perl (5.36.0-7+deb12u3) ...
-#6 3.962 Selecting previously unselected package libssl3:amd64.
-#6 3.964 Preparing to unpack .../05-libssl3_3.0.20-1~deb12u2_amd64.deb ...
-#6 3.965 Unpacking libssl3:amd64 (3.0.20-1~deb12u2) ...
-#6 4.090 Selecting previously unselected package openssl.
-#6 4.091 Preparing to unpack .../06-openssl_3.0.20-1~deb12u2_amd64.deb ...
-#6 4.092 Unpacking openssl (3.0.20-1~deb12u2) ...
-#6 4.194 Selecting previously unselected package ca-certificates.
-#6 4.196 Preparing to unpack .../07-ca-certificates_20250419~deb12u1_all.deb ...
-#6 4.197 Unpacking ca-certificates (20250419~deb12u1) ...
-#6 4.248 Selecting previously unselected package libbrotli1:amd64.
-#6 4.249 Preparing to unpack .../08-libbrotli1_1.0.9-2+b6_amd64.deb ...
-#6 4.250 Unpacking libbrotli1:amd64 (1.0.9-2+b6) ...
-#6 4.285 Selecting previously unselected package libkrb5support0:amd64.
-#6 4.286 Preparing to unpack .../09-libkrb5support0_1.20.1-2+deb12u5_amd64.deb ...
-#6 4.287 Unpacking libkrb5support0:amd64 (1.20.1-2+deb12u5) ...
-#6 4.305 Selecting previously unselected package libk5crypto3:amd64.
-#6 4.306 Preparing to unpack .../10-libk5crypto3_1.20.1-2+deb12u5_amd64.deb ...
-#6 4.308 Unpacking libk5crypto3:amd64 (1.20.1-2+deb12u5) ...
-#6 4.328 Selecting previously unselected package libkeyutils1:amd64.
-#6 4.329 Preparing to unpack .../11-libkeyutils1_1.6.3-2_amd64.deb ...
-#6 4.330 Unpacking libkeyutils1:amd64 (1.6.3-2) ...
-#6 4.347 Selecting previously unselected package libkrb5-3:amd64.
-#6 4.348 Preparing to unpack .../12-libkrb5-3_1.20.1-2+deb12u5_amd64.deb ...
-#6 4.349 Unpacking libkrb5-3:amd64 (1.20.1-2+deb12u5) ...
-#6 4.389 Selecting previously unselected package libgssapi-krb5-2:amd64.
-#6 4.390 Preparing to unpack .../13-libgssapi-krb5-2_1.20.1-2+deb12u5_amd64.deb ...
-#6 4.391 Unpacking libgssapi-krb5-2:amd64 (1.20.1-2+deb12u5) ...
-#6 4.414 Selecting previously unselected package libsasl2-modules-db:amd64.
-#6 4.416 Preparing to unpack .../14-libsasl2-modules-db_2.1.28+dfsg-10_amd64.deb ...
-#6 4.417 Unpacking libsasl2-modules-db:amd64 (2.1.28+dfsg-10) ...
-#6 4.433 Selecting previously unselected package libsasl2-2:amd64.
-#6 4.434 Preparing to unpack .../15-libsasl2-2_2.1.28+dfsg-10_amd64.deb ...
-#6 4.435 Unpacking libsasl2-2:amd64 (2.1.28+dfsg-10) ...
-#6 4.455 Selecting previously unselected package libldap-2.5-0:amd64.
-#6 4.456 Preparing to unpack .../16-libldap-2.5-0_2.5.13+dfsg-5_amd64.deb ...
-#6 4.457 Unpacking libldap-2.5-0:amd64 (2.5.13+dfsg-5) ...
-#6 4.485 Selecting previously unselected package libnghttp2-14:amd64.
-#6 4.486 Preparing to unpack .../17-libnghttp2-14_1.52.0-1+deb12u3_amd64.deb ...
-#6 4.487 Unpacking libnghttp2-14:amd64 (1.52.0-1+deb12u3) ...
-#6 4.507 Selecting previously unselected package libpsl5:amd64.
-#6 4.508 Preparing to unpack .../18-libpsl5_0.21.2-1_amd64.deb ...
-#6 4.509 Unpacking libpsl5:amd64 (0.21.2-1) ...
-#6 4.529 Selecting previously unselected package librtmp1:amd64.
-#6 4.531 Preparing to unpack .../19-librtmp1_2.4+20151223.gitfa8646d.1-2+b2_amd64.deb ...
-#6 4.532 Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b2) ...
-#6 4.556 Selecting previously unselected package libssh2-1:amd64.
-#6 4.557 Preparing to unpack .../20-libssh2-1_1.10.0-3+deb12u1_amd64.deb ...
-#6 4.558 Unpacking libssh2-1:amd64 (1.10.0-3+deb12u1) ...
-#6 4.587 Selecting previously unselected package libcurl3-gnutls:amd64.
-#6 4.588 Preparing to unpack .../21-libcurl3-gnutls_7.88.1-10+deb12u15_amd64.deb ...
-#6 4.589 Unpacking libcurl3-gnutls:amd64 (7.88.1-10+deb12u15) ...
-#6 4.634 Selecting previously unselected package libexpat1:amd64.
-#6 4.635 Preparing to unpack .../22-libexpat1_2.5.0-1+deb12u3_amd64.deb ...
-#6 4.637 Unpacking libexpat1:amd64 (2.5.0-1+deb12u3) ...
-#6 4.658 Selecting previously unselected package liberror-perl.
-#6 4.659 Preparing to unpack .../23-liberror-perl_0.17029-2_all.deb ...
-#6 4.661 Unpacking liberror-perl (0.17029-2) ...
-#6 4.679 Selecting previously unselected package git-man.
-#6 4.680 Preparing to unpack .../24-git-man_1%3a2.39.5-0+deb12u3_all.deb ...
-#6 4.681 Unpacking git-man (1:2.39.5-0+deb12u3) ...
-#6 4.763 Selecting previously unselected package git.
-#6 4.765 Preparing to unpack .../25-git_1%3a2.39.5-0+deb12u3_amd64.deb ...
-#6 4.771 Unpacking git (1:2.39.5-0+deb12u3) ...
-#6 5.113 Selecting previously unselected package unzip.
-#6 5.115 Preparing to unpack .../26-unzip_6.0-28+deb12u1_amd64.deb ...
-#6 5.115 Unpacking unzip (6.0-28+deb12u1) ...
-#6 5.146 Setting up libexpat1:amd64 (2.5.0-1+deb12u3) ...
-#6 5.149 Setting up libkeyutils1:amd64 (1.6.3-2) ...
-#6 5.152 Setting up libpsl5:amd64 (0.21.2-1) ...
-#6 5.154 Setting up unzip (6.0-28+deb12u1) ...
-#6 5.161 Setting up libbrotli1:amd64 (1.0.9-2+b6) ...
-#6 5.163 Setting up libssl3:amd64 (3.0.20-1~deb12u2) ...
-#6 5.166 Setting up libnghttp2-14:amd64 (1.52.0-1+deb12u3) ...
-#6 5.168 Setting up libkrb5support0:amd64 (1.20.1-2+deb12u5) ...
-#6 5.171 Setting up libsasl2-modules-db:amd64 (2.1.28+dfsg-10) ...
-#6 5.173 Setting up perl-modules-5.36 (5.36.0-7+deb12u3) ...
-#6 5.178 Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b2) ...
-#6 5.180 Setting up libk5crypto3:amd64 (1.20.1-2+deb12u5) ...
-#6 5.183 Setting up libsasl2-2:amd64 (2.1.28+dfsg-10) ...
-#6 5.185 Setting up git-man (1:2.39.5-0+deb12u3) ...
-#6 5.187 Setting up libssh2-1:amd64 (1.10.0-3+deb12u1) ...
-#6 5.190 Setting up libkrb5-3:amd64 (1.20.1-2+deb12u5) ...
-#6 5.193 Setting up openssl (3.0.20-1~deb12u2) ...
-#6 5.197 Setting up libgdbm6:amd64 (1.23-3) ...
-#6 5.200 Setting up libldap-2.5-0:amd64 (2.5.13+dfsg-5) ...
-#6 5.203 Setting up ca-certificates (20250419~deb12u1) ...
-#6 5.272 debconf: unable to initialize frontend: Dialog
-#6 5.272 debconf: (TERM is not set, so the dialog frontend is not usable.)
-#6 5.272 debconf: falling back to frontend: Readline
-#6 5.279 debconf: unable to initialize frontend: Readline
-#6 5.279 debconf: (This frontend requires a controlling tty.)
-#6 5.279 debconf: falling back to frontend: Teletype
-#6 5.849 Updating certificates in /etc/ssl/certs...
-#6 6.674 rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
-#6 6.684 150 added, 0 removed; done.
-#6 6.705 Setting up libgssapi-krb5-2:amd64 (1.20.1-2+deb12u5) ...
-#6 6.714 Setting up libgdbm-compat4:amd64 (1.23-3) ...
-#6 6.716 Setting up libperl5.36:amd64 (5.36.0-7+deb12u3) ...
-#6 6.719 Setting up libcurl3-gnutls:amd64 (7.88.1-10+deb12u15) ...
-#6 6.721 Setting up perl (5.36.0-7+deb12u3) ...
-#6 6.732 Setting up liberror-perl (0.17029-2) ...
-#6 6.735 Setting up git (1:2.39.5-0+deb12u3) ...
-#6 6.744 Processing triggers for libc-bin (2.36-9+deb12u7) ...
-#6 6.754 Processing triggers for ca-certificates (20250419~deb12u1) ...
-#6 6.759 Updating certificates in /etc/ssl/certs...
-#6 7.391 0 added, 0 removed; done.
-#6 7.391 Running hooks in /etc/ca-certificates/update.d...
-#6 7.392 done.
-#6 DONE 7.5s
+#6 [2/7] RUN apt-get update && apt-get install -y --no-install-recommends         git ca-certificates     && rm -rf /var/lib/apt/lists/*
+#6 0.218 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#6 0.228 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#6 0.228 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+#6 0.276 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+#6 0.370 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+#6 0.371 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [339 kB]
+#6 1.044 Fetched 9378 kB in 1s (11.3 MB/s)
+#6 1.044 Reading package lists...
+#6 1.435 Reading package lists...
+#6 1.796 Building dependency tree...
+#6 1.900 Reading state information...
+#6 1.992 The following additional packages will be installed:
+#6 1.992   git-man libbrotli1 libcurl3-gnutls liberror-perl libexpat1 libgdbm-compat4
+#6 1.993   libgdbm6 libgssapi-krb5-2 libk5crypto3 libkeyutils1 libkrb5-3
+#6 1.993   libkrb5support0 libldap-2.5-0 libnghttp2-14 libperl5.36 libpsl5 librtmp1
+#6 1.993   libsasl2-2 libsasl2-modules-db libssh2-1 libssl3 openssl perl perl-base
+#6 1.993   perl-modules-5.36
+#6 1.995 Suggested packages:
+#6 1.995   gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+#6 1.995   gitk gitweb git-cvs git-mediawiki git-svn gdbm-l10n krb5-doc krb5-user
+#6 1.995   sensible-utils perl-doc libterm-readline-gnu-perl
+#6 1.995   | libterm-readline-perl-perl make libtap-harness-archive-perl
+#6 1.995 Recommended packages:
+#6 1.995   patch less ssh-client krb5-locales libldap-common publicsuffix
+#6 1.995   libsasl2-modules netbase
+#6 2.117 The following NEW packages will be installed:
+#6 2.118   ca-certificates git git-man libbrotli1 libcurl3-gnutls liberror-perl
+#6 2.118   libexpat1 libgdbm-compat4 libgdbm6 libgssapi-krb5-2 libk5crypto3
+#6 2.118   libkeyutils1 libkrb5-3 libkrb5support0 libldap-2.5-0 libnghttp2-14
+#6 2.118   libperl5.36 libpsl5 librtmp1 libsasl2-2 libsasl2-modules-db libssh2-1
+#6 2.118   libssl3 openssl perl perl-modules-5.36
+#6 2.118 The following packages will be upgraded:
+#6 2.118   perl-base
+#6 2.136 1 upgraded, 26 newly installed, 0 to remove and 40 not upgraded.
+#6 2.136 Need to get 23.9 MB of archives.
+#6 2.136 After this operation, 112 MB of additional disk space will be used.
+#6 2.136 Get:1 http://deb.debian.org/debian bookworm/main amd64 perl-base amd64 5.36.0-7+deb12u3 [1608 kB]
+#6 2.147 Get:2 http://deb.debian.org/debian bookworm/main amd64 perl-modules-5.36 all 5.36.0-7+deb12u3 [2815 kB]
+#6 2.156 Get:3 http://deb.debian.org/debian bookworm/main amd64 libgdbm6 amd64 1.23-3 [72.2 kB]
+#6 2.157 Get:4 http://deb.debian.org/debian bookworm/main amd64 libgdbm-compat4 amd64 1.23-3 [48.2 kB]
+#6 2.157 Get:5 http://deb.debian.org/debian bookworm/main amd64 libperl5.36 amd64 5.36.0-7+deb12u3 [4196 kB]
+#6 2.171 Get:6 http://deb.debian.org/debian bookworm/main amd64 perl amd64 5.36.0-7+deb12u3 [239 kB]
+#6 2.172 Get:7 http://deb.debian.org/debian bookworm/main amd64 libssl3 amd64 3.0.20-1~deb12u2 [2036 kB]
+#6 2.179 Get:8 http://deb.debian.org/debian bookworm/main amd64 openssl amd64 3.0.20-1~deb12u2 [1439 kB]
+#6 2.204 Get:9 http://deb.debian.org/debian-security bookworm-security/main amd64 ca-certificates all 20250419~deb12u1 [162 kB]
+#6 2.204 Get:10 http://deb.debian.org/debian bookworm/main amd64 libbrotli1 amd64 1.0.9-2+b6 [275 kB]
+#6 2.205 Get:11 http://deb.debian.org/debian bookworm/main amd64 libkrb5support0 amd64 1.20.1-2+deb12u5 [33.2 kB]
+#6 2.206 Get:12 http://deb.debian.org/debian bookworm/main amd64 libk5crypto3 amd64 1.20.1-2+deb12u5 [79.7 kB]
+#6 2.206 Get:13 http://deb.debian.org/debian bookworm/main amd64 libkeyutils1 amd64 1.6.3-2 [8808 B]
+#6 2.206 Get:14 http://deb.debian.org/debian bookworm/main amd64 libkrb5-3 amd64 1.20.1-2+deb12u5 [332 kB]
+#6 2.208 Get:15 http://deb.debian.org/debian bookworm/main amd64 libgssapi-krb5-2 amd64 1.20.1-2+deb12u5 [135 kB]
+#6 2.209 Get:16 http://deb.debian.org/debian bookworm/main amd64 libsasl2-modules-db amd64 2.1.28+dfsg-10 [20.3 kB]
+#6 2.209 Get:17 http://deb.debian.org/debian bookworm/main amd64 libsasl2-2 amd64 2.1.28+dfsg-10 [59.7 kB]
+#6 2.209 Get:18 http://deb.debian.org/debian bookworm/main amd64 libldap-2.5-0 amd64 2.5.13+dfsg-5 [183 kB]
+#6 2.210 Get:19 http://deb.debian.org/debian bookworm/main amd64 libnghttp2-14 amd64 1.52.0-1+deb12u3 [72.4 kB]
+#6 2.210 Get:20 http://deb.debian.org/debian bookworm/main amd64 libpsl5 amd64 0.21.2-1 [58.7 kB]
+#6 2.211 Get:21 http://deb.debian.org/debian bookworm/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2+b2 [60.8 kB]
+#6 2.211 Get:22 http://deb.debian.org/debian-security bookworm-security/main amd64 libssh2-1 amd64 1.10.0-3+deb12u1 [176 kB]
+#6 2.212 Get:23 http://deb.debian.org/debian bookworm/main amd64 libcurl3-gnutls amd64 7.88.1-10+deb12u15 [386 kB]
+#6 2.213 Get:24 http://deb.debian.org/debian-security bookworm-security/main amd64 libexpat1 amd64 2.5.0-1+deb12u3 [104 kB]
+#6 2.213 Get:25 http://deb.debian.org/debian bookworm/main amd64 liberror-perl all 0.17029-2 [29.0 kB]
+#6 2.216 Get:26 http://deb.debian.org/debian bookworm/main amd64 git-man all 1:2.39.5-0+deb12u3 [2053 kB]
+#6 2.223 Get:27 http://deb.debian.org/debian bookworm/main amd64 git amd64 1:2.39.5-0+deb12u3 [7264 kB]
+#6 2.389 debconf: delaying package configuration, since apt-utils is not installed
+#6 2.407 Fetched 23.9 MB in 0s (193 MB/s)
+#6 2.513 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6089 files and directories currently installed.)
+#6 2.518 Preparing to unpack .../perl-base_5.36.0-7+deb12u3_amd64.deb ...
+#6 2.533 Unpacking perl-base (5.36.0-7+deb12u3) over (5.36.0-7+deb12u1) ...
+#6 5.804 Setting up perl-base (5.36.0-7+deb12u3) ...
+#6 5.830 Selecting previously unselected package perl-modules-5.36.
+#6 5.830 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6089 files and directories currently installed.)
+#6 5.834 Preparing to unpack .../00-perl-modules-5.36_5.36.0-7+deb12u3_all.deb ...
+#6 5.997 Unpacking perl-modules-5.36 (5.36.0-7+deb12u3) ...
+#6 6.273 Selecting previously unselected package libgdbm6:amd64.
+#6 6.274 Preparing to unpack .../01-libgdbm6_1.23-3_amd64.deb ...
+#6 6.367 Unpacking libgdbm6:amd64 (1.23-3) ...
+#6 6.386 Selecting previously unselected package libgdbm-compat4:amd64.
+#6 6.387 Preparing to unpack .../02-libgdbm-compat4_1.23-3_amd64.deb ...
+#6 6.388 Unpacking libgdbm-compat4:amd64 (1.23-3) ...
+#6 6.427 Selecting previously unselected package libperl5.36:amd64.
+#6 6.428 Preparing to unpack .../03-libperl5.36_5.36.0-7+deb12u3_amd64.deb ...
+#6 6.517 Unpacking libperl5.36:amd64 (5.36.0-7+deb12u3) ...
+#6 6.855 Selecting previously unselected package perl.
+#6 6.856 Preparing to unpack .../04-perl_5.36.0-7+deb12u3_amd64.deb ...
+#6 6.861 Unpacking perl (5.36.0-7+deb12u3) ...
+#6 6.895 Selecting previously unselected package libssl3:amd64.
+#6 6.896 Preparing to unpack .../05-libssl3_3.0.20-1~deb12u2_amd64.deb ...
+#6 6.897 Unpacking libssl3:amd64 (3.0.20-1~deb12u2) ...
+#6 7.134 Selecting previously unselected package openssl.
+#6 7.136 Preparing to unpack .../06-openssl_3.0.20-1~deb12u2_amd64.deb ...
+#6 7.137 Unpacking openssl (3.0.20-1~deb12u2) ...
+#6 7.290 Selecting previously unselected package ca-certificates.
+#6 7.292 Preparing to unpack .../07-ca-certificates_20250419~deb12u1_all.deb ...
+#6 7.293 Unpacking ca-certificates (20250419~deb12u1) ...
+#6 7.333 Selecting previously unselected package libbrotli1:amd64.
+#6 7.335 Preparing to unpack .../08-libbrotli1_1.0.9-2+b6_amd64.deb ...
+#6 7.350 Unpacking libbrotli1:amd64 (1.0.9-2+b6) ...
+#6 7.380 Selecting previously unselected package libkrb5support0:amd64.
+#6 7.381 Preparing to unpack .../09-libkrb5support0_1.20.1-2+deb12u5_amd64.deb ...
+#6 7.382 Unpacking libkrb5support0:amd64 (1.20.1-2+deb12u5) ...
+#6 7.399 Selecting previously unselected package libk5crypto3:amd64.
+#6 7.400 Preparing to unpack .../10-libk5crypto3_1.20.1-2+deb12u5_amd64.deb ...
+#6 7.401 Unpacking libk5crypto3:amd64 (1.20.1-2+deb12u5) ...
+#6 7.486 Selecting previously unselected package libkeyutils1:amd64.
+#6 7.487 Preparing to unpack .../11-libkeyutils1_1.6.3-2_amd64.deb ...
+#6 7.488 Unpacking libkeyutils1:amd64 (1.6.3-2) ...
+#6 7.507 Selecting previously unselected package libkrb5-3:amd64.
+#6 7.508 Preparing to unpack .../12-libkrb5-3_1.20.1-2+deb12u5_amd64.deb ...
+#6 7.509 Unpacking libkrb5-3:amd64 (1.20.1-2+deb12u5) ...
+#6 7.709 Selecting previously unselected package libgssapi-krb5-2:amd64.
+#6 7.711 Preparing to unpack .../13-libgssapi-krb5-2_1.20.1-2+deb12u5_amd64.deb ...
+#6 7.712 Unpacking libgssapi-krb5-2:amd64 (1.20.1-2+deb12u5) ...
+#6 7.762 Selecting previously unselected package libsasl2-modules-db:amd64.
+#6 7.763 Preparing to unpack .../14-libsasl2-modules-db_2.1.28+dfsg-10_amd64.deb ...
+#6 7.766 Unpacking libsasl2-modules-db:amd64 (2.1.28+dfsg-10) ...
+#6 7.781 Selecting previously unselected package libsasl2-2:amd64.
+#6 7.783 Preparing to unpack .../15-libsasl2-2_2.1.28+dfsg-10_amd64.deb ...
+#6 7.784 Unpacking libsasl2-2:amd64 (2.1.28+dfsg-10) ...
+#6 7.801 Selecting previously unselected package libldap-2.5-0:amd64.
+#6 7.803 Preparing to unpack .../16-libldap-2.5-0_2.5.13+dfsg-5_amd64.deb ...
+#6 7.804 Unpacking libldap-2.5-0:amd64 (2.5.13+dfsg-5) ...
+#6 7.898 Selecting previously unselected package libnghttp2-14:amd64.
+#6 7.899 Preparing to unpack .../17-libnghttp2-14_1.52.0-1+deb12u3_amd64.deb ...
+#6 7.900 Unpacking libnghttp2-14:amd64 (1.52.0-1+deb12u3) ...
+#6 7.942 Selecting previously unselected package libpsl5:amd64.
+#6 7.943 Preparing to unpack .../18-libpsl5_0.21.2-1_amd64.deb ...
+#6 7.945 Unpacking libpsl5:amd64 (0.21.2-1) ...
+#6 8.199 Selecting previously unselected package librtmp1:amd64.
+#6 8.200 Preparing to unpack .../19-librtmp1_2.4+20151223.gitfa8646d.1-2+b2_amd64.deb ...
+#6 8.201 Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b2) ...
+#6 8.221 Selecting previously unselected package libssh2-1:amd64.
+#6 8.223 Preparing to unpack .../20-libssh2-1_1.10.0-3+deb12u1_amd64.deb ...
+#6 8.224 Unpacking libssh2-1:amd64 (1.10.0-3+deb12u1) ...
+#6 8.248 Selecting previously unselected package libcurl3-gnutls:amd64.
+#6 8.250 Preparing to unpack .../21-libcurl3-gnutls_7.88.1-10+deb12u15_amd64.deb ...
+#6 8.250 Unpacking libcurl3-gnutls:amd64 (7.88.1-10+deb12u15) ...
+#6 8.282 Selecting previously unselected package libexpat1:amd64.
+#6 8.283 Preparing to unpack .../22-libexpat1_2.5.0-1+deb12u3_amd64.deb ...
+#6 8.284 Unpacking libexpat1:amd64 (2.5.0-1+deb12u3) ...
+#6 8.303 Selecting previously unselected package liberror-perl.
+#6 8.305 Preparing to unpack .../23-liberror-perl_0.17029-2_all.deb ...
+#6 8.365 Unpacking liberror-perl (0.17029-2) ...
+#6 8.452 Selecting previously unselected package git-man.
+#6 8.453 Preparing to unpack .../24-git-man_1%3a2.39.5-0+deb12u3_all.deb ...
+#6 8.459 Unpacking git-man (1:2.39.5-0+deb12u3) ...
+#6 8.632 Selecting previously unselected package git.
+#6 8.634 Preparing to unpack .../25-git_1%3a2.39.5-0+deb12u3_amd64.deb ...
+#6 8.639 Unpacking git (1:2.39.5-0+deb12u3) ...
+#6 9.171 Setting up libexpat1:amd64 (2.5.0-1+deb12u3) ...
+#6 9.174 Setting up libkeyutils1:amd64 (1.6.3-2) ...
+#6 9.176 Setting up libpsl5:amd64 (0.21.2-1) ...
+#6 9.179 Setting up libbrotli1:amd64 (1.0.9-2+b6) ...
+#6 9.182 Setting up libssl3:amd64 (3.0.20-1~deb12u2) ...
+#6 9.184 Setting up libnghttp2-14:amd64 (1.52.0-1+deb12u3) ...
+#6 9.187 Setting up libkrb5support0:amd64 (1.20.1-2+deb12u5) ...
+#6 9.190 Setting up libsasl2-modules-db:amd64 (2.1.28+dfsg-10) ...
+#6 9.192 Setting up perl-modules-5.36 (5.36.0-7+deb12u3) ...
+#6 9.194 Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b2) ...
+#6 9.197 Setting up libk5crypto3:amd64 (1.20.1-2+deb12u5) ...
+#6 9.200 Setting up libsasl2-2:amd64 (2.1.28+dfsg-10) ...
+#6 9.202 Setting up git-man (1:2.39.5-0+deb12u3) ...
+#6 9.205 Setting up libssh2-1:amd64 (1.10.0-3+deb12u1) ...
+#6 9.225 Setting up libkrb5-3:amd64 (1.20.1-2+deb12u5) ...
+#6 9.228 Setting up openssl (3.0.20-1~deb12u2) ...
+#6 9.233 Setting up libgdbm6:amd64 (1.23-3) ...
+#6 9.238 Setting up libldap-2.5-0:amd64 (2.5.13+dfsg-5) ...
+#6 9.241 Setting up ca-certificates (20250419~deb12u1) ...
+#6 9.297 debconf: unable to initialize frontend: Dialog
+#6 9.297 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#6 9.297 debconf: falling back to frontend: Readline
+#6 9.303 debconf: unable to initialize frontend: Readline
+#6 9.303 debconf: (This frontend requires a controlling tty.)
+#6 9.303 debconf: falling back to frontend: Teletype
+#6 9.762 Updating certificates in /etc/ssl/certs...
+#6 10.44 rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+#6 10.44 150 added, 0 removed; done.
+#6 10.48 Setting up libgssapi-krb5-2:amd64 (1.20.1-2+deb12u5) ...
+#6 10.49 Setting up libgdbm-compat4:amd64 (1.23-3) ...
+#6 10.49 Setting up libperl5.36:amd64 (5.36.0-7+deb12u3) ...
+#6 10.49 Setting up libcurl3-gnutls:amd64 (7.88.1-10+deb12u15) ...
+#6 10.50 Setting up perl (5.36.0-7+deb12u3) ...
+#6 10.51 Setting up liberror-perl (0.17029-2) ...
+#6 10.51 Setting up git (1:2.39.5-0+deb12u3) ...
+#6 10.51 Processing triggers for libc-bin (2.36-9+deb12u7) ...
+#6 10.52 Processing triggers for ca-certificates (20250419~deb12u1) ...
+#6 10.53 Updating certificates in /etc/ssl/certs...
+#6 11.04 0 added, 0 removed; done.
+#6 11.04 Running hooks in /etc/ca-certificates/update.d...
+#6 11.04 done.
+#6 DONE 11.9s
 
-#7 [3/8] WORKDIR /opt
+#7 [3/7] WORKDIR /opt
 #7 DONE 0.0s
 
-#8 [4/8] RUN git clone --branch STRspy2.0 --single-branch https://github.com/unique379r/strspy.git strspy     && cd strspy && git checkout "dafdee7e7e5672c8dc732e8577dbe153f53a12f5"
-#8 0.140 Cloning into 'strspy'...
-#8 1.252 Note: switching to 'dafdee7e7e5672c8dc732e8577dbe153f53a12f5'.
-#8 1.252 
-#8 1.252 You are in 'detached HEAD' state. You can look around, make experimental
-#8 1.252 changes and commit them, and you can discard any commits you make in this
-#8 1.252 state without impacting any branches by switching back to a branch.
-#8 1.252 
-#8 1.252 If you want to create a new branch to retain commits you create, you may
-#8 1.252 do so (now or later) by using -c with the switch command. Example:
-#8 1.252 
-#8 1.252   git switch -c <new-branch-name>
-#8 1.252 
-#8 1.252 Or undo this operation with:
-#8 1.252 
-#8 1.252   git switch -
-#8 1.252 
-#8 1.252 Turn off this advice by setting config variable advice.detachedHead to false
-#8 1.252 
-#8 1.252 HEAD is now at dafdee7 Fix output file naming and processing bugs in BuildDB script
-#8 DONE 1.3s
+#8 [4/7] RUN git clone https://github.com/unique379r/strspy.git tool     && cd tool && git checkout "f7e0897b8283cbf8cdae73c6a22b7b938dc8f377"     && (git submodule update --init --recursive || true)
+#8 0.171 Cloning into 'tool'...
+#8 2.532 Note: switching to 'f7e0897b8283cbf8cdae73c6a22b7b938dc8f377'.
+#8 2.532 
+#8 2.532 You are in 'detached HEAD' state. You can look around, make experimental
+#8 2.532 changes and commit them, and you can discard any commits you make in this
+#8 2.532 state without impacting any branches by switching back to a branch.
+#8 2.532 
+#8 2.532 If you want to create a new branch to retain commits you create, you may
+#8 2.532 do so (now or later) by using -c with the switch command. Example:
+#8 2.532 
+#8 2.532   git switch -c <new-branch-name>
+#8 2.532 
+#8 2.532 Or undo this operation with:
+#8 2.532 
+#8 2.532   git switch -
+#8 2.532 
+#8 2.532 Turn off this advice by setting config variable advice.detachedHead to false
+#8 2.532 
+#8 2.532 HEAD is now at f7e0897 Update script to use version 2.0 argument files
+#8 DONE 2.6s
 
-#9 [5/8] WORKDIR /opt/strspy
+#9 [5/7] WORKDIR /opt/tool
 #9 DONE 0.0s
 
-#10 [6/8] RUN micromamba env create -y -n strspy_env -f setup/STRspy_2.0_env.yml     && micromamba clean -a -y
-#10 21.39 
-#10 21.39 Transaction
-#10 21.39 
-#10 21.39   Prefix: /opt/conda/envs/strspy_env
-#10 21.39 
-#10 21.39   Updating specs:
-#10 21.39 
-#10 21.39    - python=3.7.7
-#10 21.39    - parallel
-#10 21.39    - xatlas
-#10 21.39    - samtools
-#10 21.39    - bedtools
-#10 21.39    - minimap2
-#10 21.39    - seqkit
-#10 21.39 
-#10 21.39 
-#10 21.39   Package                  Version  Build                 Channel          Size
-#10 21.39 ─────────────────────────────────────────────────────────────────────────────────
-#10 21.39   Install:
-#10 21.39 ─────────────────────────────────────────────────────────────────────────────────
-#10 21.39 
-#10 21.39   + seqkit                  2.13.0  he881be0_0            bioconda          7MB
-#10 21.39   + ld_impl_linux-64        2.46.1  bootstrap_ha15bf96_2  conda-forge     745kB
-#10 21.39   + libgomp                 16.2.0  he0feb66_5            conda-forge     642kB
-#10 21.39   + _openmp_mutex              4.5  20_gnu                conda-forge      29kB
-#10 21.39   + libgcc                  16.2.0  ha9f2e26_5            conda-forge       1MB
-#10 21.39   + libev                     4.33  h280c20c_3            conda-forge      43kB
-#10 21.39   + c-ares                  1.34.8  hebe6cf0_2            conda-forge     229kB
-#10 21.39   + keyutils                 1.6.3  h7cc23a3_1            conda-forge     135kB
-#10 21.39   + libxcrypt               4.4.38  h280c20c_0            conda-forge     102kB
-#10 21.39   + libdeflate                1.26  h351257e_0            conda-forge      74kB
-#10 21.39   + bzip2                    1.0.8  hda65f42_10           conda-forge     258kB
-#10 21.39   + pthread-stubs              0.4  h7cc23a3_1004         conda-forge      10kB
-#10 21.39   + libstdcxx               16.2.0  h934c35e_5            conda-forge       7MB
-#10 21.39   + ncurses                    6.6  hdb14827_1            conda-forge     911kB
-#10 21.39   + libgcc-ng               16.2.0  h69a702a_5            conda-forge      29kB
-#10 21.39   + perl                    5.32.1  9_h7cc23a3_perl5      conda-forge      13MB
-#10 21.39   + libstdcxx-ng            16.2.0  hdf11a46_5            conda-forge      29kB
-#10 21.39   + libedit           3.1.20250104  pl5321h373387f_1      conda-forge     135kB
-#10 21.39   + readline                   8.3  hd6e31c0_1            conda-forge     349kB
-#10 21.39   + libzlib                 1.2.13  h4ab18f5_6            conda-forge      62kB
-#10 21.39   + xz                       5.2.6  h166bdaf_0            conda-forge     418kB
-#10 21.39   + libffi                     3.3  h58526e2_2            conda-forge      53kB
-#10 21.39   + tk                      8.6.13  noxft_h4845f30_101    conda-forge       3MB
-#10 21.39   + libsqlite               3.46.0  hde9e2c9_0            conda-forge     865kB
-#10 21.39   + zlib                    1.2.13  h4ab18f5_6            conda-forge      93kB
-#10 21.39   + sqlite                  3.46.0  h6d4b2fc_0            conda-forge     860kB
-#10 21.39   + ca-certificates      2026.7.22  hbd8a1cb_0            conda-forge     132kB
-#10 21.39   + parallel              20260722  hd8ed1ab_0            conda-forge       2MB
-#10 21.39   + bedtools                2.31.1  hf5e1c6e_2            bioconda          2MB
-#10 21.39   + k8                       0.2.5  hdcf5f25_4            bioconda          2MB
-#10 21.39   + minimap2                  2.28  he4a0461_3            bioconda          1MB
-#10 21.39   + openssl                 1.1.1w  hd590300_0            conda-forge       2MB
-#10 21.39   + krb5                    1.20.1  hf9c8cef_0            conda-forge       1MB
-#10 21.39   + libssh2                 1.10.0  haa6b8db_3            conda-forge     239kB
-#10 21.39   + libnghttp2              1.51.0  hdcd2b5c_0            conda-forge     623kB
-#10 21.39   + libcurl                 7.87.0  h6312ad2_0            conda-forge     347kB
-#10 21.39   + python                   3.7.7  hcff3b4d_5            pkgs/main        47MB
-#10 21.39   + htslib                    1.17  h6bc39ce_1            bioconda          2MB
-#10 21.39   + samtools                  1.18  hd87286a_0            bioconda        466kB
-#10 21.39   + xatlas                     0.3  h84372a0_3            bioconda         74kB
-#10 21.39   + wheel                   0.42.0  pyhd8ed1ab_0          conda-forge      58kB
-#10 21.39   + setuptools              69.0.3  pyhd8ed1ab_0          conda-forge     471kB
-#10 21.39   + pip                       24.0  pyhd8ed1ab_0          conda-forge       1MB
-#10 21.39 
-#10 21.39   Summary:
-#10 21.39 
-#10 21.39   Install: 43 packages
-#10 21.39 
-#10 21.39   Total download: 101MB
-#10 21.39 
-#10 21.39 ─────────────────────────────────────────────────────────────────────────────────
-#10 21.39 
-#10 21.39 
-#10 21.39 
-#10 21.39 Transaction starting
-#10 23.55 Linking seqkit-2.13.0-he881be0_0
-#10 23.55 Linking ld_impl_linux-64-2.46.1-bootstrap_ha15bf96_2
-#10 23.57 Linking libgomp-16.2.0-he0feb66_5
-#10 23.57 Linking _openmp_mutex-4.5-20_gnu
-#10 23.57 Linking libgcc-16.2.0-ha9f2e26_5
-#10 23.57 Linking libev-4.33-h280c20c_3
-#10 23.57 Linking c-ares-1.34.8-hebe6cf0_2
-#10 23.59 Linking keyutils-1.6.3-h7cc23a3_1
-#10 23.59 Linking libxcrypt-4.4.38-h280c20c_0
-#10 23.59 Linking libdeflate-1.26-h351257e_0
-#10 23.60 Linking bzip2-1.0.8-hda65f42_10
-#10 23.60 Linking pthread-stubs-0.4-h7cc23a3_1004
-#10 23.60 Linking libstdcxx-16.2.0-h934c35e_5
-#10 23.60 Linking ncurses-6.6-hdb14827_1
-#10 25.42 Linking libgcc-ng-16.2.0-h69a702a_5
-#10 25.42 Linking perl-5.32.1-9_h7cc23a3_perl5
-#10 25.67 Linking libstdcxx-ng-16.2.0-hdf11a46_5
-#10 25.67 Linking libedit-3.1.20250104-pl5321h373387f_1
-#10 25.67 Linking readline-8.3-hd6e31c0_1
-#10 25.68 Linking libzlib-1.2.13-h4ab18f5_6
-#10 25.68 Linking xz-5.2.6-h166bdaf_0
-#10 25.70 Linking libffi-3.3-h58526e2_2
-#10 25.70 Linking tk-8.6.13-noxft_h4845f30_101
-#10 25.74 Linking libsqlite-3.46.0-hde9e2c9_0
-#10 25.74 Linking zlib-1.2.13-h4ab18f5_6
-#10 25.74 Linking sqlite-3.46.0-h6d4b2fc_0
-#10 25.74 Linking ca-certificates-2026.7.22-hbd8a1cb_0
-#10 25.74 Linking parallel-20260722-hd8ed1ab_0
-#10 25.75 Linking bedtools-2.31.1-hf5e1c6e_2
-#10 25.76 Linking k8-0.2.5-hdcf5f25_4
-#10 25.76 Linking minimap2-2.28-he4a0461_3
-#10 25.76 Linking openssl-1.1.1w-hd590300_0
-#10 25.78 Linking krb5-1.20.1-hf9c8cef_0
-#10 25.80 Linking libssh2-1.10.0-haa6b8db_3
-#10 25.81 Linking libnghttp2-1.51.0-hdcd2b5c_0
-#10 25.81 Linking libcurl-7.87.0-h6312ad2_0
-#10 25.82 Linking python-3.7.7-hcff3b4d_5
-#10 25.99 Linking htslib-1.17-h6bc39ce_1
-#10 26.00 Linking samtools-1.18-hd87286a_0
-#10 26.01 Linking xatlas-0.3-h84372a0_3
-#10 26.01 Linking wheel-0.42.0-pyhd8ed1ab_0
-#10 26.07 Linking setuptools-69.0.3-pyhd8ed1ab_0
-#10 26.09 Linking pip-24.0-pyhd8ed1ab_0
-#10 26.62 
-#10 26.62 Transaction finished
-#10 26.62 
-#10 26.62 To activate this environment, use:
-#10 26.62 
-#10 26.62     micromamba activate strspy_env
-#10 26.62 
-#10 26.62 Or to execute a single command in this environment, use:
-#10 26.62 
-#10 26.62     micromamba run -n strspy_env mycommand
-#10 26.62 
-#10 26.68 Collect information..
-#10 26.68 Cleaning index cache..
-#10 26.88 Cleaning lock files..
-#10 26.88   Package file                                           Size
-#10 26.88 ───────────────────────────────────────────────────────────────
-#10 26.88   /opt/conda/pkgs
-#10 26.88 ───────────────────────────────────────────────────────────────
-#10 26.88 
-#10 26.88   _openmp_mutex-4.5-20_gnu.conda                         29kB
-#10 26.88   bedtools-2.31.1-hf5e1c6e_2.tar.bz2                      2MB
-#10 26.88   bzip2-1.0.8-hda65f42_10.conda                         258kB
-#10 26.88   c-ares-1.34.8-hebe6cf0_2.conda                        229kB
-#10 26.88   ca-certificates-2026.7.22-hbd8a1cb_0.conda            132kB
-#10 26.88   htslib-1.17-h6bc39ce_1.tar.bz2                          2MB
-#10 26.88   k8-0.2.5-hdcf5f25_4.tar.bz2                             2MB
-#10 26.88   keyutils-1.6.3-h7cc23a3_1.conda                       135kB
-#10 26.88   krb5-1.20.1-hf9c8cef_0.conda                            1MB
-#10 26.88   ld_impl_linux-64-2.46.1-bootstrap_ha15bf96_2.conda    745kB
-#10 26.88   libcurl-7.87.0-h6312ad2_0.conda                       347kB
-#10 26.88   libdeflate-1.26-h351257e_0.conda                       74kB
-#10 26.88   libedit-3.1.20250104-pl5321h373387f_1.conda           135kB
-#10 26.88   libev-4.33-h280c20c_3.conda                            43kB
-#10 26.88   libffi-3.3-h58526e2_2.tar.bz2                          53kB
-#10 26.88   libgcc-16.2.0-ha9f2e26_5.conda                          1MB
-#10 26.88   libgcc-ng-16.2.0-h69a702a_5.conda                      29kB
-#10 26.88   libgomp-16.2.0-he0feb66_5.conda                       642kB
-#10 26.88   libnghttp2-1.51.0-hdcd2b5c_0.conda                    623kB
-#10 26.88   libsqlite-3.46.0-hde9e2c9_0.conda                     865kB
-#10 26.88   libssh2-1.10.0-haa6b8db_3.tar.bz2                     239kB
-#10 26.88   libstdcxx-16.2.0-h934c35e_5.conda                       7MB
-#10 26.88   libstdcxx-ng-16.2.0-hdf11a46_5.conda                   29kB
-#10 26.88   libxcrypt-4.4.38-h280c20c_0.conda                     102kB
-#10 26.88   libzlib-1.2.13-h4ab18f5_6.conda                        62kB
-#10 26.88   minimap2-2.28-he4a0461_3.tar.bz2                        1MB
-#10 26.88   ncurses-6.6-hdb14827_1.conda                          911kB
-#10 26.88   openssl-1.1.1w-hd590300_0.conda                         2MB
-#10 26.88   parallel-20260722-hd8ed1ab_0.conda                      2MB
-#10 26.88   perl-5.32.1-9_h7cc23a3_perl5.conda                     13MB
-#10 26.88   pip-24.0-pyhd8ed1ab_0.conda                             1MB
-#10 26.88   pthread-stubs-0.4-h7cc23a3_1004.conda                  10kB
-#10 26.88   python-3.7.7-hcff3b4d_5.conda                          47MB
-#10 26.88   readline-8.3-hd6e31c0_1.conda                         349kB
-#10 26.88   samtools-1.18-hd87286a_0.tar.bz2                      466kB
-#10 26.88   seqkit-2.13.0-he881be0_0.conda                          7MB
-#10 26.88   setuptools-69.0.3-pyhd8ed1ab_0.conda                  471kB
-#10 26.88   sqlite-3.46.0-h6d4b2fc_0.conda                        860kB
-#10 26.88   tk-8.6.13-noxft_h4845f30_101.conda                      3MB
-#10 26.88   wheel-0.42.0-pyhd8ed1ab_0.conda                        58kB
-#10 26.88   xatlas-0.3-h84372a0_3.tar.bz2                          74kB
-#10 26.88   xz-5.2.6-h166bdaf_0.tar.bz2                           418kB
-#10 26.88   zlib-1.2.13-h4ab18f5_6.conda                           93kB
-#10 26.88 
-#10 26.88   /root/.mamba/pkgs
-#10 26.88 ───────────────────────────────────────────────────────────────
-#10 26.88 
-#10 26.88 
-#10 26.88   
-#10 26.88 ───────────────────────────────────────────────────────────────
-#10 26.88 
-#10 26.88   Total size:                                           101MB
-#10 26.88 Cleaning tarballs..
-#10 26.90 Cleaning packages..
-#10 DONE 27.7s
+#10 [6/7] RUN micromamba create -y -n tool -f setup/STRspy_2.0_env.yml && micromamba clean -a -y
+#10 20.79 
+#10 20.79 Transaction
+#10 20.79 
+#10 20.79   Prefix: /opt/conda/envs/tool
+#10 20.79 
+#10 20.79   Updating specs:
+#10 20.79 
+#10 20.79    - python=3.7.7
+#10 20.79    - parallel
+#10 20.79    - xatlas
+#10 20.79    - samtools
+#10 20.79    - bedtools
+#10 20.79    - minimap2
+#10 20.79    - seqkit
+#10 20.79 
+#10 20.79 
+#10 20.80   Package                  Version  Build                 Channel          Size
+#10 20.80 ─────────────────────────────────────────────────────────────────────────────────
+#10 20.80   Install:
+#10 20.80 ─────────────────────────────────────────────────────────────────────────────────
+#10 20.80 
+#10 20.80   + seqkit                  2.13.0  he881be0_0            bioconda          7MB
+#10 20.80   + ld_impl_linux-64        2.46.1  bootstrap_ha15bf96_2  conda-forge     745kB
+#10 20.80   + libgomp                 16.2.0  he0feb66_5            conda-forge     642kB
+#10 20.80   + _openmp_mutex              4.5  20_gnu                conda-forge      29kB
+#10 20.80   + libgcc                  16.2.0  ha9f2e26_5            conda-forge       1MB
+#10 20.80   + libev                     4.33  h280c20c_3            conda-forge      43kB
+#10 20.80   + c-ares                  1.34.8  hebe6cf0_2            conda-forge     229kB
+#10 20.80   + keyutils                 1.6.3  h7cc23a3_1            conda-forge     135kB
+#10 20.80   + libxcrypt               4.4.38  h280c20c_0            conda-forge     102kB
+#10 20.80   + libdeflate                1.26  h351257e_0            conda-forge      74kB
+#10 20.80   + bzip2                    1.0.8  hda65f42_10           conda-forge     258kB
+#10 20.80   + pthread-stubs              0.4  h7cc23a3_1004         conda-forge      10kB
+#10 20.80   + libstdcxx               16.2.0  h934c35e_5            conda-forge       7MB
+#10 20.80   + ncurses                    6.6  hdb14827_1            conda-forge     911kB
+#10 20.80   + libgcc-ng               16.2.0  h69a702a_5            conda-forge      29kB
+#10 20.80   + perl                    5.32.1  9_h7cc23a3_perl5      conda-forge      13MB
+#10 20.80   + libstdcxx-ng            16.2.0  hdf11a46_5            conda-forge      29kB
+#10 20.80   + libedit           3.1.20250104  pl5321h373387f_1      conda-forge     135kB
+#10 20.80   + readline                   8.3  hd6e31c0_1            conda-forge     349kB
+#10 20.80   + libzlib                 1.2.13  h4ab18f5_6            conda-forge      62kB
+#10 20.80   + xz                       5.2.6  h166bdaf_0            conda-forge     418kB
+#10 20.80   + libffi                     3.3  h58526e2_2            conda-forge      53kB
+#10 20.80   + tk                      8.6.13  noxft_h4845f30_101    conda-forge       3MB
+#10 20.80   + libsqlite               3.46.0  hde9e2c9_0            conda-forge     865kB
+#10 20.80   + zlib                    1.2.13  h4ab18f5_6            conda-forge      93kB
+#10 20.80   + sqlite                  3.46.0  h6d4b2fc_0            conda-forge     860kB
+#10 20.80   + ca-certificates      2026.7.22  hbd8a1cb_0            conda-forge     132kB
+#10 20.80   + parallel              20260722  hd8ed1ab_0            conda-forge       2MB
+#10 20.80   + bedtools                2.31.1  hf5e1c6e_2            bioconda          2MB
+#10 20.80   + k8                       0.2.5  hdcf5f25_4            bioconda          2MB
+#10 20.80   + minimap2                  2.28  he4a0461_3            bioconda          1MB
+#10 20.80   + openssl                 1.1.1w  hd590300_0            conda-forge       2MB
+#10 20.80   + krb5                    1.20.1  hf9c8cef_0            conda-forge       1MB
+#10 20.80   + libssh2                 1.10.0  haa6b8db_3            conda-forge     239kB
+#10 20.80   + libnghttp2              1.51.0  hdcd2b5c_0            conda-forge     623kB
+#10 20.80   + libcurl                 7.87.0  h6312ad2_0            conda-forge     347kB
+#10 20.80   + python                   3.7.7  hcff3b4d_5            pkgs/main        47MB
+#10 20.80   + htslib                    1.17  h6bc39ce_1            bioconda          2MB
+#10 20.80   + samtools                  1.18  hd87286a_0            bioconda        466kB
+#10 20.80   + xatlas                     0.3  h84372a0_3            bioconda         74kB
+#10 20.80   + wheel                   0.42.0  pyhd8ed1ab_0          conda-forge      58kB
+#10 20.80   + setuptools              69.0.3  pyhd8ed1ab_0          conda-forge     471kB
+#10 20.80   + pip                       24.0  pyhd8ed1ab_0          conda-forge       1MB
+#10 20.80 
+#10 20.80   Summary:
+#10 20.80 
+#10 20.80   Install: 43 packages
+#10 20.80 
+#10 20.80   Total download: 101MB
+#10 20.80 
+#10 20.80 ─────────────────────────────────────────────────────────────────────────────────
+#10 20.80 
+#10 20.80 
+#10 20.84 
+#10 20.84 Transaction starting
+#10 23.03 Linking seqkit-2.13.0-he881be0_0
+#10 23.03 Linking ld_impl_linux-64-2.46.1-bootstrap_ha15bf96_2
+#10 23.04 Linking libgomp-16.2.0-he0feb66_5
+#10 23.04 Linking _openmp_mutex-4.5-20_gnu
+#10 23.04 Linking libgcc-16.2.0-ha9f2e26_5
+#10 23.04 Linking libev-4.33-h280c20c_3
+#10 23.04 Linking c-ares-1.34.8-hebe6cf0_2
+#10 23.05 Linking keyutils-1.6.3-h7cc23a3_1
+#10 23.06 Linking libxcrypt-4.4.38-h280c20c_0
+#10 23.06 Linking libdeflate-1.26-h351257e_0
+#10 23.06 Linking bzip2-1.0.8-hda65f42_10
+#10 23.06 Linking pthread-stubs-0.4-h7cc23a3_1004
+#10 23.06 Linking libstdcxx-16.2.0-h934c35e_5
+#10 23.06 Linking ncurses-6.6-hdb14827_1
+#10 24.41 Linking libgcc-ng-16.2.0-h69a702a_5
+#10 24.41 Linking perl-5.32.1-9_h7cc23a3_perl5
+#10 24.61 Linking libstdcxx-ng-16.2.0-hdf11a46_5
+#10 24.61 Linking libedit-3.1.20250104-pl5321h373387f_1
+#10 24.61 Linking readline-8.3-hd6e31c0_1
+#10 24.62 Linking libzlib-1.2.13-h4ab18f5_6
+#10 24.62 Linking xz-5.2.6-h166bdaf_0
+#10 24.63 Linking libffi-3.3-h58526e2_2
+#10 24.63 Linking tk-8.6.13-noxft_h4845f30_101
+#10 24.67 Linking libsqlite-3.46.0-hde9e2c9_0
+#10 24.67 Linking zlib-1.2.13-h4ab18f5_6
+#10 24.67 Linking sqlite-3.46.0-h6d4b2fc_0
+#10 24.67 Linking ca-certificates-2026.7.22-hbd8a1cb_0
+#10 24.67 Linking parallel-20260722-hd8ed1ab_0
+#10 24.68 Linking bedtools-2.31.1-hf5e1c6e_2
+#10 24.68 Linking k8-0.2.5-hdcf5f25_4
+#10 24.68 Linking minimap2-2.28-he4a0461_3
+#10 24.68 Linking openssl-1.1.1w-hd590300_0
+#10 24.70 Linking krb5-1.20.1-hf9c8cef_0
+#10 24.71 Linking libssh2-1.10.0-haa6b8db_3
+#10 24.73 Linking libnghttp2-1.51.0-hdcd2b5c_0
+#10 24.73 Linking libcurl-7.87.0-h6312ad2_0
+#10 24.73 Linking python-3.7.7-hcff3b4d_5
+#10 24.87 Linking htslib-1.17-h6bc39ce_1
+#10 24.88 Linking samtools-1.18-hd87286a_0
+#10 24.89 Linking xatlas-0.3-h84372a0_3
+#10 24.89 Linking wheel-0.42.0-pyhd8ed1ab_0
+#10 24.94 Linking setuptools-69.0.3-pyhd8ed1ab_0
+#10 24.96 Linking pip-24.0-pyhd8ed1ab_0
+#10 25.39 
+#10 25.39 Transaction finished
+#10 25.39 
+#10 25.39 To activate this environment, use:
+#10 25.39 
+#10 25.39     micromamba activate tool
+#10 25.39 
+#10 25.39 Or to execute a single command in this environment, use:
+#10 25.39 
+#10 25.39     micromamba run -n tool mycommand
+#10 25.39 
+#10 25.44 Collect information..
+#10 25.44 Cleaning index cache..
+#10 25.60 Cleaning lock files..
+#10 25.61   Package file                                           Size
+#10 25.61 ───────────────────────────────────────────────────────────────
+#10 25.61   /opt/conda/pkgs
+#10 25.61 ───────────────────────────────────────────────────────────────
+#10 25.61 
+#10 25.61   _openmp_mutex-4.5-20_gnu.conda                         29kB
+#10 25.61   bedtools-2.31.1-hf5e1c6e_2.tar.bz2                      2MB
+#10 25.61   bzip2-1.0.8-hda65f42_10.conda                         258kB
+#10 25.61   c-ares-1.34.8-hebe6cf0_2.conda                        229kB
+#10 25.61   ca-certificates-2026.7.22-hbd8a1cb_0.conda            132kB
+#10 25.61   htslib-1.17-h6bc39ce_1.tar.bz2                          2MB
+#10 25.61   k8-0.2.5-hdcf5f25_4.tar.bz2                             2MB
+#10 25.61   keyutils-1.6.3-h7cc23a3_1.conda                       135kB
+#10 25.61   krb5-1.20.1-hf9c8cef_0.conda                            1MB
+#10 25.61   ld_impl_linux-64-2.46.1-bootstrap_ha15bf96_2.conda    745kB
+#10 25.61   libcurl-7.87.0-h6312ad2_0.conda                       347kB
+#10 25.61   libdeflate-1.26-h351257e_0.conda                       74kB
+#10 25.61   libedit-3.1.20250104-pl5321h373387f_1.conda           135kB
+#10 25.61   libev-4.33-h280c20c_3.conda                            43kB
+#10 25.61   libffi-3.3-h58526e2_2.tar.bz2                          53kB
+#10 25.61   libgcc-16.2.0-ha9f2e26_5.conda                          1MB
+#10 25.61   libgcc-ng-16.2.0-h69a702a_5.conda                      29kB
+#10 25.61   libgomp-16.2.0-he0feb66_5.conda                       642kB
+#10 25.61   libnghttp2-1.51.0-hdcd2b5c_0.conda                    623kB
+#10 25.61   libsqlite-3.46.0-hde9e2c9_0.conda                     865kB
+#10 25.61   libssh2-1.10.0-haa6b8db_3.tar.bz2                     239kB
+#10 25.61   libstdcxx-16.2.0-h934c35e_5.conda                       7MB
+#10 25.61   libstdcxx-ng-16.2.0-hdf11a46_5.conda                   29kB
+#10 25.61   libxcrypt-4.4.38-h280c20c_0.conda                     102kB
+#10 25.61   libzlib-1.2.13-h4ab18f5_6.conda                        62kB
+#10 25.61   minimap2-2.28-he4a0461_3.tar.bz2                        1MB
+#10 25.61   ncurses-6.6-hdb14827_1.conda                          911kB
+#10 25.61   openssl-1.1.1w-hd590300_0.conda                         2MB
+#10 25.61   parallel-20260722-hd8ed1ab_0.conda                      2MB
+#10 25.61   perl-5.32.1-9_h7cc23a3_perl5.conda                     13MB
+#10 25.61   pip-24.0-pyhd8ed1ab_0.conda                             1MB
+#10 25.61   pthread-stubs-0.4-h7cc23a3_1004.conda                  10kB
+#10 25.61   python-3.7.7-hcff3b4d_5.conda                          47MB
+#10 25.61   readline-8.3-hd6e31c0_1.conda                         349kB
+#10 25.61   samtools-1.18-hd87286a_0.tar.bz2                      466kB
+#10 25.61   seqkit-2.13.0-he881be0_0.conda                          7MB
+#10 25.61   setuptools-69.0.3-pyhd8ed1ab_0.conda                  471kB
+#10 25.61   sqlite-3.46.0-h6d4b2fc_0.conda                        860kB
+#10 25.61   tk-8.6.13-noxft_h4845f30_101.conda                      3MB
+#10 25.61   wheel-0.42.0-pyhd8ed1ab_0.conda                        58kB
+#10 25.61   xatlas-0.3-h84372a0_3.tar.bz2                          74kB
+#10 25.61   xz-5.2.6-h166bdaf_0.tar.bz2                           418kB
+#10 25.61   zlib-1.2.13-h4ab18f5_6.conda                           93kB
+#10 25.61 
+#10 25.61   /root/.mamba/pkgs
+#10 25.61 ───────────────────────────────────────────────────────────────
+#10 25.61 
+#10 25.61 
+#10 25.61   
+#10 25.61 ───────────────────────────────────────────────────────────────
+#10 25.61 
+#10 25.61   Total size:                                           101MB
+#10 25.61 Cleaning tarballs..
+#10 25.63 Cleaning packages..
+#10 DONE 29.0s
 
-#11 [7/8] RUN unzip -oq db-v2/STRspy2.0-DB.zip -d db     && rm -rf db/__MACOSX     && find db -name '._*' -delete -o -name '.DS_Store' -delete
-#11 DONE 0.2s
+#11 [7/7] WORKDIR /work
+#11 DONE 0.0s
 
-#12 [8/8] RUN {       echo "SAMTOOLS=$(which samtools)";       echo "BEDTOOLS=$(which bedtools)";       echo "XATLAS=$(which xatlas)";       echo "PARALLEL=$(which parallel)";       echo "MINIMAP=$(which minimap2)";       echo "SEQKIT=$(which seqkit)";     } > config/ToolsConfig.txt && cat config/ToolsConfig.txt
-#12 0.216 SAMTOOLS=/opt/conda/envs/strspy_env/bin/samtools
-#12 0.216 BEDTOOLS=/opt/conda/envs/strspy_env/bin/bedtools
-#12 0.216 XATLAS=/opt/conda/envs/strspy_env/bin/xatlas
-#12 0.216 PARALLEL=/opt/conda/envs/strspy_env/bin/parallel
-#12 0.216 MINIMAP=/opt/conda/envs/strspy_env/bin/minimap2
-#12 0.216 SEQKIT=/opt/conda/envs/strspy_env/bin/seqkit
-#12 DONE 0.2s
-
-#13 exporting to image
-#13 exporting layers
-#13 exporting layers 3.6s done
-#13 writing image sha256:541566dc00522486925befd584086cdfaf2d9e691af73f4ebaa52f2924ce4e49 done
-#13 naming to docker.io/library/toolimg:ci done
-#13 DONE 3.6s
+#12 exporting to image
+#12 exporting layers
+#12 exporting layers 2.8s done
+#12 writing image sha256:a058583c59b384ad5fb199d15a536627c450c04e282304a0ece182066d5890ec done
+#12 naming to docker.io/library/toolimg:ci done
+#12 DONE 2.9s

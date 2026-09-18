@@ -1,10 +1,9 @@
 {
   "schema": "strhub-verified/1",
-  "mode": "publish",
+  "mode": "trial",
   "tool": {
     "name": "STRspy",
-    "version": "v2.0",
-    "maintainer": "Kesharwani RK; Zascavage RR et al.",
+    "version": "f7e0897",
     "contact": "https://github.com/unique379r/strspy/issues"
   },
   "submission": {
@@ -12,46 +11,43 @@
   },
   "source": {
     "repo": "https://github.com/unique379r/strspy",
-    "ref": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
-    "ref_resolved": "dafdee7e7e5672c8dc732e8577dbe153f53a12f5",
-    "committed": "2026-05-04T19:47:38Z"
+    "ref": "f7e0897b8283cbf8cdae73c6a22b7b938dc8f377",
+    "ref_resolved": "f7e0897b8283cbf8cdae73c6a22b7b938dc8f377",
+    "committed": "2026-05-04T19:26:27Z"
   },
   "environment": {
     "dockerfile": "Dockerfile",
     "os": [
       "ubuntu-22.04"
-    ]
+    ],
+    "source": "generated"
   },
-  "generated": "2026-09-18T13:38:00+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35350684894",
+  "generated": "2026-09-18T13:30:16+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35350371244",
   "run": {
-    "cmd": "bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /opt/strspy/db/STRspy2.0-DB -b /opt/strspy/db/STRspy2.0-DB -l /opt/strspy/db-v2/STRspy_v2.DB.sort.bed -k 0.4 -o /data/out -c /opt/strspy/config/ToolsConfig.txt -d 1"
+    "cmd": "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt",
+    "cwd": "/opt/tool"
   },
   "gates": {
     "available": true,
     "installs": true,
-    "runs": true,
-    "io": true,
+    "runs": false,
+    "io": false,
     "content": false
   },
-  "level": "io",
+  "level": "installs",
   "io_detail": {
     "gate": "io",
-    "passed": true,
+    "passed": false,
     "outputs": [
       {
-        "path": "**/*.txt",
+        "path": "**/*.t[sx][vt]",
         "format": "tsv",
         "checks": {
           "confined": true,
-          "exists": true,
-          "non_empty": true,
-          "parses_as_tsv": true,
-          "min_records": true
+          "exists": false
         },
-        "resolved": "Countings/CSF1PO_input.bam_Allele_freqs.txt",
-        "records": 5,
-        "passed": true
+        "passed": false
       }
     ]
   },
@@ -61,33 +57,9 @@
     "passed": false,
     "outputs": [
       {
-        "path": "**/*.txt",
-        "resolved": "Countings/CSF1PO_input.bam_Allele_freqs.txt",
-        "mode": "auto",
-        "checks": {
-          "records_present": true,
-          "locus_column_found": false,
-          "loci_recognised": false,
-          "calls_or_counts_present": false
-        },
-        "stats": {
-          "rows": 6,
-          "header_row_dropped": false,
-          "malformed_rows": 0,
-          "dna_invalid_rows": 0,
-          "count_invalid_rows": 0,
-          "distinct_loci": 0,
-          "distinct_str_loci": 0,
-          "distinct_snp_markers": 0,
-          "loci": [],
-          "str_loci": [],
-          "snp_markers": [],
-          "total_reads": 0,
-          "max_sequence_depth": 0,
-          "top_loci_by_depth": [],
-          "locus_column_found": false
-        },
-        "passed": false
+        "path": "**/*.t[sx][vt]",
+        "passed": false,
+        "error": "output not found"
       }
     ]
   },
@@ -108,9 +80,9 @@
       "available": true,
       "type": "ont-bam-hg38",
       "dataset": "1000 Genomes ONT, hg38 CODIS slice (R10 SUP)",
-      "io": true,
+      "io": false,
       "content": false,
-      "passed": true
+      "passed": false
     },
     {
       "leg": "example",
@@ -155,7 +127,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-18T13:38:01+00:00",
+    "checked": "2026-09-18T13:30:17+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "main",
@@ -163,7 +135,8 @@
     "behind_by": 14
   },
   "needed_beyond_repo": [
-    "Test data: no sample from the repository was used, so a public reference sample stood in."
+    "Test data: no sample from the repository was used, so a public reference sample stood in.",
+    "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships."
   ],
   "author_known_issues": [
     {
@@ -171,7 +144,7 @@
       "line": 291,
       "text": "When using the wrapper ('STRspy_run_v1.0.sh'), One might run into an issue. The parallel version of **STRspy_Parallel_v2.0_Args.sh** is unable to properly connect with \"gnu parallel\" and exits the workflow without mapping or further analysis steps of the pipeline. Solution to this, the user can choose the Normal version to avoid any crash. ***Tip: Its good practice to use pre-aligned bams for quicker outcomes.***",
       "truncated": false,
-      "url": "https://github.com/unique379r/strspy/blob/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/README.md#L291"
+      "url": "https://github.com/unique379r/strspy/blob/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/README.md#L291"
     }
   ],
   "evidence": [
@@ -180,7 +153,7 @@
       "kind": "tree",
       "path": "setup/STRspy_2.0_env.yml",
       "text": "conda",
-      "url": "https://github.com/unique379r/strspy/blob/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/setup/STRspy_2.0_env.yml"
+      "url": "https://github.com/unique379r/strspy/blob/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/setup/STRspy_2.0_env.yml"
     },
     {
       "claim": "run_command",
@@ -188,28 +161,28 @@
       "path": "README.md",
       "line": 120,
       "text": "USAGE: bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt",
-      "url": "https://github.com/unique379r/strspy/blob/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/README.md#L120"
+      "url": "https://github.com/unique379r/strspy/blob/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/README.md#L120"
     },
     {
       "claim": "example_data",
       "kind": "tree",
       "path": "db-v2/STRspy_v2.DB.sort.bed",
       "text": "bed",
-      "url": "https://github.com/unique379r/strspy/blob/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/db-v2/STRspy_v2.DB.sort.bed"
+      "url": "https://github.com/unique379r/strspy/blob/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/db-v2/STRspy_v2.DB.sort.bed"
     },
     {
       "claim": "example_data",
       "kind": "tree",
       "path": "db-v2/optional-create-custom-db/testTwofa/TPOX.fa",
       "text": "fasta",
-      "url": "https://github.com/unique379r/strspy/blob/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/db-v2/optional-create-custom-db/testTwofa/TPOX.fa"
+      "url": "https://github.com/unique379r/strspy/blob/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/db-v2/optional-create-custom-db/testTwofa/TPOX.fa"
     },
     {
       "claim": "example_data",
       "kind": "tree",
       "path": "db-v2/optional-create-custom-db/testTwofa/vWA.fa",
       "text": "fasta",
-      "url": "https://github.com/unique379r/strspy/blob/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/db-v2/optional-create-custom-db/testTwofa/vWA.fa"
+      "url": "https://github.com/unique379r/strspy/blob/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/db-v2/optional-create-custom-db/testTwofa/vWA.fa"
     },
     {
       "claim": "known_issue",
@@ -217,7 +190,7 @@
       "path": "README.md",
       "line": 291,
       "text": "Known bug",
-      "url": "https://github.com/unique379r/strspy/blob/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/README.md#L291"
+      "url": "https://github.com/unique379r/strspy/blob/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/README.md#L291"
     },
     {
       "claim": "documented_input",
@@ -225,7 +198,7 @@
       "path": "README.md",
       "line": 44,
       "text": "Input either fastq (raw reads usually from ONT) or bam (pre-aligned reads by user)",
-      "url": "https://github.com/unique379r/strspy/blob/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/README.md#L44"
+      "url": "https://github.com/unique379r/strspy/blob/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/README.md#L44"
     },
     {
       "claim": "author_recommendation",
@@ -233,7 +206,7 @@
       "path": "README.md",
       "line": 295,
       "text": "***Tip: Its good practice to use pre-aligned bams for quicker outcomes.***",
-      "url": "https://github.com/unique379r/strspy/blob/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/README.md#L295"
+      "url": "https://github.com/unique379r/strspy/blob/f7e0897b8283cbf8cdae73c6a22b7b938dc8f377/README.md#L295"
     }
   ],
   "repo_test_data": {
@@ -246,31 +219,17 @@
       "db-v2/optional-create-custom-db/testTwofa/vWA.fa"
     ]
   },
+  "caveats": {
+    "source": "detect_recipe",
+    "items": [
+      "Environment: generated by STRhub from the repository's setup/STRspy_2.0_env.yml (conda), at the pinned commit.",
+      "Input: the README documents BAM and FASTQ (line 44); this run used STRhub's ont-bam-hg38 reference data. The author recommends BAM (line 295: \"Tip: Its good practice to use pre-aligned bams for quicker outcomes.\").",
+      "Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output."
+    ]
+  },
   "logs": {
     "external": "strspy-ont.log-external.txt",
     "build": "strspy-ont.log-build.txt"
-  },
-  "diagnostics": {
-    "external": [
-      {
-        "id": "cannot_open",
-        "severity": "error",
-        "title": "Cannot open file: /data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam",
-        "count": 18,
-        "examples": [
-          "/data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D12S391_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D13S317_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D5S818_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D7S820_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D8S1179_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/FGA_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/TPOX_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/vWA_input.bam_alignment.sorted.bam"
-        ],
-        "suggestion": "The tool could not open '/data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam'. Verify the path exists and the file format is correct."
-      }
-    ]
   },
   "manual_verification": {
     "eligible": false,
@@ -279,11 +238,22 @@
     "reason": null
   },
   "verdict": {
-    "code": "runs",
-    "title": "Runs",
+    "code": "fails",
+    "title": "Fails",
     "basis": "gates",
-    "reason": "The tool installed and its run produced its documented output.",
+    "reason": "The tool exited with an error before producing its documented output.",
     "readme_gaps": [],
-    "blockers": []
+    "blockers": [
+      {
+        "code": "run_failed",
+        "what": "The tool was installed but exited with an error when run.",
+        "self_fix": "edit_command",
+        "self_fix_text": "Adjust the command and try again.",
+        "ask_owner": {
+          "title": "Documented command fails on a public reference sample",
+          "body": "STRhub Verified installed the tool from a clean checkout at the pinned commit and ran the command the README documents on a public hg38 reference sample; it exited with an error. The log is linked from the run."
+        }
+      }
+    ]
   }
 }

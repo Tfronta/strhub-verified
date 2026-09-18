@@ -1,27 +1,29 @@
 {
   "schema": "strhub-verified/1",
-  "mode": "publish",
+  "mode": "trial",
   "tool": {
-    "name": "hipstr",
-    "version": "v0.7"
+    "name": "HipSTR",
+    "version": "12e989b",
+    "contact": "https://github.com/tfwillems/HipSTR/issues"
   },
   "submission": {
     "by": "third_party"
   },
   "source": {
     "repo": "https://github.com/tfwillems/HipSTR",
-    "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
-    "ref_resolved": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
-    "committed": "2021-05-10T16:02:08Z"
+    "ref": "12e989be4a8f9ab59f0c4c5da3784b82018cac82",
+    "ref_resolved": "12e989be4a8f9ab59f0c4c5da3784b82018cac82",
+    "committed": "2020-04-16T22:16:31Z"
   },
   "environment": {
     "dockerfile": "Dockerfile",
     "os": [
       "ubuntu-22.04"
-    ]
+    ],
+    "source": "generated"
   },
-  "generated": "2026-09-15T19:54:48+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016077060",
+  "generated": "2026-09-16T21:14:32+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35150866608",
   "gates": {
     "available": true,
     "installs": true,
@@ -35,7 +37,7 @@
     "passed": true,
     "outputs": [
       {
-        "path": "result.vcf.gz",
+        "path": "**/*.vcf*",
         "format": "vcf",
         "checks": {
           "confined": true,
@@ -44,8 +46,8 @@
           "parses_as_vcf": true,
           "min_records": true
         },
-        "resolved": "result.vcf.gz",
-        "records": 23,
+        "resolved": "str_calls.vcf.gz",
+        "records": 21,
         "passed": true
       }
     ]
@@ -56,23 +58,22 @@
     "passed": true,
     "outputs": [
       {
-        "path": "result.vcf.gz",
-        "resolved": "result.vcf.gz",
+        "path": "**/*.vcf*",
+        "resolved": "str_calls.vcf.gz",
         "mode": "auto",
         "checks": {
           "records_present": true,
           "genotypes_called": true,
-          "given_loci_recognised": true,
-          "min_distinct_loci": true
+          "given_loci_recognised": true
         },
         "stats": {
-          "rows": 23,
+          "rows": 21,
           "header_row_dropped": false,
           "malformed_rows": 0,
           "dna_invalid_rows": 0,
           "count_invalid_rows": 0,
-          "distinct_loci": 23,
-          "distinct_str_loci": 23,
+          "distinct_loci": 21,
+          "distinct_str_loci": 21,
           "distinct_snp_markers": 0,
           "loci": [
             "CSF1PO",
@@ -84,7 +85,6 @@
             "D19S433",
             "D1S1656",
             "D22S1045",
-            "D2S1338",
             "D2S441",
             "D3S1358",
             "D5S818",
@@ -94,7 +94,6 @@
             "FGA",
             "PentaD",
             "PentaE",
-            "SE33",
             "TH01",
             "TPOX",
             "vWA"
@@ -109,7 +108,6 @@
             "D19S433",
             "D1S1656",
             "D22S1045",
-            "D2S1338",
             "D2S441",
             "D3S1358",
             "D5S818",
@@ -119,111 +117,102 @@
             "FGA",
             "PentaD",
             "PentaE",
-            "SE33",
             "TH01",
             "TPOX",
             "vWA"
           ],
           "snp_markers": [],
-          "total_reads": 8230,
-          "max_sequence_depth": 523,
+          "total_reads": 7851,
+          "max_sequence_depth": 517,
           "top_loci_by_depth": [
             [
               "D18S51",
-              523
+              517
             ],
             [
               "FGA",
-              475
+              477
             ],
             [
               "vWA",
-              465
+              456
             ],
             [
               "PentaD",
-              444
+              431
             ],
             [
               "D2S441",
-              433
+              428
             ],
             [
               "D3S1358",
-              423
+              419
             ],
             [
               "D22S1045",
-              416
+              414
             ],
             [
               "D7S820",
-              412
+              405
             ],
             [
               "PentaE",
-              408
+              401
             ],
             [
               "D5S818",
-              400
+              399
             ],
             [
               "D16S539",
-              374
+              371
             ],
             [
               "D6S1043",
-              366
-            ],
-            [
-              "D12S391",
-              361
-            ],
-            [
-              "D1S1656",
               360
             ],
             [
-              "D8S1179",
+              "D1S1656",
+              359
+            ],
+            [
+              "D12S391",
               349
             ],
             [
+              "D8S1179",
+              346
+            ],
+            [
               "D13S317",
-              321
+              316
             ],
             [
               "D10S1248",
-              313
+              309
             ],
             [
               "D19S433",
-              300
-            ],
-            [
-              "CSF1PO",
-              280
+              289
             ],
             [
               "TH01",
-              278
+              275
             ],
             [
-              "D2S1338",
-              265
+              "CSF1PO",
+              275
             ],
             [
               "TPOX",
-              264
-            ],
-            [
-              "SE33",
-              0
+              255
             ]
           ],
-          "called_genotypes": 22,
+          "called_genotypes": 21,
           "regions_given": 24,
-          "regions_hit": 23
+          "regions_hit": 21
         },
         "passed": true
       }
@@ -234,11 +223,11 @@
     {
       "leg": "own",
       "label": "STRhub fixture",
-      "available": true,
-      "io": true,
-      "content": true,
-      "passed": true,
-      "fixture_source": "strhub"
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
     },
     {
       "leg": "external",
@@ -296,13 +285,71 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-15T19:54:49+00:00",
+    "checked": "2026-09-16T21:14:33+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
-    "status": "identical",
-    "behind_by": 0
+    "status": "ahead",
+    "behind_by": 1
   },
+  "needed_beyond_repo": [
+    "Test data: no sample from the repository was used, so a public reference sample stood in.",
+    "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships."
+  ],
+  "evidence": [
+    {
+      "claim": "install_method",
+      "kind": "tree",
+      "path": "Makefile",
+      "text": "make",
+      "url": "https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/Makefile"
+    },
+    {
+      "claim": "run_command",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 69,
+      "text": "./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam",
+      "url": "https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/README.md#L69"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/input/chr1_regions.bed",
+      "text": "bed",
+      "url": "https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/test/input/chr1_regions.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/input/chr1_regions_v2.bed",
+      "text": "bed",
+      "url": "https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/test/input/chr1_regions_v2.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/input/1kg.chr1.imputed.vcf.gz",
+      "text": "vcf",
+      "url": "https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/test/input/1kg.chr1.imputed.vcf.gz"
+    },
+    {
+      "claim": "documented_input",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 69,
+      "text": "./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam",
+      "url": "https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/README.md#L69"
+    },
+    {
+      "claim": "platform_advice",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 435,
+      "text": "We do not recommend running it on PacBio or Oxford Nanopore data, as the difference in error profiles will be problematic",
+      "url": "https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/README.md#L435"
+    }
+  ],
   "repo_test_data": {
     "known": true,
     "present": true,
@@ -313,69 +360,89 @@
       "test/input/1kg.chr1.imputed.vcf.gz"
     ]
   },
+  "caveats": {
+    "source": "detect_recipe",
+    "items": [
+      "Environment: generated by STRhub from the repository's Makefile (make), at the pinned commit.",
+      "Input: the README documents BAM (line 69); this run used STRhub's illumina-bam-hg38 reference data.",
+      "1 input path(s) in the README command replaced with /data/in/input.bam.",
+      "1 reference FASTA path(s) replaced with /data/ref/hg38.fa.",
+      "1 BED path(s) replaced with /data/in/regions.bed.",
+      "Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output.",
+      "Regions: STRhub's ready-made hipstr file for the dataset's panel loci (STRhub records the hipstr layout for a program of this name)."
+    ]
+  },
   "logs": {
-    "own": "hipstr.log-own.txt",
     "external": "hipstr.log-external.txt",
     "build": "hipstr.log-build.txt"
   },
   "diagnostics": {
-    "own": [
-      {
-        "id": "low_bq_reads",
-        "severity": "info",
-        "title": "Reads filtered by base quality",
-        "count": 24,
-        "examples": [
-          "4",
-          "3",
-          "5",
-          "9",
-          "1",
-          "7",
-          "10",
-          "6",
-          "8",
-          "2"
-        ],
-        "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
-      },
-      {
-        "id": "genotyping_summary",
-        "severity": "info",
-        "title": "Genotyping: 23/24 loci succeeded",
-        "count": 1,
-        "examples": [
-          "23"
-        ]
-      }
-    ],
     "external": [
       {
         "id": "low_bq_reads",
         "severity": "info",
         "title": "Reads filtered by base quality",
-        "count": 24,
+        "count": 22,
         "examples": [
           "4",
           "3",
-          "5",
-          "9",
           "1",
-          "7",
-          "10",
-          "6",
+          "5",
           "8",
+          "7",
+          "6",
           "2"
         ],
         "suggestion": "Many reads are being removed by the base quality filter. For HipSTR, use --read-qual-trim '!' to lower the quality trimming threshold. Also consider --def-stutter-model if too few reads remain."
       },
       {
-        "id": "genotyping_summary",
+        "id": "unpaired_reads",
         "severity": "info",
-        "title": "Genotyping: 23/24 loci succeeded",
+        "title": "Reads filtered (no mate pair)",
+        "count": 22,
+        "examples": [
+          "2",
+          "3",
+          "13",
+          "11",
+          "5",
+          "7",
+          "4",
+          "8",
+          "6",
+          "16",
+          "9"
+        ],
+        "suggestion": "Reads without mate pairs are being filtered. This is common with BAM slices where mates fall outside the sliced region. Use --use-unpaired (HipSTR) or equivalent to allow unpaired reads."
+      },
+      {
+        "id": "str_too_long",
+        "severity": "warning",
+        "title": "Locus skipped: reference allele too long (127 vs max 100)",
+        "count": 2,
+        "examples": [
+          "127",
+          "102"
+        ],
+        "suggestion": "Some STR loci have reference alleles longer than the tool's maximum. Increase the max length threshold (e.g. --max-str-len for HipSTR)."
+      },
+      {
+        "id": "too_few_reads",
+        "severity": "warning",
+        "title": "Loci skipped (too few reads)",
         "count": 1,
         "examples": [
-          "23"
+          "1"
+        ],
+        "suggestion": "Some loci had insufficient reads after quality filtering. Try lowering --min-reads or relaxing quality filters (e.g. --read-qual-trim for HipSTR). The input BAM may also need more coverage at STR regions."
+      },
+      {
+        "id": "genotyping_summary",
+        "severity": "info",
+        "title": "Genotyping: 21/21 loci succeeded",
+        "count": 1,
+        "examples": [
+          "21"
         ]
       }
     ]
