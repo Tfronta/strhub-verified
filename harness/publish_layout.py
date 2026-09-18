@@ -151,14 +151,23 @@ def place(site: pathlib.Path, reports: pathlib.Path, slug: str,
     _copy_set(report_files(reports, slug), target)
     _backfill(report, target / f"{slug}.json", resolve)
 
+    newest_sha = write_alias(site, slug)
+    return {"slug": slug, "sha": sha, "alias": newest_sha,
+            "versions": [v_sha for v_sha, _ in scan(site, slug)]}
+
+
+def write_alias(site: pathlib.Path, slug: str) -> str | None:
+    """Point the root `<slug>.*` set at the newest commit's directory,
+    rewritten from scratch so nothing stale survives beside it. Returns the
+    commit the alias now names, or None when the slug has no directory."""
     versions = scan(site, slug)
+    if not versions:
+        return None
     newest_sha = versions[0][0]
-    # The alias, rewritten from scratch so nothing stale survives beside it.
     for f in report_files(site, slug):
         f.unlink()
     _copy_set(report_files(site / slug / newest_sha, slug), site)
-    return {"slug": slug, "sha": sha, "alias": newest_sha,
-            "versions": [v_sha for v_sha, _ in versions]}
+    return newest_sha
 
 
 def main() -> int:
