@@ -17,6 +17,13 @@ Two answers matter, and only one of them is a number:
               against something nobody can fetch, and THAT is a finding: the
               central claim of the badge is that anyone can go and check.
 
+And one date, which is not about the branch at all:
+
+  committed   when the pinned commit was made. It is the clock the history of
+              a tool runs on — verifying v2.0 today still puts v2.0 before
+              v2.5 — and the compare call already carries it, so it costs
+              nothing. See docs/PLAN-Version-History.md.
+
 Costs one or two API calls and no CI. Every failure returns None, and the report
 then says nothing: a guess about how current somebody's software is would be
 worse than the silence it replaces.
@@ -83,7 +90,7 @@ def check(repo_url: str, ref: str, token: str | None = None) -> dict | None:
         return {"checked": checked, "repo_exists": True, "ref_exists": False,
                 "default_branch": branch}
 
-    return {
+    out = {
         "checked": checked,
         "repo_exists": True,
         "ref_exists": True,
@@ -96,6 +103,35 @@ def check(repo_url: str, ref: str, token: str | None = None) -> dict | None:
         # us — which is precisely how far we are behind it.
         "behind_by": cmp_.get("ahead_by", 0),
     }
+    # base_commit is our ref, as GitHub resolved it. The committer date is the
+    # one GitHub shows and the one a rebase moves, so it is when the commit
+    # entered the history a reader can see.
+    committed = _commit_date(cmp_.get("base_commit"))
+    if committed:
+        out["committed"] = committed
+    return out
+
+
+def _commit_date(commit: dict | None) -> str | None:
+    c = ((commit or {}).get("commit") or {})
+    return (c.get("committer") or {}).get("date") or (c.get("author") or {}).get("date")
+
+
+def commit_date(repo_url: str, sha: str, token: str | None = None,
+                get=_get) -> str | None:
+    """When `sha` was committed, or None when GitHub cannot say.
+
+    For a report published before `committed` was recorded: the deploy backfills
+    it the first time it moves such a report into the per-commit layout, so an
+    old attestation never outranks a newer commit for want of a date."""
+    slug = repo_slug(repo_url)
+    if not slug or not sha.strip():
+        return None
+    token = token or os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    commit = get(f"/repos/{slug}/commits/{sha.strip()}", token)
+    if not commit or commit.get("__status__") == 404:
+        return None
+    return _commit_date(commit)
 
 
 def note(up: dict | None) -> str:

@@ -907,11 +907,18 @@ jobs:
       # strhub.app/verified — gh-pages IS production. The web backend always
       # dispatches with ref=main (VERIFIED_ENGINE_BRANCH), so real submissions are
       # unaffected; only branch-based testing is held back.
+      #
+      # The unit published is the tool AT A COMMIT (docs/PLAN-Version-History.md):
+      # the run's files go to <slug>/<sha>/ and the root <slug>.* set is an alias
+      # of the newest commit verified — newest by the commit's own date, so a
+      # commit older than the one published never displaces it, however much
+      # later it is verified. harness/publish_layout.py holds that rule.
       - id: deploy
         name: Deploy reports to GitHub Pages
         if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && steps.attest.outputs.publishable == 'true' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
+          SLUG: ${{ steps.attest.outputs.slug }}
         run: |
           set -e
           git config --global user.name "github-actions[bot]"
@@ -928,8 +935,9 @@ jobs:
             fi
             # Everything the run wrote, except the recipe attachment: what ran
             # is on main under tools/<slug>/, and the JSON copy is for the web
-            # to read out of the artifact, not a page to publish.
-            find reports -maxdepth 1 -type f ! -name '*.recipe.json' -exec cp -f {} "$tmp/" \;
+            # to read out of the artifact, not a page to publish. Placed by
+            # commit, with the alias pointing at the newest one.
+            python harness/publish_layout.py "$tmp" --reports reports --slug "$SLUG"
             touch "$tmp/.nojekyll"
             python harness/build_index.py "$tmp" --out "$tmp/index.html"
             git -C "$tmp" add -A
