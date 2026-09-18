@@ -326,7 +326,17 @@ _rule(
 )
 
 _rule(
-    r"(?:manifest for \S+ not found|manifest unknown|pull access denied for)",
+    r"unzip:\s+cannot find or open (\S+?),",
+    "error", "repo_file_missing",
+    "A file the build reads is not in the repository at this commit: {0}",
+    "The build step opens '{0}' from the checkout, and this commit does not have "
+    "it. If a documented install step generates or downloads it, that step has to "
+    "run first; if it was added to the repository later, this commit predates it.",
+)
+
+_rule(
+    # `toolimg:ci` is the image the build was meant to produce, not one to pull.
+    r"(?:manifest for \S+ not found|manifest unknown|pull access denied for (?!toolimg))",
     "error", "base_image_missing",
     "The base image could not be pulled",
     "STRhub chooses the base image for a generated container, so this is ours to "
@@ -524,7 +534,10 @@ AUTHOR_FIXABLE = {"bad_option", "cmd_not_found", "missing_module", "import_error
                   # The build the repository itself declares runs autoconf
                   # without `-i` (GangSTR's CMakeLists does this to htslib), so
                   # the failure is in those steps and the fix is one flag.
-                  "autotools_aux_missing"}
+                  "autotools_aux_missing",
+                  # A build step that reads a file the commit does not have
+                  # (STRspy's database zip, added six weeks after v2.0).
+                  "repo_file_missing"}
 
 # Ours. Not a fault of the tool or of the submission, and never something to ask
 # its author to fix — STRhub picks the base image for a generated container, so
