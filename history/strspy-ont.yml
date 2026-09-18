@@ -89,6 +89,13 @@ cases:
   - ref: dafdee7e7e5672c8dc732e8577dbe153f53a12f5
     label: "head of STRspy2.0 (2026-05-04 19:47), the README's own command"
     run: proposed
+    # The catalogue holds the curated run of this commit (the next case). This
+    # run is the same commit through the README's command; published, it would
+    # replace that row and the card with "Installs", which is true of the
+    # wrapper and not what the curated recipe established. The first run of
+    # this check did exactly that, on 2026-09-18, and the curated result had
+    # to be re-published.
+    publish: false
     because: >-
       Bug 1 as a new user meets it today: the wrapper at the head of the
       branch is the one from f7e0897, and exits on the same line.

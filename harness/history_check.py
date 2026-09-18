@@ -13,7 +13,9 @@ Cases live in history/<slug>.yml (see history/strspy-ont.yml). Two instruments:
 `committed` re-points the recipe under tools/<slug>/ at the commit (a curated
 environment; the run never publishes), `proposed` runs what a new user would
 get, the recipe the engine reads off the repository at that commit (publishes
-on the usual terms, and lands in the tool's history as the commit it is).
+on the usual terms, and lands in the tool's history as the commit it is —
+unless the case says `publish: false`, for a commit whose curated result the
+catalogue should keep).
 
 Three steps, so the workflow can wait between them:
 
@@ -93,6 +95,10 @@ def dispatch(doc: dict, run=subprocess.run) -> list[dict]:
             cmd += ["-f", f"recipe={r['recipe_b64']}"]
         else:
             cmd += ["-f", f"repo={doc['repo']}", "-f", f"ref={case['ref']}"]
+            # A proposed case at a commit the catalogue holds a curated result
+            # for must not replace it: both runs are true, one is the card's.
+            if case.get("publish") is False:
+                cmd += ["-f", "publish=false"]
         res = run(cmd, capture_output=True, text=True)
         out.append({
             "id": case_id(doc, case), "dispatch_id": did, "tool": tool,

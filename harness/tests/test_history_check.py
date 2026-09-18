@@ -138,3 +138,24 @@ def test_the_committed_cases_read_and_validate():
     assert {c["run"] for c in doc["cases"]} == {"committed", "proposed"}
     assert all(len(c["ref"]) == 40 for c in doc["cases"])
     assert (ROOT / "tools" / doc["tool"] / "manifest.yml").is_file()
+
+
+def test_a_proposed_case_can_decline_to_publish():
+    """The head of STRspy2.0 has a curated result in the catalogue; the same
+    commit through the README's command must not replace it. The first run
+    of the check did, and the curated result had to be re-published."""
+    calls = []
+
+    def run(cmd, **kw):
+        calls.append(cmd)
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    doc = _doc(cases=[
+        {"ref": SHA_B, "run": "proposed", "publish": False, "expect": {}},
+        {"ref": SHA_A, "run": "proposed", "expect": {}},
+        {"ref": SHA_B, "run": "committed", "expect": {}},
+    ])
+    hc.dispatch(doc, run=run)
+    assert "publish=false" in calls[0]
+    assert "publish=false" not in calls[1]          # publishes on the usual terms
+    assert "publish=false" not in calls[2]          # a committed case never publishes anyway
