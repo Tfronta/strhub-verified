@@ -20,6 +20,16 @@ source:
 # and the report has to attribute them that way.
 submission:
   by: third_party
+# Written by STRhub, not read off the repository: a note under the documented
+# result, never the badge. Each workaround is a departure from the README a
+# first-time user would have to discover (docs/PLAN-Documented-Is-The-Badge.md).
+recipe:
+  origin: curated
+  workarounds:
+    - what: "Builds with make (falling back to cmake) and copies str8rzr to /usr/local/bin."
+      instead_of: "The README's build steps, which name no install location."
+    - what: "Picks the PowerSeq kit configuration (PowerSeqv2.31.config) and the STRhub fixture for it."
+      instead_of: "A configuration and input the README leaves to the user; the repository ships several kit configurations."
 report:
   slug: "strait-razor-powerseq"   # distinct badge per assay/config variant
 

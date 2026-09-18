@@ -1,0 +1,99 @@
+"""Which instrument a run is, and what each rendering says about it.
+
+The badge may rest only on a run of the repository's own instructions or of
+a recipe the maintainer submitted; a recipe STRhub wrote is a note under the
+documented result, and every copy of the report says so and lists what that
+recipe did that the README does not."""
+import html
+import json
+import pathlib
+import subprocess
+import sys
+
+import yaml
+
+import certificate_text as ct
+import report
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+
+
+def test_the_instrument_comes_from_recipe_origin_and_is_derived_for_older_manifests():
+    assert ct.instrument_of({"recipe": {"origin": "proposed"}}) == "documented"
+    assert ct.instrument_of({"recipe": {"origin": "maintainer"}}) == "maintainer"
+    assert ct.instrument_of({"recipe": {"origin": "curated"}}) == "curated"
+    # Before recipe.origin: detect_recipe's notes mean a proposal; the
+    # maintainer's submission is theirs; anything else STRhub wrote by hand.
+    assert ct.instrument_of({"caveats": {"source": "detect_recipe", "items": []}}) == "documented"
+    assert ct.instrument_of({"submission": {"by": "maintainer"}}) == "maintainer"
+    assert ct.instrument_of({"submission": {"by": "third_party"}}) == "curated"
+    assert ct.instrument_of({}) == "curated"
+    # A published report carries it; one from before is read the same way.
+    assert ct.instrument_of_report({"instrument": "documented"}) == "documented"
+    assert ct.instrument_of_report({"caveats": {"source": "detect_recipe"}}) == "documented"
+
+
+def test_every_recipe_strhub_wrote_declares_itself_and_its_workarounds():
+    for m in sorted((ROOT / "tools").glob("*/manifest.yml")):
+        doc = yaml.safe_load(m.read_text())
+        assert doc["recipe"]["origin"] == "curated", m
+        assert doc["recipe"]["workarounds"], f"{m}: a curated recipe lists what it does that the README does not"
+        for w in doc["recipe"]["workarounds"]:
+            assert w["what"] and w["instead_of"], m
+
+
+def _report(instrument, workarounds=None):
+    r = {"schema": "strhub-verified/1", "tool": {"name": "STRspy", "version": "v2.0"}, "level": "io",
+         "gates": {"available": True, "installs": True, "runs": True, "io": True, "content": False},
+         "source": {"repo": "https://github.com/unique379r/strspy", "ref_resolved": "dafdee7"},
+         "environment": {"dockerfile": "Dockerfile", "os": ["ubuntu-22.04"]},
+         "generated": "2026-09-18T13:38:00+00:00", "scope": report.SCOPE,
+         "instrument": instrument, "recipe": {"origin": {"documented": "proposed"}.get(instrument, instrument)}}
+    if workarounds:
+        r["recipe"]["workarounds"] = workarounds
+    return r
+
+
+WORKAROUNDS = [{"what": "Runs src/STRspy_Normal_v2.0_Args.sh directly.",
+                "instead_of": "The wrapper, the only documented command.",
+                "why": "The wrapper checks the repository root for scripts that live in src/ and exits."}]
+
+
+def test_a_curated_report_names_its_instrument_and_lists_the_workarounds_in_both_summaries():
+    r = _report("curated", WORKAROUNDS)
+    for text in (report._summary_md(r, "strspy-ont"), html.unescape(report._summary_html(r, "strspy-ont"))):
+        assert "a recipe STRhub wrote by hand" in text and "never the badge" in text
+        assert ct.CURATED_HEADING in text
+        assert "Runs src/STRspy_Normal_v2.0_Args.sh directly." in text
+        assert "instead of: The wrapper, the only documented command." in text
+
+
+def test_a_documented_report_says_so_and_carries_no_workaround_section():
+    r = _report("documented")
+    for text in (report._summary_md(r, "strspy-ont"), html.unescape(report._summary_html(r, "strspy-ont"))):
+        assert "the repository's own instructions" in text
+        assert ct.CURATED_HEADING not in text
+
+
+def test_the_badge_of_a_curated_run_says_whose_recipe_it_was(tmp_path):
+    """The badge travels alone; a green one from a recipe STRhub wrote must
+    not read as the tool's own. Run report.py end to end on the STRspy
+    manifest with every gate passed and read the badge it writes."""
+    manifest = ROOT / "tools" / "strspy-ont" / "manifest.yml"
+    env = {"PATH": "/usr/bin:/bin", "HOME": str(tmp_path)}
+    res = subprocess.run([sys.executable, str(ROOT / "harness" / "report.py"), "--manifest", str(manifest),
+                          "--available", "pass", "--installs", "pass", "--runs", "pass",
+                          "--io", str(tmp_path / "no-io.json"), "--content", str(tmp_path / "no-content.json"),
+                          "--matrix", str(tmp_path / "no-matrix.json"), "--readme", str(tmp_path / "no-readme.json"),
+                          "--example", str(tmp_path / "no-example.json"),
+                          "--regions-validation", str(tmp_path / "no-regions.json")],
+                         cwd=str(ROOT), capture_output=True, text=True, env=env)
+    assert res.returncode == 0, res.stderr
+    written = json.loads((ROOT / "reports" / "strspy-ont.json").read_text())
+    badge = json.loads((ROOT / "reports" / "strspy-ont.badge.json").read_text())
+    for p in (ROOT / "reports").glob("strspy-ont.*"):
+        p.unlink()
+    assert written["instrument"] == "curated"
+    assert written["recipe"]["origin"] == "curated" and len(written["recipe"]["workarounds"]) == 4
+    assert badge["message"].endswith("· STRhub's recipe")
+    assert any("written by STRhub" in n for n in written["needed_beyond_repo"])

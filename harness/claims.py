@@ -114,6 +114,8 @@ REGISTER: dict[str, tuple[str, str]] = {
     # plan B) the ready-made environment is the one every gate then ran on.
     "dbdbe7fb4255": ("report", "gates"),             # STRhub tried to build the tool from its source at the pinned commit, following the build steps…
     "35f9c68e90d8": ("certificate_text", "gates"),   # A build from source at this commit fails in a clean environment; … the ready-made environment … does work
+    # A curated recipe is STRhub's own configuration, and the sentence says so.
+    "53513dfccf9b": ("certificate_text", "run"),               # A container environment and a command written by STRhub, not taken from the repository's instructions…
 }
 
 #: Phrasings that may never be published, whatever evidence is attached: they

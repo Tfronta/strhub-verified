@@ -18,6 +18,17 @@ source:
 # and the report has to attribute them that way.
 submission:
   by: third_party
+# Written by STRhub, not read off the repository: a note under the documented
+# result, never the badge. Each workaround is a departure from the README a
+# first-time user would have to discover (docs/PLAN-Documented-Is-The-Badge.md).
+recipe:
+  origin: curated
+  workarounds:
+    - what: "Runs HipSTR with flags tuned to STRhub's reference slice (--min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250)."
+      instead_of: "The README's command, which has none of them."
+      why: "On a BAM slice around the panel loci most mates fall outside the slice and read quality trims most reads; without these flags nearly every locus is skipped."
+    - what: "Supplies the Y-STR regions BED from STRhub's library."
+      instead_of: "A regions file the README leaves to the user."
 report:
   slug: "hipstr-y"
 environment:

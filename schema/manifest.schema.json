@@ -214,6 +214,29 @@
         "prompt_version": { "type": "integer", "minimum": 1, "description": "Version of the instructions it was given." },
         "items": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "type": "string", "maxLength": 300 } }
       }
+    },
+    "recipe": {
+      "type": "object",
+      "description": "OPTIONAL. Where this recipe came from, and what it does that the repository's own instructions do not. The badge says a tool installs and runs from its public source at the pinned commit; only a recipe read off the repository ('proposed') or handed in by the tool's maintainer ('maintainer') can stand behind that. A recipe somebody else wrote by hand ('curated' — STRhub, for the tools it filled the catalogue with) is a note under the documented result, never the badge. See docs/PLAN-Documented-Is-The-Badge.md.",
+      "required": ["origin"],
+      "additionalProperties": false,
+      "properties": {
+        "origin": { "type": "string", "enum": ["proposed", "maintainer", "curated"], "description": "'proposed' if detect_recipe read it off the repository in the run; 'maintainer' if the tool's maintainer submitted it; 'curated' if a third party wrote it by hand." },
+        "workarounds": {
+          "type": "array",
+          "description": "What a curated recipe does that the repository's instructions do not — each one a departure from the README a first-time user would have to discover, and so a recommendation to the author. Absent for a proposed recipe: it does only what it read.",
+          "items": {
+            "type": "object",
+            "required": ["what", "instead_of"],
+            "additionalProperties": false,
+            "properties": {
+              "what": { "type": "string", "maxLength": 300, "description": "What the recipe does." },
+              "instead_of": { "type": "string", "maxLength": 300, "description": "The documented step it replaces, or what the README leaves undocumented." },
+              "why": { "type": "string", "maxLength": 300, "description": "What goes wrong with the documented step." }
+            }
+          }
+        }
+      }
     }
   }
 }

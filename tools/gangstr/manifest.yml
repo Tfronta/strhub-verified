@@ -14,6 +14,17 @@ source:
 # and the report has to attribute them that way.
 submission:
   by: third_party
+# Written by STRhub, not read off the repository: a note under the documented
+# result, never the badge. Each workaround is a departure from the README a
+# first-time user would have to discover (docs/PLAN-Documented-Is-The-Badge.md).
+recipe:
+  origin: curated
+  workarounds:
+    - what: "Installs GangSTR 2.5.0 from bioconda, a prebuilt binary."
+      instead_of: "cmake .. && make from the source at the pinned commit, as the README documents."
+      why: "The documented build stops in htslib: the repository's CMakeLists runs autoreconf without -i (config.sub/config.guess missing). What ran is bioconda's build of 2.5.0, not this commit's source."
+    - what: "Supplies the regions BED from STRhub's library and the command-line flags STRhub chose for its reference slice."
+      instead_of: "A regions file and a command the README leaves to the user."
 report:
   slug: "gangstr"
 environment:

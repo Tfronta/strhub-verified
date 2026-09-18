@@ -322,6 +322,9 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         "tool": {"name": name, "version": version, "contact": f"{repo.rstrip('/')}/issues"},
         "submission": {"by": submitted_by},
         "source": {"repo": repo, "ref": ref},
+        # Read off the repository, so it may stand behind the badge; a recipe
+        # somebody wrote by hand may not (docs/PLAN-Documented-Is-The-Badge.md).
+        "recipe": {"origin": "proposed"},
         "report": {"slug": catalogue_slug(name, input_type)},
         "environment": env,
         "run": {"cmd": run_cmd, "timeout_minutes": 20},

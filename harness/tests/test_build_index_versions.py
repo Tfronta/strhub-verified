@@ -23,6 +23,18 @@ def test_the_catalogue_carries_every_commit_newest_first(tmp_path):
     assert old["committed"] == "2024-03-10T00:00:00Z" and old["generated"].startswith("2026-09-18")
     assert old["report"] == f"{SLUG}/{OLD}/{SLUG}.json" and old["pdf"] == f"{SLUG}/{OLD}/{SLUG}.pdf"
     assert (site / old["report"]).exists()
+    assert entry["instrument"] == "documented" and old["instrument"] == "documented"
+
+
+def test_a_curated_run_is_listed_as_one_with_its_own_paths(tmp_path):
+    site = tmp_path / "site"; site.mkdir()
+    pl.place(site, _run(tmp_path, NEW, "2026-02-01T00:00:00Z", "2026-09-01T00:00:00+00:00"), SLUG)
+    pl.place(site, _run(tmp_path, NEW, "2026-02-01T00:00:00Z", "2026-09-18T00:00:00+00:00", instrument="curated"), SLUG)
+    (entry,) = build_index.build_catalogue(site)["tools"]
+    assert entry["instrument"] == "documented"
+    assert [(v["sha"], v["instrument"]) for v in entry["versions"]] == [(NEW, "documented"), (NEW, "curated")]
+    assert entry["versions"][1]["report"] == f"{SLUG}/{NEW}/curated/{SLUG}.json"
+    assert (site / entry["versions"][1]["report"]).exists()
 
 
 def test_a_slug_published_before_the_layout_is_its_own_single_version(tmp_path):

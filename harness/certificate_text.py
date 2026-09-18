@@ -11,6 +11,57 @@ from __future__ import annotations
 import diagnose_log
 
 
+#: Which instrument a run is, and what the badge may rest on
+#: (docs/PLAN-Documented-Is-The-Badge.md). `documented` and `maintainer` may
+#: stand behind the badge; `curated` is a note under the documented result.
+INSTRUMENT_LINE = {
+    "documented": "the repository's own instructions, read off the README and the tree at the pinned commit",
+    "maintainer": "a recipe the tool's maintainer submitted",
+    "curated": "a recipe STRhub wrote by hand, not read off the repository: a note under the documented result, never the badge",
+}
+BADGE_INSTRUMENTS = ("documented", "maintainer")
+CURATED_HEADING = "What STRhub's recipe does that the repository's instructions do not"
+CURATED_LEAD = ("This run used a recipe STRhub wrote. Each item below is a departure from "
+                "the README that a first-time user would have to discover for themselves. "
+                "The badge rests on the run of the repository's own instructions, not on this one.")
+CURATED_NEEDED = ("A container environment and a command written by STRhub, not taken from the "
+                  "repository's instructions; what they do differently is listed under the recipe.")
+
+
+def instrument_of(m: dict) -> str:
+    """`documented` | `maintainer` | `curated`, from the manifest's recipe.origin;
+    for a manifest from before that field, derived: proposed if detect_recipe
+    wrote its notes, the maintainer's if the submission says so, curated
+    otherwise — which is every recipe STRhub wrote to fill the catalogue."""
+    origin = (m.get("recipe") or {}).get("origin")
+    if origin == "proposed":
+        return "documented"
+    if origin in ("maintainer", "curated"):
+        return origin
+    if (m.get("caveats") or {}).get("source") == "detect_recipe":
+        return "documented"
+    if (m.get("submission") or {}).get("by") == "maintainer":
+        return "maintainer"
+    return "curated"
+
+
+def instrument_of_report(report: dict) -> str:
+    """The same reading for a published report, which carries `instrument`
+    since this plan and can only be derived before it."""
+    return report.get("instrument") or instrument_of(report)
+
+
+def workaround_lines(report: dict) -> list[str]:
+    """One line per workaround of a curated recipe, for any rendering."""
+    out = []
+    for w in ((report.get("recipe") or {}).get("workarounds") or []):
+        line = f"{w.get('what', '')} — instead of: {w.get('instead_of', '')}"
+        if w.get("why"):
+            line += f" {w['why']}"
+        out.append(line)
+    return out
+
+
 def test_data_item(cfg: dict, ds_name: str) -> tuple[str, str]:
     """What the run used for input, and — only on evidence — whether the
     repository ships any of its own.

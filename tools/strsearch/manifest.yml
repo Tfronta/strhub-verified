@@ -12,6 +12,23 @@ source:
   ref: c70179b3b175adc82a7314409af06900b3861d61
 submission:
   by: third_party
+# Written by STRhub, not read off the repository: a note under the documented
+# result, never the badge. Each workaround is a departure from the README a
+# first-time user would have to discover (docs/PLAN-Documented-Is-The-Badge.md).
+recipe:
+  origin: curated
+  workarounds:
+    - what: "Builds the environment on ubuntu 22.04 at the version floors the README declares (bwa, samtools, bamToFastq, seqtk)."
+      instead_of: "The repository's own Dockerfile: ubuntu 16.04 with exact pins and Miniconda 4.3.31."
+      why: "The pinned stack no longer resolves."
+    - what: "Fills in conf.py with the paths of the installed tools."
+      instead_of: "conf.py as shipped, with 'YOUR PATH/...' placeholders the user is to replace."
+    - what: "Leaves usearch out."
+      instead_of: "usearch, which conf.py names."
+      why: "Licensed and unobtainable; only --assemble_pairs reaches it, and this run does not use it."
+    - what: "Supplies an hg38 regions configuration in STRsearch's eleven-column layout, with flanking sequences, written by STRhub."
+      instead_of: "The repository's example, which is hg19 and covers five markers."
+      why: "No hg38 configuration ships with the repository."
 report:
   slug: "strsearch"
 environment:

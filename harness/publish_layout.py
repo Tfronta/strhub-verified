@@ -13,11 +13,20 @@ someone verifying the first commit of STRspy v2 from strhub.app would have
 replaced the current attestation with a two-year-old one. Now it lands below.
 See docs/PLAN-Version-History.md.
 
+Within a commit's directory there are two places (docs/PLAN-Documented-Is-
+The-Badge.md): the files at `<slug>/<sha>/` are the run of the repository's
+own instructions (or of a recipe its maintainer submitted), which may stand
+behind the badge; `<slug>/<sha>/curated/` holds the run of a recipe STRhub
+wrote by hand, a note that never does. The alias is the newest commit AMONG
+THE RUNS THAT MAY STAND BEHIND THE BADGE; only a tool that has none falls
+back to its newest curated run, and its badge then says so.
+
 What holds it (harness/tests/test_publish_layout.py): a newer commit published
 later becomes the alias; an older one does not move it; the same commit
-re-verified replaces its directory; a root set from before this layout is
-folded into its directory first, with its commit date fetched when missing,
-and competes as an equal; no commit directory is ever deleted.
+re-verified replaces its files; a curated run never displaces a documented
+one, at any commit; a root set from before this layout is folded into its
+place first, with its commit date fetched when missing, and competes as an
+equal; no commit directory is ever deleted.
 
 Usage (the deploy step, from a clone of gh-pages):
     python harness/publish_layout.py <site> --reports reports --slug hipstr
@@ -33,6 +42,9 @@ from typing import Callable
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import upstream  # noqa: E402
+from certificate_text import instrument_of_report, BADGE_INSTRUMENTS  # noqa: E402
+
+CURATED_DIR = "curated"
 
 #: How a report is looked up under its directory: the same stem the run wrote.
 Resolver = Callable[[str, str], "str | None"]
@@ -87,6 +99,12 @@ def _backfill(report: dict, path: pathlib.Path, resolve: Resolver | None) -> Non
         path.write_text(json.dumps(report, indent=2))
 
 
+def place_of(site: pathlib.Path, slug: str, sha: str, instrument: str) -> pathlib.Path:
+    """Where a run of `instrument` at `sha` lives."""
+    base = site / slug / sha
+    return base if instrument in BADGE_INSTRUMENTS else base / CURATED_DIR
+
+
 def _move_set(files: list[pathlib.Path], dest: pathlib.Path) -> None:
     dest.mkdir(parents=True, exist_ok=True)
     for f in files:
@@ -109,24 +127,64 @@ def fold_root(site: pathlib.Path, slug: str, resolve: Resolver | None = None) ->
     root_json = site / f"{slug}.json"
     report = _read(root_json) if root_json.exists() else None
     sha = sha_of(report) if report else None
-    if not report or not sha or (site / slug / sha).is_dir():
+    if not report or not sha:
         return None
-    _move_set(report_files(site, slug), site / slug / sha)
-    _backfill(report, site / slug / sha / f"{slug}.json", resolve)
+    dest = place_of(site, slug, sha, instrument_of_report(report))
+    if (dest / f"{slug}.json").exists():
+        return None
+    _move_set(report_files(site, slug), dest)
+    _backfill(report, dest / f"{slug}.json", resolve)
     return sha
 
 
-def scan(site: pathlib.Path, slug: str) -> list[tuple[str, dict]]:
-    """Every commit of `slug` with its report, newest commit first."""
+def settle(site: pathlib.Path, slug: str, sha: str) -> bool:
+    """Put a commit's runs where their instrument says. A set published at
+    `<slug>/<sha>/` before instruments existed may be a curated run; it moves
+    to `curated/` so a documented run of the same commit can land beside it
+    instead of over it. Returns True when something moved."""
+    base = site / slug / sha
+    r = _read(base / f"{slug}.json")
+    if not r or instrument_of_report(r) in BADGE_INSTRUMENTS:
+        return False
+    if (base / CURATED_DIR / f"{slug}.json").exists():
+        return False        # a curated run is already there; leave both to be looked at
+    _move_set(report_files(base, slug), base / CURATED_DIR)
+    return True
+
+
+def scan(site: pathlib.Path, slug: str) -> list[tuple[str, str, dict]]:
+    """Every run of `slug`: (sha, instrument, report), newest commit first,
+    and at one commit the run that may stand behind the badge before the
+    curated one. Reads what is there; `settle` is what puts it in place."""
     found = []
     base = site / slug
     if base.is_dir():
         for d in sorted(base.iterdir()):
-            r = _read(d / f"{slug}.json") if d.is_dir() else None
+            if not d.is_dir():
+                continue
+            r = _read(d / f"{slug}.json")
             if r:
-                found.append((d.name, r))
-    found.sort(key=lambda item: rank(item[1]), reverse=True)
+                found.append((d.name, instrument_of_report(r), r))
+            c = _read(d / CURATED_DIR / f"{slug}.json")
+            if c:
+                found.append((d.name, "curated", c))
+    # Newest commit first; at one commit, the run that may stand behind the
+    # badge before the curated one, whichever was verified later.
+    def key(item):
+        sha, instrument, r = item
+        src = r.get("source") or {}
+        committed = src.get("committed") or ""
+        return (bool(committed), committed, instrument in BADGE_INSTRUMENTS, r.get("generated") or "")
+    found.sort(key=key, reverse=True)
     return found
+
+
+def alias_source(site: pathlib.Path, slug: str) -> tuple[str, str, dict] | None:
+    """The run the root alias copies: the newest commit among the runs that
+    may stand behind the badge; failing any, the newest curated run."""
+    runs = scan(site, slug)
+    eligible = [r for r in runs if r[1] in BADGE_INSTRUMENTS]
+    return (eligible or runs or [None])[0]
 
 
 def place(site: pathlib.Path, reports: pathlib.Path, slug: str,
@@ -143,43 +201,79 @@ def place(site: pathlib.Path, reports: pathlib.Path, slug: str,
 
     fold_root(site, slug, resolve)
 
-    # This run's directory, replaced whole: a re-verification of the same
-    # commit must not keep a log the new run did not write.
-    target = site / slug / sha
-    if target.is_dir():
-        shutil.rmtree(target)
+    # This run's files, replaced whole: a re-verification of the same commit
+    # must not keep a log the new run did not write. Files only — the other
+    # instrument's run of the same commit lives in a subdirectory and stays.
+    instrument = instrument_of_report(report)
+    settle(site, slug, sha)
+    target = place_of(site, slug, sha, instrument)
+    target.mkdir(parents=True, exist_ok=True)
+    for f in report_files(target, slug):
+        f.unlink()
     _copy_set(report_files(reports, slug), target)
     _backfill(report, target / f"{slug}.json", resolve)
 
-    newest_sha = write_alias(site, slug)
-    return {"slug": slug, "sha": sha, "alias": newest_sha,
-            "versions": [v_sha for v_sha, _ in scan(site, slug)]}
+    alias = write_alias(site, slug)
+    return {"slug": slug, "sha": sha, "instrument": instrument,
+            "alias": alias[0] if alias else None,
+            "alias_instrument": alias[1] if alias else None,
+            "versions": [(v_sha, v_inst) for v_sha, v_inst, _ in scan(site, slug)]}
 
 
-def write_alias(site: pathlib.Path, slug: str) -> str | None:
-    """Point the root `<slug>.*` set at the newest commit's directory,
-    rewritten from scratch so nothing stale survives beside it. Returns the
-    commit the alias now names, or None when the slug has no directory."""
-    versions = scan(site, slug)
-    if not versions:
+def write_alias(site: pathlib.Path, slug: str) -> tuple[str, str] | None:
+    """Point the root `<slug>.*` set at the run the badge may rest on (see
+    alias_source), rewritten from scratch so nothing stale survives beside it.
+    Every commit is settled first. Returns (sha, instrument) of the alias, or
+    None when the slug has no run."""
+    base = site / slug
+    if base.is_dir():
+        for d in sorted(base.iterdir()):
+            if d.is_dir():
+                settle(site, slug, d.name)
+    src = alias_source(site, slug)
+    if not src:
         return None
-    newest_sha = versions[0][0]
+    sha, instrument, _ = src
     for f in report_files(site, slug):
         f.unlink()
-    _copy_set(report_files(site / slug / newest_sha, slug), site)
-    return newest_sha
+    _copy_set(report_files(place_of(site, slug, sha, instrument), slug), site)
+    return sha, instrument
+
+
+def settle_all(site: pathlib.Path) -> list[tuple[str, str, str]]:
+    """Every slug on the site: put each commit's runs where their instrument
+    says and rewrite the alias by the rule. For the day the rule changes —
+    once, by hand, after docs/PLAN-Documented-Is-The-Badge.md — and harmless
+    any other day. Returns (slug, alias sha, alias instrument) per slug."""
+    out = []
+    for d in sorted(site.iterdir()):
+        if d.is_dir() and not d.name.startswith(".") and (site / f"{d.name}.json").exists():
+            alias = write_alias(site, d.name)
+            if alias:
+                out.append((d.name, alias[0], alias[1]))
+    return out
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("site", help="a clone of gh-pages")
     ap.add_argument("--reports", default="reports", help="the run's reports/ directory")
-    ap.add_argument("--slug", required=True, help="the slug the run published as")
+    ap.add_argument("--slug", help="the slug the run published as")
+    ap.add_argument("--settle-all", action="store_true",
+                    help="no run: settle every slug's runs by instrument and rewrite every alias")
     args = ap.parse_args()
+    if args.settle_all:
+        for slug, sha, instrument in settle_all(pathlib.Path(args.site)):
+            print(f"{slug}: alias {sha[:7]} ({instrument})")
+        return 0
+    if not args.slug:
+        ap.error("--slug is required unless --settle-all")
     done = place(pathlib.Path(args.site), pathlib.Path(args.reports), args.slug,
                  resolve=upstream.commit_date)
-    moved = "" if done["alias"] == done["sha"] else f" (alias stays at {done['alias'][:7]}: a newer commit)"
-    print(f"{done['slug']} @ {done['sha'][:7]} placed; {len(done['versions'])} commit(s) known{moved}")
+    where = "" if done["alias"] == done["sha"] and done["alias_instrument"] == done["instrument"] \
+        else f" (alias stays at {done['alias'][:7]} {done['alias_instrument']})"
+    print(f"{done['slug']} @ {done['sha'][:7]} placed as {done['instrument']}; "
+          f"{len(done['versions'])} run(s) known{where}")
     return 0
 
 

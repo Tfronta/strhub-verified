@@ -223,6 +223,28 @@ jobs:
               subprocess.run(["gh", "issue", "create", "--title", title, "--body", body, "--label", "upstream"], check=False)
           PY
 
+  # The documented instrument, once a month, for every tool whose only
+  # recipe is STRhub's: a trial from the repository's URL at the pinned
+  # commit, published on the usual terms, which is what the badge rests on
+  # (docs/PLAN-Documented-Is-The-Badge.md). The curated runs in the matrix
+  # below land under curated/ as notes.
+  documented:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: write        # dispatches the trials
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install -q pyyaml
+      - name: Dispatch a trial of the repository's own instructions for every curated tool
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python harness/documented_refresh.py --dispatch --json documented.json
+
   verify:
     needs: resolve
     runs-on: ubuntu-22.04   # free, unlimited on public repos
@@ -816,7 +838,7 @@ jobs:
           may_publish = (os.environ.get("MODE") != "trial"
                          or (os.environ.get("URL_TRIAL") == "true"
                              and os.environ.get("TRIAL_PUBLISH", "true") != "false"))
-          publishable = (verdict in ("runs", "fails") and may_publish
+          publishable = (verdict in ("runs", "fails", "undetermined") and may_publish
                          and os.environ.get("EVENT_NAME") != "pull_request")
           print(f"verdict={verdict}")
           print(f"slug={slug}")
@@ -902,13 +924,18 @@ jobs:
       # What gets published is decided by the VERDICT, not by how the run was
       # triggered: a run whose verdict is "runs" or "fails" is a fact about the
       # tool and is published as such — a tool that does not build at the
-      # cited commit is a result a reviewer needs. "out_of_scope" (our
-      # environment cannot run it) and "undetermined" (the recipe could not be
-      # worked out) say nothing attributable to the tool, and are never
-      # deployed: the catalogue must not carry our limitation as the tool's
-      # failure. That split is the engine's own (harness/verdict.py, on
-      # diagnose_log's disjoint fault classes), so the gate reads it back
-      # rather than re-deriving it here.
+      # cited commit is a result a reviewer needs. "undetermined" (the
+      # repository's instructions do not say enough to run it) is a fact about
+      # the documentation, and publishes as that: the card and the page lead
+      # with "could not be determined" and what the README does not say, never
+      # with a level, so a stranger's first-day experience is on record without
+      # being read as the tool's failure (docs/PLAN-Documented-Is-The-Badge.md,
+      # tanda 5b). "out_of_scope" (our environment cannot run it) says nothing
+      # attributable to the tool or its documentation, and is never deployed:
+      # the catalogue must not carry our limitation as anyone's failure. That
+      # split is the engine's own (harness/verdict.py, on diagnose_log's
+      # disjoint fault classes), so the gate reads it back rather than
+      # re-deriving it here.
       #
       # A trial from a URL publishes on the same terms as a scheduled
       # re-verification: anyone may start one, and whoever started it, the

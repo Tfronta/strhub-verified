@@ -144,7 +144,7 @@ def plan(site: pathlib.Path) -> list[dict]:
     for legacy, target, sha, report in entries:
         if not sha:
             steps.append({"legacy": legacy, "action": "skip", "why": "no pinned commit"})
-        elif (site / target / sha).is_dir():
+        elif (pl.place_of(site, target, sha, pl.instrument_of_report(report)) / f"{target}.json").exists():
             steps.append({"legacy": legacy, "target": target, "sha": sha, "action": "drop",
                           "why": f"{target}/{sha[:7]} is already published by commit"})
         elif winners[(target, sha)][0] != legacy:
@@ -165,7 +165,8 @@ def migrate(site: pathlib.Path, resolve: pl.Resolver | None = None, apply: bool 
     if apply:
         for s in steps:
             if s["action"] == "move":
-                dest = site / s["target"] / s["sha"]
+                report = pl._read(site / f"{s['legacy']}.json")
+                dest = pl.place_of(site, s["target"], s["sha"], pl.instrument_of_report(report))
                 pl._move_set(pl.report_files(site, s["legacy"]), dest)
                 _retitle(dest, s["legacy"], s["target"])
                 report = pl._read(dest / f"{s['target']}.json")

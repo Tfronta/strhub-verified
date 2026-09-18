@@ -1,0 +1,35 @@
+name: Documented refresh
+
+# The badge may rest only on a run of the repository's own instructions (or of
+# a recipe its maintainer submitted). Every tool whose only recipe is one
+# STRhub wrote gets a trial from its repository's URL at the same pinned
+# commit; the result publishes on the usual terms and takes the alias.
+# docs/PLAN-Documented-Is-The-Badge.md. The monthly schedule does the same
+# (see the `documented` job in verify.yml); this is the by-hand version.
+on:
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  documented:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: write        # dispatches the trials
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install -q pyyaml
+      - name: Dispatch a trial of the repository's own instructions for every curated tool
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python harness/documented_refresh.py --dispatch --json documented.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: documented-refresh
+          path: documented.json
+          retention-days: 30
