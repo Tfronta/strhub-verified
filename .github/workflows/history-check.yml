@@ -1,0 +1,85 @@
+name: History check
+
+# A tool's history, held to what its issues say (docs/PLAN-Version-History.md,
+# tanda 4; harness/history_check.py). Every case in history/<slug>.yml is one
+# commit of the tool with what the issue says it should do; each is run as a
+# trial of the verify workflow, and the result is held to the expectation.
+# Where they disagree, either the expectation was wrong or the engine misses
+# what a person found — and the summary says which case, so the note can be
+# written from it.
+#
+# Dispatched by hand, never by a pull request: every case is a container
+# build and a run, minutes each, and a check nobody asked for would spend
+# an hour of CI on every push to history/.
+on:
+  workflow_dispatch:
+    inputs:
+      cases:
+        description: "history/<slug>.yml to run (default: every file under history/)"
+        type: string
+        required: false
+        default: ""
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      actions: write        # dispatches the trials, lists their runs, downloads their artifacts
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install -q pyyaml
+
+      # One trial per case. A `committed` case re-points tools/<slug>/ at the
+      # commit (never publishes); a `proposed` case is a trial from the URL,
+      # which publishes on the usual terms and lands in the tool's history.
+      - name: Dispatch one trial per case
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CASES: ${{ github.event.inputs.cases }}
+        run: |
+          set -e
+          files="$CASES"
+          [ -n "$files" ] || files="$(ls history/*.yml)"
+          for f in $files; do
+            python harness/history_check.py dispatch "$f" --out "dispatched-$(basename "$f" .yml).json"
+          done
+
+      - name: Wait for the trials and download their artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rc=0
+          for d in dispatched-*.json; do
+            python harness/history_check.py wait "$d" --results results --timeout-minutes 120 || rc=1
+          done
+          exit $rc
+
+      # The table goes on the run's summary page; the job fails when any case
+      # misses its expectation, which is the point of running it.
+      - name: Hold each result to its case
+        if: always()
+        run: |
+          rc=0
+          for d in dispatched-*.json; do
+            slug="$(basename "$d" .json | sed 's/^dispatched-//')"
+            python harness/history_check.py evaluate "history/$slug.yml" --results results --summary "summary-$slug.md" || rc=1
+            cat "summary-$slug.md" >> "$GITHUB_STEP_SUMMARY"
+          done
+          exit $rc
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: history-check
+          path: |
+            results/
+            dispatched-*.json
+            summary-*.md
+          retention-days: 90
