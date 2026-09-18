@@ -813,6 +813,13 @@ def main() -> int:
     if args.check_upstream:
         up = upstream.check(m["source"]["repo"], args.ref or m["source"]["ref"])
         if up:
+            # When the pinned commit was made: a fact about the source, not
+            # about where the branch has gone since, so it lives with the
+            # source. It is what orders a tool's history (docs/PLAN-Version-
+            # History.md); a report that lacks it is one from before.
+            committed = up.pop("committed", None)
+            if committed:
+                report["source"]["committed"] = committed
             report["upstream"] = up
 
     # What the run needed that the repository does not provide.

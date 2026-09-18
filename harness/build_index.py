@@ -5,7 +5,10 @@ Scans the directory for attestation JSONs (skipping *.badge.json) and renders:
   - index.html : a human landing page (cards + badges, links to <slug>.html)
   - index.json : a compact catalogue (one summary entry per tool) that external
                  consumers — e.g. the STRhub web dashboard — read to list the
-                 verified tools without fetching every full report.
+                 verified tools without fetching every full report. Each entry
+                 is the tool at its newest verified commit (the root alias),
+                 and carries `versions`: every commit verified, newest first,
+                 from `<slug>/<sha>/` (see publish_layout.py).
 
 Usage:
   python harness/build_index.py reports --out reports/index.html
@@ -16,6 +19,10 @@ import datetime as dt
 import html
 import json
 import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import publish_layout  # noqa: E402
 
 LABELS = {"none": "not run", "available": "Available", "installs": "Installs",
           "runs": "Runs", "io": "Runs + Expected IO",
@@ -97,6 +104,10 @@ def _summary_entry(slug: str, r: dict) -> dict:
         "version": tool.get("version"),
         "variant": tool.get("variant"),
         "sha": ref,
+        # When that commit was made: the clock a tool's history runs on, as
+        # distinct from `generated`, which is when it was verified. Absent on
+        # reports from before it was recorded.
+        "committed": r.get("source", {}).get("committed"),
         "level": level,
         "label": LABELS.get(level, "not run"),
         # One of runs / fails / undetermined / out_of_scope. Only the first two
@@ -121,15 +132,52 @@ def _summary_entry(slug: str, r: dict) -> dict:
     }
 
 
+def _version_entry(slug: str, sha: str | None, r: dict, prefix: str) -> dict:
+    """One row of a tool's history: the commit, both dates, the result, and
+    where its files are. `prefix` is the directory the set lives in, or ""
+    for a set that only exists at the root (published before the layout)."""
+    e = _summary_entry(slug, r)
+    return {
+        "sha": sha,
+        "version": e["version"],
+        "variant": e["variant"],
+        "committed": e["committed"],
+        "generated": e["generated"],
+        "level": e["level"],
+        "label": e["label"],
+        "verdict": e["verdict"],
+        "errors_reported": e["errors_reported"],
+        "ci_run": e["ci_run"],
+        "report": f"{prefix}{slug}.json",
+        "page": f"{prefix}{slug}.html",
+        "pdf": f"{prefix}{slug}.pdf",
+    }
+
+
+def versions_of(reports: pathlib.Path, slug: str, root: dict) -> list[dict]:
+    """Every commit verified for `slug`, newest commit first. A slug with no
+    directory yet is its own single version, at the root."""
+    found = publish_layout.scan(reports, slug)
+    if not found:
+        return [_version_entry(slug, root.get("source", {}).get("ref_resolved"), root, "")]
+    return [_version_entry(slug, sha, r, f"{slug}/{sha}/") for sha, r in found]
+
+
 def build_catalogue(reports: pathlib.Path) -> dict:
     """The index.json payload: a versioned list of tool summaries."""
     items = _load(reports)
+    tools = []
+    for slug, r in items:
+        entry = _summary_entry(slug, r)
+        entry["versions"] = versions_of(reports, slug, r)
+        tools.append(entry)
     return {
-        # /2: entries carry version, variant, sha and verdict.
-        "schema": "strhub-verified/index/2",
+        # /3: entries carry `committed` and `versions` (every commit verified,
+        # newest commit first). /2 carried version, variant, sha and verdict.
+        "schema": "strhub-verified/index/3",
         "generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "count": len(items),
-        "tools": [_summary_entry(slug, r) for slug, r in items],
+        "tools": tools,
     }
 
 
