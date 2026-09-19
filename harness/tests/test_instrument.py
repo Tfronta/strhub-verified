@@ -70,20 +70,44 @@ WORKAROUNDS = [{"what": "Runs src/STRspy_Normal_v2.0_Args.sh directly.",
                 "why": "The wrapper checks the repository root for scripts that live in src/ and exits."}]
 
 
-def test_a_curated_report_names_its_instrument_and_lists_the_workarounds_in_both_summaries():
+def test_a_curated_report_opens_with_what_strhub_had_to_do_and_is_not_verified_as_documented():
     r = _report("curated", WORKAROUNDS)
     for text in (report._summary_md(r, "strspy-ont"), html.unescape(report._summary_html(r, "strspy-ont"))):
-        assert "a recipe STRhub wrote by hand" in text and "never the badge" in text
-        assert ct.CURATED_HEADING in text
+        assert ct.NOT_DOCUMENTED in text
+        assert ct.STRHUB_DID_HEADING in text and ct.AS_IS_HEADING not in text
         assert "Runs src/STRspy_Normal_v2.0_Args.sh directly." in text
         assert "instead of: The wrapper, the only documented command." in text
+        # The chapter comes first; the run follows in full.
+        assert text.index(ct.STRHUB_DID_HEADING) < text.index(ct.FULL_RUN_HEADING) < text.index("Gates")
 
 
-def test_a_documented_report_says_so_and_carries_no_workaround_section():
+def test_a_documented_report_opens_with_the_tool_as_it_is_and_carries_no_strhub_chapter():
     r = _report("documented")
     for text in (report._summary_md(r, "strspy-ont"), html.unescape(report._summary_html(r, "strspy-ont"))):
-        assert "the repository's own instructions" in text
-        assert ct.CURATED_HEADING not in text
+        assert ct.AS_IS_HEADING in text
+        assert ct.STRHUB_DID_HEADING not in text and ct.NOT_DOCUMENTED not in text
+        assert "Runs as documented" in text
+
+
+def test_the_label_says_the_result_in_words_not_the_rung():
+    """One rule for the badge, both copies, the index and the certificate."""
+    doc = lambda level, code, **k: {**_report("documented"), "level": level,
+                                    "verdict": {"code": code, "title": "", "reason": ""}, **k}
+    assert ct.headline(doc("content", "runs")) == ("Runs as documented", "brightgreen")
+    assert ct.headline(doc("io", "runs")) == ("Runs as documented", "green")
+    assert ct.headline(doc("io", "runs", diagnostics={"external": [{"id": "cannot_open", "severity": "error"}]})) \
+        == ("Runs as documented (errors reported)", "yellow")
+    assert ct.headline(doc("installs", "fails")) == ("Does not run as documented · stops at run", "red")
+    assert ct.headline(doc("available", "fails")) == ("Does not run as documented · stops at install", "red")
+    assert ct.headline(doc("runs", "fails")) == ("Does not run as documented · no output", "red")
+    assert ct.headline(doc("installs", "undetermined")) == ("Could not be determined", "lightgrey")
+    assert ct.headline(doc("installs", "out_of_scope")) == ("Out of scope", "lightgrey")
+    # A recipe STRhub wrote, whatever it reached.
+    assert ct.headline({**_report("curated"), "level": "content"}) == (ct.NOT_DOCUMENTED, "lightgrey")
+    # A report from before the verdict: read off the rung.
+    old = {**_report("documented")}; old.pop("verdict", None)
+    assert ct.headline({**old, "level": "content"})[0] == "Runs as documented"
+    assert ct.headline({**old, "level": "installs"})[0] == "Does not run as documented · stops at run"
 
 
 def test_the_badge_of_a_curated_run_says_whose_recipe_it_was(tmp_path):
@@ -106,5 +130,5 @@ def test_the_badge_of_a_curated_run_says_whose_recipe_it_was(tmp_path):
         p.unlink()
     assert written["instrument"] == "curated"
     assert written["recipe"]["origin"] == "curated" and len(written["recipe"]["workarounds"]) == 4
-    assert badge["message"].endswith("· STRhub's recipe")
+    assert badge["message"] == ct.NOT_DOCUMENTED and badge["color"] == "lightgrey"
     assert any("written by STRhub" in n for n in written["needed_beyond_repo"])

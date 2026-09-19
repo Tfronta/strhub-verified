@@ -99,9 +99,9 @@ REGISTER: dict[str, tuple[str, str]] = {
     "e32acfe17c39": ("verdict", "tree"),  # no install method was found in the repository
     # The author's own words, quoted from their README at the pinned ref: the
     # framing is ours, the content is theirs, and the line number is the cite.
-    "0d09141b6660": ("report", "readme"),  # ## What the author documents as a known issue
+    "2c0d4c22bce7": ("report", "readme"),  # ### What the author documents as a known issue
     "16eb06da646c": ("report", "readme"),  # Quoted from the repository's README at the verified commit…
-    "9e3eb83ad8d7": ("report", "readme"),  # <h2>What the author documents as a known issue</h2>…
+    "2621b1db17c8": ("report", "readme"),  # <h3>What the author documents as a known issue</h3>…
     "ffbc93dd0780": ("generate_pdf", "readme"),  # What the Author Documents as a Known Issue (§9 del PDF)
     # Phase C: the input caveat quotes what the README states, with the line
     # each statement was read on (read_input_statements). When nothing was
@@ -114,8 +114,11 @@ REGISTER: dict[str, tuple[str, str]] = {
     # plan B) the ready-made environment is the one every gate then ran on.
     "dbdbe7fb4255": ("report", "gates"),             # STRhub tried to build the tool from its source at the pinned commit, following the build steps…
     "35f9c68e90d8": ("certificate_text", "gates"),   # A build from source at this commit fails in a clean environment; … the ready-made environment … does work
-    # A curated recipe is STRhub's own configuration, and the sentence says so.
-    "53513dfccf9b": ("certificate_text", "run"),               # A container environment and a command written by STRhub, not taken from the repository's instructions…
+    # A curated recipe is STRhub's own configuration, and the sentences say
+    # so: what STRhub had to do to run the tool is STRhub's work, listed as
+    # recommendations, and it never changes the label (tanda 5c).
+    "02784c0c4344": ("certificate_text", "run"),               # A container environment and a command written by STRhub, not taken from the repository's instructions…
+    "ba5726f929ce": ("certificate_text", "run"),               # STRhub wrote its own recipe for this tool — an environment and a command of its own…
 }
 
 #: Phrasings that may never be published, whatever evidence is attached: they

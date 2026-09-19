@@ -26,7 +26,14 @@ def test_the_deploy_gate_publishes_undetermined_and_never_out_of_scope():
 def test_the_badge_of_an_undetermined_run_says_so_not_the_rung_it_reached(tmp_path):
     """report.py end to end with a proposal whose README was not enough to
     attempt the run: the gates say Installs, the badge says the verdict."""
-    manifest = ROOT / "tools" / "strspy-ont" / "manifest.yml"
+    # The committed STRspy recipe is curated, and a curated run's badge says
+    # "Not verified as documented" whatever it found; the case here is the
+    # repository's own instructions, so the manifest is copied as proposed.
+    import yaml
+    doc = yaml.safe_load((ROOT / "tools" / "strspy-ont" / "manifest.yml").read_text())
+    doc["recipe"] = {"origin": "proposed"}
+    manifest = tmp_path / "manifest.yml"
+    manifest.write_text(yaml.safe_dump(doc, sort_keys=False))
     proposal = tmp_path / "proposal.json"
     proposal.write_text(json.dumps({
         "schema": "strhub-verified/recipe-proposal/1",
