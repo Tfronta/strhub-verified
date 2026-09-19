@@ -15,28 +15,36 @@
   .meta li, .stats li { margin:.15rem 0; }
   .scope { background:#f3f4f6; border-left:4px solid #16a34a; padding:.8rem 1rem; border-radius:6px; }
   code { background:#eef0f2; padding:.1rem .3rem; border-radius:4px; }
+  pre { background:#eef0f2; padding:.8rem 1rem; border-radius:6px; overflow-x:auto; white-space:pre-wrap; word-break:break-all; font-size:.85rem; }
+  pre code { background:none; padding:0; }
+  table.depth td { padding:.25rem .6rem; }
+  table.depth td:nth-child(2) { text-align:right; font-variant-numeric:tabular-nums; width:5rem; }
+  table.depth td:nth-child(3) { width:50%; }
+  .bar { display:inline-block; height:.6rem; background:#16a34a; border-radius:3px; vertical-align:middle; }
   nav { margin-bottom:1rem; }
   @media (prefers-color-scheme: dark) {
     body { background:#0d1117; color:#e6edf3; }
     a { color:#58a6ff; }
     th, td { border-bottom:1px solid #30363d; }
     .scope { background:#161b22; }
-    code { background:#21262d; }
+    code, pre { background:#21262d; }
   }
 </style></head><body>
 <nav><a href="index.html">← All tools</a></nav>
 <h1>STRhub Verified · STRsearch</h1>
 <p><span class="badge">Runs + Plausible output</span></p>
 <p>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).</p>
+<p><b>Verdict: Runs.</b> The tool installed and its run produced its documented output.</p>
 <ul class="meta">
   <li>Variant: <code>strsearch</code></li>
   <li>Source: <code>https://github.com/AnJingwd/STRsearch</code> @ <code>c70179b3b175adc82a7314409af06900b3861d61</code></li>
   <li>Environment: ubuntu-22.04 (<code>Dockerfile</code>)</li>
-  <li>Generated: 2026-09-15T19:53:11+00:00</li>
-  <li>Submitted by: a third party — not the tool&#x27;s maintainer</li>
+  <li>Generated: 2026-09-19T18:20:00+00:00</li>
   <li>Upstream: The verified commit is the head of `master`.</li>
-  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/35016120651">CI run</a></li>
+  <li>Recipe: a recipe STRhub wrote by hand, not read off the repository: a note under the documented result, never the badge</li>
+  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/35460767865">CI run</a></li>
 </ul>
+<h2>Command that ran</h2><p>Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub&#x27;s mounts: the input sample, the reference genome and the output directory.</p><pre><code>python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt</code></pre>
 <h2>Gates</h2>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
 <tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="ok">PASS</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="ok">PASS</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="ok">PASS</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr></tbody></table>
@@ -45,23 +53,28 @@
 
     <h2>Output content (plausibility evidence)</h2>
     <ul class="stats">
+      <li>Output file: <code>multiple_alleles.txt</code> (TSV)</li>
       <li>Sequence records: <b>388</b> (malformed: 0)</li>
       <li>STR loci detected: <b>24</b></li>
-      <li>Total reads across calls: <b>2401</b> (deepest single sequence: 51)</li>
-      <li>STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA …</li>
-      <li>Top markers by read depth: vWA (241), D21S11 (187), FGA (164), D19S433 (131), SE33 (125), D18S51 (123)</li>
-    </ul>
+      <li>Total reads across calls: <b>2401</b> (deepest single locus: 51)</li>
+      
+      <li>STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA, PentaD, PentaE, SE33, TH01, TPOX, vWA</li>
+    </ul><h3>Read depth per locus</h3><table class="depth"><thead><tr><th>Locus</th><th>Reads</th><th></th></tr></thead><tbody><tr><td><code>vWA</code></td><td>241</td><td><span class="bar" style="width:100%"></span></td></tr><tr><td><code>D21S11</code></td><td>187</td><td><span class="bar" style="width:78%"></span></td></tr><tr><td><code>FGA</code></td><td>164</td><td><span class="bar" style="width:68%"></span></td></tr><tr><td><code>D19S433</code></td><td>131</td><td><span class="bar" style="width:54%"></span></td></tr><tr><td><code>SE33</code></td><td>125</td><td><span class="bar" style="width:52%"></span></td></tr><tr><td><code>D18S51</code></td><td>123</td><td><span class="bar" style="width:51%"></span></td></tr><tr><td><code>D16S539</code></td><td>105</td><td><span class="bar" style="width:44%"></span></td></tr><tr><td><code>D3S1358</code></td><td>99</td><td><span class="bar" style="width:41%"></span></td></tr><tr><td><code>PentaD</code></td><td>99</td><td><span class="bar" style="width:41%"></span></td></tr><tr><td><code>D7S820</code></td><td>96</td><td><span class="bar" style="width:40%"></span></td></tr><tr><td><code>D22S1045</code></td><td>95</td><td><span class="bar" style="width:39%"></span></td></tr><tr><td><code>D5S818</code></td><td>94</td><td><span class="bar" style="width:39%"></span></td></tr><tr><td><code>CSF1PO</code></td><td>92</td><td><span class="bar" style="width:38%"></span></td></tr><tr><td><code>D6S1043</code></td><td>92</td><td><span class="bar" style="width:38%"></span></td></tr><tr><td><code>D2S441</code></td><td>88</td><td><span class="bar" style="width:37%"></span></td></tr><tr><td><code>D1S1656</code></td><td>81</td><td><span class="bar" style="width:34%"></span></td></tr><tr><td><code>PentaE</code></td><td>78</td><td><span class="bar" style="width:32%"></span></td></tr><tr><td><code>D13S317</code></td><td>66</td><td><span class="bar" style="width:27%"></span></td></tr><tr><td><code>D10S1248</code></td><td>65</td><td><span class="bar" style="width:27%"></span></td></tr><tr><td><code>D2S1338</code></td><td>62</td><td><span class="bar" style="width:26%"></span></td></tr><tr><td><code>D8S1179</code></td><td>62</td><td><span class="bar" style="width:26%"></span></td></tr><tr><td><code>TPOX</code></td><td>55</td><td><span class="bar" style="width:23%"></span></td></tr><tr><td><code>D12S391</code></td><td>55</td><td><span class="bar" style="width:23%"></span></td></tr><tr><td><code>TH01</code></td><td>46</td><td><span class="bar" style="width:19%"></span></td></tr></tbody></table>
 <h2>Verification matrix</h2><table><thead><tr><th>Leg</th><th>Result</th><th>Errors reported</th><th>Dataset</th></tr></thead><tbody><tr><td>STRhub fixture</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr><tr><td>External data</td><td><span class="ok">PASS</span></td><td><span class="no">—</span></td><td>Illumina BAM (hg38), NA12878 (autosomal, female)</td></tr><tr><td>Tool&#x27;s own example</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr></tbody></table>
 <h2>Regions</h2><p>STRhub supplied the regions BED. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.</p>
-<h2>Who submitted this</h2><p>This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.</p>
 
 
 <h2>README check <span style='font-weight:400;color:#888'>(advisory)</span></h2><p>Score: <b>5/5</b>. Advisory only; does not affect the execution badge.</p><ul class='stats'><li><b>PASS</b> install</li><li><b>PASS</b> command</li><li><b>PASS</b> input</li><li><b>PASS</b> output</li><li><b>PASS</b> dependencies</li></ul>
+<h2>Evidence</h2><p>What this run&#x27;s configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.</p><ul class='stats'><li>Install method: <a href="https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/Dockerfile">Dockerfile</a></li><li>Run command: <a href="https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L96">README.md line 96</a> — <code>python3 pipeline.py from_fastq \</code></li><li>Example data: <a href="https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/ref_test.bed">example/ref_test.bed</a></li><li>Example data: <a href="https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test.bam">example/test_data/test.bam</a></li><li>Example data: <a href="https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R1.fastq">example/test_data/test_R1.fastq</a></li><li>Example data: <a href="https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R2.fastq">example/test_data/test_R2.fastq</a></li><li>Example data: <a href="https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_output/STRfq/Marker94_reads_test_sortByname.bam">example/test_output/STRfq/Marker94_reads_test_sortByname.bam</a></li><li>Documented input: <a href="https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L77">README.md line 77</a> — <code>FASTQ file or BAM-file from singe-end or paird-end sequencing platforms</code></li></ul>
+<h2>What this run needed beyond the repository</h2><p>The result above describes a run configured as follows. Anyone repeating it needs the same things.</p><ul class='stats'><li>Test data: no sample from the repository was used, so a public reference sample stood in.</li><li>A container environment, supplied with the submission.</li></ul>
+<h2>What STRhub&#x27;s recipe does that the repository&#x27;s instructions do not</h2><p>This run used a recipe STRhub wrote. Each item below is a departure from the README that a first-time user would have to discover for themselves. The badge rests on the run of the repository&#x27;s own instructions, not on this one.</p><ul class='stats'><li>Builds the environment on ubuntu 22.04 at the version floors the README declares (bwa, samtools, bamToFastq, seqtk). — instead of: The repository&#x27;s own Dockerfile: ubuntu 16.04 with exact pins and Miniconda 4.3.31. The pinned stack no longer resolves.</li><li>Fills in conf.py with the paths of the installed tools. — instead of: conf.py as shipped, with &#x27;YOUR PATH/...&#x27; placeholders the user is to replace.</li><li>Leaves usearch out. — instead of: usearch, which conf.py names. Licensed and unobtainable; only --assemble_pairs reaches it, and this run does not use it.</li><li>Supplies an hg38 regions configuration in STRsearch&#x27;s eleven-column layout, with flanking sequences, written by STRhub. — instead of: The repository&#x27;s example, which is hg19 and covers five markers. No hg38 configuration ships with the repository.</li></ul>
+
 <h2>Scope</h2>
 <p class="scope">Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.<br><br>
 This is <b>not</b> a claim that the genotypes are correct, nor that the tool is
 fit for casework or meets any regulatory standard. Concordance against known
 truth is out of scope.</p>
+<p style="color:#888;font-size:.85rem">Verified automatically, in a clean environment, on the tool&#x27;s public source at the pinned commit. This is a record of what happened, not an endorsement by the tool&#x27;s author.</p>
 <p style="color:#888;font-size:.85rem">Machine-readable:
 <a href="strsearch.json">strsearch.json</a> ·
 <a href="strsearch.badge.json">badge</a> ·

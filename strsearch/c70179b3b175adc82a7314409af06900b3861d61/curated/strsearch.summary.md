@@ -6,10 +6,18 @@
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-15T19:53:11+00:00
-- Submitted by: a third party — not the tool's maintainer
+- Generated: 2026-09-19T18:20:00+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35016120651
+- Recipe: a recipe STRhub wrote by hand, not read off the repository: a note under the documented result, never the badge
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35460767865
+
+## Command that ran
+
+Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
+
+```
+python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt
+```
 
 ## Gates
 
@@ -41,10 +49,6 @@
 
 STRhub supplied the regions BED. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
 
-## Who submitted this
-
-This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.
-
 ## README check (advisory)
 
 Score: **5/5**. Advisory only; does not affect the execution badge.
@@ -55,6 +59,18 @@ Score: **5/5**. Advisory only; does not affect the execution badge.
 - PASS output
 - PASS dependencies
 
+## Evidence
+
+What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.
+- Install method: [`Dockerfile`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/Dockerfile)
+- Run command: [`README.md` line 96](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L96) — `python3 pipeline.py from_fastq \`
+- Example data: [`example/ref_test.bed`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/ref_test.bed)
+- Example data: [`example/test_data/test.bam`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test.bam)
+- Example data: [`example/test_data/test_R1.fastq`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R1.fastq)
+- Example data: [`example/test_data/test_R2.fastq`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R2.fastq)
+- Example data: [`example/test_output/STRfq/Marker94_reads_test_sortByname.bam`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_output/STRfq/Marker94_reads_test_sortByname.bam)
+- Documented input: [`README.md` line 77](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L77) — `FASTQ file or BAM-file from singe-end or paird-end sequencing platforms`
+
 ## What this run needed beyond the repository
 
 The result above describes a run configured as follows. Anyone repeating it needs the same things.
@@ -62,9 +78,20 @@ The result above describes a run configured as follows. Anyone repeating it need
 - Test data: no sample from the repository was used, so a public reference sample stood in.
 - A container environment, supplied with the submission.
 
+## What STRhub's recipe does that the repository's instructions do not
+
+This run used a recipe STRhub wrote. Each item below is a departure from the README that a first-time user would have to discover for themselves. The badge rests on the run of the repository's own instructions, not on this one.
+
+- Builds the environment on ubuntu 22.04 at the version floors the README declares (bwa, samtools, bamToFastq, seqtk). — instead of: The repository's own Dockerfile: ubuntu 16.04 with exact pins and Miniconda 4.3.31. The pinned stack no longer resolves.
+- Fills in conf.py with the paths of the installed tools. — instead of: conf.py as shipped, with 'YOUR PATH/...' placeholders the user is to replace.
+- Leaves usearch out. — instead of: usearch, which conf.py names. Licensed and unobtainable; only --assemble_pairs reaches it, and this run does not use it.
+- Supplies an hg38 regions configuration in STRsearch's eleven-column layout, with flanking sequences, written by STRhub. — instead of: The repository's example, which is hg19 and covers five markers. No hg38 configuration ships with the repository.
+
 ## Scope (read this)
 
 Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.
 
 This is **not** a claim that the genotypes are correct, nor that the tool is fit for casework or meets any regulatory standard. Concordance against known truth is out of scope.
+
+Verified automatically, in a clean environment, on the tool's public source at the pinned commit. This is a record of what happened, not an endorsement by the tool's author.
 
