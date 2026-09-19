@@ -6,10 +6,18 @@
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-15T19:52:24+00:00
-- Submitted by: a third party — not the tool's maintainer
+- Generated: 2026-09-19T18:19:36+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35016090632
+- Recipe: a recipe STRhub wrote by hand, not read off the repository: a note under the documented result, never the badge
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35460767865
+
+## Command that ran
+
+Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
+
+```
+str8rzr -c /opt/strait-razor/ForenSeqv1.27.config /data/in/sample.fastq > /data/out/sample.allsequences.txt
+```
 
 ## Gates
 
@@ -44,10 +52,6 @@ Quoted from the repository's README at the verified commit. STRhub did not estab
 | External data | yes | PASS | — | NIST mds2-2157, Illumina STR (ForenSeq slice, donor NTD01) |
 | Tool's own example | N/A | N/A | — | — |
 
-## Who submitted this
-
-This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.
-
 ## README check (advisory)
 
 Score: **5/5**. Advisory only; does not affect the execution badge.
@@ -58,9 +62,32 @@ Score: **5/5**. Advisory only; does not affect the execution badge.
 - PASS output
 - PASS dependencies
 
+## Evidence
+
+What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.
+- Install method: [`Makefile`](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/Makefile)
+- Run command: [`README.md` line 123](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/README.md#L123) — `str8rzr -c configFile fastqfile > allsequences.txt`
+- Known issue: [`README.md` line 114](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/README.md#L114) — `known issues`
+- Documented input: [`README.md` line 19](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/README.md#L19) — `Put str8rzr.exe, batchCstr8.bat, the appropriate config file (Forenseq.config), and all fastq files into this directory.<br>`
+
+## What this run needed beyond the repository
+
+The result above describes a run configured as follows. Anyone repeating it needs the same things.
+
+- A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under the recipe.
+
+## What STRhub's recipe does that the repository's instructions do not
+
+This run used a recipe STRhub wrote. Each item below is a departure from the README that a first-time user would have to discover for themselves. The badge rests on the run of the repository's own instructions, not on this one.
+
+- Builds with make (falling back to cmake) and copies str8rzr to /usr/local/bin. — instead of: The README's build steps, which name no install location.
+- Picks the ForenSeq kit configuration (ForenSeqv1.27.config) and the STRhub fixture for it. — instead of: A configuration and input the README leaves to the user; the repository ships several kit configurations.
+
 ## Scope (read this)
 
 Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.
 
 This is **not** a claim that the genotypes are correct, nor that the tool is fit for casework or meets any regulatory standard. Concordance against known truth is out of scope.
+
+Verified automatically, in a clean environment, on the tool's public source at the pinned commit. This is a record of what happened, not an endorsement by the tool's author.
 
