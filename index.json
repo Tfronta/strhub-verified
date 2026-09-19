@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-09-19T18:19:40+00:00",
+  "generated": "2026-09-19T18:19:47+00:00",
   "count": 8,
   "tools": [
     {
@@ -298,10 +298,10 @@
       "label": "Runs + Plausible output",
       "verdict": "runs",
       "errors_reported": false,
-      "generated": "2026-09-18T20:49:13+00:00",
+      "generated": "2026-09-19T18:19:43+00:00",
       "source_repo": "https://github.com/Ahhgust/STRaitRazor",
       "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35393388489",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35460767865",
       "distinct_str_loci": 63,
       "distinct_snp_markers": 157,
       "total_reads": 3967,
@@ -321,12 +321,12 @@
           "version": "v3",
           "variant": null,
           "committed": "2025-08-18T20:48:51Z",
-          "generated": "2026-09-18T20:49:13+00:00",
+          "generated": "2026-09-19T18:19:43+00:00",
           "level": "content",
           "label": "Runs + Plausible output",
           "verdict": "runs",
           "errors_reported": false,
-          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35393388489",
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35460767865",
           "report": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/straitrazor.json",
           "page": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/straitrazor.html",
           "pdf": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/straitrazor.pdf"

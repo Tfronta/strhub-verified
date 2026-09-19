@@ -6,10 +6,10 @@
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-18T20:49:13+00:00
+- Generated: 2026-09-19T18:19:43+00:00
 - Upstream: The verified commit is the head of `master`.
 - Recipe: the repository's own instructions, read off the README and the tree at the pinned commit
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35393388489
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35460767865
 
 ## Command that ran
 

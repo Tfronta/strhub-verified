@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/1",
-  "mode": "trial",
+  "mode": "publish",
   "tool": {
     "name": "straitrazor",
     "version": "v3",
@@ -22,8 +22,8 @@
     ],
     "source": "generated"
   },
-  "generated": "2026-09-18T20:49:13+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35393388489",
+  "generated": "2026-09-19T18:19:43+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35460767865",
   "run": {
     "cmd": "str8rzr -c ForenSeqv1.27.config /data/in/sample.fastq > allsequences.txt",
     "cwd": "/opt/tool"
@@ -1493,7 +1493,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-18T20:49:13+00:00",
+    "checked": "2026-09-19T18:19:43+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
