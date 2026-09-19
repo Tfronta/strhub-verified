@@ -3,7 +3,10 @@
   "mode": "publish",
   "tool": {
     "name": "hipstr",
-    "version": "v0.7"
+    "version": "v0.7",
+    "maintainer": "tfwillems",
+    "contact": "https://github.com/tfwillems/HipSTR/issues",
+    "variant": "Autosomal (hg38)"
   },
   "submission": {
     "by": "third_party"
@@ -20,8 +23,26 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-15T19:54:48+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016077060",
+  "generated": "2026-09-19T18:22:28+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35460767865",
+  "run": {
+    "cmd": "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250"
+  },
+  "instrument": "curated",
+  "recipe": {
+    "origin": "curated",
+    "workarounds": [
+      {
+        "what": "Runs HipSTR with flags tuned to STRhub's reference slice (--min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250).",
+        "instead_of": "The README's command, which has none of them.",
+        "why": "On a BAM slice around the panel loci most mates fall outside the slice and read quality trims most reads; without these flags nearly every locus is skipped."
+      },
+      {
+        "what": "Supplies the regions BED from STRhub's library.",
+        "instead_of": "A regions file the README leaves to the user."
+      }
+    ]
+  },
   "gates": {
     "available": true,
     "installs": true,
@@ -296,13 +317,70 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-15T19:54:49+00:00",
+    "checked": "2026-09-19T18:22:28+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
     "status": "identical",
     "behind_by": 0
   },
+  "needed_beyond_repo": [
+    "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under the recipe."
+  ],
+  "evidence": [
+    {
+      "claim": "install_method",
+      "kind": "tree",
+      "path": "Makefile",
+      "text": "make",
+      "url": "https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/Makefile"
+    },
+    {
+      "claim": "run_command",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 69,
+      "text": "./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam",
+      "url": "https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L69"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/input/chr1_regions.bed",
+      "text": "bed",
+      "url": "https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/test/input/chr1_regions.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/input/chr1_regions_v2.bed",
+      "text": "bed",
+      "url": "https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/test/input/chr1_regions_v2.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/input/1kg.chr1.imputed.vcf.gz",
+      "text": "vcf",
+      "url": "https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/test/input/1kg.chr1.imputed.vcf.gz"
+    },
+    {
+      "claim": "documented_input",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 69,
+      "text": "./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam",
+      "url": "https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L69"
+    },
+    {
+      "claim": "platform_advice",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 435,
+      "text": "We do not recommend running it on PacBio or Oxford Nanopore data, as the difference in error profiles will be problematic",
+      "url": "https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L435"
+    }
+  ],
   "repo_test_data": {
     "known": true,
     "present": true,

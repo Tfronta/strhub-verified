@@ -6,10 +6,18 @@
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-15T19:54:48+00:00
-- Submitted by: a third party — not the tool's maintainer
+- Generated: 2026-09-19T18:22:28+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35016077060
+- Recipe: a recipe STRhub wrote by hand, not read off the repository: a note under the documented result, never the badge
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35460767865
+
+## Command that ran
+
+Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
+
+```
+HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250
+```
 
 ## Gates
 
@@ -40,10 +48,6 @@
 
 STRhub supplied the regions BED. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
 
-## Who submitted this
-
-This tool was submitted for verification by somebody other than its maintainer. The maintainer took no part in the run and supplied none of what it used: the command, the environment, and any target regions were chosen by the submitter. Where a maintainer is named above, that names who answers for the software — not who asked for this report, and not an endorsement of it.
-
 ## README check (advisory)
 
 Score: **5/5**. Advisory only; does not affect the execution badge.
@@ -54,9 +58,35 @@ Score: **5/5**. Advisory only; does not affect the execution badge.
 - PASS output
 - PASS dependencies
 
+## Evidence
+
+What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.
+- Install method: [`Makefile`](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/Makefile)
+- Run command: [`README.md` line 69](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L69) — `./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam`
+- Example data: [`test/input/chr1_regions.bed`](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/test/input/chr1_regions.bed)
+- Example data: [`test/input/chr1_regions_v2.bed`](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/test/input/chr1_regions_v2.bed)
+- Example data: [`test/input/1kg.chr1.imputed.vcf.gz`](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/test/input/1kg.chr1.imputed.vcf.gz)
+- Documented input: [`README.md` line 69](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L69) — `./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam`
+- Platform advice: [`README.md` line 435](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L435) — `We do not recommend running it on PacBio or Oxford Nanopore data, as the difference in error profiles will be problematic`
+
+## What this run needed beyond the repository
+
+The result above describes a run configured as follows. Anyone repeating it needs the same things.
+
+- A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under the recipe.
+
+## What STRhub's recipe does that the repository's instructions do not
+
+This run used a recipe STRhub wrote. Each item below is a departure from the README that a first-time user would have to discover for themselves. The badge rests on the run of the repository's own instructions, not on this one.
+
+- Runs HipSTR with flags tuned to STRhub's reference slice (--min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250). — instead of: The README's command, which has none of them. On a BAM slice around the panel loci most mates fall outside the slice and read quality trims most reads; without these flags nearly every locus is skipped.
+- Supplies the regions BED from STRhub's library. — instead of: A regions file the README leaves to the user.
+
 ## Scope (read this)
 
 Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.
 
 This is **not** a claim that the genotypes are correct, nor that the tool is fit for casework or meets any regulatory standard. Concordance against known truth is out of scope.
+
+Verified automatically, in a clean environment, on the tool's public source at the pinned commit. This is a record of what happened, not an endorsement by the tool's author.
 
