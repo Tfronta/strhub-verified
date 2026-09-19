@@ -20,12 +20,76 @@ INSTRUMENT_LINE = {
     "curated": "a recipe STRhub wrote by hand, not read off the repository: a note under the documented result, never the badge",
 }
 BADGE_INSTRUMENTS = ("documented", "maintainer")
-CURATED_HEADING = "What STRhub's recipe does that the repository's instructions do not"
-CURATED_LEAD = ("This run used a recipe STRhub wrote. Each item below is a departure from "
-                "the README that a first-time user would have to discover for themselves. "
-                "The badge rests on the run of the repository's own instructions, not on this one.")
+
+#: The two chapters of a report, in this order (docs/PLAN-Documented-Is-The-
+#: Badge.md, tanda 5c): first what happens to the tool as it is in its
+#: repository — the label, where it stopped, why, how; then, apart, what
+#: STRhub had to do to run it. The second never changes the label.
+AS_IS_HEADING = "As it is in the repository"
+STRHUB_DID_HEADING = "What STRhub had to do to run this tool"
+STRHUB_DID_LEAD = ("STRhub wrote its own recipe for this tool — an environment and a command of "
+                   "its own, not the repository's instructions — and ran that. Each item below "
+                   "is something a first-time user following the README would have to work out "
+                   "for themselves, and so a recommendation to the author. This run does not "
+                   "change the tool's label: the label is what happens as it is in the repository.")
+FULL_RUN_HEADING = "This run, in full"
+NOT_DOCUMENTED = "Not verified as documented"
+# Older names, kept for callers.
+CURATED_HEADING = STRHUB_DID_HEADING
+CURATED_LEAD = STRHUB_DID_LEAD
 CURATED_NEEDED = ("A container environment and a command written by STRhub, not taken from the "
-                  "repository's instructions; what they do differently is listed under the recipe.")
+                  "repository's instructions; what they do differently is listed under "
+                  f"\"{STRHUB_DID_HEADING}\".")
+
+#: Where a run that does not run stopped, in the label's words, by the rung
+#: it reached. The rung itself stays in the ladder.
+STOPS_AT = {
+    "none": "source not available",
+    "available": "stops at install",
+    "installs": "stops at run",
+    "runs": "no output",
+    "io": "output not plausible",
+}
+#: The rung reached, for the line under the label. Same words as report.LABELS.
+REACHED = {"none": "not run", "available": "Available", "installs": "Installs",
+           "runs": "Runs", "io": "Runs + Expected IO", "content": "Runs + Plausible output"}
+#: shields.io colour → the hex the HTML copies use.
+COLOR_HEX = {"brightgreen": "#16a34a", "green": "#22a722", "yellow": "#d4a017",
+             "red": "#c33", "lightgrey": "#9ca3af"}
+
+
+def errors_reported(report: dict) -> bool:
+    return any(i.get("severity") == "error"
+               for issues in (report.get("diagnostics") or {}).values() for i in issues)
+
+
+def headline(report: dict) -> tuple[str, str]:
+    """The label, in words, and its shields colour: what the run says about
+    the tool AS IT IS in its repository. The badge, both summaries, the
+    index and the certificate all print this and nothing else as the result;
+    the rung reached is a detail under it.
+
+      Runs as documented                          the documented run produced its output
+      Runs as documented (errors reported)        … and the tool's log reported errors
+      Does not run as documented · stops at run   the documented run did not, and where
+      Could not be determined                     nobody knew how to attempt it (the README)
+      Out of scope                                the free runner cannot provide something
+      Not verified as documented                  the run is of a recipe STRhub wrote
+    """
+    if instrument_of_report(report) not in BADGE_INSTRUMENTS:
+        return NOT_DOCUMENTED, "lightgrey"
+    code = (report.get("verdict") or {}).get("code")
+    level = report.get("level", "none")
+    if code == "undetermined":
+        return "Could not be determined", "lightgrey"
+    if code == "out_of_scope":
+        return "Out of scope", "lightgrey"
+    runs = code == "runs" if code else level in ("io", "content")
+    if runs:
+        if errors_reported(report):
+            return "Runs as documented (errors reported)", "yellow"
+        return "Runs as documented", ("brightgreen" if level == "content" else "green")
+    return f"Does not run as documented · {STOPS_AT.get(level, 'stops at ' + level)}", "red"
 
 
 def instrument_of(m: dict) -> str:

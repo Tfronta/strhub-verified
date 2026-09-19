@@ -26,8 +26,8 @@ import tempfile
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import diagnose_log  # noqa: E402
 from certificate_text import (  # noqa: E402
-    conclusion_items_for, install_meaning, instrument_of_report, workaround_lines,
-    INSTRUMENT_LINE, CURATED_HEADING, CURATED_LEAD,
+    conclusion_items_for, install_meaning, instrument_of_report, workaround_lines, headline,
+    AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, NOT_DOCUMENTED,
 )
 
 import yaml
@@ -367,11 +367,15 @@ def build_cover(cfg):
     els.append(vspace(5))
     els.append(HR(spaceB=4, spaceA=10))
 
-    attest_label = LEVEL_LABEL.get(cfg["level"], "Not verified")
+    # The result in words — what happens to the tool as it is in its
+    # repository — before the rung it reached (certificate_text.headline,
+    # the same the badge and the page print).
+    result_label = cfg.get("headline") or LEVEL_LABEL.get(cfg["level"], "Not verified")
     meta_rows = [
         ("Verification date",  cfg["ver_date"]),
         ("Repository commit",  link(cfg["commit_url"], cfg["commit"])),
-        ("Attestation level",  f'<font color="#00909c"><b>{attest_label}</b></font>'),
+        ("Result",             f'<font color="#00909c"><b>{result_label}</b></font>'),
+        ("Reached",            LEVEL_LABEL.get(cfg["level"], "Not run")),
         ("Permalink",          link(cfg["permalink"]) if cfg.get("permalink")
                                else "Not published — this is a test run"),
         ("STRhub",             link("https://strhub.app")),
@@ -456,16 +460,23 @@ def build_body(cfg):
     els.append(build_header_inner(cfg))
     els.append(HR(TEAL, thickness=1.2, spaceB=4, spaceA=8))
 
-    # §1 Executive Summary
+    # §1 Executive Summary: the result in words, then the rung and the why.
+    result_label = cfg.get("headline") or LEVEL_LABEL.get(cfg["level"], "Not verified")
     attest_label = LEVEL_LABEL.get(cfg["level"], "Not verified")
+    curated = cfg.get("instrument") == "curated"
     gates_dict = dict(cfg["gates"])
     n_pass = sum(1 for ok in gates_dict.values() if ok)
     n_total = len(gates_dict)
+    verdict = cfg.get("verdict") or {}
     els.append(section_num("1", "Executive Summary"))
     exec_rows = [
         ("PURPOSE",           "Verify that the tool installs, runs end-to-end, and produces structurally valid output."),
-        ("RESULT",            f'<font color="#00909c"><b>{n_pass}/{n_total} gates passed. {attest_label}</b></font>'),
-        ("ATTESTATION LEVEL", f'<font color="#00909c"><b>{attest_label}</b></font>'),
+        ("RESULT",            f'<font color="#00909c"><b>{esc(result_label)}</b></font>'),
+        ("REACHED",           f'{esc(attest_label)} — {n_pass}/{n_total} gates passed'),
+    ]
+    if verdict.get("reason"):
+        exec_rows.append(("WHY", esc(verdict["reason"])))
+    exec_rows += [
         ("SCOPE",             "Installation, execution, and output structure verification."),
         ("NOT EVALUATED",     "Genotype accuracy · Concordance · Forensic validity · Regulatory compliance"),
     ]
@@ -484,51 +495,27 @@ def build_body(cfg):
     ]))
     els.append(et)
 
-    # §2 Metadata
-    els.append(section_num("2", "Reproducibility Metadata"))
-    ver_time = cfg.get("ver_time", "")
-    meta_rows = [
-        ("Tool",            cfg["tool_name"]),
-        ("Version",         cfg["tool_version"]),
-        ("Repository",      link(cfg["repo_url"])),
-        ("Commit (pinned)", link(cfg["commit_url"], cfg["commit"])),
-        ("Container OS",    cfg.get("container_os", "ubuntu-22.04")),
-        ("Marker panel",    cfg.get("panel", "—")),
-        # Which instrument: the repository's own instructions may stand behind
-        # the badge; a recipe STRhub wrote is a note, and the certificate says
-        # so where the reader looks for what was run.
-        ("Recipe",          INSTRUMENT_LINE.get(cfg.get("instrument", ""), "—")),
-        ("Verified on",     (cfg["ver_date"] + ("  " + ver_time if ver_time else "")).strip()),
-        ("CI run",          link(cfg["ci_run"]) if cfg.get("ci_run") else "—"),
-    ]
-    els.append(kv_table(meta_rows))
-    els.append(vspace(3))
-    els.append(Paragraph(RECORD_NOTE, ST["body"]))
-
-    # §3 Run command
-    els.append(section_num("3", "Exact Run Command"))
-    # One claim only. The second sentence used to invite the reader to swap the
-    # input paths for their own, which left it ambiguous whether what follows is
-    # what ran or a template to adapt. It is what ran, verbatim, and that is the
-    # whole point of the section.
-    els.append(Paragraph(
-        "This is the command that was executed, verbatim, in the CI environment.",
-        ST["body"]))
-    els.append(vspace(3))
-    cmd_content = [Paragraph(line, ST["mono"]) for line in cfg.get("cmd_lines", ["# Command not available"])]
-    cmd_box = Table([[cmd_content]], colWidths=[CW])
-    cmd_box.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0),(-1,-1), WHITE),
-        ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
-        ("TOPPADDING",    (0,0),(-1,-1), 12),
-        ("BOTTOMPADDING", (0,0),(-1,-1), 12),
-        ("LEFTPADDING",   (0,0),(-1,-1), 16),
-        ("RIGHTPADDING",  (0,0),(-1,-1), 16),
-    ]))
-    els.append(cmd_box)
+    sec = 2
+    # What STRhub had to do to run this tool. The opening chapter of a run of
+    # a recipe STRhub wrote, before the run itself: each item a departure a
+    # first-time user would have to discover, and a recommendation; and the
+    # rung the run reached with them. It never changes the label.
+    if curated:
+        cur_els = [Paragraph(STRHUB_DID_LEAD, ST["body"]), vspace(2)]
+        cur_els += [Paragraph(
+            f'<font color="#9ca3af">–</font>  {esc(item)}',
+            S("cw", fontSize=8.5, textColor=GRAY, leading=14,
+              leftIndent=10, spaceAfter=1)) for item in (cfg.get("workarounds") or ["(not itemised for this recipe)"])]
+        cur_els.append(vspace(2))
+        cur_els.append(Paragraph(
+            f"With those changes, the run reached: <b>{esc(attest_label)}</b>.", ST["body"]))
+        els.append(section_num(str(sec), STRHUB_DID_HEADING))
+        sec += 1
+        els.append(boxed(cur_els))
 
     # §4 Verification Gates
-    els.append(section_num("4", "Verification Gates"))
+    els.append(section_num(str(sec), "Verification Gates" if curated else f"{AS_IS_HEADING}: Verification Gates"))
+    sec += 1
     gdata = []
     for key, gate_name, gate_desc in GATE_DISPLAY:
         ok = gates_dict.get(key, False)
@@ -576,8 +563,164 @@ def build_body(cfg):
             "it stopped are reported below.",
             ST["body"])]))
 
+    # Why the build failed, when it did. A certificate that says "Installs — not
+    # passed" and stops there tells a reviewer nothing they can act on, and tells
+    # the tool's author nothing they can fix. It also has to name the side: the
+    # base image of a generated container is our choice, so a failure there is
+    # ours, and printing it without saying so turns our bug into a finding about
+    # their software.
+    inst = cfg.get("install_detail") or {}
+    if inst.get("diagnostics"):
+        # Plan B: the gate passed on the published environment the README
+        # points at, and this section explains the build that failed before it.
+        tried = ("STRhub tried to build the tool from its source at the pinned commit, "
+                 "following the build steps the repository declares, and the build failed.")
+        if inst.get("fallback_used"):
+            els.append(section_num(str(sec), "Not Built From Source: the README's Ready-Made Environment Ran"))
+            reason = cfg.get("fallback_reason") or "the fallback environment"
+            lead = f"{tried} {reason[0].upper()}{reason[1:]} was used instead, and every gate below ran on it."
+        else:
+            els.append(section_num(str(sec), "Not Built From Source"))
+            lead = f"{tried} Nothing below the Installs gate ran."
+        sec += 1
+        els.append(Paragraph(lead, ST["body"]))
+        els.append(vspace(2))
+        # In the reader's own terms, before the table of causes: what it means
+        # for someone running it, a reviewer holding a manuscript, its maintainer.
+        meaning_els = [Paragraph("<b>What this means</b>", ST["body"])]
+        for who, what in install_meaning(bool(inst.get("fallback_used")), inst.get("faults") or []):
+            meaning_els.append(Paragraph(
+                f'<font color="#9ca3af">–</font>  <b>{esc(who)}:</b> {esc(what)}',
+                S("im", fontSize=8.5, textColor=GRAY, leading=14, leftIndent=10, spaceAfter=1)))
+        els.append(boxed(meaning_els))
+        els.append(vspace(3))
+        els.append(Paragraph("<b>What failed</b>", ST["body"]))
+        els.append(vspace(2))
+        ihead = [Paragraph(f"<b>{h}</b>", ST["tbl_cell"])
+                 for h in ("What happened", "Suggested fix")]
+        irows = [ihead]
+        for issue in inst["diagnostics"]:
+            irows.append([
+                Paragraph(issue["title"], ST["tbl_cell"]),
+                Paragraph(issue.get("suggestion", "—"),
+                          S("ifix", fontSize=8, textColor=GRAY, leading=12)),
+            ])
+        IC = CW * 0.38
+        it = Table(irows, colWidths=[IC, CW - IC])
+        it.setStyle(TableStyle([
+            ("VALIGN",        (0,0),(-1,-1), "TOP"),
+            ("LEFTPADDING",   (0,0),(-1,-1), 10),
+            ("RIGHTPADDING",  (0,0),(-1,-1), 10),
+            ("TOPPADDING",    (0,0),(-1,-1), 5),
+            ("BOTTOMPADDING", (0,0),(-1,-1), 5),
+            ("ROWBACKGROUNDS",(0,1),(-1,-1), [WHITE, GRAY_LIGHT]),
+            ("LINEBELOW",     (0,0),(-1,0), 0.5, BORDER),
+            ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
+        ]))
+        els.append(it)
+
+    errs = diagnose_log.summarize(cfg.get("diagnostics") or {})
+    if errs:
+        n_items = sum(len(e["items"]) for e in errs) or len(errs)
+        els.append(section_num(str(sec), "Errors Reported During the Run"))
+        sec += 1
+        els.append(Paragraph(
+            f"The tool reported errors on {n_items} item(s) during the run. "
+            "This does not assess whether the results produced are correct.",
+            ST["body"]))
+        els.append(vspace(3))
+
+        head = [Paragraph(f"<b>{h}</b>", ST["tbl_cell"])
+                for h in ("What happened", "Times", "Affected")]
+        erows = [head]
+        for e in errs:
+            items = ", ".join(e["items"]) if e["items"] else "—"
+            erows.append([
+                Paragraph(e["title"], ST["tbl_cell"]),
+                Paragraph(str(e["count"]), ST["tbl_cell"]),
+                Paragraph(items, S("erritems", fontSize=8, textColor=GRAY, leading=12)),
+            ])
+        C1 = CW * 0.34
+        C2 = CW * 0.10
+        et = Table(erows, colWidths=[C1, C2, CW - C1 - C2])
+        et.setStyle(TableStyle([
+            ("VALIGN",        (0,0),(-1,-1), "TOP"),
+            ("LEFTPADDING",   (0,0),(-1,-1), 10),
+            ("RIGHTPADDING",  (0,0),(-1,-1), 10),
+            ("TOPPADDING",    (0,0),(-1,-1), 5),
+            ("BOTTOMPADDING", (0,0),(-1,-1), 5),
+            ("ROWBACKGROUNDS",(0,1),(-1,-1), [WHITE, GRAY_LIGHT]),
+            ("LINEBELOW",     (0,0),(-1,0), 0.5, BORDER),
+            ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
+        ]))
+        els.append(et)
+        for note in diagnose_log.external_leg_notes(cfg.get("diagnostics") or {}):
+            els.append(vspace(3))
+            els.append(Paragraph(note, ST["body"]))
+
+    # The author's own note about their own software, before STRhub's findings:
+    # a run that stops where the README says it stops is not news.
+    known = cfg.get("author_known_issues") or []
+    if known:
+        els.append(section_num(str(sec), "What the Author Documents as a Known Issue"))
+        sec += 1
+        els.append(Paragraph(
+            "Quoted from the repository's README at the verified commit. STRhub did not "
+            "establish any of this by running the tool; it is the author's own note about "
+            "their own software.", ST["body"]))
+        els.append(vspace(3))
+        for k in known:
+            els.append(Paragraph(f"<b>{esc(k['heading'])}</b> (README line {k['line']})",
+                                 S("kih", fontSize=8.5, textColor=INK, leading=12, spaceAfter=2)))
+            quote = esc(k["text"]) + ("…" if k.get("truncated") else "")
+            els.append(boxed([Paragraph(quote, S("kiq", fontSize=8, textColor=GRAY, leading=12))]))
+            els.append(vspace(3))
+
+
+    # §3 Run command
+    els.append(section_num(str(sec), "Exact Run Command"))
+    sec += 1
+    # One claim only. The second sentence used to invite the reader to swap the
+    # input paths for their own, which left it ambiguous whether what follows is
+    # what ran or a template to adapt. It is what ran, verbatim, and that is the
+    # whole point of the section.
+    els.append(Paragraph(
+        "This is the command that was executed, verbatim, in the CI environment.",
+        ST["body"]))
+    els.append(vspace(3))
+    cmd_content = [Paragraph(line, ST["mono"]) for line in cfg.get("cmd_lines", ["# Command not available"])]
+    cmd_box = Table([[cmd_content]], colWidths=[CW])
+    cmd_box.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0),(-1,-1), WHITE),
+        ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
+        ("TOPPADDING",    (0,0),(-1,-1), 12),
+        ("BOTTOMPADDING", (0,0),(-1,-1), 12),
+        ("LEFTPADDING",   (0,0),(-1,-1), 16),
+        ("RIGHTPADDING",  (0,0),(-1,-1), 16),
+    ]))
+    els.append(cmd_box)
+
+    # §2 Metadata
+    els.append(section_num(str(sec), "Reproducibility Metadata"))
+    sec += 1
+    ver_time = cfg.get("ver_time", "")
+    meta_rows = [
+        ("Tool",            cfg["tool_name"]),
+        ("Version",         cfg["tool_version"]),
+        ("Repository",      link(cfg["repo_url"])),
+        ("Commit (pinned)", link(cfg["commit_url"], cfg["commit"])),
+        ("Container OS",    cfg.get("container_os", "ubuntu-22.04")),
+        ("Marker panel",    cfg.get("panel", "—")),
+        ("Verified on",     (cfg["ver_date"] + ("  " + ver_time if ver_time else "")).strip()),
+        ("CI run",          link(cfg["ci_run"]) if cfg.get("ci_run") else "—"),
+    ]
+    els.append(kv_table(meta_rows))
+    els.append(vspace(3))
+    els.append(Paragraph(RECORD_NOTE, ST["body"]))
+
     # §5 Out of Scope
-    els.append(section_num("5", "Out of Scope"))
+    els.append(section_num(str(sec), "Out of Scope"))
+    sec += 1
     out_items = [
         "Genotype correctness or accuracy",
         "Concordance against known truth sets",
@@ -595,7 +738,8 @@ def build_body(cfg):
     els.append(boxed(content))
 
     # §6 Output Content Evidence
-    els.append(section_num("6", "Output Content Evidence"))
+    els.append(section_num(str(sec), "Output Content Evidence"))
+    sec += 1
     stats = cfg.get("stats", {})
     assessed = bool(stats)   # the Content gate ran and produced statistics
     na = "Not assessed"
@@ -624,7 +768,8 @@ def build_body(cfg):
     els.append(evt)
 
     # §7 Verification Data
-    els.append(section_num("7", "Verification Data"))
+    els.append(section_num(str(sec), "Verification Data"))
+    sec += 1
     ds = cfg.get("dataset", {})
     # Evidence, not assumption — see certificate_text.test_data_item.
     td = cfg.get("repo_test_data") or {}
@@ -739,131 +884,8 @@ def build_body(cfg):
         ("SPAN",          (0,0),(0,-1)),
         ("VALIGN",        (0,0),(0,-1), "TOP"),
     ]))
-    els.append(keep_section(section_num("8", "Verification Matrix"), mt))
-
-    # §9 Errors reported — only when the tool actually reported any, so the
-    # remaining sections are numbered from a counter rather than hard-coded.
-    #
-    # The matrix above says WHICH leg hit errors; this says WHAT they were. It
-    # exists because the reader is a forensic reviewer, not a programmer: without
-    # it the only record of a failure is a container log they have no way to open.
-    # It reports what the tool's own log said and stops there — no claim about
-    # whether the results produced are correct.
-    sec = 9
-
-    # The author's own note about their own software, before STRhub's findings:
-    # a run that stops where the README says it stops is not news.
-    known = cfg.get("author_known_issues") or []
-    if known:
-        els.append(section_num(str(sec), "What the Author Documents as a Known Issue"))
-        sec += 1
-        els.append(Paragraph(
-            "Quoted from the repository's README at the verified commit. STRhub did not "
-            "establish any of this by running the tool; it is the author's own note about "
-            "their own software.", ST["body"]))
-        els.append(vspace(3))
-        for k in known:
-            els.append(Paragraph(f"<b>{esc(k['heading'])}</b> (README line {k['line']})",
-                                 S("kih", fontSize=8.5, textColor=INK, leading=12, spaceAfter=2)))
-            quote = esc(k["text"]) + ("…" if k.get("truncated") else "")
-            els.append(boxed([Paragraph(quote, S("kiq", fontSize=8, textColor=GRAY, leading=12))]))
-            els.append(vspace(3))
-
-
-    # Why the build failed, when it did. A certificate that says "Installs — not
-    # passed" and stops there tells a reviewer nothing they can act on, and tells
-    # the tool's author nothing they can fix. It also has to name the side: the
-    # base image of a generated container is our choice, so a failure there is
-    # ours, and printing it without saying so turns our bug into a finding about
-    # their software.
-    inst = cfg.get("install_detail") or {}
-    if inst.get("diagnostics"):
-        # Plan B: the gate passed on the published environment the README
-        # points at, and this section explains the build that failed before it.
-        tried = ("STRhub tried to build the tool from its source at the pinned commit, "
-                 "following the build steps the repository declares, and the build failed.")
-        if inst.get("fallback_used"):
-            els.append(section_num(str(sec), "Not Built From Source: the README's Ready-Made Environment Ran"))
-            reason = cfg.get("fallback_reason") or "the fallback environment"
-            lead = f"{tried} {reason[0].upper()}{reason[1:]} was used instead, and every gate below ran on it."
-        else:
-            els.append(section_num(str(sec), "Not Built From Source"))
-            lead = f"{tried} Nothing below the Installs gate ran."
-        sec += 1
-        els.append(Paragraph(lead, ST["body"]))
-        els.append(vspace(2))
-        # In the reader's own terms, before the table of causes: what it means
-        # for someone running it, a reviewer holding a manuscript, its maintainer.
-        meaning_els = [Paragraph("<b>What this means</b>", ST["body"])]
-        for who, what in install_meaning(bool(inst.get("fallback_used")), inst.get("faults") or []):
-            meaning_els.append(Paragraph(
-                f'<font color="#9ca3af">–</font>  <b>{esc(who)}:</b> {esc(what)}',
-                S("im", fontSize=8.5, textColor=GRAY, leading=14, leftIndent=10, spaceAfter=1)))
-        els.append(boxed(meaning_els))
-        els.append(vspace(3))
-        els.append(Paragraph("<b>What failed</b>", ST["body"]))
-        els.append(vspace(2))
-        ihead = [Paragraph(f"<b>{h}</b>", ST["tbl_cell"])
-                 for h in ("What happened", "Suggested fix")]
-        irows = [ihead]
-        for issue in inst["diagnostics"]:
-            irows.append([
-                Paragraph(issue["title"], ST["tbl_cell"]),
-                Paragraph(issue.get("suggestion", "—"),
-                          S("ifix", fontSize=8, textColor=GRAY, leading=12)),
-            ])
-        IC = CW * 0.38
-        it = Table(irows, colWidths=[IC, CW - IC])
-        it.setStyle(TableStyle([
-            ("VALIGN",        (0,0),(-1,-1), "TOP"),
-            ("LEFTPADDING",   (0,0),(-1,-1), 10),
-            ("RIGHTPADDING",  (0,0),(-1,-1), 10),
-            ("TOPPADDING",    (0,0),(-1,-1), 5),
-            ("BOTTOMPADDING", (0,0),(-1,-1), 5),
-            ("ROWBACKGROUNDS",(0,1),(-1,-1), [WHITE, GRAY_LIGHT]),
-            ("LINEBELOW",     (0,0),(-1,0), 0.5, BORDER),
-            ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
-        ]))
-        els.append(it)
-
-    errs = diagnose_log.summarize(cfg.get("diagnostics") or {})
-    if errs:
-        n_items = sum(len(e["items"]) for e in errs) or len(errs)
-        els.append(section_num(str(sec), "Errors Reported During the Run"))
-        sec += 1
-        els.append(Paragraph(
-            f"The tool reported errors on {n_items} item(s) during the run. "
-            "This does not assess whether the results produced are correct.",
-            ST["body"]))
-        els.append(vspace(3))
-
-        head = [Paragraph(f"<b>{h}</b>", ST["tbl_cell"])
-                for h in ("What happened", "Times", "Affected")]
-        erows = [head]
-        for e in errs:
-            items = ", ".join(e["items"]) if e["items"] else "—"
-            erows.append([
-                Paragraph(e["title"], ST["tbl_cell"]),
-                Paragraph(str(e["count"]), ST["tbl_cell"]),
-                Paragraph(items, S("erritems", fontSize=8, textColor=GRAY, leading=12)),
-            ])
-        C1 = CW * 0.34
-        C2 = CW * 0.10
-        et = Table(erows, colWidths=[C1, C2, CW - C1 - C2])
-        et.setStyle(TableStyle([
-            ("VALIGN",        (0,0),(-1,-1), "TOP"),
-            ("LEFTPADDING",   (0,0),(-1,-1), 10),
-            ("RIGHTPADDING",  (0,0),(-1,-1), 10),
-            ("TOPPADDING",    (0,0),(-1,-1), 5),
-            ("BOTTOMPADDING", (0,0),(-1,-1), 5),
-            ("ROWBACKGROUNDS",(0,1),(-1,-1), [WHITE, GRAY_LIGHT]),
-            ("LINEBELOW",     (0,0),(-1,0), 0.5, BORDER),
-            ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
-        ]))
-        els.append(et)
-        for note in diagnose_log.external_leg_notes(cfg.get("diagnostics") or {}):
-            els.append(vspace(3))
-            els.append(Paragraph(note, ST["body"]))
+    els.append(keep_section(section_num(str(sec), "Verification Matrix"), mt))
+    sec += 1
 
     # What the run needed beyond the repository. Immediately before the notes and
     # after everything the run established, so a reader meets it holding the
@@ -881,20 +903,6 @@ def build_body(cfg):
         els.append(section_num(str(sec), "What This Run Needed Beyond the Repository"))
         sec += 1
         els.append(boxed(need_els))
-
-    # What STRhub's recipe did that the README does not. Its own section,
-    # after what the run needed and before the notes: a reader has just been
-    # told the run was configured by hand, and this is the list — each item a
-    # departure a first-time user would have to discover, and a recommendation.
-    if cfg.get("instrument") == "curated":
-        cur_els = [Paragraph(CURATED_LEAD, ST["body"]), vspace(2)]
-        cur_els += [Paragraph(
-            f'<font color="#9ca3af">–</font>  {esc(item)}',
-            S("cw", fontSize=8.5, textColor=GRAY, leading=14,
-              leftIndent=10, spaceAfter=1)) for item in (cfg.get("workarounds") or ["(not itemised for this recipe)"])]
-        els.append(section_num(str(sec), CURATED_HEADING))
-        sec += 1
-        els.append(boxed(cur_els))
 
     # Notes from reading the repository. A section of its own because the label
     # is the point: nothing here was established by running the tool, so it must
@@ -1257,6 +1265,7 @@ def load_config(manifest_path: str, datasets_path: str | None = None,
         # Which instrument, and what a curated recipe did that the README
         # does not (docs/PLAN-Documented-Is-The-Badge.md).
         "instrument":     instrument_of_report(report) if report else "",
+        "headline":       headline(report)[0] if report else "",
         "workarounds":    workaround_lines(report) if report else [],
         "log_filename":   (report.get("logs") or {}).get("external")
                           or (report.get("logs") or {}).get("own", ""),

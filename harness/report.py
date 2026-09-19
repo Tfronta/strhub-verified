@@ -23,7 +23,8 @@ import _manifest  # noqa: E402
 import diagnose_log  # noqa: E402
 from prepare import unwrap_example  # noqa: E402
 from certificate_text import (  # noqa: E402
-    install_meaning, instrument_of, instrument_of_report, workaround_lines,
+    install_meaning, instrument_of, instrument_of_report, workaround_lines, headline,
+    AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, FULL_RUN_HEADING, COLOR_HEX,
     INSTRUMENT_LINE, BADGE_INSTRUMENTS, CURATED_HEADING, CURATED_LEAD, CURATED_NEEDED,
 )
 import verdict as verdict_lib  # noqa: E402
@@ -199,28 +200,24 @@ def _summary_md(report: dict, slug: str) -> str:
     level = report["level"]
     gates = report["gates"]
     mark = {True: "PASS", False: "—"}
-    lines = [
-        f"# STRhub Verified: {tool['name']} ({slug})",
-        "",
-        f"**Result: {LABELS.get(level, 'not run')}.** {MEANING.get(level, '')}.",
-        *_verdict_md(report),
-        "",
-        f"- Source: `{report['source']['repo']}` @ `{report['source']['ref_resolved']}`",
-        f"- Environment: {_environment_line(report['environment'])}",
-        f"- Generated: {report['generated']}",
-    ]
-    up_note = upstream.note(report.get("upstream"))
-    if up_note:
-        lines.append(f"- Upstream: {up_note}")
-    lines.append(f"- Recipe: {INSTRUMENT_LINE[instrument_of_report(report)]}")
-    if report.get("ci_run"):
-        lines.append(f"- CI run: {report['ci_run']}")
-    run = report.get("run") or {}
-    if run.get("cmd"):
-        lines += ["", "## Command that ran", "", RUN_LEAD, "", "```", run["cmd"], "```"]
+    label, _ = headline(report)
+    curated = instrument_of_report(report) not in BADGE_INSTRUMENTS
+    reached = f"Reached: **{LABELS.get(level, 'not run')}** — {MEANING.get(level, '')}."
+    lines = [f"# STRhub Verified: {tool['name']} ({slug})", "", f"**{label}.**"]
+    # Chapter one: the tool as it is in its repository — where it stopped, why,
+    # how. A run of a recipe STRhub wrote has no such chapter: it opens with
+    # what STRhub had to do, and the run itself follows, in full.
+    if curated:
+        lines += ["", f"## {STRHUB_DID_HEADING}", "", STRHUB_DID_LEAD, ""]
+        lines += [f"- {w}" for w in workaround_lines(report)] or ["- (not itemised for this recipe)"]
+        lines += ["", f"With those changes, the run reached: **{LABELS.get(level, 'not run')}** "
+                      f"— {MEANING.get(level, '')}.", *_verdict_md(report),
+                  "", f"## {FULL_RUN_HEADING}"]
+    else:
+        lines += ["", f"## {AS_IS_HEADING}", *_verdict_md(report), "", reached]
     lines += [
         "",
-        "## Gates",
+        "### Gates",
         "",
         "| Gate | Status | Meaning |",
         "|---|---|---|",
@@ -235,7 +232,7 @@ def _summary_md(report: dict, slug: str) -> str:
     # than at the foot of a report about a run that never happened.
     inst = report.get("install_detail") or {}
     if inst.get("diagnostics"):
-        lines += ["", f"## {_install_heading(inst)}", "",
+        lines += ["", f"### {_install_heading(inst)}", "",
                   _install_lead(inst, report["environment"]),
                   "",
                   "What this means:", ""]
@@ -254,15 +251,55 @@ def _summary_md(report: dict, slug: str) -> str:
     # The author's own words about their own software, before any of STRhub's
     # findings: a run that stops where the README says it stops is not news,
     # and a reader must be able to see that without opening the repository.
+    # Errors the tool itself reported: the "why" of a run that stopped, next
+    # to where it stopped, and a reviewer should not have to open a container
+    # log to find out.
+    errs = diagnose_log.summarize(report.get("diagnostics") or {})
+    if errs:
+        n_items = sum(len(e["items"]) for e in errs) or sum(1 for _ in errs)
+        lines += ["", "### Errors reported during the run", "",
+                  f"The tool reported errors on {n_items} item(s) during the run.",
+                  "This does not assess whether the results produced are correct.",
+                  "", "| What happened | Times | Affected |", "|---|---|---|"]
+        for e in errs:
+            items = ", ".join(e["items"]) if e["items"] else "—"
+            lines.append(f"| {e['title']} | {e['count']} | {items} |")
+        for note in diagnose_log.external_leg_notes(report.get("diagnostics") or {}):
+            lines += ["", note]
+
+        # A failure the author can fix costs nothing to re-run. Saying so here is
+        # what keeps the paid tier from looking like the way out of a dead end.
+        fixable = diagnose_log.author_fixable_ids(report.get("diagnostics") or {})
+        if fixable and not (report.get("manual_verification") or {}).get("eligible"):
+            lines += ["", diagnose_log.configuration_fault_sentence()]
+
     known = report.get("author_known_issues") or []
     if known:
-        lines += ["", "## What the author documents as a known issue", "",
+        lines += ["", "### What the author documents as a known issue", "",
                   "Quoted from the repository's README at the verified commit. "
                   "STRhub did not establish any of this by running the tool; it is "
                   "the author's own note about their own software."]
         for k in known:
             quote = k["text"] + ("…" if k.get("truncated") else "")
             lines += ["", f"**{k['heading']}** (README line {k['line']})", "", f"> {quote}"]
+
+    # How: the command the gates ran, and the logs.
+    run = report.get("run") or {}
+    if run.get("cmd"):
+        lines += ["", "### Command that ran", "", RUN_LEAD, "", "```", run["cmd"], "```"]
+    for leg, fname in (report.get("logs") or {}).items():
+        lines.append(f"- Log ({leg}): [`{fname}`]({fname})")
+
+    # Then the context: where the run came from, and what else it established.
+    lines += ["", "## Run details", "",
+              f"- Source: `{report['source']['repo']}` @ `{report['source']['ref_resolved']}`",
+              f"- Environment: {_environment_line(report['environment'])}",
+              f"- Generated: {report['generated']}"]
+    up_note = upstream.note(report.get("upstream"))
+    if up_note:
+        lines.append(f"- Upstream: {up_note}")
+    if report.get("ci_run"):
+        lines.append(f"- CI run: {report['ci_run']}")
 
     # Content highlights (the genotype-plausibility evidence), if available.
     outs = report.get("content_detail", {}).get("outputs", [])
@@ -323,28 +360,6 @@ def _summary_md(report: dict, slug: str) -> str:
         if note:
             lines += ["", "## Regions", "", note]
 
-    # Errors the tool itself reported. Its own section: the matrix says whether a
-    # leg passed, this says what went wrong, and a reviewer should not have to open
-    # a container log to find out.
-    errs = diagnose_log.summarize(report.get("diagnostics") or {})
-    if errs:
-        n_items = sum(len(e["items"]) for e in errs) or sum(1 for _ in errs)
-        lines += ["", "## Errors reported during the run", "",
-                  f"The tool reported errors on {n_items} item(s) during the run.",
-                  "This does not assess whether the results produced are correct.",
-                  "", "| What happened | Times | Affected |", "|---|---|---|"]
-        for e in errs:
-            items = ", ".join(e["items"]) if e["items"] else "—"
-            lines.append(f"| {e['title']} | {e['count']} | {items} |")
-        for note in diagnose_log.external_leg_notes(report.get("diagnostics") or {}):
-            lines += ["", note]
-
-        # A failure the author can fix costs nothing to re-run. Saying so here is
-        # what keeps the paid tier from looking like the way out of a dead end.
-        fixable = diagnose_log.author_fixable_ids(report.get("diagnostics") or {})
-        if fixable and not (report.get("manual_verification") or {}).get("eligible"):
-            lines += ["", diagnose_log.configuration_fault_sentence()]
-
     # Manual verification (level 2), when the automated path structurally cannot
     # run this tool. Never offered over a run that produced its expected output.
     mv = report.get("manual_verification") or {}
@@ -392,10 +407,6 @@ def _summary_md(report: dict, slug: str) -> str:
         for item in needed:
             lines.append(f"- {item}")
 
-    if instrument_of_report(report) == "curated":
-        lines += ["", f"## {CURATED_HEADING}", "", CURATED_LEAD, ""]
-        lines += [f"- {w}" for w in workaround_lines(report)] or ["- (not itemised for this recipe)"]
-
     cav = report.get("caveats") or {}
     if cav.get("items"):
         # The model id stays in the JSON for auditing and out of the prose. A
@@ -433,10 +444,9 @@ def _summary_html(report: dict, slug: str) -> str:
     tool = report["tool"]
     level = report["level"]
     gates = report["gates"]
-    # Read once, up here: several blocks below phrase themselves differently
-    # depending on whether the tool's own maintainer submitted it.
-    badge = {"content": "#16a34a", "io": "#22a722", "runs": "#22a722",
-             "installs": "#d4a017", "available": "#d4a017"}.get(level, "#c33")
+    label, color = headline(report)
+    badge = COLOR_HEX.get(color, "#c33")
+    curated = instrument_of_report(report) not in BADGE_INSTRUMENTS
 
     def esc(s):
         return _html.escape(str(s))
@@ -465,7 +475,7 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<li><b>{esc(who)}:</b> {esc(what)}</li>" for who, what in
             install_meaning(bool(inst.get("fallback_used")), inst.get("faults") or []))
         install_block = (
-            f"<h2>{esc(_install_heading(inst))}</h2>"
+            f"<h3>{esc(_install_heading(inst))}</h3>"
             f"<p>{esc(_install_lead(inst, report['environment']))}</p>"
             f"<p><b>What this means</b></p><ul class='stats'>{meaning}</ul>"
             "<p><b>What failed</b></p>"
@@ -482,7 +492,7 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<blockquote>{esc(k['text'])}{'…' if k.get('truncated') else ''}</blockquote>"
             for k in known)
         known_block = (
-            "<h2>What the author documents as a known issue</h2>"
+            "<h3>What the author documents as a known issue</h3>"
             "<p>Quoted from the repository's README at the verified commit. STRhub did "
             "not establish any of this by running the tool; it is the author's own note "
             "about their own software.</p>" + quotes)
@@ -496,7 +506,7 @@ def _summary_html(report: dict, slug: str) -> str:
     # The command the gates ran — the certificate's "Exact Run Command".
     run = report.get("run") or {}
     run_block = (
-        f"<h2>Command that ran</h2><p>{esc(RUN_LEAD)}</p>"
+        f"<h3>Command that ran</h3><p>{esc(RUN_LEAD)}</p>"
         f"<pre><code>{esc(run['cmd'])}</code></pre>"
         if run.get("cmd") else ""
     )
@@ -615,7 +625,7 @@ def _summary_html(report: dict, slug: str) -> str:
             if fixable and not mv_eligible else ""
         )
         errors_block = (
-            "<h2>Errors reported during the run</h2>"
+            "<h3>Errors reported during the run</h3>"
             f"<p>The tool reported errors on {n_items} item(s) during the run. "
             "This does not assess whether the results produced are correct.</p>"
             "<table><thead><tr><th>What happened</th><th>Times</th>"
@@ -676,11 +686,23 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<h2>What this run needed beyond the repository</h2><p>{esc(NEEDED_LEAD)}</p>"
             f"<ul class='stats'>{''.join(f'<li>{esc(i)}</li>' for i in needed)}</ul>")
 
-    curated_block = ""
-    if instrument_of_report(report) == "curated":
+    # The two chapters. A run of the repository's own instructions opens with
+    # what happens as it is; a run of a recipe STRhub wrote opens with what
+    # STRhub had to do, and the run follows in full.
+    reached = (f"<p>Reached: <b>{esc(LABELS.get(level, 'not run'))}</b> — "
+               f"{esc(MEANING.get(level, ''))}.</p>")
+    if curated:
         items = "".join(f"<li>{esc(w)}</li>" for w in workaround_lines(report)) or "<li>(not itemised for this recipe)</li>"
-        curated_block = (f"<h2>{esc(CURATED_HEADING)}</h2><p>{esc(CURATED_LEAD)}</p>"
-                         f"<ul class='stats'>{items}</ul>")
+        opening = (f"<h2>{esc(STRHUB_DID_HEADING)}</h2><p>{esc(STRHUB_DID_LEAD)}</p>"
+                   f"<ul class='stats'>{items}</ul>"
+                   f"<p>With those changes, the run reached: <b>{esc(LABELS.get(level, 'not run'))}</b> — "
+                   f"{esc(MEANING.get(level, ''))}.</p>{verdict_block}"
+                   f"<h2>{esc(FULL_RUN_HEADING)}</h2>")
+    else:
+        opening = f"<h2>{esc(AS_IS_HEADING)}</h2>{verdict_block}{reached}"
+    logs_block = "".join(
+        f'<p style="font-size:.85rem">Log ({esc(leg)}): <a href="{esc(fname)}">{esc(fname)}</a></p>'
+        for leg, fname in (report.get("logs") or {}).items())
 
     caveats_block = ""
     cav = report.get("caveats") or {}
@@ -725,33 +747,32 @@ def _summary_html(report: dict, slug: str) -> str:
 </style></head><body>
 <nav><a href="index.html">← All tools</a></nav>
 <h1>STRhub Verified · {esc(tool['name'])}</h1>
-<p><span class="badge">{esc(LABELS.get(level, 'not run'))}</span></p>
-<p>{esc(MEANING.get(level, ''))}.</p>
-{verdict_block}
+<p><span class="badge">{esc(label)}</span></p>
+{opening}
+<h3>Gates</h3>
+<table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
+<tbody>{''.join(rows)}</tbody></table>
+{install_block}
+{errors_block}
+{known_block}
+{run_block}
+{logs_block}
+<h2>Run details</h2>
 <ul class="meta">
   <li>Variant: <code>{esc(slug)}</code></li>
   <li>Source: <code>{esc(report['source']['repo'])}</code> @ <code>{esc(report['source']['ref_resolved'])}</code></li>
   <li>Environment: {_environment_line({**report['environment'], 'os': [esc(o) for o in report['environment'].get('os', [])]}, code=lambda t: f"<code>{esc(t)}</code>")}</li>
   <li>Generated: {esc(report['generated'])}</li>
   {upstream_li}
-  <li>Recipe: {esc(INSTRUMENT_LINE[instrument_of_report(report)])}</li>
   {f'<li>{ci}</li>' if ci else ''}
 </ul>
-{run_block}
-<h2>Gates</h2>
-<table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
-<tbody>{''.join(rows)}</tbody></table>
-{install_block}
-{known_block}
 {content_block}
 {matrix_block}
 {regions_block}
-{errors_block}
 {manual_block}
 {readme_block}
 {evidence_block}
 {needed_block}
-{curated_block}
 {caveats_block}
 <h2>Scope</h2>
 <p class="scope">{esc(report['scope'])}<br><br>
@@ -763,7 +784,6 @@ truth is out of scope.</p>
 <a href="{esc(slug)}.json">{esc(slug)}.json</a> ·
 <a href="{esc(slug)}.badge.json">badge</a> ·
 <a href="{esc(slug)}.summary.md">summary.md</a></p>
-{''.join(f'<p style="font-size:.85rem">Log ({esc(leg)}): <a href="{esc(fname)}">{esc(fname)}</a></p>' for leg, fname in (report.get("logs") or {}).items())}
 </body></html>
 """
 
@@ -1164,39 +1184,15 @@ def main() -> int:
 
     (reports / f"{slug}.json").write_text(json.dumps(report, indent=2))
 
-    color = "brightgreen" if level == "content" \
-        else "green" if level in ("io", "runs") \
-        else "yellow" if level in ("installs", "available") else "red"
-    message = LABELS.get(level, "not run")
-
-    # A run can clear its gates and still have reported errors: a tool that fails
-    # on some loci, writes a partial file and exits 0 clears "Expected IO" on the
-    # strength of what did come out. The badge is the most-seen artifact, so an
-    # unqualified green there hides that. Saying so is descriptive — the tool's own
-    # log emitted the errors — and stays clear of judging genotype correctness,
-    # which needs a truth set we do not have. Warnings never count: benign stderr
-    # noise is common and marking it would be unfair.
-    n_errors = sum(
-        issue.get("count", 1)
-        for leg_issues in diagnostics.values()
-        for issue in leg_issues
-        if issue.get("severity") == "error"
-    )
-    if n_errors and color in ("brightgreen", "green"):
-        color = "yellow"
-        message = f"{message} (errors reported)"
-
-    # A run nobody knew how to complete measured the documentation, not the
-    # tool: its badge says so instead of the rung it happened to reach
-    # ("Installs" on a run that stopped for want of a command reads as the
-    # tool's own result). Grey, because it is neither a pass nor a failure.
-    if report["verdict"]["code"] == "undetermined":
-        color, message = "lightgrey", verdict_lib.TITLES["undetermined"]
-
-    # A result of a recipe STRhub wrote must not read as the tool's own on
-    # the one artifact that travels alone.
-    if report["instrument"] not in BADGE_INSTRUMENTS:
-        message = f"{message} · STRhub's recipe"
+    # The badge is the one artifact that travels alone, and it says the
+    # result in words — what happens to the tool as it is in its repository —
+    # rather than the rung reached: "Installs" on a run that then failed read
+    # as a result, and a green from a recipe STRhub wrote read as the tool's
+    # own. One rule, certificate_text.headline, for the badge, both copies,
+    # the index and the certificate; it folds in the errors the tool reported
+    # (a green with errors is yellow) and says "Could not be determined" for a
+    # run nobody knew how to attempt.
+    message, color = headline(report)
     badge = {"schemaVersion": 1, "label": "STRhub Verified",
              "message": message, "color": color}
     (reports / f"{slug}.badge.json").write_text(json.dumps(badge, indent=2))

@@ -34,7 +34,9 @@ REPORT = {
 def test_the_html_copy_carries_verdict_command_and_output():
     html = report._summary_html(REPORT, "hipstr")
     assert "<b>Verdict: Runs.</b>" in html
-    assert "<h2>Command that ran</h2>" in html
+    assert "<h3>Command that ran</h3>" in html
+    # The tool as it is comes first, then the run's details.
+    assert html.index("As it is in the repository") < html.index("<h3>Gates</h3>") < html.index("<h2>Run details</h2>")
     assert "./HipSTR --bams /data/in/input.bam --str-vcf str_calls.vcf.gz" in html
     assert "Output file: <code>str_calls.vcf.gz</code> (VCF)" in html
     assert "Panel loci called: <b>3</b> of 4" in html
@@ -56,7 +58,7 @@ def test_the_markdown_summary_no_longer_clips_the_evidence():
     md = report._summary_md(REPORT, "hipstr")
     assert "Platform advice:" in md
     assert "as the difference in error profiles will be problematic" in md
-    assert "## Command that ran" in md
+    assert "### Command that ran" in md
 
 
 def test_nothing_is_invented_for_an_older_report():

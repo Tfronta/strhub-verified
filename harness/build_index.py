@@ -23,7 +23,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import publish_layout  # noqa: E402
-from certificate_text import instrument_of_report  # noqa: E402
+from certificate_text import instrument_of_report, headline, COLOR_HEX  # noqa: E402
 
 LABELS = {"none": "not run", "available": "Available", "installs": "Installs",
           "runs": "Runs", "io": "Runs + Expected IO",
@@ -115,7 +115,9 @@ def _summary_entry(slug: str, r: dict) -> dict:
         # not verified as documented. See docs/PLAN-Documented-Is-The-Badge.md.
         "instrument": instrument_of_report(r),
         "level": level,
-        "label": LABELS.get(level, "not run"),
+        # The result in words — what happens as it is in the repository — the
+        # same the badge and the certificate print (certificate_text.headline).
+        "label": headline(r)[0],
         # One of runs / fails / undetermined / out_of_scope. The first three
         # deploy (out_of_scope never does); carried so the catalogue can lead
         # an undetermined entry with the verdict rather than a level, without
@@ -193,9 +195,9 @@ def build_catalogue(reports: pathlib.Path) -> dict:
 
 
 def _card(slug: str, r: dict) -> str:
-    level = r.get("level", "none")
     tool = r.get("tool", {})
-    color = COLOR.get(level, "#c33")
+    label, shade = headline(r)
+    color = COLOR_HEX.get(shade, "#c33")
     stats = _stats(r)
     extra = ""
     if stats:
@@ -208,7 +210,7 @@ def _card(slug: str, r: dict) -> str:
                  f'{stats.get("total_reads", 0)} reads</p>')
     return f"""
   <a class="card" href="{html.escape(slug)}.html">
-    <span class="badge" style="background:{color}">{html.escape(LABELS.get(level, 'not run'))}</span>
+    <span class="badge" style="background:{color}">{html.escape(label)}</span>
     <h2>{html.escape(tool.get('name', slug))}</h2>
     <p class="slug">{html.escape(slug)}</p>
     {extra}
