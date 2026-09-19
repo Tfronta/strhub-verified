@@ -33,13 +33,24 @@ def test_the_instrument_comes_from_recipe_origin_and_is_derived_for_older_manife
     assert ct.instrument_of_report({"caveats": {"source": "detect_recipe"}}) == "documented"
 
 
-def test_every_recipe_strhub_wrote_declares_itself_and_its_workarounds():
+def test_every_committed_recipe_declares_its_origin_and_a_curated_one_its_workarounds():
+    """tools/ holds the recipes STRhub wrote by hand AND, since a trial from a
+    URL that publishes commits the recipe it ran (verify.yml), recipes the
+    engine proposed from the repository — tools/straitrazor is the first.
+    Each says which it is; only a curated one owes the list of departures."""
+    seen = set()
     for m in sorted((ROOT / "tools").glob("*/manifest.yml")):
         doc = yaml.safe_load(m.read_text())
-        assert doc["recipe"]["origin"] == "curated", m
+        origin = doc["recipe"]["origin"]
+        assert origin in ("curated", "proposed", "maintainer"), m
+        seen.add(origin)
+        if origin != "curated":
+            assert not doc["recipe"].get("workarounds"), f"{m}: only a curated recipe departs from the README"
+            continue
         assert doc["recipe"]["workarounds"], f"{m}: a curated recipe lists what it does that the README does not"
         for w in doc["recipe"]["workarounds"]:
             assert w["what"] and w["instead_of"], m
+    assert "curated" in seen
 
 
 def _report(instrument, workarounds=None):
