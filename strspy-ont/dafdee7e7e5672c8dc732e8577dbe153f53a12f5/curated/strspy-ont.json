@@ -22,10 +22,36 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-18T13:38:00+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35350684894",
+  "generated": "2026-09-19T18:25:10+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35460767865",
   "run": {
     "cmd": "bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /opt/strspy/db/STRspy2.0-DB -b /opt/strspy/db/STRspy2.0-DB -l /opt/strspy/db-v2/STRspy_v2.DB.sort.bed -k 0.4 -o /data/out -c /opt/strspy/config/ToolsConfig.txt -d 1"
+  },
+  "instrument": "curated",
+  "recipe": {
+    "origin": "curated",
+    "workarounds": [
+      {
+        "what": "Creates the conda environment straight from setup/STRspy_2.0_env.yml.",
+        "instead_of": "bash setup/STRspy_2.0.setup.sh, the documented installer.",
+        "why": "The installer stops at `read ans` for a confirmation; it hangs unattended."
+      },
+      {
+        "what": "Unzips the prebuilt database db-v2/STRspy2.0-DB.zip and deletes the macOS files it ships with (__MACOSX, ._*, .DS_Store).",
+        "instead_of": "Nothing documented: the README does not mention the prebuilt database; the author offered it in issue #12.",
+        "why": "The stray files match the per-locus FASTA/BED globs and pollute the run."
+      },
+      {
+        "what": "Writes config/ToolsConfig.txt directly, with the tool paths of the environment.",
+        "instead_of": "bash setup/GenerateToolConfig.sh followed by mv setup/UserToolsConfig.txt config/, as documented.",
+        "why": "The script writes UserToolsConfig.txt to the current directory, so the documented mv fails, and the wrapper expects ToolsConfig.txt."
+      },
+      {
+        "what": "Runs src/STRspy_Normal_v2.0_Args.sh directly, with the flags its own -h lists.",
+        "instead_of": "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt, the only documented command.",
+        "why": "The wrapper checks for the scripts in the repository root, where they are not (they are in src/), and exits: 'please make sure you are in the same directory of STRspy'."
+      }
+    ]
   },
   "gates": {
     "available": true,
@@ -155,7 +181,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-18T13:38:01+00:00",
+    "checked": "2026-09-19T18:25:10+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "main",
@@ -163,7 +189,8 @@
     "behind_by": 14
   },
   "needed_beyond_repo": [
-    "Test data: no sample from the repository was used, so a public reference sample stood in."
+    "Test data: no sample from the repository was used, so a public reference sample stood in.",
+    "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under the recipe."
   ],
   "author_known_issues": [
     {

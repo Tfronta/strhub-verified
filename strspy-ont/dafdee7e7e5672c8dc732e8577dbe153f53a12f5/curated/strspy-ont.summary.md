@@ -6,9 +6,10 @@
 
 - Source: `https://github.com/unique379r/strspy` @ `dafdee7e7e5672c8dc732e8577dbe153f53a12f5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-18T13:38:00+00:00
+- Generated: 2026-09-19T18:25:10+00:00
 - Upstream: The verified commit is 14 commit(s) behind `main`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35350684894
+- Recipe: a recipe STRhub wrote by hand, not read off the repository: a note under the documented result, never the badge
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35460767865
 
 ## Command that ran
 
@@ -92,6 +93,16 @@ What this run's configuration rests on, each item at the verified commit. Open a
 The result above describes a run configured as follows. Anyone repeating it needs the same things.
 
 - Test data: no sample from the repository was used, so a public reference sample stood in.
+- A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under the recipe.
+
+## What STRhub's recipe does that the repository's instructions do not
+
+This run used a recipe STRhub wrote. Each item below is a departure from the README that a first-time user would have to discover for themselves. The badge rests on the run of the repository's own instructions, not on this one.
+
+- Creates the conda environment straight from setup/STRspy_2.0_env.yml. — instead of: bash setup/STRspy_2.0.setup.sh, the documented installer. The installer stops at `read ans` for a confirmation; it hangs unattended.
+- Unzips the prebuilt database db-v2/STRspy2.0-DB.zip and deletes the macOS files it ships with (__MACOSX, ._*, .DS_Store). — instead of: Nothing documented: the README does not mention the prebuilt database; the author offered it in issue #12. The stray files match the per-locus FASTA/BED globs and pollute the run.
+- Writes config/ToolsConfig.txt directly, with the tool paths of the environment. — instead of: bash setup/GenerateToolConfig.sh followed by mv setup/UserToolsConfig.txt config/, as documented. The script writes UserToolsConfig.txt to the current directory, so the documented mv fails, and the wrapper expects ToolsConfig.txt.
+- Runs src/STRspy_Normal_v2.0_Args.sh directly, with the flags its own -h lists. — instead of: bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt, the only documented command. The wrapper checks for the scripts in the repository root, where they are not (they are in src/), and exits: 'please make sure you are in the same directory of STRspy'.
 
 ## Scope (read this)
 
