@@ -20,8 +20,26 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-15T19:53:01+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016057251",
+  "generated": "2026-09-19T18:21:04+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35460767865",
+  "run": {
+    "cmd": "GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out /data/out/output"
+  },
+  "instrument": "curated",
+  "recipe": {
+    "origin": "curated",
+    "workarounds": [
+      {
+        "what": "Installs GangSTR 2.5.0 from bioconda, a prebuilt binary.",
+        "instead_of": "cmake .. && make from the source at the pinned commit, as the README documents.",
+        "why": "The documented build stops in htslib: the repository's CMakeLists runs autoreconf without -i (config.sub/config.guess missing). What ran is bioconda's build of 2.5.0, not this commit's source."
+      },
+      {
+        "what": "Supplies the regions BED from STRhub's library and the command-line flags STRhub chose for its reference slice.",
+        "instead_of": "A regions file and a command the README leaves to the user."
+      }
+    ]
+  },
   "gates": {
     "available": true,
     "installs": true,
@@ -301,13 +319,84 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-15T19:53:01+00:00",
+    "checked": "2026-09-19T18:21:04+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
     "status": "identical",
     "behind_by": 0
   },
+  "needed_beyond_repo": [
+    "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under the recipe."
+  ],
+  "evidence": [
+    {
+      "claim": "install_method",
+      "kind": "tree",
+      "path": "CMakeLists.txt",
+      "text": "cmake",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/CMakeLists.txt"
+    },
+    {
+      "claim": "fallback_environment",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 18,
+      "text": "A Docker with GangSTR plus the dumpSTR filtering tool installed is available at [gymreklab/str-toolkit](https://hub.docker.com/r/gymreklab/str-toolkit) from Docker hub.",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L18"
+    },
+    {
+      "claim": "run_command",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 101,
+      "text": "GangSTR --bam file.bam",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L101"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/HTT.bed",
+      "text": "bed",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/HTT.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/alignment/nc190_25.sorted.bam",
+      "text": "bam",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc190_25.sorted.bam"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/alignment/nc10_25.sorted.bam",
+      "text": "bam",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc10_25.sorted.bam"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/alignment/nc30_15.sorted.bam",
+      "text": "bam",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc30_15.sorted.bam"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "experimental/supplement_bed/hg38_codis.bed",
+      "text": "bed",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/experimental/supplement_bed/hg38_codis.bed"
+    },
+    {
+      "claim": "documented_input",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 6,
+      "text": "GangSTR takes aligned reads (BAM) and a set of repeats in the reference genome as input and outputs a VCF file containing genotypes for each locus.",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L6"
+    }
+  ],
   "repo_test_data": {
     "known": true,
     "present": true,
