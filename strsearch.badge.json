@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "STRhub Verified",
-  "message": "Available",
-  "color": "yellow"
+  "message": "Does not run as documented: stops at install",
+  "color": "red"
 }

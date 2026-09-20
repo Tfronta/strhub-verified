@@ -1,6 +1,8 @@
 # STRhub Verified: STRsearch (strsearch)
 
-**Result: Available.** the pinned public source exists.
+**Does not run as documented: stops at install.**
+
+## As it is in the repository
 
 **Verdict: Fails.** The environment did not build from the declared install steps.
 
@@ -10,22 +12,9 @@ What stopped it, and what can be done:
   - Yourself: Adjust the install steps (or provide a Dockerfile) and try again.
   - The tool's owner: open an issue, "Build fails from a clean checkout".
 
-- Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
-- Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-18T20:49:05+00:00
-- Upstream: The verified commit is the head of `master`.
-- Recipe: the repository's own instructions, read off the README and the tree at the pinned commit
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35393390457
+Reached **Available**: the pinned public source exists.
 
-## Command that ran
-
-Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
-
-```
-python3 pipeline.py from_fastq --working_path example/test_results/ --sample test --fq1 /data/in/input.bam --fq2 /data/in/input.bam --ref /data/ref/hg38.fa
-```
-
-## Gates
+### Gates
 
 | Gate | Status | Meaning |
 |---|---|---|
@@ -36,7 +25,7 @@ python3 pipeline.py from_fastq --working_path example/test_results/ --sample tes
 | Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
 | Reproduces own example | — | the README's own command produced its documented output on the repository's own data |
 
-## It did not build from source
+### It did not build from source
 
 STRhub tried to build the tool from its source at the pinned commit, following the build steps the repository declares, and the build failed. Nothing below the Installs gate ran.
 
@@ -44,15 +33,32 @@ What this means:
 
 - **If you are trying to run it:** A build from source at this commit fails in a clean environment; the cause and a suggested fix are below.
 - **If you are reviewing a paper:** Nothing ran, so this says nothing about the software's output. It records that this attempt to build it stopped, and whose side the cause is on.
-- **If you maintain it:** Every cause identified sits in this run's configuration — the pinned versions, package names or build steps it declared. They are faults in how the tool was set up here rather than in the software. Re-verifying after correcting them is free.
+- **If you maintain it:** Every cause identified sits in this run's configuration: the pinned versions, package names or build steps it declared. They are faults in how the tool was set up here rather than in the software. Re-verifying after correcting them is free.
 
 What failed:
 
 | What happened | Times | Suggested fix |
 |---|---|---|
-| The build referenced a file that is not in the build context | 1 | A COPY/ADD line names a file the build cannot see. The container is built from the tool's directory, and the repository is cloned inside the image — so paths from your own machine are not available. |
+| The build referenced a file that is not in the build context | 1 | A COPY/ADD line names a file the build cannot see. The container is built from the tool's directory, and the repository is cloned inside the image, so paths from your own machine are not available. |
 
 Full build output: [`strsearch.log-build.txt`](strsearch.log-build.txt)
+
+### Command that ran
+
+Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
+
+```
+python3 pipeline.py from_fastq --working_path example/test_results/ --sample test --fq1 /data/in/input.bam --fq2 /data/in/input.bam --ref /data/ref/hg38.fa
+```
+- Log (build): [`strsearch.log-build.txt`](strsearch.log-build.txt)
+
+## Run details
+
+- Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
+- Environment: ubuntu-22.04 (`Dockerfile`)
+- Generated: 2026-09-20T16:52:28+00:00
+- Upstream: The verified commit is the head of `master`.
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35524023845
 
 ## Verification matrix
 
@@ -80,13 +86,13 @@ Score: **5/5**. Advisory only; does not affect the execution badge.
 
 What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.
 - Install method: [`Dockerfile`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/Dockerfile)
-- Run command: [`README.md` line 96](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L96) — `python3 pipeline.py from_fastq \`
+- Run command: [`README.md` line 96](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L96): `python3 pipeline.py from_fastq \`
 - Example data: [`example/ref_test.bed`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/ref_test.bed)
 - Example data: [`example/test_data/test.bam`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test.bam)
 - Example data: [`example/test_data/test_R1.fastq`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R1.fastq)
 - Example data: [`example/test_data/test_R2.fastq`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R2.fastq)
 - Example data: [`example/test_output/STRfq/Marker94_reads_test_sortByname.bam`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_output/STRfq/Marker94_reads_test_sortByname.bam)
-- Documented input: [`README.md` line 77](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L77) — `FASTQ file or BAM-file from singe-end or paird-end sequencing platforms`
+- Documented input: [`README.md` line 77](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L77): `FASTQ file or BAM-file from singe-end or paird-end sequencing platforms`
 
 ## What this run needed beyond the repository
 
@@ -105,6 +111,26 @@ Recorded automatically from the tool's public files when this run was configured
 - Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output.
 - Regions: STRhub's ready-made strsearch file for the dataset's panel loci (STRhub records the strsearch layout for a program of this name).
 - README mentions hg19/GRCh37 only; STRhub reference BAMs are hg38
+
+## Out of scope
+
+This report does not evaluate any of the following:
+
+- Genotype correctness or accuracy
+- Concordance against known truth sets
+- Sensitivity, specificity, or stutter performance
+- Allele calling accuracy or forensic casework suitability
+- Regulatory compliance or ISO accreditation
+- Multi-laboratory or multi-dataset reproducibility
+
+## Limitations
+
+- Single reference dataset per input type
+- Single containerized environment (Docker / ubuntu-22.04)
+- No truth-set comparison or ground-truth genotypes
+- No accuracy or concordance assessment
+- No forensic validation of results
+- Short-read limitations apply (very long STR alleles may not span reads)
 
 ## Scope (read this)
 

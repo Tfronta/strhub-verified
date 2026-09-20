@@ -3,16 +3,13 @@
 #1 [internal] load build definition from Dockerfile
 #1 transferring dockerfile:
 #1 transferring dockerfile: 1.84kB done
-#1 DONE 0.7s
+#1 DONE 0.1s
 
-#2 [internal] load metadata for docker.io/library/ubuntu:16.04
-#2 ...
+#2 [auth] library/ubuntu:pull token for registry-1.docker.io
+#2 DONE 0.0s
 
-#3 [auth] library/ubuntu:pull token for registry-1.docker.io
-#3 DONE 0.0s
-
-#2 [internal] load metadata for docker.io/library/ubuntu:16.04
-#2 DONE 1.0s
+#3 [internal] load metadata for docker.io/library/ubuntu:16.04
+#3 DONE 0.6s
 
 #4 [internal] load .dockerignore
 #4 transferring context: 2B done
@@ -22,41 +19,41 @@
 #5 transferring context: 2B done
 #5 DONE 0.0s
 
-#6 [12/19] WORKDIR /STRsearch
+#6 [10/19] RUN wget --quiet https://drive5.com/cgi-bin/upload3.py?license=2019110501245926689 -O /usr/bin/usearch  && chmod +x /usr/bin/usearch
 #6 CACHED
 
-#7 [ 2/19] RUN apt-get update && apt-get install -y     curl     wget     ca-certificates     vim     sudo     git     bzip2  && rm -rf /var/lib/apt/lists/*
+#7 [ 5/19] RUN conda install -c bioconda/label/cf201901 bwa && conda clean -ya
 #7 CACHED
 
 #8 [ 4/19] RUN conda install -c anaconda numpy && conda clean -ya
 #8 CACHED
 
-#9 [11/19] RUN mkdir /STRsearch
+#9 [ 8/19] RUN conda install -c bioconda seqtk && conda clean -ya
 #9 CACHED
 
-#10 [ 8/19] RUN conda install -c bioconda seqtk && conda clean -ya
+#10 [ 6/19] RUN conda install -c bioconda samtools==1.7 && conda clean -ya
 #10 CACHED
 
-#11 [ 5/19] RUN conda install -c bioconda/label/cf201901 bwa && conda clean -ya
+#11 [ 7/19] RUN conda install -c bioconda bedtools==2.17.0 && conda clean -ya
 #11 CACHED
 
-#12 [ 6/19] RUN conda install -c bioconda samtools==1.7 && conda clean -ya
+#12 [ 2/19] RUN apt-get update && apt-get install -y     curl     wget     ca-certificates     vim     sudo     git     bzip2  && rm -rf /var/lib/apt/lists/*
 #12 CACHED
 
-#13 [ 9/19] RUN conda install -c conda-forge pathlib && conda clean -ya
+#13 [11/19] RUN mkdir /STRsearch
 #13 CACHED
 
-#14 [ 3/19] RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.3.31-Linux-x86_64.sh -O ~/miniconda.sh &&     /bin/bash ~/miniconda.sh -b -p /opt/conda &&     rm ~/miniconda.sh &&     /opt/conda/bin/conda clean -tipsy &&     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh &&     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc &&     echo "conda activate base" >> ~/.bashrc
+#14 [ 9/19] RUN conda install -c conda-forge pathlib && conda clean -ya
 #14 CACHED
 
-#15 [ 7/19] RUN conda install -c bioconda bedtools==2.17.0 && conda clean -ya
+#15 [12/19] WORKDIR /STRsearch
 #15 CACHED
 
-#16 [10/19] RUN wget --quiet https://drive5.com/cgi-bin/upload3.py?license=2019110501245926689 -O /usr/bin/usearch  && chmod +x /usr/bin/usearch
+#16 [ 3/19] RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.3.31-Linux-x86_64.sh -O ~/miniconda.sh &&     /bin/bash ~/miniconda.sh -b -p /opt/conda &&     rm ~/miniconda.sh &&     /opt/conda/bin/conda clean -tipsy &&     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh &&     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc &&     echo "conda activate base" >> ~/.bashrc
 #16 CACHED
 
 #17 [13/19] COPY ./STRsearch /STRsearch
-#17 ERROR: failed to calculate checksum of ref deb5778d-bef2-45a8-8bfb-608ac8bc2cd9::otkqi3tgk03ol6dmr8zfm43ty: "/STRsearch": not found
+#17 ERROR: failed to calculate checksum of ref deb5778d-bef2-45a8-8bfb-608ac8bc2cd9::fvrdiuzaygkqry1np8hvlbw6s: "/STRsearch": not found
 
 #18 [ 1/19] FROM docker.io/library/ubuntu:16.04@sha256:1f1a2d56de1d604801a9671f301190704c25d604a416f59e03c04f5c6ffee0d6
 #18 resolve docker.io/library/ubuntu:16.04@sha256:1f1a2d56de1d604801a9671f301190704c25d604a416f59e03c04f5c6ffee0d6 done
@@ -78,4 +75,4 @@ Dockerfile:38
   39 |     RUN chmod +x /STRsearch/pipeline.py
   40 |     RUN sed -i 's$YOUR PATH/bwa$/opt/conda/bin/bwa$g' /STRsearch/conf.py
 --------------------
-ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref deb5778d-bef2-45a8-8bfb-608ac8bc2cd9::otkqi3tgk03ol6dmr8zfm43ty: "/STRsearch": not found
+ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref deb5778d-bef2-45a8-8bfb-608ac8bc2cd9::fvrdiuzaygkqry1np8hvlbw6s: "/STRsearch": not found
