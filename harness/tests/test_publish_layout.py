@@ -199,3 +199,25 @@ def test_settling_a_site_moves_curated_runs_into_their_place_and_rewrites_every_
     assert _alias_sha(site) == OLD
     # Harmless the second time.
     assert pl.settle_all(site) == [(SLUG, OLD, "documented")]
+
+
+def test_a_retired_run_stays_where_it_is_but_is_never_the_alias(tmp_path):
+    """A tombstone, never a deletion: the files stay, the URL resolves, the
+    index says retired and why, and the alias rests on something else."""
+    import build_index
+    site = tmp_path / "site"; site.mkdir()
+    pl.place(site, _run(tmp_path, NEW, "2026-02-01T00:00:00Z", "2026-09-01T00:00:00+00:00", instrument="curated"), SLUG)
+    pl.place(site, _run(tmp_path, OLD, "2024-03-10T00:00:00Z", "2026-09-18T00:00:00+00:00", instrument="curated"), SLUG)
+    assert _alias_sha(site) == NEW
+    stone = pl.retire(site, SLUG, NEW, "curated", "its recipe is no longer committed under tools/", when="2026-09-20T00:00:00+00:00")
+    assert stone == site / SLUG / NEW / pl.CURATED_DIR / pl.TOMBSTONE
+    assert (site / SLUG / NEW / pl.CURATED_DIR / f"{SLUG}.json").exists()      # nothing deleted
+    assert _alias_sha(site) == OLD                                             # the alias moved
+    (entry,) = build_index.build_catalogue(site)["tools"]
+    assert entry["sha"] == OLD and "retired" not in entry
+    new_row = next(v for v in entry["versions"] if v["sha"] == NEW)
+    assert new_row["retired"] == {"retired": "2026-09-20T00:00:00+00:00", "reason": "its recipe is no longer committed under tools/"}
+    assert "retired" not in next(v for v in entry["versions"] if v["sha"] == OLD)
+    # A tool whose every run is retired has no alias at all.
+    pl.retire(site, SLUG, OLD, "curated", "same", when="2026-09-20T00:00:00+00:00")
+    assert pl.alias_source(site, SLUG) is None
