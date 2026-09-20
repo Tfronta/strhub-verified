@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-09-20T16:54:40+00:00",
+  "generated": "2026-09-20T16:54:54+00:00",
   "count": 8,
   "tools": [
     {
@@ -125,10 +125,10 @@
       "label": "Runs as documented",
       "verdict": "runs",
       "errors_reported": false,
-      "generated": "2026-09-18T20:51:52+00:00",
+      "generated": "2026-09-20T16:54:52+00:00",
       "source_repo": "https://github.com/tfwillems/HipSTR",
       "source_ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35393386559",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524021289",
       "distinct_str_loci": 21,
       "distinct_snp_markers": 0,
       "total_reads": 7851,
@@ -148,12 +148,12 @@
           "version": "v0.7",
           "variant": null,
           "committed": "2021-05-10T16:02:08Z",
-          "generated": "2026-09-18T20:51:52+00:00",
+          "generated": "2026-09-20T16:54:52+00:00",
           "level": "content",
           "label": "Runs as documented",
           "verdict": "runs",
           "errors_reported": false,
-          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35393386559",
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524021289",
           "report": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/hipstr.json",
           "page": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/hipstr.html",
           "pdf": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/hipstr.pdf"

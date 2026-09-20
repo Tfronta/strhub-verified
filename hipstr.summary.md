@@ -1,25 +1,14 @@
 # STRhub Verified: HipSTR (hipstr)
 
-**Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+**Runs as documented.**
+
+## As it is in the repository
 
 **Verdict: Runs.** The tool installed and its run produced its documented output.
 
-- Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
-- Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-18T20:51:52+00:00
-- Upstream: The verified commit is the head of `master`.
-- Recipe: the repository's own instructions, read off the README and the tree at the pinned commit
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35393386559
+Reached **Runs + Plausible output**: its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
-## Command that ran
-
-Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
-
-```
-./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf str_calls.vcf.gz
-```
-
-## Gates
+### Gates
 
 | Gate | Status | Meaning |
 |---|---|---|
@@ -28,6 +17,24 @@ Executed verbatim inside the container, at the pinned commit. Paths under /data 
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+
+### Command that ran
+
+Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
+
+```
+./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf str_calls.vcf.gz
+```
+- Log (external): [`hipstr.log-external.txt`](hipstr.log-external.txt)
+- Log (build): [`hipstr.log-build.txt`](hipstr.log-build.txt)
+
+## Run details
+
+- Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
+- Environment: ubuntu-22.04 (`Dockerfile`)
+- Generated: 2026-09-20T16:54:52+00:00
+- Upstream: The verified commit is the head of `master`.
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35524021289
 
 ## Output content (plausibility evidence)
 
@@ -63,12 +70,12 @@ Score: **5/5**. Advisory only; does not affect the execution badge.
 
 What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.
 - Install method: [`Makefile`](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/Makefile)
-- Run command: [`README.md` line 69](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L69) — `./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam`
+- Run command: [`README.md` line 69](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L69): `./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam`
 - Example data: [`test/input/chr1_regions.bed`](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/test/input/chr1_regions.bed)
 - Example data: [`test/input/chr1_regions_v2.bed`](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/test/input/chr1_regions_v2.bed)
 - Example data: [`test/input/1kg.chr1.imputed.vcf.gz`](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/test/input/1kg.chr1.imputed.vcf.gz)
-- Documented input: [`README.md` line 69](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L69) — `./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam`
-- Platform advice: [`README.md` line 435](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L435) — `We do not recommend running it on PacBio or Oxford Nanopore data, as the difference in error profiles will be problematic`
+- Documented input: [`README.md` line 69](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L69): `./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam`
+- Platform advice: [`README.md` line 435](https://github.com/tfwillems/HipSTR/blob/b2033bfbb5cf55496b776463bdf2993fa763a4be/README.md#L435): `We do not recommend running it on PacBio or Oxford Nanopore data, as the difference in error profiles will be problematic`
 
 ## What this run needed beyond the repository
 
@@ -88,6 +95,26 @@ Recorded automatically from the tool's public files when this run was configured
 - 1 BED path(s) replaced with /data/in/regions.bed.
 - Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output.
 - Regions: STRhub's ready-made hipstr file for the dataset's panel loci (STRhub records the hipstr layout for a program of this name).
+
+## Out of scope
+
+This report does not evaluate any of the following:
+
+- Genotype correctness or accuracy
+- Concordance against known truth sets
+- Sensitivity, specificity, or stutter performance
+- Allele calling accuracy or forensic casework suitability
+- Regulatory compliance or ISO accreditation
+- Multi-laboratory or multi-dataset reproducibility
+
+## Limitations
+
+- Single reference dataset per input type
+- Single containerized environment (Docker / ubuntu-22.04)
+- No truth-set comparison or ground-truth genotypes
+- No accuracy or concordance assessment
+- No forensic validation of results
+- Short-read limitations apply (very long STR alleles may not span reads)
 
 ## Scope (read this)
 
