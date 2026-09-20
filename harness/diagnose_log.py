@@ -321,7 +321,7 @@ _rule(
     "error", "build_file_missing",
     "The build referenced a file that is not in the build context",
     "A COPY/ADD line names a file the build cannot see. The container is built "
-    "from the tool's directory, and the repository is cloned inside the image — "
+    "from the tool's directory, and the repository is cloned inside the image, "
     "so paths from your own machine are not available.",
 )
 
@@ -349,7 +349,7 @@ _rule(
     "error", "checkout_failed",
     "The pinned commit could not be checked out",
     "The container clones the public repository at the pinned ref. Check that "
-    "the commit or tag still exists and is reachable — a force-push or a deleted "
+    "the commit or tag still exists and is reachable. A force-push or a deleted "
     "branch can strand a ref that once resolved.",
 )
 
@@ -586,7 +586,7 @@ def install_fault_sentence(faults: list[str]) -> str:
         return ("At least one cause is a ceiling of the free automated "
                 "environment rather than a fault in the tool.")
     if "author" in faults:
-        return ("Every cause identified sits in this run's configuration — the "
+        return ("Every cause identified sits in this run's configuration: the "
                 "pinned versions, package names or build steps it declared. They "
                 "are faults in how the tool was set up here rather than in the "
                 "software. Re-verifying after correcting them is free.")

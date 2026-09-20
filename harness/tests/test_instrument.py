@@ -76,7 +76,7 @@ def test_a_curated_report_opens_with_what_strhub_had_to_do_and_is_not_verified_a
         assert ct.NOT_DOCUMENTED in text
         assert ct.STRHUB_DID_HEADING in text and ct.AS_IS_HEADING not in text
         assert "Runs src/STRspy_Normal_v2.0_Args.sh directly." in text
-        assert "instead of: The wrapper, the only documented command." in text
+        assert "Instead of: The wrapper, the only documented command." in text
         # The chapter comes first; the run follows in full.
         assert text.index(ct.STRHUB_DID_HEADING) < text.index(ct.FULL_RUN_HEADING) < text.index("Gates")
 

@@ -10,7 +10,7 @@ ENV = {"dockerfile": "Dockerfile", "os": ["ubuntu-22.04"], "source": "generated"
 def test_environment_line_names_plan_b_only_when_it_ran():
     assert report._environment_line(ENV) == "ubuntu-22.04 (`Dockerfile`)"
     line = report._environment_line({**ENV, "fallback_used": True})
-    assert line.startswith("ubuntu-22.04 (`Dockerfile`) — plan B: the published image gymreklab/str-toolkit")
+    assert line.startswith("ubuntu-22.04 (`Dockerfile`); plan B: the published image gymreklab/str-toolkit")
     assert line.endswith("(`Dockerfile.fallback`), after the build from the pinned commit failed")
     html = report._environment_line({**ENV, "fallback_used": True}, code=lambda t: f"<code>{t}</code>")
     assert "<code>Dockerfile.fallback</code>" in html and "`" not in html

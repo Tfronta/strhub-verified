@@ -27,8 +27,8 @@ BADGE_INSTRUMENTS = ("documented", "maintainer")
 #: STRhub had to do to run it. The second never changes the label.
 AS_IS_HEADING = "As it is in the repository"
 STRHUB_DID_HEADING = "What STRhub had to do to run this tool"
-STRHUB_DID_LEAD = ("STRhub wrote its own recipe for this tool — an environment and a command of "
-                   "its own, not the repository's instructions — and ran that. Each item below "
+STRHUB_DID_LEAD = ("STRhub wrote its own recipe for this tool, an environment and a command of "
+                   "its own rather than the repository's instructions, and ran that. Each item below "
                    "is something a first-time user following the README would have to work out "
                    "for themselves, and so a recommendation to the author. This run does not "
                    "change the tool's label: the label is what happens as it is in the repository.")
@@ -193,7 +193,7 @@ def workaround_lines(report: dict) -> list[str]:
     """One line per workaround of a curated recipe, for any rendering."""
     out = []
     for w in ((report.get("recipe") or {}).get("workarounds") or []):
-        line = f"{w.get('what', '')} — instead of: {w.get('instead_of', '')}"
+        line = f"{w.get('what', '')} Instead of: {w.get('instead_of', '')}"
         if w.get("why"):
             line += f" {w['why']}"
         out.append(line)

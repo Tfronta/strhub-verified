@@ -154,7 +154,7 @@ def _environment_line(env: dict, code=lambda t: f"`{t}`") -> str:
     line = f"{', '.join(env.get('os', []))} ({code(env['dockerfile'])})"
     if env.get("fallback_used"):
         fb = env.get("fallback") or {}
-        line += (f" — plan B: {_fallback_reason(env)} ({code(fb.get('dockerfile', 'Dockerfile.fallback'))}), "
+        line += (f"; plan B: {_fallback_reason(env)} ({code(fb.get('dockerfile', 'Dockerfile.fallback'))}), "
                  "after the build from the pinned commit failed")
     return line
 
@@ -203,7 +203,7 @@ def _summary_md(report: dict, slug: str) -> str:
     mark = {True: "PASS", False: "—"}
     label, _ = headline(report)
     curated = instrument_of_report(report) not in BADGE_INSTRUMENTS
-    reached = f"Reached: **{LABELS.get(level, 'not run')}** — {MEANING.get(level, '')}."
+    reached = f"Reached **{LABELS.get(level, 'not run')}**: {MEANING.get(level, '')}."
     lines = [f"# STRhub Verified: {tool['name']} ({slug})", "", f"**{label}.**"]
     # Chapter one: the tool as it is in its repository — where it stopped, why,
     # how. A run of a recipe STRhub wrote has no such chapter: it opens with
@@ -211,8 +211,8 @@ def _summary_md(report: dict, slug: str) -> str:
     if curated:
         lines += ["", f"## {STRHUB_DID_HEADING}", "", STRHUB_DID_LEAD, ""]
         lines += [f"- {w}" for w in workaround_lines(report)] or ["- (not itemised for this recipe)"]
-        lines += ["", f"With those changes, the run reached: **{LABELS.get(level, 'not run')}** "
-                      f"— {MEANING.get(level, '')}.", *_verdict_md(report),
+        lines += ["", f"With those changes, the run reached **{LABELS.get(level, 'not run')}**: "
+                      f"{MEANING.get(level, '')}.", *_verdict_md(report),
                   "", f"## {FULL_RUN_HEADING}"]
     else:
         lines += ["", f"## {AS_IS_HEADING}", *_verdict_md(report), "", reached]
@@ -399,7 +399,7 @@ def _summary_md(report: dict, slug: str) -> str:
             where = f"`{e['path']}`" + (f" line {e['line']}" if e.get("line") else "")
             # Whole, not clipped: the platform advice is the one line a reader
             # most needs entire, since the run may have gone against it.
-            txt = f" — `{e['text']}`" if e.get("text") and e["kind"] == "readme" else ""
+            txt = f": `{e['text']}`" if e.get("text") and e["kind"] == "readme" else ""
             lines.append(f"- {CLAIM_LABELS.get(e['claim'], e['claim'])}: [{where}]({e['url']}){txt}")
 
     needed = report.get("needed_beyond_repo") or []
@@ -677,7 +677,7 @@ def _summary_html(report: dict, slug: str) -> str:
         items = []
         for e in ev:
             where = esc(e["path"]) + (f" line {esc(e['line'])}" if e.get("line") else "")
-            quote = (f" — <code>{esc(e['text'])}</code>"
+            quote = (f": <code>{esc(e['text'])}</code>"
                      if e.get("text") and e.get("kind") == "readme" else "")
             items.append(f"<li>{esc(CLAIM_LABELS.get(e['claim'], e['claim']))}: "
                          f"<a href=\"{esc(e['url'])}\">{where}</a>{quote}</li>")
@@ -694,13 +694,13 @@ def _summary_html(report: dict, slug: str) -> str:
     # The two chapters. A run of the repository's own instructions opens with
     # what happens as it is; a run of a recipe STRhub wrote opens with what
     # STRhub had to do, and the run follows in full.
-    reached = (f"<p>Reached: <b>{esc(LABELS.get(level, 'not run'))}</b> — "
+    reached = (f"<p>Reached <b>{esc(LABELS.get(level, 'not run'))}</b>: "
                f"{esc(MEANING.get(level, ''))}.</p>")
     if curated:
         items = "".join(f"<li>{esc(w)}</li>" for w in workaround_lines(report)) or "<li>(not itemised for this recipe)</li>"
         opening = (f"<h2>{esc(STRHUB_DID_HEADING)}</h2><p>{esc(STRHUB_DID_LEAD)}</p>"
                    f"<ul class='stats'>{items}</ul>"
-                   f"<p>With those changes, the run reached: <b>{esc(LABELS.get(level, 'not run'))}</b> — "
+                   f"<p>With those changes, the run reached <b>{esc(LABELS.get(level, 'not run'))}</b>: "
                    f"{esc(MEANING.get(level, ''))}.</p>{verdict_block}"
                    f"<h2>{esc(FULL_RUN_HEADING)}</h2>")
     else:
