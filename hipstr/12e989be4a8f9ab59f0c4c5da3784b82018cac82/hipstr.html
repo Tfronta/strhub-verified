@@ -15,46 +15,64 @@
   .meta li, .stats li { margin:.15rem 0; }
   .scope { background:#f3f4f6; border-left:4px solid #16a34a; padding:.8rem 1rem; border-radius:6px; }
   code { background:#eef0f2; padding:.1rem .3rem; border-radius:4px; }
+  pre { background:#eef0f2; padding:.8rem 1rem; border-radius:6px; overflow-x:auto; white-space:pre-wrap; word-break:break-all; font-size:.85rem; }
+  pre code { background:none; padding:0; }
+  table.depth td { padding:.25rem .6rem; }
+  table.depth td:nth-child(2) { text-align:right; font-variant-numeric:tabular-nums; width:5rem; }
+  table.depth td:nth-child(3) { width:50%; }
+  .bar { display:inline-block; height:.6rem; background:#16a34a; border-radius:3px; vertical-align:middle; }
   nav { margin-bottom:1rem; }
   @media (prefers-color-scheme: dark) {
     body { background:#0d1117; color:#e6edf3; }
     a { color:#58a6ff; }
     th, td { border-bottom:1px solid #30363d; }
     .scope { background:#161b22; }
-    code { background:#21262d; }
+    code, pre { background:#21262d; }
   }
 </style></head><body>
 <nav><a href="index.html">← All tools</a></nav>
 <h1>STRhub Verified · HipSTR</h1>
-<p><span class="badge">Runs + Plausible output</span></p>
-<p>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).</p>
-<ul class="meta">
-  <li>Variant: <code>hipstr</code></li>
-  <li>Source: <code>https://github.com/tfwillems/HipSTR</code> @ <code>12e989be4a8f9ab59f0c4c5da3784b82018cac82</code></li>
-  <li>Environment: ubuntu-22.04 (<code>Dockerfile</code>)</li>
-  <li>Generated: 2026-09-16T21:14:32+00:00</li>
-  <li>Upstream: The verified commit is 1 commit(s) behind `master`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.</li>
-  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/35150866608">CI run</a></li>
-</ul>
-<h2>Gates</h2>
+<p><span class="badge">Runs as documented</span></p>
+<h2>As it is in the repository</h2><p><b>Verdict: Runs.</b> The tool installed and its run produced its documented output.</p><p>Reached <b>Runs + Plausible output</b>: its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).</p>
+<h3>Gates</h3>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
 <tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="ok">PASS</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="ok">PASS</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="ok">PASS</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr></tbody></table>
 
 
 
+<h3>Command that ran</h3><p>Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub&#x27;s mounts: the input sample, the reference genome and the output directory.</p><pre><code>./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf str_calls.vcf.gz</code></pre>
+<p style="font-size:.85rem">Log (external): <a href="hipstr.log-external.txt">hipstr.log-external.txt</a></p><p style="font-size:.85rem">Log (build): <a href="hipstr.log-build.txt">hipstr.log-build.txt</a></p>
+<h2>Run details</h2>
+<ul class="meta">
+  <li>Variant: <code>hipstr</code></li>
+  <li>Source: <code>https://github.com/tfwillems/HipSTR</code> @ <code>12e989be4a8f9ab59f0c4c5da3784b82018cac82</code></li>
+  <li>Environment: ubuntu-22.04 (<code>Dockerfile</code>)</li>
+  <li>Generated: 2026-09-20T12:53:45+00:00</li>
+  <li>Upstream: The verified commit is 1 commit(s) behind `master`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.</li>
+  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/35511745510">CI run</a></li>
+</ul>
+
     <h2>Output content (plausibility evidence)</h2>
     <ul class="stats">
+      <li>Output file: <code>str_calls.vcf.gz</code> (VCF)</li>
       <li>Sequence records: <b>21</b> (malformed: 0)</li>
       <li>STR loci detected: <b>21</b></li>
-      <li>Total reads across calls: <b>7851</b> (deepest single sequence: 517)</li>
-      <li>STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D22S1045, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA, PentaD, PentaE …</li>
-      <li>Top markers by read depth: D18S51 (517), FGA (477), vWA (456), PentaD (431), D2S441 (428), D3S1358 (419)</li>
-    </ul>
+      <li>Total reads across calls: <b>7851</b> (deepest single locus: 517)</li>
+      <li>Panel loci called: <b>21</b> of 24</li>
+      <li>STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D22S1045, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA, PentaD, PentaE, TH01, TPOX, vWA</li>
+    </ul><h3>Read depth per locus</h3><table class="depth"><thead><tr><th>Locus</th><th>Reads</th><th></th></tr></thead><tbody><tr><td><code>D18S51</code></td><td>517</td><td><span class="bar" style="width:100%"></span></td></tr><tr><td><code>FGA</code></td><td>477</td><td><span class="bar" style="width:92%"></span></td></tr><tr><td><code>vWA</code></td><td>456</td><td><span class="bar" style="width:88%"></span></td></tr><tr><td><code>PentaD</code></td><td>431</td><td><span class="bar" style="width:83%"></span></td></tr><tr><td><code>D2S441</code></td><td>428</td><td><span class="bar" style="width:83%"></span></td></tr><tr><td><code>D3S1358</code></td><td>419</td><td><span class="bar" style="width:81%"></span></td></tr><tr><td><code>D22S1045</code></td><td>414</td><td><span class="bar" style="width:80%"></span></td></tr><tr><td><code>D7S820</code></td><td>405</td><td><span class="bar" style="width:78%"></span></td></tr><tr><td><code>PentaE</code></td><td>401</td><td><span class="bar" style="width:78%"></span></td></tr><tr><td><code>D5S818</code></td><td>399</td><td><span class="bar" style="width:77%"></span></td></tr><tr><td><code>D16S539</code></td><td>371</td><td><span class="bar" style="width:72%"></span></td></tr><tr><td><code>D6S1043</code></td><td>360</td><td><span class="bar" style="width:70%"></span></td></tr><tr><td><code>D1S1656</code></td><td>359</td><td><span class="bar" style="width:69%"></span></td></tr><tr><td><code>D12S391</code></td><td>349</td><td><span class="bar" style="width:68%"></span></td></tr><tr><td><code>D8S1179</code></td><td>346</td><td><span class="bar" style="width:67%"></span></td></tr><tr><td><code>D13S317</code></td><td>316</td><td><span class="bar" style="width:61%"></span></td></tr><tr><td><code>D10S1248</code></td><td>309</td><td><span class="bar" style="width:60%"></span></td></tr><tr><td><code>D19S433</code></td><td>289</td><td><span class="bar" style="width:56%"></span></td></tr><tr><td><code>TH01</code></td><td>275</td><td><span class="bar" style="width:53%"></span></td></tr><tr><td><code>CSF1PO</code></td><td>275</td><td><span class="bar" style="width:53%"></span></td></tr><tr><td><code>TPOX</code></td><td>255</td><td><span class="bar" style="width:49%"></span></td></tr></tbody></table>
 <h2>Verification matrix</h2><table><thead><tr><th>Leg</th><th>Result</th><th>Errors reported</th><th>Dataset</th></tr></thead><tbody><tr><td>STRhub fixture</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr><tr><td>External data</td><td><span class="ok">PASS</span></td><td><span class="no">—</span></td><td>Illumina BAM (hg38), NA12878 (autosomal, female)</td></tr><tr><td>Tool&#x27;s own example</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr></tbody></table>
 <h2>Regions</h2><p>STRhub supplied the regions BED. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.</p>
 
-
 <h2>README check <span style='font-weight:400;color:#888'>(advisory)</span></h2><p>Score: <b>5/5</b>. Advisory only; does not affect the execution badge.</p><ul class='stats'><li><b>PASS</b> install</li><li><b>PASS</b> command</li><li><b>PASS</b> input</li><li><b>PASS</b> output</li><li><b>PASS</b> dependencies</li></ul>
+<h2>Evidence</h2><p>What this run&#x27;s configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.</p><ul class='stats'><li>Install method: <a href="https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/Makefile">Makefile</a></li><li>Run command: <a href="https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/README.md#L69">README.md line 69</a>: <code>./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam</code></li><li>Example data: <a href="https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/test/input/chr1_regions.bed">test/input/chr1_regions.bed</a></li><li>Example data: <a href="https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/test/input/chr1_regions_v2.bed">test/input/chr1_regions_v2.bed</a></li><li>Example data: <a href="https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/test/input/1kg.chr1.imputed.vcf.gz">test/input/1kg.chr1.imputed.vcf.gz</a></li><li>Documented input: <a href="https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/README.md#L69">README.md line 69</a>: <code>./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam</code></li><li>Platform advice: <a href="https://github.com/tfwillems/HipSTR/blob/12e989be4a8f9ab59f0c4c5da3784b82018cac82/README.md#L435">README.md line 435</a>: <code>We do not recommend running it on PacBio or Oxford Nanopore data, as the difference in error profiles will be problematic</code></li></ul>
+<h2>What this run needed beyond the repository</h2><p>The result above describes a run configured as follows. Anyone repeating it needs the same things.</p><ul class='stats'><li>Test data: no sample from the repository was used, so a public reference sample stood in.</li><li>A container environment, built from the tool&#x27;s declared install steps rather than from a recipe the repository ships.</li></ul>
+<h2>Notes from reading the repository</h2><p>Recorded automatically from the tool&#x27;s public files when this run was configured. Not verified by execution, and not part of the gates above. Useful for what to check by hand.</p><ul class='stats'><li>Environment: generated by STRhub from the repository&#x27;s Makefile (make), at the pinned commit.</li><li>Input: the README documents BAM (line 69); this run used STRhub&#x27;s illumina-bam-hg38 reference data.</li><li>1 input path(s) in the README command replaced with /data/in/input.bam.</li><li>1 reference FASTA path(s) replaced with /data/ref/hg38.fa.</li><li>1 BED path(s) replaced with /data/in/regions.bed.</li><li>Run command: the README&#x27;s own command, rewritten to STRhub&#x27;s mounts; everything it created was captured as output.</li><li>Regions: STRhub&#x27;s ready-made hipstr file for the dataset&#x27;s panel loci (STRhub records the hipstr layout for a program of this name).</li></ul>
+<h2>Out of scope</h2>
+<p>This report does not evaluate any of the following:</p>
+<ul class="stats"><li>Genotype correctness or accuracy</li><li>Concordance against known truth sets</li><li>Sensitivity, specificity, or stutter performance</li><li>Allele calling accuracy or forensic casework suitability</li><li>Regulatory compliance or ISO accreditation</li><li>Multi-laboratory or multi-dataset reproducibility</li></ul>
+<h2>Limitations</h2>
+<ul class="stats"><li>Single reference dataset per input type</li><li>Single containerized environment (Docker / ubuntu-22.04)</li><li>No truth-set comparison or ground-truth genotypes</li><li>No accuracy or concordance assessment</li><li>No forensic validation of results</li><li>Short-read limitations apply (very long STR alleles may not span reads)</li></ul>
 <h2>Scope</h2>
 <p class="scope">Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.<br><br>
 This is <b>not</b> a claim that the genotypes are correct, nor that the tool is
@@ -65,5 +83,4 @@ truth is out of scope.</p>
 <a href="hipstr.json">hipstr.json</a> ·
 <a href="hipstr.badge.json">badge</a> ·
 <a href="hipstr.summary.md">summary.md</a></p>
-<p style="font-size:.85rem">Log (external): <a href="hipstr.log-external.txt">hipstr.log-external.txt</a></p><p style="font-size:.85rem">Log (build): <a href="hipstr.log-build.txt">hipstr.log-build.txt</a></p>
 </body></html>
