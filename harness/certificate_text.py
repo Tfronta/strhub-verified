@@ -71,7 +71,7 @@ def headline(report: dict) -> tuple[str, str]:
 
       Runs as documented                          the documented run produced its output
       Runs as documented (errors reported)        … and the tool's log reported errors
-      Does not run as documented · stops at run   the documented run did not, and where
+      Does not run as documented: stops at run   the documented run did not, and where
       Could not be determined                     nobody knew how to attempt it (the README)
       Out of scope                                the free runner cannot provide something
       Not verified as documented                  the run is of a recipe STRhub wrote
@@ -89,7 +89,7 @@ def headline(report: dict) -> tuple[str, str]:
         if errors_reported(report):
             return "Runs as documented (errors reported)", "yellow"
         return "Runs as documented", ("brightgreen" if level == "content" else "green")
-    return f"Does not run as documented · {STOPS_AT.get(level, 'stops at ' + level)}", "red"
+    return f"Does not run as documented: {STOPS_AT.get(level, 'stops at ' + level)}", "red"
 
 
 def instrument_of(m: dict) -> str:

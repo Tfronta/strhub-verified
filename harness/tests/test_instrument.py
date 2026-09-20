@@ -97,9 +97,9 @@ def test_the_label_says_the_result_in_words_not_the_rung():
     assert ct.headline(doc("io", "runs")) == ("Runs as documented", "green")
     assert ct.headline(doc("io", "runs", diagnostics={"external": [{"id": "cannot_open", "severity": "error"}]})) \
         == ("Runs as documented (errors reported)", "yellow")
-    assert ct.headline(doc("installs", "fails")) == ("Does not run as documented · stops at run", "red")
-    assert ct.headline(doc("available", "fails")) == ("Does not run as documented · stops at install", "red")
-    assert ct.headline(doc("runs", "fails")) == ("Does not run as documented · no output", "red")
+    assert ct.headline(doc("installs", "fails")) == ("Does not run as documented: stops at run", "red")
+    assert ct.headline(doc("available", "fails")) == ("Does not run as documented: stops at install", "red")
+    assert ct.headline(doc("runs", "fails")) == ("Does not run as documented: no output", "red")
     assert ct.headline(doc("installs", "undetermined")) == ("Could not be determined", "lightgrey")
     assert ct.headline(doc("installs", "out_of_scope")) == ("Out of scope", "lightgrey")
     # A recipe STRhub wrote, whatever it reached.
@@ -107,7 +107,7 @@ def test_the_label_says_the_result_in_words_not_the_rung():
     # A report from before the verdict: read off the rung.
     old = {**_report("documented")}; old.pop("verdict", None)
     assert ct.headline({**old, "level": "content"})[0] == "Runs as documented"
-    assert ct.headline({**old, "level": "installs"})[0] == "Does not run as documented · stops at run"
+    assert ct.headline({**old, "level": "installs"})[0] == "Does not run as documented: stops at run"
 
 
 def test_the_badge_of_a_curated_run_says_whose_recipe_it_was(tmp_path):

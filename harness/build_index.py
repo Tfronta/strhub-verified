@@ -162,6 +162,10 @@ def _version_entry(slug: str, sha: str | None, r: dict, prefix: str) -> dict:
         "report": f"{prefix}{slug}.json",
         "page": f"{prefix}{slug}.html",
         "pdf": f"{prefix}{slug}.pdf",
+        # A tombstone (publish_layout.retire): the run is still here and its
+        # page still opens, but it is no longer a result — the web keeps it
+        # out of the history's rows and says why on its page.
+        **({"retired": r["retired"]} if r.get("retired") else {}),
     }
 
 

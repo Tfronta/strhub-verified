@@ -34,6 +34,7 @@ Usage (the deploy step, from a clone of gh-pages):
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import pathlib
 import shutil
@@ -45,6 +46,12 @@ import upstream  # noqa: E402
 from certificate_text import instrument_of_report, BADGE_INSTRUMENTS  # noqa: E402
 
 CURATED_DIR = "curated"
+#: A tombstone beside a run's files: the run stays where it is and its URL
+#: keeps resolving, but it is no longer a result — never the alias, never
+#: the note, and the index lists it as retired with the reason. Written by
+#: `retire`, by hand, for a run that can no longer be reproduced (its recipe
+#: is gone from tools/) or that was STRhub's fault. Nothing is ever deleted.
+TOMBSTONE = "retired.json"
 
 #: How a report is looked up under its directory: the same stem the run wrote.
 Resolver = Callable[[str, str], "str | None"]
@@ -152,10 +159,27 @@ def settle(site: pathlib.Path, slug: str, sha: str) -> bool:
     return True
 
 
+def tombstone_of(folder: pathlib.Path) -> dict | None:
+    try:
+        t = json.loads((folder / TOMBSTONE).read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    return t if isinstance(t, dict) and t.get("retired") else None
+
+
+def _with_tombstone(folder: pathlib.Path, r: dict) -> dict:
+    """The report as scanned, carrying its tombstone when it has one. The
+    file itself is not rewritten: the run is what it was, and the tombstone
+    is a separate fact about it."""
+    t = tombstone_of(folder)
+    return {**r, "retired": t} if t else r
+
+
 def scan(site: pathlib.Path, slug: str) -> list[tuple[str, str, dict]]:
     """Every run of `slug`: (sha, instrument, report), newest commit first,
     and at one commit the run that may stand behind the badge before the
-    curated one. Reads what is there; `settle` is what puts it in place."""
+    curated one. Reads what is there; `settle` is what puts it in place. A
+    retired run is listed, with its tombstone under `retired`."""
     found = []
     base = site / slug
     if base.is_dir():
@@ -164,10 +188,10 @@ def scan(site: pathlib.Path, slug: str) -> list[tuple[str, str, dict]]:
                 continue
             r = _read(d / f"{slug}.json")
             if r:
-                found.append((d.name, instrument_of_report(r), r))
+                found.append((d.name, instrument_of_report(r), _with_tombstone(d, r)))
             c = _read(d / CURATED_DIR / f"{slug}.json")
             if c:
-                found.append((d.name, "curated", c))
+                found.append((d.name, "curated", _with_tombstone(d / CURATED_DIR, c)))
     # Newest commit first; at one commit, the run that may stand behind the
     # badge before the curated one, whichever was verified later.
     def key(item):
@@ -182,7 +206,7 @@ def scan(site: pathlib.Path, slug: str) -> list[tuple[str, str, dict]]:
 def alias_source(site: pathlib.Path, slug: str) -> tuple[str, str, dict] | None:
     """The run the root alias copies: the newest commit among the runs that
     may stand behind the badge; failing any, the newest curated run."""
-    runs = scan(site, slug)
+    runs = [r for r in scan(site, slug) if not r[2].get("retired")]
     eligible = [r for r in runs if r[1] in BADGE_INSTRUMENTS]
     return (eligible or runs or [None])[0]
 
@@ -240,6 +264,25 @@ def write_alias(site: pathlib.Path, slug: str) -> tuple[str, str] | None:
     return sha, instrument
 
 
+def retire(site: pathlib.Path, slug: str, sha: str, instrument: str, reason: str,
+           when: str | None = None) -> pathlib.Path:
+    """Put a tombstone beside one run and point the alias elsewhere. The
+    run's files stay, so its URL keeps resolving; what changes is that it is
+    no longer a result the site rests on. Returns the tombstone's path."""
+    folder = place_of(site, slug, sha, instrument)
+    if not (folder / f"{slug}.json").exists():
+        raise SystemExit(f"{folder}: no run of {slug} at {sha[:7]} ({instrument})")
+    if not reason.strip():
+        raise SystemExit("a retirement needs a reason")
+    stone = folder / TOMBSTONE
+    stone.write_text(json.dumps({
+        "retired": when or dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        "reason": reason.strip(),
+    }, indent=2))
+    write_alias(site, slug)
+    return stone
+
+
 def settle_all(site: pathlib.Path) -> list[tuple[str, str, str]]:
     """Every slug on the site: put each commit's runs where their instrument
     says and rewrite the alias by the rule. For the day the rule changes —
@@ -261,7 +304,18 @@ def main() -> int:
     ap.add_argument("--slug", help="the slug the run published as")
     ap.add_argument("--settle-all", action="store_true",
                     help="no run: settle every slug's runs by instrument and rewrite every alias")
+    ap.add_argument("--retire", metavar="SHA",
+                    help="no run: put a tombstone beside the run of --slug at this commit")
+    ap.add_argument("--instrument", default="documented", choices=["documented", "maintainer", "curated"],
+                    help="with --retire: which run at that commit")
+    ap.add_argument("--reason", default="", help="with --retire: why, for the reader")
     args = ap.parse_args()
+    if args.retire:
+        if not args.slug:
+            ap.error("--slug is required with --retire")
+        stone = retire(pathlib.Path(args.site), args.slug, args.retire, args.instrument, args.reason)
+        print(f"retired {args.slug} @ {args.retire[:7]} ({args.instrument}): {stone}")
+        return 0
     if args.settle_all:
         for slug, sha, instrument in settle_all(pathlib.Path(args.site)):
             print(f"{slug}: alias {sha[:7]} ({instrument})")
