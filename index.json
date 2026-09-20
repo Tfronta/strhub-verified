@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-09-20T16:53:11+00:00",
+  "generated": "2026-09-20T16:53:26+00:00",
   "count": 8,
   "tools": [
     {
@@ -54,12 +54,12 @@
           "version": "v2.5",
           "variant": null,
           "committed": "2021-04-19T19:30:11Z",
-          "generated": "2026-09-19T18:21:04+00:00",
+          "generated": "2026-09-20T16:53:24+00:00",
           "level": "content",
           "label": "Not verified as documented",
           "verdict": "runs",
           "errors_reported": false,
-          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35460767865",
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524008276",
           "report": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.json",
           "page": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.html",
           "pdf": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.pdf"
