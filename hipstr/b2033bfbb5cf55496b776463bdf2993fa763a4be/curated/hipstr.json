@@ -23,8 +23,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-19T18:22:28+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35460767865",
+  "generated": "2026-09-20T16:55:21+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524008276",
   "run": {
     "cmd": "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250"
   },
@@ -317,7 +317,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-19T18:22:28+00:00",
+    "checked": "2026-09-20T16:55:22+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -325,7 +325,7 @@
     "behind_by": 0
   },
   "needed_beyond_repo": [
-    "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under the recipe."
+    "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under \"What STRhub had to do to run this tool\"."
   ],
   "evidence": [
     {
@@ -471,5 +471,66 @@
     "reason": "The tool installed and its run produced its documented output.",
     "readme_gaps": [],
     "blockers": []
+  },
+  "certificate": {
+    "schema": "strhub-verified/certificate/1",
+    "label": "Not verified as documented",
+    "reached": "Runs + Plausible output",
+    "summary": {
+      "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
+      "result": "Not verified as documented",
+      "reached": "Runs + Plausible output, 5/5 gates passed",
+      "why": "The tool installed and its run produced its documented output.",
+      "scope": "Installation, execution, and output structure verification.",
+      "not_evaluated": [
+        "Genotype accuracy",
+        "Concordance",
+        "Forensic validity",
+        "Regulatory compliance"
+      ]
+    },
+    "conclusion": [
+      {
+        "title": "Runs end-to-end",
+        "body": "HipSTR v0.7 installs and executes without error in a clean ubuntu-22.04 environment at the pinned commit."
+      },
+      {
+        "title": "Produces plausible output",
+        "body": "The tool generated a structurally valid VCF output file with genotype calls across 23 target forensic STR loci, with a maximum read depth of 523 at D18S51."
+      },
+      {
+        "title": "Verdict: Runs",
+        "body": "The tool installed and its run produced its documented output."
+      },
+      {
+        "title": "Repository test data not used",
+        "body": "The repository ships example data (3 file(s)), which this run did not use: the gates above ran on STRhub's reference dataset. STRhub Verified supplied Illumina BAM (hg38), NA12878 (autosomal, female) as the reference input for this verification run. Users replicating this result should use the same or equivalent publicly available reference material."
+      },
+      {
+        "title": "Reproducibility statement",
+        "body": "The exact command reported in Section 3, executed at the pinned commit in the described environment, is sufficient to reproduce this verification result independently."
+      }
+    ],
+    "out_of_scope": [
+      "Genotype correctness or accuracy",
+      "Concordance against known truth sets",
+      "Sensitivity, specificity, or stutter performance",
+      "Allele calling accuracy or forensic casework suitability",
+      "Regulatory compliance or ISO accreditation",
+      "Multi-laboratory or multi-dataset reproducibility"
+    ],
+    "limitations": [
+      "Single reference dataset per input type",
+      "Single containerized environment (Docker / ubuntu-22.04)",
+      "No truth-set comparison or ground-truth genotypes",
+      "No accuracy or concordance assessment",
+      "No forensic validation of results",
+      "Short-read limitations apply (very long STR alleles may not span reads)"
+    ],
+    "scope": {
+      "statement": "Independent automated verification of reproducible execution. It confirms the tool installs, runs end-to-end, and produces structurally valid output in a standardized environment.",
+      "not": "This is not an analytical validation. Genotype accuracy, concordance, forensic suitability, and regulatory compliance are out of scope.",
+      "disclaimer": "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub does not store tool source code."
+    }
   }
 }
