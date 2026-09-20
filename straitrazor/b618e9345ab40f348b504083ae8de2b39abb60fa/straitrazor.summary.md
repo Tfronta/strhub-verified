@@ -1,25 +1,14 @@
 # STRhub Verified: straitrazor (straitrazor)
 
-**Result: Runs + Plausible output.** its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+**Runs as documented.**
+
+## As it is in the repository
 
 **Verdict: Runs.** The tool installed and its run produced its documented output.
 
-- Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
-- Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-19T18:19:43+00:00
-- Upstream: The verified commit is the head of `master`.
-- Recipe: the repository's own instructions, read off the README and the tree at the pinned commit
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35460767865
+Reached **Runs + Plausible output**: its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
-## Command that ran
-
-Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
-
-```
-str8rzr -c ForenSeqv1.27.config /data/in/sample.fastq > allsequences.txt
-```
-
-## Gates
+### Gates
 
 | Gate | Status | Meaning |
 |---|---|---|
@@ -29,13 +18,30 @@ str8rzr -c ForenSeqv1.27.config /data/in/sample.fastq > allsequences.txt
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
 
-## What the author documents as a known issue
+### What the author documents as a known issue
 
 Quoted from the repository's README at the verified commit. STRhub did not establish any of this by running the tool; it is the author's own note about their own software.
 
 **known issues** (README line 114)
 
 > There's been one computer architecture (windows 7 + Xeon processor) that's caused some issues with the str8rzr.exe executable. In this case, str8rzr would occassionally crash, and I had to recompile it for that computer (and since then it's been fine). Please let me know if you experience problems-- especially crashes-- it'll let me further diagnose the exact problems therein. str8rzr is written in C/C++ with multithreading support using the pthreads library. This new release couples a new search strategy (see algorithm) coupled with a complete redesign of the code-base used to identify short …
+
+### Command that ran
+
+Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
+
+```
+str8rzr -c ForenSeqv1.27.config /data/in/sample.fastq > allsequences.txt
+```
+- Log (build): [`straitrazor.log-build.txt`](straitrazor.log-build.txt)
+
+## Run details
+
+- Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
+- Environment: ubuntu-22.04 (`Dockerfile`)
+- Generated: 2026-09-20T16:52:20+00:00
+- Upstream: The verified commit is the head of `master`.
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35524008276
 
 ## Output content (plausibility evidence)
 
@@ -67,9 +73,9 @@ Score: **5/5**. Advisory only; does not affect the execution badge.
 
 What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.
 - Install method: [`Makefile`](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/Makefile)
-- Run command: [`README.md` line 123](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/README.md#L123) — `str8rzr -c configFile fastqfile > allsequences.txt`
-- Known issue: [`README.md` line 114](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/README.md#L114) — `known issues`
-- Documented input: [`README.md` line 19](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/README.md#L19) — `Put str8rzr.exe, batchCstr8.bat, the appropriate config file (Forenseq.config), and all fastq files into this directory.<br>`
+- Run command: [`README.md` line 123](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/README.md#L123): `str8rzr -c configFile fastqfile > allsequences.txt`
+- Known issue: [`README.md` line 114](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/README.md#L114): `known issues`
+- Documented input: [`README.md` line 19](https://github.com/Ahhgust/STRaitRazor/blob/b618e9345ab40f348b504083ae8de2b39abb60fa/README.md#L19): `Put str8rzr.exe, batchCstr8.bat, the appropriate config file (Forenseq.config), and all fastq files into this directory.<br>`
 
 ## What this run needed beyond the repository
 
@@ -87,6 +93,26 @@ Recorded automatically from the tool's public files when this run was configured
 - 'str8rzr' config placeholder resolved to ForenSeqv1.27.config (matches the dataset's ForenSeq kit).
 - 1 input placeholder(s) in the README command replaced with /data/in/sample.fastq.
 - Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output.
+
+## Out of scope
+
+This report does not evaluate any of the following:
+
+- Genotype correctness or accuracy
+- Concordance against known truth sets
+- Sensitivity, specificity, or stutter performance
+- Allele calling accuracy or forensic casework suitability
+- Regulatory compliance or ISO accreditation
+- Multi-laboratory or multi-dataset reproducibility
+
+## Limitations
+
+- Single reference dataset per input type
+- Single containerized environment (Docker / ubuntu-22.04)
+- No truth-set comparison or ground-truth genotypes
+- No accuracy or concordance assessment
+- No forensic validation of results
+- Short-read limitations apply (very long STR alleles may not span reads)
 
 ## Scope (read this)
 
