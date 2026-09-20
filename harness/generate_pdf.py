@@ -27,7 +27,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import diagnose_log  # noqa: E402
 from certificate_text import (  # noqa: E402
     conclusion_items_for, install_meaning, instrument_of_report, workaround_lines, headline,
-    AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, NOT_DOCUMENTED,
+    AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, NOT_DOCUMENTED, display_name,
+    PURPOSE, EXEC_SCOPE, NOT_EVALUATED, SCOPE_STATEMENT, SCOPE_NOT, DISCLAIMER, OUT_OF_SCOPE, LIMITATIONS,
 )
 
 import yaml
@@ -394,14 +395,7 @@ def build_cover(cfg):
     els.append(mt)
     els.append(HR(spaceB=10, spaceA=10))
 
-    scope_text = (
-        "Independent automated verification of reproducible execution. It "
-        "confirms the tool installs, runs end-to-end, and produces "
-        "structurally valid output in a standardized environment.<br/><br/>"
-        "This is <b>not</b> an analytical validation. Genotype accuracy, "
-        "concordance, forensic suitability, and regulatory compliance "
-        "are out of scope."
-    )
+    scope_text = SCOPE_STATEMENT + "<br/><br/>" + SCOPE_NOT.replace("This is not", "This is <b>not</b>", 1)
     els.append(section_title("SCOPE OF THIS REPORT"))
     els.append(vspace(2))
 
@@ -470,15 +464,15 @@ def build_body(cfg):
     verdict = cfg.get("verdict") or {}
     els.append(section_num("1", "Executive Summary"))
     exec_rows = [
-        ("PURPOSE",           "Verify that the tool installs, runs end-to-end, and produces structurally valid output."),
+        ("PURPOSE",           PURPOSE),
         ("RESULT",            f'<font color="#00909c"><b>{esc(result_label)}</b></font>'),
-        ("REACHED",           f'{esc(attest_label)} — {n_pass}/{n_total} gates passed'),
+        ("REACHED",           f'{esc(attest_label)}, {n_pass}/{n_total} gates passed'),
     ]
     if verdict.get("reason"):
         exec_rows.append(("WHY", esc(verdict["reason"])))
     exec_rows += [
-        ("SCOPE",             "Installation, execution, and output structure verification."),
-        ("NOT EVALUATED",     "Genotype accuracy · Concordance · Forensic validity · Regulatory compliance"),
+        ("SCOPE",             EXEC_SCOPE),
+        ("NOT EVALUATED",     " · ".join(NOT_EVALUATED)),
     ]
     tdata = [[Paragraph(k, ST["tbl_header"]),
               Paragraph(v, ST["tbl_cell"])] for k, v in exec_rows]
@@ -721,14 +715,7 @@ def build_body(cfg):
     # §5 Out of Scope
     els.append(section_num(str(sec), "Out of Scope"))
     sec += 1
-    out_items = [
-        "Genotype correctness or accuracy",
-        "Concordance against known truth sets",
-        "Sensitivity, specificity, or stutter performance",
-        "Allele calling accuracy or forensic casework suitability",
-        "Regulatory compliance or ISO accreditation",
-        "Multi-laboratory or multi-dataset reproducibility",
-    ]
+    out_items = OUT_OF_SCOPE
     content = [Paragraph("This report does not evaluate any of the following:", ST["body"])]
     for item in out_items:
         content.append(Paragraph(
@@ -929,14 +916,7 @@ def build_body(cfg):
     # Limitations
     els.append(section_num(str(sec), "Limitations"))
     sec += 1
-    lim_items = [
-        "Single reference dataset per input type",
-        "Single containerized environment (Docker / ubuntu-22.04)",
-        "No truth-set comparison or ground-truth genotypes",
-        "No accuracy or concordance assessment",
-        "No forensic validation of results",
-        "Short-read limitations apply (very long STR alleles may not span reads)",
-    ]
+    lim_items = LIMITATIONS
     lim = [Paragraph(
         f'<font color="#9ca3af">–</font>  {item}',
         S("li", fontSize=8.5, textColor=GRAY, leading=14,
@@ -949,15 +929,17 @@ def build_body(cfg):
     disc = (
         "Executed end-to-end in the stated environment with output in the expected format. "
         "Concerns reproducible execution only; no claim of accuracy, casework fitness, "
-        "or regulatory validation.<br/><br/>"
-        "Each result is a dated snapshot, verified on the tool's public repository at a "
-        "pinned commit. STRhub does not store tool source code."
+        "or regulatory validation.<br/><br/>" + DISCLAIMER
     )
     els.append(boxed([Paragraph(disc, ST["body"])]))
 
     # §11 Conclusion. What the run established, gate by gate — see
     # conclusion_items_for, which is pure so it can be held to it by tests.
-    conclusion_items = conclusion_items_for(cfg)
+    # The words the report carries, when it does (certificate_for): the
+    # certificate prints the block, not a second derivation of it.
+    cert = cfg.get("certificate") or {}
+    conclusion_items = ([(c["title"], c["body"]) for c in cert["conclusion"]]
+                        if cert.get("conclusion") else conclusion_items_for(cfg))
     con_content = []
     for title, body in conclusion_items:
         con_content.append(Paragraph(
@@ -1140,15 +1122,11 @@ def load_config(manifest_path: str, datasets_path: str | None = None,
     ver_time = (generated[11:19] + " UTC") if len(generated) > 19 else ""
 
     # Tool identity
-    tool_name_raw = m["tool"]["name"]
     # The repository's own capitalisation when the manifest gives one; .title()
     # turned "strspy" into "Strspy" and "hipstr" into "Hipstr", neither of which
     # is how the project writes its name. Fall back on the repository segment,
     # which keeps the case the author chose for it.
-    repo_name = (m.get("source", {}).get("repo") or "").rstrip("/").split("/")[-1]
-    tool_name = tool_name_raw
-    if tool_name_raw == tool_name_raw.lower():
-        tool_name = repo_name if repo_name.lower() == tool_name_raw.lower() else tool_name_raw.title()
+    tool_name = display_name(m)
     tool_version = m["tool"]["version"]
     tool_display = f"{tool_name} {tool_version}"
 
@@ -1266,6 +1244,7 @@ def load_config(manifest_path: str, datasets_path: str | None = None,
         # does not (docs/PLAN-Documented-Is-The-Badge.md).
         "instrument":     instrument_of_report(report) if report else "",
         "headline":       headline(report)[0] if report else "",
+        "certificate":    report.get("certificate") or {},
         "workarounds":    workaround_lines(report) if report else [],
         "log_filename":   (report.get("logs") or {}).get("external")
                           or (report.get("logs") or {}).get("own", ""),

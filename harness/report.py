@@ -25,6 +25,7 @@ from prepare import unwrap_example  # noqa: E402
 from certificate_text import (  # noqa: E402
     install_meaning, instrument_of, instrument_of_report, workaround_lines, headline,
     AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, FULL_RUN_HEADING, COLOR_HEX,
+    certificate_for, display_name, LIMITATIONS, OUT_OF_SCOPE,
     INSTRUMENT_LINE, BADGE_INSTRUMENTS, CURATED_HEADING, CURATED_LEAD, CURATED_NEEDED,
 )
 import verdict as verdict_lib  # noqa: E402
@@ -421,6 +422,10 @@ def _summary_md(report: dict, slug: str) -> str:
         for item in cav["items"]:
             lines.append(f"- {item}")
 
+    lines += ["", "## Out of scope", "", "This report does not evaluate any of the following:", ""]
+    lines += [f"- {i}" for i in OUT_OF_SCOPE]
+    lines += ["", "## Limitations", ""]
+    lines += [f"- {i}" for i in LIMITATIONS]
     lines += [
         "",
         "## Scope (read this)",
@@ -774,6 +779,11 @@ def _summary_html(report: dict, slug: str) -> str:
 {evidence_block}
 {needed_block}
 {caveats_block}
+<h2>Out of scope</h2>
+<p>This report does not evaluate any of the following:</p>
+<ul class="stats">{''.join(f'<li>{esc(i)}</li>' for i in OUT_OF_SCOPE)}</ul>
+<h2>Limitations</h2>
+<ul class="stats">{''.join(f'<li>{esc(i)}</li>' for i in LIMITATIONS)}</ul>
 <h2>Scope</h2>
 <p class="scope">{esc(report['scope'])}<br><br>
 This is <b>not</b> a claim that the genotypes are correct, nor that the tool is
@@ -786,6 +796,36 @@ truth is out of scope.</p>
 <a href="{esc(slug)}.summary.md">summary.md</a></p>
 </body></html>
 """
+
+
+def _certificate_cfg(report: dict, m: dict) -> dict:
+    """What conclusion_items_for reads, built here the way generate_pdf
+    builds it, so the block in the JSON and the certificate agree."""
+    name = display_name(m)
+    declared = (m.get("outputs") or [{}])[0]
+    outs = (report.get("content_detail") or {}).get("outputs") or []
+    stats = outs[0].get("stats") or {} if outs and isinstance(outs[0], dict) else {}
+    ds_name = next((d.get("dataset") for d in (report.get("datasets") or [])
+                    if d.get("leg") == "external" and d.get("dataset")), None)
+    if not ds_name:
+        try:
+            index = json.loads((ROOT / "datasets" / "index.json").read_text())
+            ds_name = (index.get("datasets", {}).get((m.get("inputs") or {}).get("type", "")) or {}).get("name")
+        except (OSError, json.JSONDecodeError):
+            ds_name = None
+    env = report.get("environment") or {}
+    return {
+        "tool_display": f"{name} {m['tool'].get('version', '')}".strip(),
+        "tool_name": name,
+        "gates": report.get("gates") or {},
+        "verdict": report.get("verdict") or {},
+        "stats": stats,
+        "declared_format": (declared.get("format") or "—").upper(),
+        "dataset": {"name": ds_name} if ds_name else {},
+        "fallback_used": bool(env.get("fallback_used")),
+        "fallback_reason": (env.get("fallback") or {}).get("reason") or "the fallback environment the manifest declares",
+        "repo_test_data": report.get("repo_test_data") or {},
+    }
 
 
 def main() -> int:
@@ -1181,6 +1221,11 @@ def main() -> int:
         gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
         fallback_used=args.environment_built == "fallback",
     )
+
+    # The certificate's own words, as data: what the PDF prints in its
+    # executive summary, its closing lists and its conclusion, so the page can
+    # print the same and a test can hold the two to it.
+    report["certificate"] = certificate_for(report, _certificate_cfg(report, m))
 
     (reports / f"{slug}.json").write_text(json.dumps(report, indent=2))
 
