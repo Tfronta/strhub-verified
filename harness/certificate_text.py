@@ -58,6 +58,80 @@ COLOR_HEX = {"brightgreen": "#16a34a", "green": "#22a722", "yellow": "#d4a017",
              "red": "#c33", "lightgrey": "#9ca3af"}
 
 
+#: What a certificate says about itself, in the same words on the cover, in
+#: the executive summary, in the closing sections, and — since the report
+#: carries the block below — on the web page. Policy about STRhub's scope,
+#: not findings about any tool.
+PURPOSE = "Verify that the tool installs, runs end-to-end, and produces structurally valid output."
+EXEC_SCOPE = "Installation, execution, and output structure verification."
+NOT_EVALUATED = ["Genotype accuracy", "Concordance", "Forensic validity", "Regulatory compliance"]
+SCOPE_STATEMENT = ("Independent automated verification of reproducible execution. It confirms "
+                   "the tool installs, runs end-to-end, and produces structurally valid output "
+                   "in a standardized environment.")
+SCOPE_NOT = ("This is not an analytical validation. Genotype accuracy, concordance, forensic "
+             "suitability, and regulatory compliance are out of scope.")
+DISCLAIMER = ("Each result is a dated snapshot, verified on the tool's public repository at a "
+              "pinned commit. STRhub does not store tool source code.")
+OUT_OF_SCOPE = [
+    "Genotype correctness or accuracy",
+    "Concordance against known truth sets",
+    "Sensitivity, specificity, or stutter performance",
+    "Allele calling accuracy or forensic casework suitability",
+    "Regulatory compliance or ISO accreditation",
+    "Multi-laboratory or multi-dataset reproducibility",
+]
+LIMITATIONS = [
+    "Single reference dataset per input type",
+    "Single containerized environment (Docker / ubuntu-22.04)",
+    "No truth-set comparison or ground-truth genotypes",
+    "No accuracy or concordance assessment",
+    "No forensic validation of results",
+    "Short-read limitations apply (very long STR alleles may not span reads)",
+]
+CERTIFICATE_SCHEMA = "strhub-verified/certificate/1"
+
+
+def display_name(m: dict) -> str:
+    """The tool's name as the project writes it: the manifest's when it has a
+    capital; else the repository's segment, which keeps the author's case
+    (.title() made "strspy" into "Strspy")."""
+    raw = m["tool"]["name"]
+    repo_name = (m.get("source", {}).get("repo") or "").rstrip("/").split("/")[-1]
+    if raw != raw.lower():
+        return raw
+    return repo_name if repo_name.lower() == raw.lower() else raw.title()
+
+
+def certificate_for(report: dict, cfg: dict) -> dict:
+    """The certificate's own words, as data in the report: the label and the
+    rung, the executive summary, the closing lists and the conclusion — so
+    the PDF, the copies and the web page print one text, and a test can hold
+    them to it. `cfg` is what conclusion_items_for reads (tool_display, gates,
+    verdict, stats, declared_format, dataset, fallback_used, repo_test_data)."""
+    label, _ = headline(report)
+    level = report.get("level", "none")
+    gates = dict(report.get("gates") or {})
+    n_pass = sum(1 for k in ("available", "installs", "runs", "io", "content") if gates.get(k))
+    verdict = report.get("verdict") or {}
+    return {
+        "schema": CERTIFICATE_SCHEMA,
+        "label": label,
+        "reached": REACHED.get(level, "not run"),
+        "summary": {
+            "purpose": PURPOSE,
+            "result": label,
+            "reached": f"{REACHED.get(level, 'not run')}, {n_pass}/5 gates passed",
+            **({"why": verdict["reason"]} if verdict.get("reason") else {}),
+            "scope": EXEC_SCOPE,
+            "not_evaluated": list(NOT_EVALUATED),
+        },
+        "conclusion": [{"title": t, "body": b} for t, b in conclusion_items_for(cfg)],
+        "out_of_scope": list(OUT_OF_SCOPE),
+        "limitations": list(LIMITATIONS),
+        "scope": {"statement": SCOPE_STATEMENT, "not": SCOPE_NOT, "disclaimer": DISCLAIMER},
+    }
+
+
 def errors_reported(report: dict) -> bool:
     return any(i.get("severity") == "error"
                for issues in (report.get("diagnostics") or {}).values() for i in issues)
