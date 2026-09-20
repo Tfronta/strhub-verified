@@ -1,0 +1,4 @@
+{
+  "retired": "2026-09-20T11:13:39+00:00",
+  "reason": "The recipe this run used is no longer committed under tools/straitrazor, which now holds the recipe the engine read off the repository; what STRhub had to do for STRait Razor is recorded under the two kit slugs, strait-razor-forenseq and strait-razor-powerseq. The run cannot be reproduced from the repository as published, so it is no longer a result."
+}

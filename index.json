@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-09-19T22:09:37+00:00",
+  "generated": "2026-09-20T11:13:39+00:00",
   "count": 8,
   "tools": [
     {
@@ -345,7 +345,11 @@
           "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35016112169",
           "report": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/curated/straitrazor.json",
           "page": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/curated/straitrazor.html",
-          "pdf": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/curated/straitrazor.pdf"
+          "pdf": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/curated/straitrazor.pdf",
+          "retired": {
+            "retired": "2026-09-20T11:13:39+00:00",
+            "reason": "The recipe this run used is no longer committed under tools/straitrazor, which now holds the recipe the engine read off the repository; what STRhub had to do for STRait Razor is recorded under the two kit slugs, strait-razor-forenseq and strait-razor-powerseq. The run cannot be reproduced from the repository as published, so it is no longer a result."
+          }
         }
       ]
     },
@@ -358,7 +362,7 @@
       "committed": "2020-03-19T08:43:38Z",
       "instrument": "documented",
       "level": "available",
-      "label": "Does not run as documented \u00b7 stops at install",
+      "label": "Does not run as documented: stops at install",
       "verdict": "fails",
       "errors_reported": false,
       "generated": "2026-09-18T20:49:05+00:00",
@@ -386,7 +390,7 @@
           "committed": "2020-03-19T08:43:38Z",
           "generated": "2026-09-18T20:49:05+00:00",
           "level": "available",
-          "label": "Does not run as documented \u00b7 stops at install",
+          "label": "Does not run as documented: stops at install",
           "verdict": "fails",
           "errors_reported": false,
           "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35393390457",
@@ -421,7 +425,7 @@
       "committed": "2026-05-04T19:47:38Z",
       "instrument": "documented",
       "level": "installs",
-      "label": "Does not run as documented \u00b7 stops at run",
+      "label": "Does not run as documented: stops at run",
       "verdict": "fails",
       "errors_reported": false,
       "generated": "2026-09-18T20:50:11+00:00",
@@ -449,7 +453,7 @@
           "committed": "2026-05-04T19:47:38Z",
           "generated": "2026-09-18T20:50:11+00:00",
           "level": "installs",
-          "label": "Does not run as documented \u00b7 stops at run",
+          "label": "Does not run as documented: stops at run",
           "verdict": "fails",
           "errors_reported": false,
           "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35393392219",
@@ -481,7 +485,7 @@
           "committed": "2026-05-04T19:26:27Z",
           "generated": "2026-09-18T13:30:16+00:00",
           "level": "installs",
-          "label": "Does not run as documented \u00b7 stops at run",
+          "label": "Does not run as documented: stops at run",
           "verdict": "fails",
           "errors_reported": false,
           "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35350371244",
@@ -497,7 +501,7 @@
           "committed": "2026-02-21T21:12:13Z",
           "generated": "2026-09-18T13:29:44+00:00",
           "level": "installs",
-          "label": "Does not run as documented \u00b7 stops at run",
+          "label": "Does not run as documented: stops at run",
           "verdict": "fails",
           "errors_reported": false,
           "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35350365470",
