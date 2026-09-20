@@ -10,10 +10,10 @@ import pathlib
 import subprocess
 import sys
 
+import pytest
 import yaml
 
 import certificate_text as ct
-import generate_pdf
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 
@@ -62,6 +62,10 @@ def test_the_report_carries_the_certificate_and_the_badge_says_the_same(tmp_path
 
 
 def test_the_certificate_prints_the_block_the_report_carries(tmp_path, monkeypatch):
+    # The CI job that gates every run installs no renderer; the PDF half of
+    # this test runs where reportlab is, the JSON half everywhere.
+    pytest.importorskip("reportlab")
+    import generate_pdf
     written, _, _, _, manifest = _run_report(tmp_path)
     # The PDF reads reports/<slug>.json from the working directory.
     reports = tmp_path / "reports"; reports.mkdir()
