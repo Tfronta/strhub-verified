@@ -53,9 +53,9 @@ from __future__ import annotations
 REGISTER: dict[str, tuple[str, str]] = {
     "4800fd91183e": ("certificate_text", "tree"),  # The repository ships example data (
     "3badef4c3d59": ("certificate_text", "tree"),  # ships no test or demo data of its own.
-    "33eed44a270b": ("diagnose_log", "log"),  # A COPY/ADD line names a file the build cannot see. The container is built from the tool's direc
+    "4c03a857bb23": ("diagnose_log", "log"),  # A COPY/ADD line names a file the build cannot see. The container is built from the tool's direc
     "86baeea971be": ("diagnose_log", "run"),  # At least one cause is STRhub's, not the tool's: the container recipe for a generated environmen
-    "9af466e70a45": ("diagnose_log", "manifest"),  # Every cause identified sits in this run's configuration — the pinned versions, package names or buil
+    "fbfdadb79781": ("diagnose_log", "manifest"),  # Every cause identified sits in this run's configuration — the pinned versions, package names or buil
     "f87ad4ad59ea": ("diagnose_log", "manifest"),  # The tool declares a binary or proprietary output with no text or tabular export, so the IO and 
     "6759a67a2817": ("diagnose_log", "manifest"),  # The tool declares an interactive or graphical step. The automated runner is headless and cannot
     "e3a029af91e7": ("diagnose_log", "manifest"),  # The tool declares it fetches data over the network while running. A pinned snapshot cannot reco
@@ -118,7 +118,7 @@ REGISTER: dict[str, tuple[str, str]] = {
     # so: what STRhub had to do to run the tool is STRhub's work, listed as
     # recommendations, and it never changes the label (tanda 5c).
     "02784c0c4344": ("certificate_text", "run"),               # A container environment and a command written by STRhub, not taken from the repository's instructions…
-    "ba5726f929ce": ("certificate_text", "run"),               # STRhub wrote its own recipe for this tool — an environment and a command of its own…
+    "6c6a0dea9ce0": ("certificate_text", "run"),               # STRhub wrote its own recipe for this tool — an environment and a command of its own…
 }
 
 #: Phrasings that may never be published, whatever evidence is attached: they
