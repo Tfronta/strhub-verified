@@ -193,14 +193,21 @@ def _ids(diagnostics: dict[str, list[dict]] | None) -> set[str]:
 
 def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
             manual_verification: dict | None = None, recipe_proposal: dict | None = None,
-            declared_compatibility: dict | None = None, fallback_used: bool = False) -> dict:
+            declared_compatibility: dict | None = None, fallback_used: bool = False,
+            strhub_fault: str | None = None) -> dict:
     """Return {code, title, reason, readme_gaps, basis}."""
     gates = gates or {}
     mv = manual_verification or {}
     proposal = recipe_proposal or {}
     gaps = [g for g in (proposal.get("readme") or {}).get("gaps", []) if g.get("item") != "example_data"]
     ids = _ids(diagnostics)
-    produced = bool(gates.get("io")) or bool(gates.get("example"))
+    # Output counts only from a run that finished. A tool that printed its usage
+    # to the redirected output file and exited 1 left a non-empty file behind;
+    # that file is the evidence it did NOT run, and counting it published a
+    # crash as "Runs as documented". The example gate is already conditioned on
+    # its own step's exit status (report.py), so it stands on its own.
+    ran = bool(gates.get("runs")) and bool(gates.get("io"))
+    produced = ran or bool(gates.get("example"))
 
     if produced:
         # Plan B ran: the pinned commit did not build, the published environment
@@ -214,6 +221,18 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
                   "the version that environment holds.")
         return {"code": "runs", "title": TITLES["runs"], "basis": "gates",
                 "reason": reason, "readme_gaps": []}
+
+    # STRhub's own machinery broke before the tool had its turn: the reference
+    # genome did not download, a registry refused the pull. That is not a fact
+    # about the software, so it must never read as "Does not run". A failure
+    # of the TOOL is the finding a reviewer, a stuck user and the owner all
+    # came for; this one is ours, says so, and is not published.
+    if strhub_fault:
+        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "strhub",
+                "reason": "STRhub's own infrastructure failed before the tool could be tested ("
+                          + strhub_fault + "). Nothing here is a finding about the software; "
+                          "the run has to be repeated.",
+                "readme_gaps": []}
 
     declared = {k for k, v in (declared_compatibility or {}).items() if v}
     incompatible = ids & diagnose_log.HARNESS_INCOMPATIBLE
@@ -240,11 +259,11 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     limits = [l for l in proposal.get("limitations", []) if l in LIMITATION_TEXT]
     # A guessed regions format only counts against the proposal when the run
     # did not get its output: if the plain BED worked, it worked.
-    if "regions_format_guessed" in limits and gates.get("io"):
+    if "regions_format_guessed" in limits and ran:
         limits.remove("regions_format_guessed")
     # Likewise a guessed input type: if the run produced output, the guess
     # was right, and a right guess is not a limitation.
-    if "input_type_guessed" in limits and gates.get("io"):
+    if "input_type_guessed" in limits and ran:
         limits.remove("input_type_guessed")
     if auto and limits:
         return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "recipe",
@@ -279,11 +298,14 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
 
 def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
            manual_verification: dict | None = None, recipe_proposal: dict | None = None,
-           declared_compatibility: dict | None = None, fallback_used: bool = False) -> dict:
+           declared_compatibility: dict | None = None, fallback_used: bool = False,
+           strhub_fault: str | None = None) -> dict:
     """The verdict, plus the blockers a reader can act on when it is not 'runs'."""
     v = _decide(gates, diagnostics, manual_verification, recipe_proposal, declared_compatibility,
-                fallback_used)
-    if v["code"] in ("runs", "out_of_scope"):
+                fallback_used, strhub_fault)
+    # No blockers for a fault of ours: every blocker carries an issue to open
+    # on the author's tracker, and there is nothing to ask them.
+    if v["code"] in ("runs", "out_of_scope") or v.get("basis") == "strhub":
         v["blockers"] = []
         return v
     proposal = recipe_proposal or {}

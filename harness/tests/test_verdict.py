@@ -110,3 +110,37 @@ def test_nothing_executed_is_undetermined_with_an_ask_for_example_data():
     assert v["blockers"][0]["self_fix"] is None
     assert v["blockers"][0]["ask_owner"]["title"] == "Ship a small example dataset"
 
+
+
+# --- Output counts only from a run that finished ------------------------------
+# str8rzr printed its usage to the redirected output file and exited 1: a
+# non-empty file with a digit in it, so IO passed. That file is the evidence the
+# tool did NOT run, and it was published as "Runs as documented".
+
+G_CRASH_LEFT_A_FILE = {"available": True, "installs": True, "runs": False, "io": True, "content": False}
+
+
+def test_output_left_by_a_crashed_run_is_not_runs():
+    v = verdict.decide(G_CRASH_LEFT_A_FILE)
+    assert v["code"] == "fails"
+    assert "exited with an error" in v["reason"]
+
+
+def test_a_crash_does_not_confirm_a_guessed_input_type():
+    proposal = {**PROPOSAL_OK, "limitations": ["input_type_guessed"]}
+    v = verdict.decide(G_CRASH_LEFT_A_FILE, recipe_proposal=proposal)
+    assert v["code"] == "undetermined" and v["basis"] == "recipe"
+
+
+# --- A fault of STRhub's is never the tool's ---------------------------------
+
+def test_strhub_fault_is_undetermined_and_asks_nothing_of_the_owner():
+    v = verdict.decide(G_INSTALL_FAIL, strhub_fault="the reference genome download")
+    assert v["code"] == "undetermined"
+    assert v["basis"] == "strhub"
+    assert "reference genome download" in v["reason"]
+    assert v["blockers"] == []
+
+
+def test_output_still_wins_over_a_strhub_fault():
+    assert verdict.decide(G_OK, strhub_fault="anything")["code"] == "runs"

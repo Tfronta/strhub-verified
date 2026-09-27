@@ -460,6 +460,7 @@ jobs:
           key: ref-${{ steps.m.outputs.ref_genome_filename }}-v1
 
       - name: Download + index reference genome
+        id: ref_dl
         if: steps.m.outputs.ref_genome_url != '' && steps.ref-cache.outputs.cache-hit != 'true'
         env:
           REF_GENOME_URL: ${{ steps.m.outputs.ref_genome_url }}
@@ -481,11 +482,31 @@ jobs:
         continue-on-error: true
         env:
           TOOL_REPO: ${{ steps.m.outputs.repo }}
-        run: git ls-remote "$TOOL_REPO" >/dev/null
+          TOOL_REF: ${{ steps.m.outputs.ref }}
+        run: |
+          git ls-remote -- "$TOOL_REPO" >/dev/null
+          # The repository answering is not enough: the pinned commit has to be
+          # one IT serves, from its own branches or tags. GitHub's API resolves
+          # a SHA that exists only in a fork of the repository, and a report
+          # naming this repository must not attest a commit it does not hold.
+          # Commits and trees only (no blobs), so this stays small.
+          rm -rf work/avail && mkdir -p work && git init -q work/avail
+          git -C work/avail fetch -q --filter=blob:none --tags -- "$TOOL_REPO" \
+            '+refs/heads/*:refs/remotes/origin/*'
+          if git -C work/avail cat-file -e "${TOOL_REF}^{commit}" 2>/dev/null \
+             || git -C work/avail cat-file -e "origin/${TOOL_REF}^{commit}" 2>/dev/null; then
+            echo "pinned ref $TOOL_REF is in $TOOL_REPO"
+          else
+            echo "::error::the pinned ref $TOOL_REF is not a commit on any branch or tag of $TOOL_REPO"
+            exit 1
+          fi
+          rm -rf work/avail
 
       # --- Gate: Installs (docker build) -------------------------------------
       - id: installs
         name: "Gate · Installs"
+        # Nothing to build from a ref the repository does not hold.
+        if: steps.available.outcome == 'success'
         continue-on-error: true
         env:
           TOOL_REF: ${{ steps.m.outputs.ref }}
@@ -508,9 +529,15 @@ jobs:
             # repository at the pinned ref as its context. The author's own
             # statement of the environment, taken at its word.
             rm -rf work/src
-            git clone -q -- "$TOOL_REPO" work/src \
-              && git -C work/src checkout -q "$TOOL_REF" \
-              && (git -C work/src submodule update --init --recursive -q || true)
+            # Each command on its own line: inside an `a && b && c` list, bash -e
+            # does not stop when `b` fails, and a failed checkout went on to
+            # build the default branch under the pinned commit's name.
+            git clone -q -- "$TOOL_REPO" work/src
+            git -C work/src checkout -q "$TOOL_REF"
+            want=$(git -C work/src rev-parse "${TOOL_REF}^{commit}")
+            [ "$(git -C work/src rev-parse HEAD)" = "$want" ] \
+              || { echo "::error::checked out $(git -C work/src rev-parse HEAD), not $TOOL_REF"; exit 1; }
+            git -C work/src submodule update --init --recursive -q || true
             DOCKER_DIR=work/src; DOCKER_FILE="$DOCKER_FROM_REPO"
           fi
           build() {
@@ -764,6 +791,10 @@ jobs:
           RUNS_OUTCOME: ${{ steps.runs.outcome }}
           RUNS_EXT_OUTCOME: ${{ steps.runs_ext.outcome }}
           EXAMPLE_OUTCOME: ${{ steps.runs_example.outcome }}
+          # A step of STRhub's own that failed before the gates could run. When
+          # one did, the gates below it were skipped and would otherwise read as
+          # the tool stopping at "source not available".
+          INFRA_FAILURE: ${{ (steps.propose.outcome == 'failure' && 'the recipe proposal step') || (steps.m.outcome == 'failure' && 'the staging of inputs') || (steps.ref_dl.outcome == 'failure' && 'the reference genome download') || '' }}
           # Which Dockerfile produced the image the gates ran on: primary,
           # fallback (plan B, after the pinned commit failed to build), or empty
           # when nothing built.
@@ -810,6 +841,7 @@ jobs:
             --supported-loci "$SUPPORTED_LOCI" \
             --check-upstream \
             --mode "$MODE" \
+            --infra-failure "$INFRA_FAILURE" \
             --example-runs "$EXAMPLE_OUTCOME" \
             --example example.json \
             --log-example work/log_example.txt \
@@ -823,27 +855,33 @@ jobs:
           #
           # `publishable` is the whole decision in one word, read by the deploy
           # gate and by the PDF (which marks a result that will not be
-          # published): the verdict is attributable to the tool, AND the run is
-          # one that may publish. A committed manifest always may; a trial may
-          # only when its recipe was derived here from the public repository —
-          # a trial handed a recipe by whoever dispatched it never publishes,
-          # whatever it found, because that recipe could be anything.
+          # published). harness/publish_gate.py holds the policy: a failure of
+          # the tool publishes like a success; a fault of STRhub's, a trial
+          # handed a recipe, and a URL trial landing on another repository's
+          # card do not. If anything here crashes, `publishable` is never
+          # written and the deploy does not run.
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, os, pathlib
+          import json, pathlib
           reports = [p for p in pathlib.Path("reports").glob("*.json")
                      if not p.name.endswith((".badge.json", ".recipe.json"))]
           r = json.loads(reports[0].read_text()) if reports else {}
           verdict = (r.get("verdict") or {}).get("code", "")
           slug = (r.get("report") or {}).get("slug") or (reports[0].stem if reports else "")
-          may_publish = (os.environ.get("MODE") != "trial"
-                         or (os.environ.get("URL_TRIAL") == "true"
-                             and os.environ.get("TRIAL_PUBLISH", "true") != "false"))
-          publishable = (verdict in ("runs", "fails", "undetermined") and may_publish
-                         and os.environ.get("EVENT_NAME") != "pull_request")
           print(f"verdict={verdict}")
           print(f"slug={slug}")
-          print(f"publishable={'true' if publishable else 'false'}")
+          print(f"report={reports[0] if reports else ''}")
           PY
+          REPORT_JSON=$(sed -n 's/^report=//p' "$GITHUB_OUTPUT" | tail -1)
+          if [ -z "$REPORT_JSON" ]; then
+            echo "publishable=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Whose card a trial from a URL would land on is read off the live
+          # catalogue. Unreadable means not published (publish_gate fails closed).
+          curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/gh-pages/index.json" \
+            -o published_index.json || rm -f published_index.json
+          python harness/publish_gate.py --report "$REPORT_JSON" --index published_index.json \
+            | tee -a "$GITHUB_OUTPUT"
 
       # The recipe rides with the report so the web can show what ran and, for
       # a trial, let the owner publish exactly that. Only for trials: a

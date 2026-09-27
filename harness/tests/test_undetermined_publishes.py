@@ -8,7 +8,6 @@ badge, the one artifact that travels alone, carries the verdict instead of
 the rung the run happened to reach."""
 import json
 import pathlib
-import re
 import subprocess
 import sys
 
@@ -17,10 +16,9 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 def test_the_deploy_gate_publishes_undetermined_and_never_out_of_scope():
     wf = (ROOT / ".github" / "workflows" / "verify.yml").read_text()
-    m = re.search(r'publishable = \(verdict in \(([^)]*)\)', wf)
-    assert m, "the attestation step decides `publishable` from the verdict"
-    verdicts = set(re.findall(r'"(\w+)"', m.group(1)))
-    assert verdicts == {"runs", "fails", "undetermined"}
+    assert "harness/publish_gate.py" in wf, "the attestation step decides `publishable` in publish_gate"
+    import publish_gate
+    assert set(publish_gate.PUBLISHED_VERDICTS) == {"runs", "fails", "undetermined"}
 
 
 def test_the_badge_of_an_undetermined_run_says_so_not_the_rung_it_reached(tmp_path):
