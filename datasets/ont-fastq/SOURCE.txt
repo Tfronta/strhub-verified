@@ -38,3 +38,12 @@ datasets/ont-fastq/loci.bed and regions/ are DERIVED from the
 illumina-bam-hg38 panel by harness/build_regions_library.py: the same 20
 autosomal CODIS loci as ont-bam-hg38, at hg38 coordinates for a tool that
 aligns the reads to /data/ref/hg38.fa.
+
+Memory
+------
+The run container has 6 GB. A tool that aligns these reads to the whole of
+hg38 itself needs more: NanoRepeat's documented FASTQ mode (-t fastq, which
+runs minimap2 against /data/ref/hg38.fa) was stopped at that limit in an
+unpublished trial on 2026-09-29, and its verdict was out of scope (oom), not
+a failure. A tool that aligns to a small reference of its own, or takes the
+reads without aligning them, is not affected.

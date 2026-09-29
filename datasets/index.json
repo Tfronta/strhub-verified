@@ -95,7 +95,7 @@
       "source": "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
       "license": "Open access (1000 Genomes / HPRC). Research use. STRhub is not the data provider.",
       "chemistry": "ONT R10, basecalling model SUP",
-      "notes": "The 864 primary reads of ont_slices/HG00113.codis.bam that cover the 20 panel loci, written back as FASTQ (samtools fastq): 16.5 MB gzipped, staged uncompressed as input.fastq. For a tool that aligns its own reads; the reference is hg38. See datasets/ont-fastq/SOURCE.txt.",
+      "notes": "The 864 primary reads of ont_slices/HG00113.codis.bam that cover the 20 panel loci, written back as FASTQ (samtools fastq): 16.5 MB gzipped, staged uncompressed as input.fastq. For a tool that aligns its own reads; the reference is hg38, and aligning to all of it needs more than the run container's 6 GB (NanoRepeat's FASTQ mode stopped there: out of scope, oom). See datasets/ont-fastq/SOURCE.txt.",
       "chrom_naming": "chr",
       "supported_loci": "datasets/ont-fastq/loci.bed",
       "regions_library": {
