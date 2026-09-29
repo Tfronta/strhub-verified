@@ -101,6 +101,10 @@ REGISTER: dict[str, tuple[str, str]] = {
     "4b044277e315": ("verdict", "manifest"),  # The tool needs something the automated runner cannot provide:
     "3855d69d6067": ("verdict", "gates"),  # The tool ran to completion but produced no output file in the documented format.
     "768d4670e6ef": ("verdict", "gates"),  # The tool was installed but exited with an error when run.
+    # A run stopped at the time limit: the Runs gate, and STRhub's own line in the log.
+    "a6f200a072a9": ("verdict", "gates"),  # The tool was installed, and its run was stopped at the time limit before it produced…
+    "de188bdc8810": ("verdict", "gates"),  # STRhub Verified installed the tool … it had not finished when the run's time limit stopped it.
+    "086a369408b3": ("verdict", "advice"),  # Raise run.timeout_minutes if the tool needs longer on this data, or adjust the command.
     "9b7293a29fdb": ("verdict", "gates"),  # The tool's run produced its documented output, on the published environment the README points a
     "f84cc76d0787": ("verdict", "readme"),  # no command line invoking the tool was found in the README
     "e32acfe17c39": ("verdict", "tree"),  # no install method was found in the repository

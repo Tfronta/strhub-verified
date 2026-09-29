@@ -178,6 +178,19 @@ BLOCKERS = {
                     "it exited with an error. The log is linked from the run.",
         },
     },
+    "run_stopped": {
+        "what": "The tool was installed, and its run was stopped at the time limit before it produced its "
+                "documented output.",
+        "self_fix": "edit_command",
+        "self_fix_text": "Raise run.timeout_minutes if the tool needs longer on this data, or adjust the command.",
+        "ask_owner": {
+            "title": "Documented command does not finish on a public reference sample",
+            "body": "STRhub Verified installed the tool from a clean checkout at the pinned commit "
+                    "and ran the command the README documents on a public hg38 reference sample; "
+                    "it had not finished when the run's time limit stopped it. The log is linked "
+                    "from the run.",
+        },
+    },
     "no_output": {
         "what": "The tool ran to completion but produced no output file in the documented format.",
         "self_fix": "edit_output",
@@ -209,7 +222,7 @@ def blockers_for(gates: dict, limits: list[str], gaps: list[dict], ids: set[str]
         out.append("build_failed")
     elif gates.get("installs") and not gates.get("runs") and "no_command" not in out \
             and "regions_format_unknown" not in out:
-        out.append("run_failed")
+        out.append("run_stopped" if "run_timeout" in ids else "run_failed")
     elif gates.get("runs") and not gates.get("io"):
         out.append("no_output")
     seen: list[str] = []
@@ -221,6 +234,18 @@ def blockers_for(gates: dict, limits: list[str], gaps: list[dict], ids: set[str]
 
 def _ids(diagnostics: dict[str, list[dict]] | None) -> set[str]:
     return {i.get("id") for issues in (diagnostics or {}).values() for i in issues}
+
+
+def _raised(diagnostics: dict[str, list[dict]] | None) -> str:
+    """The Python exception the tool's log shows it raised ("TypeError: only
+    0-dimensional arrays ..."), or "". NanoRepeat raised one in each worker
+    process and then waited on them until the time limit; the verdict said
+    only that time ran out, which is the one thing its author cannot act on."""
+    for issues in (diagnostics or {}).values():
+        for i in issues:
+            if i.get("id") == "python_exception":
+                return (i.get("title") or "").removeprefix("The tool raised ").strip()
+    return ""
 
 
 def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
@@ -319,11 +344,16 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     elif not gates.get("installs"):
         reason = "The environment did not build from the declared install steps."
     elif not gates.get("runs") and "run_timeout" in ids:
-        reason = "The tool did not finish within the run's time limit, so it was stopped."
+        raised = _raised(diagnostics)
+        reason = (f"The tool raised {raised}, then did not finish within the run's time limit, so it "
+                  "was stopped." if raised else
+                  "The tool did not finish within the run's time limit, so it was stopped.")
     elif not gates.get("runs"):
         # Not "on the reference data": a tool can exit before it reads any,
         # as STRspy's wrapper does when its self-check fails.
-        reason = "The tool exited with an error before producing its documented output."
+        raised = _raised(diagnostics)
+        reason = (f"The tool raised {raised} before producing its documented output." if raised else
+                  "The tool exited with an error before producing its documented output.")
     else:
         reason = "The tool ran to completion but produced no output in the documented format."
     return {"code": "fails", "title": TITLES["fails"], "basis": "gates", "reason": reason,
@@ -346,4 +376,11 @@ def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     limits = [l for l in proposal.get("limitations", []) if l in LIMITATION_TEXT]
     gaps = [g for g in (proposal.get("readme") or {}).get("gaps", []) if g.get("item") != "example_data"]
     v["blockers"] = blockers_for(gates or {}, limits, gaps, _ids(diagnostics))
+    raised = _raised(diagnostics)
+    if raised:
+        # What to fix, in the issue the author is asked to read.
+        for b in v["blockers"]:
+            if b["code"] in ("run_failed", "run_stopped"):
+                b["ask_owner"] = {**b["ask_owner"],
+                                  "body": b["ask_owner"]["body"] + f" The log shows the tool raised {raised}."}
     return v

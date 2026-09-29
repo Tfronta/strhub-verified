@@ -144,3 +144,38 @@ def test_strhub_fault_is_undetermined_and_asks_nothing_of_the_owner():
 
 def test_output_still_wins_over_a_strhub_fault():
     assert verdict.decide(G_OK, strhub_fault="anything")["code"] == "runs"
+
+
+RAISED = {"id": "python_exception",
+          "title": "The tool raised TypeError: only 0-dimensional arrays can be converted to Python scalars"}
+TIMEOUT = {"id": "run_timeout", "title": "The run did not finish within its time limit (20 minutes)"}
+
+
+def test_an_exception_before_a_hang_is_named_not_only_the_time_limit():
+    # NanoRepeat raised a TypeError in each worker process and then waited on
+    # them until the time limit. "Did not finish in time" was all the verdict
+    # said, the one thing its author could not act on.
+    v = verdict.decide(G_RUN_FAIL, {"external": [RAISED, TIMEOUT]}, recipe_proposal=PROPOSAL_OK)
+    assert v["code"] == "fails"
+    assert v["reason"].startswith("The tool raised TypeError: only 0-dimensional arrays")
+    assert "time limit" in v["reason"]
+    (b,) = v["blockers"]
+    assert b["code"] == "run_stopped" and "exited with an error" not in b["what"]
+    assert b["ask_owner"]["body"].endswith("The log shows the tool raised TypeError: only 0-dimensional "
+                                           "arrays can be converted to Python scalars.")
+
+
+def test_an_exception_that_ends_the_run_is_named():
+    v = verdict.decide(G_RUN_FAIL, {"external": [RAISED]}, recipe_proposal=PROPOSAL_OK)
+    assert v["reason"] == ("The tool raised TypeError: only 0-dimensional arrays can be converted to Python "
+                           "scalars before producing its documented output.")
+    assert v["blockers"][0]["code"] == "run_failed" and "TypeError" in v["blockers"][0]["ask_owner"]["body"]
+
+
+def test_a_run_stopped_at_the_limit_without_an_exception_says_only_that():
+    v = verdict.decide(G_RUN_FAIL, {"external": [TIMEOUT]}, recipe_proposal=PROPOSAL_OK)
+    assert v["reason"] == "The tool did not finish within the run's time limit, so it was stopped."
+    assert v["blockers"][0]["code"] == "run_stopped"
+    assert "raised" not in v["blockers"][0]["ask_owner"]["body"]
+    # The table is not edited in place: the next verdict gets the plain text.
+    assert "raised" not in verdict.BLOCKERS["run_failed"]["ask_owner"]["body"]
