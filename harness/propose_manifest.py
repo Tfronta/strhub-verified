@@ -43,6 +43,11 @@ from prepare import example_wrapper  # noqa: E402
 INPUT_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b", re.I)
 REF_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:fa|fasta|fna)(?:\.gz)?\b", re.I)
 BED_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.bed\b", re.I)
+#: A file of loci the documentation has the user fetch, after the option that
+#: reads it: vamos's `-r vamos.effMotifs-0.1.GRCh38.tsv`, from Zenodo.
+LOCI_FILE = re.compile(r"(?<!\S)(--?[\w-]+)(\s+|=)((?!/)[\w./-]*(?:motif|region|repeat|catalog|loci)[\w./-]*"
+                       r"\.(?:tsv|txt)(?:\.gz)?)(?![\w./-])", re.I)
+OUTPUT_FLAG = re.compile(r"^--?(?:o|out|output|outdir|out[-_]?dir|output[-_]?dir|output[-_]?prefix|prefix)$", re.I)
 OUTPUT_GLOB = {
     "vcf": ("**/*.vcf*", "vcf"),
     "tsv": ("**/*.t[sx][vt]", "tsv"),   # .tsv and .txt
@@ -331,6 +336,23 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
         new, n = BED_TOKEN.subn("/data/in/regions.bed", new)
         if n:
             notes.append(f"{n} BED path(s) replaced with /data/in/regions.bed.")
+    # The loci to genotype, from a catalog the documentation downloads from
+    # elsewhere in the layout STRhub's library writes for this tool. Which loci
+    # is the user's choice, as HipSTR's regions BED is; STRhub's are the ones
+    # its reads cover. A file the repository ships is the tool's own and stays.
+    if library_format and library_format not in regions_library.JSON_FORMATS \
+            and regions_library.library_path(input_type or "", library_format):
+        tree = set(tree_paths or [])
+
+        def loci_file(m: re.Match) -> str:
+            flag, sep, path = m.groups()
+            if OUTPUT_FLAG.match(flag) or path.lstrip("./") in tree:
+                return m.group(0)
+            notes.append(f"{path} (after {flag}), the file of loci the documentation has the user download, "
+                         f"replaced with STRhub's {library_format} file of the panel loci "
+                         "(/data/in/regions.bed): the loci to genotype are the user's choice.")
+            return f"{flag}{sep}/data/in/regions.bed"
+        new = LOCI_FILE.sub(loci_file, new)
     return new, notes
 
 
@@ -663,8 +685,9 @@ def check_documented_files(run_cmd: str, proposal: dict, input_type: str,
     Two things make a run say nothing about the tool, and both are knowable
     before running: the loci it genotypes, from a file the repository ships,
     lie outside STRhub's sample (ExpansionHunter's catalog is 31 disease loci,
-    none of them forensic); or it reads a file nobody holds (vamos's motif
-    list, which its README says to download from Zenodo)."""
+    none of them forensic); or it reads a file nobody holds, and STRhub has
+    nothing in its place (vamos's Zenodo motif list was one, until STRhub
+    wrote its panel in vamos's layout)."""
     from prepare import unwrap_example
     cmd, _ = unwrap_example(run_cmd)
     tree = set(proposal.get("tree_paths") or [])
