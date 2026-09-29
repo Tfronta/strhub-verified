@@ -856,6 +856,9 @@ def main() -> int:
                          "repository's default branch, and whether it still exists")
     ap.add_argument("--ref", default="")
     ap.add_argument("--run-url", default="")
+    ap.add_argument("--infra-failure", default="",
+                    help="a step of STRhub's own (reference genome download, ...) that "
+                         "failed before the gates ran; names it, empty when none did")
     ap.add_argument("--example-runs", default="skipped",
                     help="outcome of the own-example step (success/failure/skipped)")
     ap.add_argument("--example", default="example.json", help="path to check_example.py output")
@@ -957,7 +960,18 @@ def main() -> int:
         except Exception:  # noqa: BLE001
             example_detail = {}
     if example_detail.get("applicable"):
-        gates["example"] = bool(example_detail.get("passed"))
+        # The files the example left behind count only if the example's own
+        # command exited 0. The capture wrapper copies whatever was created
+        # while it ran, so a command that crashed after writing a .pyc, or one
+        # that did not exist, still left something for check_example to find.
+        ran_ok = args.example_runs == "success"
+        if example_detail.get("passed") and not ran_ok:
+            example_detail["passed"] = False
+            example_detail["reason"] = (
+                "The example's command did not exit successfully "
+                f"(step outcome: {args.example_runs}), so the files it left behind "
+                "are not counted as its output.")
+        gates["example"] = bool(example_detail.get("passed")) and ran_ok
 
     # Highest contiguous green gate from the bottom of the ladder.
     level = "none"
@@ -1217,9 +1231,22 @@ def main() -> int:
     # The one sentence for a reader who does not program. Decided from the gates,
     # the diagnostics and, when the recipe was proposed from the repository, the
     # README gaps detect_recipe found (see harness/verdict.py for the policy).
+    # Whether the thing that stopped this run was STRhub's rather than the
+    # tool's. Only ever from a closed list: a step of ours that failed, or a
+    # log line whose class is ours (diagnose_log.STRHUB_FIXABLE).
+    strhub_fault = args.infra_failure.strip() or None
+    if not strhub_fault and install_detail and not gates["installs"] \
+            and "strhub" in (install_detail.get("faults") or []):
+        strhub_fault = "the environment's build could not fetch what STRhub supplies"
+    if not strhub_fault and not gates["runs"]:
+        ours = {i.get("id") for issues in diagnostics.values() for i in issues} \
+            & diagnose_log.STRHUB_FIXABLE
+        if ours:
+            strhub_fault = ", ".join(sorted(ours))
     report["verdict"] = verdict_lib.decide(
         gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
         fallback_used=args.environment_built == "fallback",
+        strhub_fault=strhub_fault,
     )
 
     # The certificate's own words, as data: what the PDF prints in its

@@ -344,6 +344,16 @@ _rule(
 )
 
 _rule(
+    # Docker Hub's anonymous pull quota is shared by every job on a runner IP.
+    # Hitting it says nothing about the image or the tool.
+    r"(?:toomanyrequests|You have reached your (?:unauthenticated )?pull rate limit)",
+    "error", "registry_rate_limited",
+    "The container registry refused the pull (rate limit)",
+    "The registry throttled STRhub's runner. This is ours, not the tool's: the "
+    "run has to be repeated. Nothing to change on the submission.",
+)
+
+_rule(
     r"fatal: (?:reference is not a tree|couldn't find remote ref|"
     r"repository '[^']+' not found)[^\n]*",
     "error", "checkout_failed",
@@ -545,7 +555,7 @@ AUTHOR_FIXABLE = {"bad_option", "cmd_not_found", "missing_module", "import_error
 # because the report has to be able to say "this one is on us": every other set
 # here answers a different question (can they fix it? is it a ceiling?), and
 # without this one a fault of ours reads as a finding about their software.
-STRHUB_FIXABLE = {"base_image_missing"}
+STRHUB_FIXABLE = {"base_image_missing", "registry_rate_limited"}
 
 # Ceilings of the free automated environment. No amount of care with the form
 # lifts these: a public runner has no GPU, no display, a fixed memory and disk

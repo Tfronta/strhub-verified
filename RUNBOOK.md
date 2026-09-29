@@ -329,6 +329,24 @@ gh workflow run verify.yml -f tool=strsearch-trial -f mode=trial \
 `recipe.json` es `{"manifest_yml": "...", "dockerfile": "...", "regions_bed": "..."?}`
 (tope 60 KB; `prepare.py --recipe-b64` lo materializa en `work/recipe/<slug>/`).
 
+### Qué se publica (`harness/publish_gate.py`)
+
+Un fallo de la herramienta se publica igual que un éxito: es el dato que buscan el
+revisor, el usuario al que no le corre y el dueño. No se publican:
+
+- la corrida de un PR (es un chequeo del motor);
+- un ensayo al que le pasaron la receta (`recipe`);
+- un veredicto que no habla de la herramienta: fuera de alcance, o una falla de
+  STRhub (descarga de hg38, rate-limit del registry, propuesta o staging caídos),
+  que sale como *Could not be determined* con `basis: strhub` y sin issue para el autor;
+- un ensayo desde URL que caería en la tarjeta de **otro** repositorio (el slug sale
+  del nombre del repo). Quien lo pidió recibe el informe completo igual, en el artifact.
+
+La compuerta Available exige que el commit fijado esté en una rama o tag del propio
+repositorio (no alcanza con que la API de GitHub lo resuelva: resuelve commits de forks).
+Una salida cuenta solo si la corrida terminó con éxito: un archivo que dejó un proceso
+caído no es evidencia de que corrió.
+
 ### Receta propuesta desde el repo
 
 `harness/detect_recipe.py <repo> <ref> --json proposal.json` lee el árbol y el

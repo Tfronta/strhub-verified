@@ -295,7 +295,13 @@ def example_wrapper(cmd: str, cwd: str) -> str:
     cmd = " ".join(cmd.split())
     return (
         f"cd {cwd!r} && touch /tmp/.strhub_mark && ( {cmd} ); rc=$?; "
-        "find . -type f -newer /tmp/.strhub_mark -size +0 ! -path './.git/*' 2>/dev/null | head -500 | "
+        # -xdev: stay on the image's own filesystem. From a WORKDIR of `/`,
+        # /proc and /sys are "newer" than the mark by construction, and copying
+        # them passed a command that did not even exist; /data/out is a mount
+        # too, so the copy never feeds on itself.
+        "find . -xdev -type f -newer /tmp/.strhub_mark -size +0 ! -path './.git/*' "
+        "! -path './proc/*' ! -path './sys/*' ! -path './dev/*' ! -path './data/*' "
+        "2>/dev/null | head -500 | "
         "while IFS= read -r f; do mkdir -p \"/data/out/$(dirname \"$f\")\" && cp \"$f\" \"/data/out/$f\"; done; "
         "exit $rc"
     )
