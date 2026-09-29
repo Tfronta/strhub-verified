@@ -649,7 +649,12 @@ jobs:
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
           SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
-        run: python harness/check_content.py "$MANIFEST" work/out_own --json content_own.json --regions work/in_own/regions.bed --panel "$SUPPORTED_LOCI"
+        # The loci this leg was given: a regions BED, or a JSON catalog
+        # (ExpansionHunter's) staged as regions.json.
+        run: |
+          REG=work/in_own/regions.bed
+          [ -f "$REG" ] || REG=work/in_own/regions.json
+          python harness/check_content.py "$MANIFEST" work/out_own --json content_own.json --regions "$REG" --panel "$SUPPORTED_LOCI"
 
       # --- Leg: the tool's OWN example (the reviewer's gate) ------------------
       # The README's command on the repository's data, inside the image, with
@@ -741,7 +746,12 @@ jobs:
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
           SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
-        run: python harness/check_content.py "$MANIFEST" work/out_external --json content_external.json --regions work/in_external/regions.bed --panel "$SUPPORTED_LOCI"
+        # The loci this leg was given: a regions BED, or a JSON catalog
+        # (ExpansionHunter's) staged as regions.json.
+        run: |
+          REG=work/in_external/regions.bed
+          [ -f "$REG" ] || REG=work/in_external/regions.json
+          python harness/check_content.py "$MANIFEST" work/out_external --json content_external.json --regions "$REG" --panel "$SUPPORTED_LOCI"
 
       # --- README minimum-to-run check (advisory; never gates the badge) ------
       - name: "README check (advisory)"

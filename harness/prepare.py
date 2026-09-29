@@ -42,6 +42,8 @@ RAW = "https://raw.githubusercontent.com"
 # Coordinate-based tools read /data/in/regions.bed; the author's BED (whatever its
 # original name) is staged under this canonical name so one run cmd fits both legs.
 REGIONS_CANONICAL = "regions.bed"
+#: A catalog in JSON (ExpansionHunter's) is staged under its own extension.
+REGIONS_JSON = "regions.json"
 
 
 def _bam_sidecar(bam: pathlib.Path) -> pathlib.Path:
@@ -150,9 +152,10 @@ def stage_regions(regions, legs: list[pathlib.Path], input_type: str | None = No
       "none"   — no regions BED anywhere.
     """
     def _fan_out(src: pathlib.Path) -> bool:
+        name = REGIONS_JSON if src.suffix.lower() == ".json" else REGIONS_CANONICAL
         for leg in legs:
             leg.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, leg / REGIONS_CANONICAL)
+            shutil.copy2(src, leg / name)
         return True
 
     if isinstance(regions, dict) and "path" in regions and "repo" not in regions:

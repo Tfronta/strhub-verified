@@ -60,8 +60,26 @@ def read_regions(path: pathlib.Path | None) -> list[tuple[str, int, int, str]]:
     when it is not numeric, else the 6th column for HipSTR, else chrom:start)."""
     if not path or not path.is_file():
         return []
+    text = path.read_text(errors="replace")
+    if text.lstrip().startswith("["):
+        # ExpansionHunter's variant catalog: the same loci, as JSON, with a
+        # 0-based ReferenceRegion (the library's BEDs are 1-based starts).
+        import json as _json
+        try:
+            entries = _json.loads(text)
+        except ValueError:
+            return []
+        out = []
+        for e in entries if isinstance(entries, list) else []:
+            regions = e.get("ReferenceRegion")
+            for region in (regions if isinstance(regions, list) else [regions]):
+                m = re.match(r"^([^:]+):(\d+)-(\d+)$", str(region or ""))
+                if m:
+                    out.append((m.group(1), int(m.group(2)) + 1, int(m.group(3)),
+                                str(e.get("LocusId") or f"{m.group(1)}:{m.group(2)}")))
+        return out
     out = []
-    for ln in path.read_text(errors="replace").splitlines():
+    for ln in text.splitlines():
         s = ln.strip()
         if not s or s.startswith(("#", "track", "browser")):
             continue

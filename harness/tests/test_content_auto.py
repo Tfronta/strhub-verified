@@ -157,3 +157,14 @@ def test_real_hipstr_and_gangstr_vcfs_reach_content():
     gan = ca.analyze_vcf(REAL / "gangstr.output.vcf", ca.name_regions(ca.read_regions(LIB / "gangstr.bed"), PANEL))
     assert gan["regions_hit"] >= 20 and "TH01" in gan["str_loci"]
     assert all(ca.judge(gan, "vcf", 24).values())
+
+
+def test_a_json_catalog_names_the_loci_like_a_regions_bed(tmp_path):
+    """ExpansionHunter is given the panel as a JSON catalog; the content check
+    must recognise the same loci in its VCF as it would from a BED."""
+    import json
+    import content_auto as ca
+    cat = tmp_path / "regions.json"
+    cat.write_text(json.dumps([{"LocusId": "TH01", "LocusStructure": "(AATG)*",
+                                "ReferenceRegion": "chr11:2171087-2171115", "VariantType": "Repeat"}]))
+    assert ca.read_regions(cat) == [("chr11", 2171088, 2171115, "TH01")]
