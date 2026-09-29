@@ -252,4 +252,5 @@ def test_a_command_that_reads_alignments_or_calls_decides_the_input():
     assert dr.kind_from_command("mergeSTR --vcfs a.vcf.gz,b.vcf.gz --out merged") == "vcf"
     # A VCF the command writes is not what it reads.
     assert dr.kind_from_command("tool --ref hg38.fa --out calls.vcf") is None
+    assert dr.kind_from_command("tool --ref hg38.fa --output-vcf calls.vcf.gz") is None
     assert dr.kind_from_command("HipSTR --bams in.bam --str-vcf out.vcf.gz") == "bam"

@@ -1246,7 +1246,7 @@ def _stated_platform(statements: dict) -> str | None:
 
 #: An option, or a redirection, that names what a command WRITES.
 _WRITES = re.compile(r"^(?:>>?|--?(?:o|out|output|out[-_]?file|output[-_]?file|prefix|output[-_]?prefix|"
-                     r"(?:str|tr)[-_]?vcf|vcf[-_]?out))$", re.I)
+                     r"(?:str|tr)[-_]?vcf|vcf[-_]?out|out(?:put)?[-_]?vcf))$", re.I)
 
 
 def kind_from_command(cmd: str) -> str | None:

@@ -43,8 +43,8 @@ from prepare import example_wrapper  # noqa: E402
 INPUT_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b", re.I)
 REF_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:fa|fasta|fna)(?:\.gz)?\b", re.I)
 BED_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.bed\b", re.I)
-#: A file of loci the documentation has the user fetch, after the option that
-#: reads it: vamos's `-r vamos.effMotifs-0.1.GRCh38.tsv`, from Zenodo.
+#: A file of loci the documentation leaves to the user, after the option that
+#: reads it: vamos's `-r vamos.effMotifs-0.1.GRCh38.tsv`, fetched from Zenodo.
 LOCI_FILE = re.compile(r"(?<!\S)(--?[\w-]+)(\s+|=)((?!/)[\w./-]*(?:motif|region|repeat|catalog|loci)[\w./-]*"
                        r"\.(?:tsv|txt)(?:\.gz)?)(?![\w./-])", re.I)
 OUTPUT_FLAG = re.compile(r"^--?(?:o|out|output|outdir|out[-_]?dir|output[-_]?dir|output[-_]?prefix|prefix)$", re.I)
@@ -336,10 +336,11 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
         new, n = BED_TOKEN.subn("/data/in/regions.bed", new)
         if n:
             notes.append(f"{n} BED path(s) replaced with /data/in/regions.bed.")
-    # The loci to genotype, from a catalog the documentation downloads from
-    # elsewhere in the layout STRhub's library writes for this tool. Which loci
-    # is the user's choice, as HipSTR's regions BED is; STRhub's are the ones
-    # its reads cover. A file the repository ships is the tool's own and stays.
+    # The loci to genotype, from a file the documentation leaves to the user
+    # (vamos's README fetches one from Zenodo), in a layout STRhub's library
+    # writes for this tool. Which loci is the user's choice, as HipSTR's
+    # regions BED is; STRhub's are the ones its reads cover. A file the
+    # repository ships is the tool's own and stays.
     if library_format and library_format not in regions_library.JSON_FORMATS \
             and regions_library.library_path(input_type or "", library_format):
         tree = set(tree_paths or [])
@@ -348,9 +349,9 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
             flag, sep, path = m.groups()
             if OUTPUT_FLAG.match(flag) or path.lstrip("./") in tree:
                 return m.group(0)
-            notes.append(f"{path} (after {flag}), the file of loci the documentation has the user download, "
-                         f"replaced with STRhub's {library_format} file of the panel loci "
-                         "(/data/in/regions.bed): the loci to genotype are the user's choice.")
+            notes.append(f"{path} (after {flag}), a file of loci the documentation leaves to the user and the "
+                         f"repository does not ship, replaced with STRhub's {library_format} file of the panel "
+                         "loci (/data/in/regions.bed): which loci to genotype is the user's choice.")
             return f"{flag}{sep}/data/in/regions.bed"
         new = LOCI_FILE.sub(loci_file, new)
     return new, notes
