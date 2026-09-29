@@ -79,6 +79,36 @@
       "read_groups": true,
       "sample": "HG002"
     },
+    "ont-fastq": {
+      "dir": "datasets/ont-fastq",
+      "data": "ont_slices/HG00113.codis.panel.fastq.gz",
+      "format": "fastq",
+      "canonical_input": "input.fastq",
+      "reference": "hg38",
+      "reference_genome": {
+        "assembly": "GRCh38 / hg38",
+        "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
+        "filename": "hg38.fa",
+        "mount_path": "/data/ref/hg38.fa"
+      },
+      "name": "1000 Genomes ONT, HG00113 reads over the CODIS panel loci (FASTQ)",
+      "source": "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+      "license": "Open access (1000 Genomes / HPRC). Research use. STRhub is not the data provider.",
+      "chemistry": "ONT R10, basecalling model SUP",
+      "notes": "The 864 primary reads of ont_slices/HG00113.codis.bam that cover the 20 panel loci, written back as FASTQ (samtools fastq): 16.5 MB gzipped, staged uncompressed as input.fastq. For a tool that aligns its own reads; the reference is hg38. See datasets/ont-fastq/SOURCE.txt.",
+      "chrom_naming": "chr",
+      "supported_loci": "datasets/ont-fastq/loci.bed",
+      "regions_library": {
+        "hipstr": "datasets/ont-fastq/regions/hipstr.bed",
+        "gangstr": "datasets/ont-fastq/regions/gangstr.bed",
+        "strsearch": "datasets/ont-fastq/regions/strsearch.bed",
+        "bed4": "datasets/ont-fastq/regions/bed4.bed",
+        "motif": "datasets/ont-fastq/regions/motif.bed",
+        "eh_catalog": "datasets/ont-fastq/regions/eh_catalog.json",
+        "trgt": "datasets/ont-fastq/regions/trgt.bed"
+      },
+      "sample": "HG00113"
+    },
     "illumina-bam-hg38": {
       "dir": "datasets/illumina-bam-hg38",
       "data": "illumina_slices/NA12878.autosomal.bam",

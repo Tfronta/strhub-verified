@@ -123,11 +123,12 @@ def test_strspy_runs_on_the_input_type_strhub_has_data_for(tmp_path):
 
 def test_nothing_to_run_on_is_a_limitation_not_a_failure(tmp_path):
     proposal = _proposal("strspy")
-    proposal["input_type"] = {"best": "ont-fastq", "candidates": ["ont-fastq"], "signals": {}, "warnings": []}
+    proposal["input_type"] = {"best": "illumina-snp-fastq", "candidates": ["illumina-snp-fastq"],
+                              "signals": {}, "warnings": []}
     proposal["example"] = None
     r = pm.build(proposal, "strspy-trial")
     m = _valid(r["manifest_yml"], tmp_path)
-    assert m["inputs"] == {"type": "ont-fastq"}
+    assert m["inputs"] == {"type": "illumina-snp-fastq"}
     assert "no_reference_dataset" in r["limitations"]
 
 
@@ -211,3 +212,4 @@ def test_the_version_is_the_release_the_ref_came_from_else_the_short_sha(tmp_pat
     # through when it found nothing better) is not a version.
     m = _valid(pm.build(p, "t", ref_label=sha)["manifest_yml"], tmp_path)
     assert m["tool"]["version"] == sha[:7]
+
