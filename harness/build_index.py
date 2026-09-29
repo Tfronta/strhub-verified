@@ -124,6 +124,9 @@ def _summary_entry(slug: str, r: dict) -> dict:
         # re-deriving it from the gates.
         "verdict": (r.get("verdict") or {}).get("code"),
         "errors_reported": errors_reported,
+        # Plan B ran: the pinned commit did not build, the published image the
+        # README points at did. The web's label says so, as the engine's does.
+        "fallback_used": bool((r.get("environment") or {}).get("fallback_used")),
         "generated": r.get("generated"),
         "source_repo": r.get("source", {}).get("repo"),
         "source_ref": ref,
@@ -158,6 +161,7 @@ def _version_entry(slug: str, sha: str | None, r: dict, prefix: str) -> dict:
         "label": e["label"],
         "verdict": e["verdict"],
         "errors_reported": e["errors_reported"],
+        "fallback_used": e["fallback_used"],
         "ci_run": e["ci_run"],
         "report": f"{prefix}{slug}.json",
         "page": f"{prefix}{slug}.html",

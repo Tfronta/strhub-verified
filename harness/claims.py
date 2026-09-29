@@ -53,6 +53,8 @@ from __future__ import annotations
 REGISTER: dict[str, tuple[str, str]] = {
     "4800fd91183e": ("certificate_text", "tree"),  # The repository ships example data (
     "3badef4c3d59": ("certificate_text", "tree"),  # ships no test or demo data of its own.
+    "d2192e04fc10": ("diagnose_log", "run"),  # The container was stopped at the run's time limit. If the tool needs longer on this data, raise run.
+    "ef1d9f98ef6e": ("verdict", "run"),  # The tool did not finish within the run's time limit, so it was stopped.
     "4c03a857bb23": ("diagnose_log", "log"),  # A COPY/ADD line names a file the build cannot see. The container is built from the tool's direc
     "86baeea971be": ("diagnose_log", "run"),  # At least one cause is STRhub's, not the tool's: the container recipe for a generated environmen
     "fbfdadb79781": ("diagnose_log", "manifest"),  # Every cause identified sits in this run's configuration — the pinned versions, package names or buil

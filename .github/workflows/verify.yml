@@ -108,7 +108,10 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      - run: pip install -q pyyaml jsonschema pytest
+      # reportlab + pillow: the PDF half of the certificate test skips without
+      # them, and skipped in CI means the PDF and the report were never held
+      # to the same words where it counts.
+      - run: pip install -q pyyaml jsonschema pytest reportlab pillow
       - name: Harness tests
         run: python -m pytest harness/tests -q
       # The BED parser is mirrored in the web form; the shared cases catch the
@@ -527,31 +530,50 @@ jobs:
           set -o pipefail
           mkdir -p work
           : > work/log_build.txt
+          # The recipe's own directory: where a generated Dockerfile and the
+          # plan B live, whatever the primary build's context turns out to be.
+          RECIPE_DIR="$DOCKER_DIR"
+          CONTEXT="$DOCKER_DIR"
           if [ -n "$DOCKER_FROM_REPO" ]; then
-            # The repository ships its own Dockerfile: build THAT, with the
-            # repository at the pinned ref as its context. The author's own
-            # statement of the environment, taken at its word.
-            rm -rf work/src
+            # The repository ships its own Dockerfile: build THAT, at the pinned
+            # ref. The author's own statement of the environment, taken at its word.
+            # Cloned under the repository's own name, because some Dockerfiles
+            # are written to be built from the directory ABOVE the clone
+            # (STRsearch: `COPY ./STRsearch /STRsearch`).
+            NAME=$(basename "${TOOL_REPO%.git}")
+            rm -rf work/ctx && mkdir -p work/ctx
+            SRC="work/ctx/$NAME"
             # Each command on its own line: inside an `a && b && c` list, bash -e
             # does not stop when `b` fails, and a failed checkout went on to
             # build the default branch under the pinned commit's name.
-            git clone -q -- "$TOOL_REPO" work/src
-            git -C work/src checkout -q "$TOOL_REF"
-            want=$(git -C work/src rev-parse "${TOOL_REF}^{commit}")
-            [ "$(git -C work/src rev-parse HEAD)" = "$want" ] \
-              || { echo "::error::checked out $(git -C work/src rev-parse HEAD), not $TOOL_REF"; exit 1; }
-            git -C work/src submodule update --init --recursive -q || true
-            DOCKER_DIR=work/src; DOCKER_FILE="$DOCKER_FROM_REPO"
+            git clone -q -- "$TOOL_REPO" "$SRC"
+            git -C "$SRC" checkout -q "$TOOL_REF"
+            want=$(git -C "$SRC" rev-parse "${TOOL_REF}^{commit}")
+            [ "$(git -C "$SRC" rev-parse HEAD)" = "$want" ] \
+              || { echo "::error::checked out $(git -C "$SRC" rev-parse HEAD), not $TOOL_REF"; exit 1; }
+            git -C "$SRC" submodule update --init --recursive -q || true
+            DOCKER_DIR="$SRC"; DOCKER_FILE="$DOCKER_FROM_REPO"; CONTEXT="$SRC"
+            # A Dockerfile that copies the repository by its own name is
+            # written for the parent directory as context. Building it from
+            # inside the clone failed with "/STRsearch: not found" and was
+            # published as the tool not installing. The Dockerfile is not
+            # touched; only the directory docker is pointed at changes, and
+            # the build log says so.
+            if grep -Eiq "^[[:space:]]*(COPY|ADD)([[:space:]]+--[^[:space:]]+)*[[:space:]]+(\./)?${NAME}(/|[[:space:]])" "$SRC/$DOCKER_FILE"; then
+              CONTEXT=work/ctx
+              printf '==== STRhub: %s copies ./%s, so it is built from the directory that holds the clone ====\n\n' \
+                "$DOCKER_FILE" "$NAME" | tee -a work/log_build.txt
+            fi
           fi
-          build() {
+          build() {  # $1 Dockerfile, $2 its directory, $3 context
             docker build \
               --build-arg "STRAITRAZOR_REF=$TOOL_REF" \
               --build-arg "TOOL_REF=$TOOL_REF" \
-              -f "$DOCKER_DIR/$1" \
+              -f "$2/$1" \
               -t toolimg:ci \
-              "$DOCKER_DIR" 2>&1 | tee -a work/log_build.txt
+              "$3" 2>&1 | tee -a work/log_build.txt
           }
-          if build "$DOCKER_FILE"; then
+          if build "$DOCKER_FILE" "$DOCKER_DIR" "$CONTEXT"; then
             echo "environment=primary" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -563,7 +585,7 @@ jobs:
           # by the marker line report.py looks for.
           echo "::warning::the build from the pinned commit failed; building the fallback environment ($DOCKER_FALLBACK)"
           printf '\n==== STRhub: the build above failed; building the fallback environment (%s) ====\n\n' "$DOCKER_FALLBACK" >> work/log_build.txt
-          build "$DOCKER_FALLBACK" && echo "environment=fallback" >> "$GITHUB_OUTPUT"
+          build "$DOCKER_FALLBACK" "$RECIPE_DIR" "$RECIPE_DIR" && echo "environment=fallback" >> "$GITHUB_OUTPUT"
 
       # --- Matrix leg: own data (the badge ladder uses THIS leg) -------------
       # No image, no run. Without the second condition on each run leg, a
@@ -574,7 +596,9 @@ jobs:
         name: "Gate · Runs (own data)"
         if: steps.m.outputs.own_ready == '1' && steps.installs.outcome == 'success'
         continue-on-error: true
-        timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
+        # A backstop: run_container.sh stops the container at the manifest's
+        # limit and says so in the log; this only catches a hung script.
+        timeout-minutes: ${{ fromJSON(steps.m.outputs.step_timeout) }}
         env:
           # The author's own command. It is meant to run INSIDE the container (the
           # image entrypoint is `bash -lc`), so it is passed as a single argument
@@ -585,6 +609,7 @@ jobs:
           # overridden to bash so the command still reaches a shell. Unquoted on
           # purpose: empty for the engine's images, two words for a repository's.
           TOOL_CMD: ${{ steps.m.outputs.cmd }}
+          RUN_MINUTES: ${{ steps.m.outputs.timeout }}
           ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
           ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
         run: |
@@ -597,12 +622,13 @@ jobs:
           chmod 0777 work/out_own
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
-          docker run --rm $DOCKER_HARDENING $ENTRY \
+          bash harness/run_container.sh strhub_own "$RUN_MINUTES" work/log_own.txt \
+            $DOCKER_HARDENING $ENTRY \
             -v "$PWD/work/in_own:/data/in:ro" \
             -v "$PWD/work/out_own:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            $ENTRY_ARGS "$TOOL_CMD" 2>&1 | tee work/log_own.txt
+            $ENTRY_ARGS "$TOOL_CMD"
 
       - id: io
         name: "Gate · Expected IO (own)"
@@ -632,9 +658,12 @@ jobs:
         name: "Reproduces own example"
         if: steps.m.outputs.example_ready == '1' && steps.installs.outcome == 'success'
         continue-on-error: true
-        timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
+        # A backstop: run_container.sh stops the container at the manifest's
+        # limit and says so in the log; this only catches a hung script.
+        timeout-minutes: ${{ fromJSON(steps.m.outputs.step_timeout) }}
         env:
           EXAMPLE_CMD: ${{ steps.m.outputs.example_cmd }}
+          RUN_MINUTES: ${{ steps.m.outputs.timeout }}
           ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
           ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
         run: |
@@ -647,11 +676,12 @@ jobs:
           chmod 0777 work/out_example
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
-          docker run --rm $DOCKER_HARDENING $ENTRY \
+          bash harness/run_container.sh strhub_example "$RUN_MINUTES" work/log_example.txt \
+            $DOCKER_HARDENING $ENTRY \
             -v "$PWD/work/out_example:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            $ENTRY_ARGS "$EXAMPLE_CMD" 2>&1 | tee work/log_example.txt
+            $ENTRY_ARGS "$EXAMPLE_CMD"
 
       - id: example
         name: "Example produced its output"
@@ -666,9 +696,12 @@ jobs:
         name: "Runs (external data)"
         if: steps.m.outputs.external_ready == '1' && steps.installs.outcome == 'success'
         continue-on-error: true
-        timeout-minutes: ${{ fromJSON(steps.m.outputs.timeout) }}
+        # A backstop: run_container.sh stops the container at the manifest's
+        # limit and says so in the log; this only catches a hung script.
+        timeout-minutes: ${{ fromJSON(steps.m.outputs.step_timeout) }}
         env:
           TOOL_CMD: ${{ steps.m.outputs.cmd }}
+          RUN_MINUTES: ${{ steps.m.outputs.timeout }}
           ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
           ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
         run: |
@@ -681,12 +714,13 @@ jobs:
           chmod 0777 work/out_external
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
-          docker run --rm $DOCKER_HARDENING $ENTRY \
+          bash harness/run_container.sh strhub_external "$RUN_MINUTES" work/log_external.txt \
+            $DOCKER_HARDENING $ENTRY \
             -v "$PWD/work/in_external:/data/in:ro" \
             -v "$PWD/work/out_external:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            $ENTRY_ARGS "$TOOL_CMD" 2>&1 | tee work/log_external.txt
+            $ENTRY_ARGS "$TOOL_CMD"
 
       - id: io_ext
         name: "Expected IO (external)"
@@ -1008,25 +1042,29 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           remote="https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          # Every command carries its own `|| return 1`. `publish` is called as
+          # an `if` condition, and there bash ignores `set -e` all the way down:
+          # a crash in publish_layout.py or build_index.py went on to commit
+          # and push whatever half-built tree it had left.
           publish() {
-            tmp="$(mktemp -d)"
+            tmp="$(mktemp -d)" || return 1
             if git ls-remote --exit-code --heads "$remote" gh-pages >/dev/null 2>&1; then
-              git clone -q --depth 1 --branch gh-pages "$remote" "$tmp"
+              git clone -q --depth 1 --branch gh-pages "$remote" "$tmp" || return 1
             else
-              git clone -q --depth 1 "$remote" "$tmp"
-              git -C "$tmp" checkout -q --orphan gh-pages
+              git clone -q --depth 1 "$remote" "$tmp" || return 1
+              git -C "$tmp" checkout -q --orphan gh-pages || return 1
               git -C "$tmp" rm -rfq . || true
             fi
             # Everything the run wrote, except the recipe attachment: what ran
             # is on main under tools/<slug>/, and the JSON copy is for the web
             # to read out of the artifact, not a page to publish. Placed by
             # commit, with the alias pointing at the newest one.
-            python harness/publish_layout.py "$tmp" --reports reports --slug "$SLUG"
-            touch "$tmp/.nojekyll"
-            python harness/build_index.py "$tmp" --out "$tmp/index.html"
-            git -C "$tmp" add -A
+            python harness/publish_layout.py "$tmp" --reports reports --slug "$SLUG" || return 1
+            touch "$tmp/.nojekyll" || return 1
+            python harness/build_index.py "$tmp" --out "$tmp/index.html" || return 1
+            git -C "$tmp" add -A || return 1
             if git -C "$tmp" diff --cached --quiet; then echo "no changes to publish"; return 0; fi
-            git -C "$tmp" commit -q -m "deploy ${TOOL} @ run ${{ github.run_id }}"
+            git -C "$tmp" commit -q -m "deploy ${TOOL} @ run ${{ github.run_id }}" || return 1
             git -C "$tmp" push "$remote" gh-pages
           }
           # Matrix legs finish together and every one of them rewrites index.json
@@ -1080,7 +1118,10 @@ jobs:
             git pull --rebase "$remote" main || true
             sleep 3
           done
-          echo "::warning::could not commit the recipe for $SLUG; the entry is published, but the monthly refresh will not find its recipe until it is committed"
+          # An error, not a warning: the entry is published, and without its
+          # recipe on main the monthly refresh silently stops re-verifying it.
+          echo "::error::could not commit the recipe for $SLUG; the entry is published, but the monthly refresh will not find its recipe until it is committed"
+          exit 1
 
       # An attestation was just published for this tool, so a rejection notice
       # from an earlier, aborted run no longer describes anything. Nothing used

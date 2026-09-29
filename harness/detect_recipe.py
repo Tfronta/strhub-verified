@@ -237,8 +237,11 @@ def detect_build(paths: list[str], readme: str) -> dict:
     chosen = found[0] if found else None
     install_lines = [ln.strip() for ln in _code_lines(readme) if INSTALL_RE.search(ln)]
     method = chosen["method"] if chosen else ("readme" if install_lines else "unknown")
+    # The repository's own Dockerfile gets one too: STRsearch ships a Dockerfile
+    # AND tells readers to `docker pull` its image. When the Dockerfile does not
+    # build, the image the README documents is still the author's word.
     fallback = None
-    if chosen and method not in PUBLISHED_METHODS and method != "dockerfile":
+    if chosen and method not in PUBLISHED_METHODS:
         fallback = next((f for f in found if f["method"] in PUBLISHED_METHODS), None)
     return {
         "method": method,
@@ -701,9 +704,14 @@ def propose_example(commands: list[dict], tree_paths: list[str], examples: list[
     return None
 
 
-def generate_dockerfile(slug: str, ref: str, build: dict) -> str | None:
+def generate_dockerfile(slug: str, ref: str, build: dict, image_layout: bool = False) -> str | None:
     """A pinned environment for the methods STRhub can template. None when the
-    repository ships its own Dockerfile (used as-is) or nothing was detected."""
+    repository ships its own Dockerfile (used as-is) or nothing was detected.
+
+    `image_layout`: this is plan B for the repository's own Dockerfile. The
+    command was written for that image's layout and runs in its WORKDIR, so a
+    published image stands in as it is, with nothing cloned and no WORKDIR
+    moved."""
     # Only the submodule step is tolerated (many repositories have none); a
     # failed clone or checkout must fail the build. Written as `A && B && (C ||
     # true)` on purpose: `A && B && C || true` swallows A and B too, and a build
@@ -720,6 +728,8 @@ def generate_dockerfile(slug: str, ref: str, build: dict) -> str | None:
     m = build["method"]
     if m == "dockerfile":
         return None
+    if m == "docker_image" and image_layout:
+        return head + f"FROM {build['image']}\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n"
     if m == "docker_image":
         # The image already holds the tool; the clone rides along so the
         # example leg can find the repository's own data.
@@ -872,7 +882,9 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         # Plan B, built only if the one above fails: the published environment
         # the README points at. Same layout (the clone at /opt/tool, bash
         # entrypoint), so the command and the example run unchanged on it.
-        "dockerfile_fallback": generate_dockerfile(slug, ref, build["fallback"]) if build.get("fallback") else None,
+        "dockerfile_fallback": (generate_dockerfile(slug, ref, build["fallback"],
+                                                    image_layout=build["method"] == "dockerfile")
+                                if build.get("fallback") else None),
     }
 
 

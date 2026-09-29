@@ -45,6 +45,10 @@ def safe_glob(out, pattern):
     records, and matches that resolve outside `out` (a symlink the tool left in
     /data/out pointing at /data/in) are dropped.
 
+    Only regular files come back. `**/*`, the default a proposed recipe
+    declares, matched the directory a tool writes into before any file in it,
+    and the gates then failed to parse a directory.
+
     Returns (matches, reason). `reason` is None when the pattern is acceptable.
     """
     import pathlib as _pl
@@ -56,6 +60,8 @@ def safe_glob(out, pattern):
     base = out.resolve()
     kept = []
     for m in sorted(out.glob(pattern)):
+        if not m.is_file():
+            continue
         try:
             m.resolve().relative_to(base)
         except ValueError:

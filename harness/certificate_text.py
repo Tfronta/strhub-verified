@@ -137,6 +137,9 @@ def errors_reported(report: dict) -> bool:
                for issues in (report.get("diagnostics") or {}).values() for i in issues)
 
 
+RUNS_FALLBACK = "Runs from its published image; the pinned commit does not build"
+
+
 def headline(report: dict) -> tuple[str, str]:
     """The label, in words, and its shields colour: what the run says about
     the tool AS IT IS in its repository. The badge, both summaries, the
@@ -145,6 +148,8 @@ def headline(report: dict) -> tuple[str, str]:
 
       Runs as documented                          the documented run produced its output
       Runs as documented (errors reported)        … and the tool's log reported errors
+      Runs from its published image; the pinned   plan B: the commit did not build, the
+        commit does not build                     image the README points at ran
       Does not run as documented: stops at run   the documented run did not, and where
       Could not be determined                     nobody knew how to attempt it (the README)
       Out of scope                                the free runner cannot provide something
@@ -160,6 +165,15 @@ def headline(report: dict) -> tuple[str, str]:
         return "Out of scope", "lightgrey"
     runs = code == "runs" if code else level in ("io", "content")
     if runs:
+        # Plan B: the pinned commit did not build and the published image the
+        # README points at ran instead. Both halves are findings, and the
+        # failure is the one a user building from source will meet first, so
+        # the label carries it instead of a plain green.
+        if (report.get("environment") or {}).get("fallback_used"):
+            label = RUNS_FALLBACK
+            if errors_reported(report):
+                label += " (errors reported)"
+            return label, "yellow"
         if errors_reported(report):
             return "Runs as documented (errors reported)", "yellow"
         return "Runs as documented", ("brightgreen" if level == "content" else "green")

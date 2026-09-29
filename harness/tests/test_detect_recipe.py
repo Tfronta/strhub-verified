@@ -158,9 +158,22 @@ def test_a_source_build_outranks_the_published_image_which_becomes_plan_b():
         assert df.rstrip().endswith('ENTRYPOINT ["/bin/bash", "-lc"]')
 
 
-def test_the_repositorys_own_dockerfile_needs_no_plan_b():
+def test_the_repositorys_own_dockerfile_is_built_first_and_the_documented_image_is_plan_b():
+    """STRsearch ships a Dockerfile and tells readers to `docker pull` its image.
+    The Dockerfile is the author's word and is built first; when it does not
+    build, the image the README documents is the author's word too."""
     tree = {"tree": [{"path": "Dockerfile", "type": "blob", "size": 1}, {"path": "CMakeLists.txt", "type": "blob", "size": 1}], "truncated": False}
     r = dr.detect("gymreklab/gangstr", "abc", tree, README_WITH_IMAGE, "README.md")
+    assert r["build"]["method"] == "dockerfile"
+    assert r["build"]["fallback"]["method"] == "docker_image"
+    # The command was written for the image's layout: the stand-in keeps it.
+    assert r["dockerfile_fallback"].splitlines()[1:] == [
+        "FROM gymreklab/str-toolkit", 'ENTRYPOINT ["/bin/bash", "-lc"]']
+
+
+def test_a_repository_dockerfile_without_a_documented_image_has_no_plan_b():
+    tree = {"tree": [{"path": "Dockerfile", "type": "blob", "size": 1}], "truncated": False}
+    r = dr.detect("someone/tool", "abc", tree, "# tool\n\n```\ntool --in x.bam\n```\n", "README.md")
     assert r["build"]["method"] == "dockerfile"
     assert r["build"]["fallback"] is None and r["dockerfile_fallback"] is None
 
