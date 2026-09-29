@@ -236,13 +236,36 @@ def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str]
         out.append(toks[i])
         i += 1
     new = " ".join(out)
-    # `./trgt` where the build left trgt somewhere else: the same program, from the PATH.
-    m = re.match(r"^((?:\w+=\S+\s+)*)\./([\w.+-]+)(\s|$)", new)
-    if m and binary_elsewhere and tree and m.group(2) not in tree:
-        new = f"{m.group(1)}{m.group(2)}{new[m.end(2):]}"
-        notes.append(f"'./{m.group(2)}' run as '{m.group(2)}' from the PATH: the build puts it there, "
-                     "not in the directory the documentation runs it from.")
+    new, more = from_the_path(new, tree, binary_elsewhere)
+    notes += more
+    # An output prefix inside a directory nobody made: STRling's
+    # `--output-prefix str-results/$sample` stopped with "couldn't open output
+    # file" because its docs run `mkdir -p str-results` a few lines earlier.
+    dirs = []
+    toks = new.split()
+    for i, t in enumerate(toks[:-1]):
+        if re.match(r"^--?(?:o|out|output|outdir|out[-_]?dir|output[-_]?dir|output[-_]?prefix|prefix|"
+                    r"working[-_]?path|tr-vcf|str-vcf|vcf)$", t, re.I):
+            val = toks[i + 1]
+            d = val.rsplit("/", 1)[0] if "/" in val.strip("/") else ""
+            if d and not val.startswith(("/", "-", "$")) and d not in (".", "..") and d not in dirs:
+                dirs.append(d)
+    if dirs:
+        new = f"mkdir -p {' '.join(dirs)} && {new}"
+        notes.append(f"The output directory the command writes into ({', '.join(dirs)}) was created first.")
     return new, notes
+
+
+def from_the_path(cmd: str, tree: set[str], binary_elsewhere: bool) -> tuple[str, list[str]]:
+    """`./trgt` where the build left trgt somewhere else: the same program, from
+    the PATH. For the run leg and the example alike: TRGT's own example ran
+    `./trgt` in the clone and failed with "No such file", a red that was ours."""
+    m = re.match(r"^((?:\w+=\S+\s+)*)\./([\w.+-]+)(\s|$)", cmd)
+    if m and binary_elsewhere and tree and m.group(2) not in tree:
+        return (f"{m.group(1)}{m.group(2)}{cmd[m.end(2):]}",
+                [f"'./{m.group(2)}' run as '{m.group(2)}' from the PATH: the build puts it there, "
+                 "not in the directory the documentation runs it from."])
+    return cmd, []
 
 
 #: Build methods whose executables do not land where a README runs them from
@@ -571,7 +594,10 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     }
     ex = proposal.get("example")
     if ex and ex.get("cmd"):
-        manifest["example"] = {"cmd": ex["cmd"], "cwd": cwd, "source": "detected"}
+        ex_cmd, ex_notes = from_the_path(ex["cmd"], set(proposal.get("tree_paths") or []),
+                                         build_info.get("method") in BINARY_ELSEWHERE)
+        manifest["example"] = {"cmd": ex_cmd, "cwd": cwd, "source": "detected"}
+        caveat_items += [f"Example: {n}" for n in ex_notes]
     # Nothing to run on at all: no STRhub data for the input type and no
     # example in the repository. Every run leg is then N/A, and a verdict read
     # off the gates would call that "fails" — it is nothing of the kind.

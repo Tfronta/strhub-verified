@@ -79,3 +79,17 @@ def test_the_ont_panel_is_the_codis_loci_inside_its_slices():
     CODIS loci ±10 kb, at the same hg38 positions."""
     names = [ln.split("\t")[3] for ln in rl.library_path("ont-bam-hg38", "bed4").read_text().splitlines() if ln.strip()]
     assert len(names) == 20 and {"TH01", "vWA", "FGA", "D21S11", "TPOX"} <= set(names)
+
+
+def test_the_manifest_schema_accepts_every_library_format():
+    """A format added to the library and not to the schema published nothing:
+    report.py rejected every trial that used it (motif, on 29 September)."""
+    import json
+    schema = json.loads((ROOT / "schema" / "manifest.schema.json").read_text())
+    text = json.dumps(schema)
+    import re
+    enums = [json.loads(m) for m in re.findall(r'"enum": (\[[^\]]*"bed4"[^\]]*\])', text)]
+    assert enums, "the regions library enum is not in the schema"
+    for t in BAM_TYPES:
+        for fmt in rl.available(t):
+            assert all(fmt in e for e in enums), (fmt, enums)

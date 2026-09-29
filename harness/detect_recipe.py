@@ -1562,8 +1562,11 @@ def generate_dockerfile(slug: str, ref: str, build: dict, image_layout: bool = F
         create = (f"RUN micromamba create -y -n tool -c conda-forge -c bioconda --file {build['file']} "
                   if build.get("spec_list") else f"RUN micromamba create -y -n tool -f {build['file']} ")
         then = "".join(f"RUN micromamba run -n tool bash -lc '{step}'\n" for step in build.get("then") or [])
+        # A make or pip step on top of the environment compiles: vamos's
+        # Makefile runs cmake for parasail, and the plain image had none.
+        pkgs = BUILD_APT if build.get("then") else "git ca-certificates build-essential"
         return (head + "FROM mambaorg/micromamba:1.5.8\nUSER root\n"
-                + apt.format(pkgs="git ca-certificates build-essential") + GIT_HTTPS + clone
+                + apt.format(pkgs=pkgs) + GIT_HTTPS + clone
                 + create + "&& micromamba clean -a -y\n" + then
                 + (EXPOSE if then else "")
                 + "ENV PATH=\"/opt/conda/envs/tool/bin:/opt/tool:$PATH\"\nWORKDIR /work\n"

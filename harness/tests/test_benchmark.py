@@ -35,3 +35,14 @@ def test_the_benchmark_does_not_go_backwards():
             if got < n:
                 lines.append(f"{which}.{metric}: {got} < {n}")
     assert not lines, "benchmark regressed:\n" + "\n".join(lines) + "\n\n" + br.table(report)
+
+
+def test_every_proposed_manifest_is_a_valid_manifest(tmp_path):
+    """What a trial of each benchmark tool would run must pass the schema
+    report.py validates against, or the trial dies before it can say anything."""
+    import _manifest
+    for r in br.rows():
+        _, recipe = br.propose(r["name"])
+        p = tmp_path / f"{r['name']}.yml"
+        p.write_text(recipe["manifest_yml"])
+        _manifest.load(str(p))
