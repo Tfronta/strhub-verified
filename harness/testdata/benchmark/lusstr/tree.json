@@ -1,0 +1,875 @@
+{
+"repo": "https://github.com/bioforensics/lusSTR",
+"ref": "2425112706d03929ee3cf82588ddd6a2f315083c",
+"tag": "0.11",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [],
+"tree": [
+{
+"path": ".coveragerc",
+"type": "blob",
+"size": 100
+},
+{
+"path": ".gitattributes",
+"type": "blob",
+"size": 32
+},
+{
+"path": ".github",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".github/workflows",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".github/workflows/cibuild.yml",
+"type": "blob",
+"size": 577
+},
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 49
+},
+{
+"path": "LICENSE.txt",
+"type": "blob",
+"size": 2129
+},
+{
+"path": "MANIFEST.in",
+"type": "blob",
+"size": 630
+},
+{
+"path": "Makefile",
+"type": "blob",
+"size": 757
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 21350
+},
+{
+"path": "lusSTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/__init__.py",
+"type": "blob",
+"size": 1034
+},
+{
+"path": "lusSTR/_version.py",
+"type": "blob",
+"size": 24499
+},
+{
+"path": "lusSTR/cli",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/cli/__init__.py",
+"type": "blob",
+"size": 1344
+},
+{
+"path": "lusSTR/cli/config.py",
+"type": "blob",
+"size": 7244
+},
+{
+"path": "lusSTR/cli/gui.py",
+"type": "blob",
+"size": 42337
+},
+{
+"path": "lusSTR/cli/logo.png",
+"type": "blob",
+"size": 49751
+},
+{
+"path": "lusSTR/cli/snps.py",
+"type": "blob",
+"size": 1494
+},
+{
+"path": "lusSTR/cli/strs.py",
+"type": "blob",
+"size": 1556
+},
+{
+"path": "lusSTR/data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/data/__init__.py",
+"type": "blob",
+"size": 679
+},
+{
+"path": "lusSTR/data/config.yaml",
+"type": "blob",
+"size": 1084
+},
+{
+"path": "lusSTR/data/filters.json",
+"type": "blob",
+"size": 36798
+},
+{
+"path": "lusSTR/data/snp_config.yaml",
+"type": "blob",
+"size": 886
+},
+{
+"path": "lusSTR/data/snp_data.json",
+"type": "blob",
+"size": 22894
+},
+{
+"path": "lusSTR/data/str_lists.json",
+"type": "blob",
+"size": 1785
+},
+{
+"path": "lusSTR/data/str_markers.json",
+"type": "blob",
+"size": 30159
+},
+{
+"path": "lusSTR/scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/scripts/__init__.py",
+"type": "blob",
+"size": 679
+},
+{
+"path": "lusSTR/scripts/file_selector.py",
+"type": "blob",
+"size": 1047
+},
+{
+"path": "lusSTR/scripts/filter_settings.py",
+"type": "blob",
+"size": 22042
+},
+{
+"path": "lusSTR/scripts/folder_selector.py",
+"type": "blob",
+"size": 1056
+},
+{
+"path": "lusSTR/scripts/marker.py",
+"type": "blob",
+"size": 67139
+},
+{
+"path": "lusSTR/scripts/repeat.py",
+"type": "blob",
+"size": 6490
+},
+{
+"path": "lusSTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/__init__.py",
+"type": "blob",
+"size": 885
+},
+{
+"path": "lusSTR/tests/data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/2800M_formatted_full.csv",
+"type": "blob",
+"size": 6432
+},
+{
+"path": "lusSTR/tests/data/2800M_formatted_uas.csv",
+"type": "blob",
+"size": 3971
+},
+{
+"path": "lusSTR/tests/data/2800M_full_convert.txt",
+"type": "blob",
+"size": 10595
+},
+{
+"path": "lusSTR/tests/data/2800M_full_convert_no_combined_reads.txt",
+"type": "blob",
+"size": 10639
+},
+{
+"path": "lusSTR/tests/data/2800M_uas_convert.txt",
+"type": "blob",
+"size": 10595
+},
+{
+"path": "lusSTR/tests/data/D7_microvariant_flagged.csv",
+"type": "blob",
+"size": 84
+},
+{
+"path": "lusSTR/tests/data/Flanks_testing_file.csv",
+"type": "blob",
+"size": 171643
+},
+{
+"path": "lusSTR/tests/data/LUSPlus_stutter_test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/LUSPlus_stutter_test/EFM_test_reference_lusplus.csv",
+"type": "blob",
+"size": 1112
+},
+{
+"path": "lusSTR/tests/data/LUSPlus_stutter_test/LUSPlus_sequence_info.csv",
+"type": "blob",
+"size": 1255
+},
+{
+"path": "lusSTR/tests/data/LUSPlus_stutter_test/test_filtering_EFMoutput_lusplus.csv",
+"type": "blob",
+"size": 902
+},
+{
+"path": "lusSTR/tests/data/LUSPlus_stutter_test/test_filtering_EFMoutput_sequence_info.csv",
+"type": "blob",
+"size": 1251
+},
+{
+"path": "lusSTR/tests/data/MPSproto_test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/MPSproto_test/EFM_test_reference_ngs.csv",
+"type": "blob",
+"size": 1836
+},
+{
+"path": "lusSTR/tests/data/MPSproto_test/test_filtering_EFMoutput_ngs.csv",
+"type": "blob",
+"size": 1120
+},
+{
+"path": "lusSTR/tests/data/MPSproto_test/test_filtering_EFMoutput_sequence_info.csv",
+"type": "blob",
+"size": 3118
+},
+{
+"path": "lusSTR/tests/data/NA24385 Sample Report 2023_09_07_15_11_11.xlsx",
+"type": "blob",
+"size": 925723
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/Flagged_Loci.csv",
+"type": "blob",
+"size": 261
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/Positive_Control_reference_ngs.csv",
+"type": "blob",
+"size": 4110
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/STRmix_Files_sequence_info.csv",
+"type": "blob",
+"size": 3158
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/Sample1_forwardstrand.csv",
+"type": "blob",
+"size": 1424
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/Sample1_ngs.csv",
+"type": "blob",
+"size": 1424
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/Sample1_nofilter.csv",
+"type": "blob",
+"size": 1862
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/custom",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/custom/Sample1_evidence_ngs.csv",
+"type": "blob",
+"size": 1014
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/custom/test_stutter_custom_range.txt",
+"type": "blob",
+"size": 6419
+},
+{
+"path": "lusSTR/tests/data/NGS_stutter_test/custom/test_stutter_sequence_info.csv",
+"type": "blob",
+"size": 2538
+},
+{
+"path": "lusSTR/tests/data/RU_stutter_test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/RU_stutter_test/EFM_test_reference_ce.csv",
+"type": "blob",
+"size": 954
+},
+{
+"path": "lusSTR/tests/data/RU_stutter_test/Flagged_Loci.csv",
+"type": "blob",
+"size": 137
+},
+{
+"path": "lusSTR/tests/data/RU_stutter_test/Positive_Control_reference_ce.csv",
+"type": "blob",
+"size": 669
+},
+{
+"path": "lusSTR/tests/data/RU_stutter_test/STRmix_Files_sequence_info.csv",
+"type": "blob",
+"size": 1079
+},
+{
+"path": "lusSTR/tests/data/RU_stutter_test/Sample1_ce.csv",
+"type": "blob",
+"size": 435
+},
+{
+"path": "lusSTR/tests/data/RU_stutter_test/test_filtering_EFMoutput_ce.csv",
+"type": "blob",
+"size": 845
+},
+{
+"path": "lusSTR/tests/data/RU_stutter_test/test_filtering_EFMoutput_sequence_info.csv",
+"type": "blob",
+"size": 1029
+},
+{
+"path": "lusSTR/tests/data/STRaitRazor_output_test_A001.csv",
+"type": "blob",
+"size": 86917
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output.csv",
+"type": "blob",
+"size": 2041715
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A001.txt",
+"type": "blob",
+"size": 293241
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A002.txt",
+"type": "blob",
+"size": 446555
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A003.txt",
+"type": "blob",
+"size": 417578
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A004.txt",
+"type": "blob",
+"size": 431306
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A005.txt",
+"type": "blob",
+"size": 458504
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A006.txt",
+"type": "blob",
+"size": 406167
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A007.txt",
+"type": "blob",
+"size": 473356
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A008.txt",
+"type": "blob",
+"size": 449015
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A009.txt",
+"type": "blob",
+"size": 452592
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A010.txt",
+"type": "blob",
+"size": 522841
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A011.txt",
+"type": "blob",
+"size": 453571
+},
+{
+"path": "lusSTR/tests/data/STRait_Razor_test_output/A012.txt",
+"type": "blob",
+"size": 528049
+},
+{
+"path": "lusSTR/tests/data/UAS_bulk_input",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/UAS_bulk_input/Positive Control Sample Details Report 2315.xlsx",
+"type": "blob",
+"size": 90178
+},
+{
+"path": "lusSTR/tests/data/UAS_bulk_input/Positive Control Sample Details Report 2316.xlsx",
+"type": "blob",
+"size": 89657
+},
+{
+"path": "lusSTR/tests/data/UAS_bulk_test.csv",
+"type": "blob",
+"size": 29916
+},
+{
+"path": "lusSTR/tests/data/UAS_bulk_test_sexloci.csv",
+"type": "blob",
+"size": 45380
+},
+{
+"path": "lusSTR/tests/data/genemarker",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/genemarker/2800M_strresults_filtered.csv",
+"type": "blob",
+"size": 54813
+},
+{
+"path": "lusSTR/tests/data/genemarker/genemarker_test.csv",
+"type": "blob",
+"size": 15522
+},
+{
+"path": "lusSTR/tests/data/genemarker/genemarker_test.txt",
+"type": "blob",
+"size": 18679
+},
+{
+"path": "lusSTR/tests/data/genemarker/genemarker_test_flanks.txt",
+"type": "blob",
+"size": 27284
+},
+{
+"path": "lusSTR/tests/data/genemarker/genemarker_test_sexloci.csv",
+"type": "blob",
+"size": 8835
+},
+{
+"path": "lusSTR/tests/data/genemarker/genemarker_test_sexloci.txt",
+"type": "blob",
+"size": 15325
+},
+{
+"path": "lusSTR/tests/data/genemarker/genemarker_test_sexloci_flanks.txt",
+"type": "blob",
+"size": 14837
+},
+{
+"path": "lusSTR/tests/data/kinsnps",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/kinsnps/Kin_pos_1ng Sample Report 2023_07_11_13_16_31.xlsx",
+"type": "blob",
+"size": 881084
+},
+{
+"path": "lusSTR/tests/data/kinsnps/Kin_pos_1ng_reference Sample Report 2023_07_11_13_16_31.xlsx",
+"type": "blob",
+"size": 883438
+},
+{
+"path": "lusSTR/tests/data/kinsnps/Kin_pos_1ng_snpsetscombined_evidence.tsv",
+"type": "blob",
+"size": 411729
+},
+{
+"path": "lusSTR/tests/data/kinsnps/evidence.tsv",
+"type": "blob",
+"size": 312672
+},
+{
+"path": "lusSTR/tests/data/kinsnps/multiplerefs.tsv",
+"type": "blob",
+"size": 535935
+},
+{
+"path": "lusSTR/tests/data/kinsnps/reference.tsv",
+"type": "blob",
+"size": 295694
+},
+{
+"path": "lusSTR/tests/data/kinsnps/snps_kin_all.tsv",
+"type": "blob",
+"size": 2308025
+},
+{
+"path": "lusSTR/tests/data/kinsnps/snps_kin_filtered.tsv",
+"type": "blob",
+"size": 1409617
+},
+{
+"path": "lusSTR/tests/data/kinsnps/uasversion_snp_evidence.tsv",
+"type": "blob",
+"size": 303171
+},
+{
+"path": "lusSTR/tests/data/lusstr_output.csv",
+"type": "blob",
+"size": 14920
+},
+{
+"path": "lusSTR/tests/data/lusstr_output.txt",
+"type": "blob",
+"size": 32579
+},
+{
+"path": "lusSTR/tests/data/lusstr_output",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/lusstr_output/Positive_Control_evidence_ngs.csv",
+"type": "blob",
+"size": 6653
+},
+{
+"path": "lusSTR/tests/data/powerseq.csv",
+"type": "blob",
+"size": 90641
+},
+{
+"path": "lusSTR/tests/data/powerseq_example_evidence_ngs.csv",
+"type": "blob",
+"size": 4142
+},
+{
+"path": "lusSTR/tests/data/powerseq_example_sexloci_sequence_info.csv",
+"type": "blob",
+"size": 7909
+},
+{
+"path": "lusSTR/tests/data/powerseq_flanking_convert_test.csv",
+"type": "blob",
+"size": 9436
+},
+{
+"path": "lusSTR/tests/data/powerseq_flanking_convert_test_flanks.txt",
+"type": "blob",
+"size": 16603
+},
+{
+"path": "lusSTR/tests/data/powerseq_flanking_convert_test_sexloci.csv",
+"type": "blob",
+"size": 7762
+},
+{
+"path": "lusSTR/tests/data/powerseq_flanking_convert_test_sexloci.txt",
+"type": "blob",
+"size": 12670
+},
+{
+"path": "lusSTR/tests/data/powerseq_flanking_convert_test_sexloci_flanks.txt",
+"type": "blob",
+"size": 13179
+},
+{
+"path": "lusSTR/tests/data/powerseq_sexloci.csv",
+"type": "blob",
+"size": 51537
+},
+{
+"path": "lusSTR/tests/data/powerseq_sexloci.txt",
+"type": "blob",
+"size": 95944
+},
+{
+"path": "lusSTR/tests/data/powerseq_sexloci_flanks_anno.txt",
+"type": "blob",
+"size": 87607
+},
+{
+"path": "lusSTR/tests/data/snps",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/tests/data/snps/2800M_STRaitRazor.txt",
+"type": "blob",
+"size": 2332117
+},
+{
+"path": "lusSTR/tests/data/snps/Positive Control Phenotype Report 2256.xlsx",
+"type": "blob",
+"size": 98525
+},
+{
+"path": "lusSTR/tests/data/snps/Positive Control Sample Details Report 2315.xlsx",
+"type": "blob",
+"size": 90151
+},
+{
+"path": "lusSTR/tests/data/snps_sr_all.tsv",
+"type": "blob",
+"size": 21474
+},
+{
+"path": "lusSTR/tests/data/snps_sr_all_full_output.tsv",
+"type": "blob",
+"size": 775086
+},
+{
+"path": "lusSTR/tests/data/snps_uas_all.tsv",
+"type": "blob",
+"size": 24654
+},
+{
+"path": "lusSTR/tests/data/snps_uas_filtered.tsv",
+"type": "blob",
+"size": 14434
+},
+{
+"path": "lusSTR/tests/data/test_D7.txt",
+"type": "blob",
+"size": 1057
+},
+{
+"path": "lusSTR/tests/data/test_FGA_short_seq.csv",
+"type": "blob",
+"size": 460
+},
+{
+"path": "lusSTR/tests/data/test_flank.csv",
+"type": "blob",
+"size": 42005
+},
+{
+"path": "lusSTR/tests/data/test_format_uas.csv",
+"type": "blob",
+"size": 17517
+},
+{
+"path": "lusSTR/tests/data/test_indels.csv",
+"type": "blob",
+"size": 627
+},
+{
+"path": "lusSTR/tests/data/test_indels.txt",
+"type": "blob",
+"size": 711
+},
+{
+"path": "lusSTR/tests/data/test_references.txt",
+"type": "blob",
+"size": 33312
+},
+{
+"path": "lusSTR/tests/data/test_stutter.txt",
+"type": "blob",
+"size": 5900
+},
+{
+"path": "lusSTR/tests/data/test_stutter_lusp.txt",
+"type": "blob",
+"size": 5266
+},
+{
+"path": "lusSTR/tests/data/testflanks.txt",
+"type": "blob",
+"size": 49976
+},
+{
+"path": "lusSTR/tests/data/testflanks_flanks.txt",
+"type": "blob",
+"size": 68734
+},
+{
+"path": "lusSTR/tests/data/testformat.csv",
+"type": "blob",
+"size": 14920
+},
+{
+"path": "lusSTR/tests/data/testformat_sr.csv",
+"type": "blob",
+"size": 166605
+},
+{
+"path": "lusSTR/tests/data/testformat_sr_sexloci.csv",
+"type": "blob",
+"size": 3528651
+},
+{
+"path": "lusSTR/tests/data/testformat_sr_sexloci.txt",
+"type": "blob",
+"size": 3584807
+},
+{
+"path": "lusSTR/tests/data/testformat_sr_sexloci_flanks.txt",
+"type": "blob",
+"size": 5599436
+},
+{
+"path": "lusSTR/tests/data/testformat_uas.csv",
+"type": "blob",
+"size": 17517
+},
+{
+"path": "lusSTR/tests/data/testformat_uas_sexloci.csv",
+"type": "blob",
+"size": 22637
+},
+{
+"path": "lusSTR/tests/data/testformat_uas_sexloci.txt",
+"type": "blob",
+"size": 52881
+},
+{
+"path": "lusSTR/tests/test_filters.py",
+"type": "blob",
+"size": 18132
+},
+{
+"path": "lusSTR/tests/test_format.py",
+"type": "blob",
+"size": 4325
+},
+{
+"path": "lusSTR/tests/test_marker.py",
+"type": "blob",
+"size": 70623
+},
+{
+"path": "lusSTR/tests/test_repeat.py",
+"type": "blob",
+"size": 3430
+},
+{
+"path": "lusSTR/tests/test_snps.py",
+"type": "blob",
+"size": 9226
+},
+{
+"path": "lusSTR/tests/test_suite.py",
+"type": "blob",
+"size": 14507
+},
+{
+"path": "lusSTR/workflows",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/workflows/snps.smk",
+"type": "blob",
+"size": 1627
+},
+{
+"path": "lusSTR/workflows/strs.smk",
+"type": "blob",
+"size": 4622
+},
+{
+"path": "lusSTR/wrappers",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lusSTR/wrappers/convert.py",
+"type": "blob",
+"size": 12533
+},
+{
+"path": "lusSTR/wrappers/filter.py",
+"type": "blob",
+"size": 22143
+},
+{
+"path": "lusSTR/wrappers/format.py",
+"type": "blob",
+"size": 7754
+},
+{
+"path": "lusSTR/wrappers/snps_convert.py",
+"type": "blob",
+"size": 7809
+},
+{
+"path": "lusSTR/wrappers/snps_format.py",
+"type": "blob",
+"size": 19937
+},
+{
+"path": "pytest.ini",
+"type": "blob",
+"size": 94
+},
+{
+"path": "setup.cfg",
+"type": "blob",
+"size": 157
+},
+{
+"path": "setup.py",
+"type": "blob",
+"size": 2613
+},
+{
+"path": "versioneer.py",
+"type": "blob",
+"size": 86677
+}
+]
+}

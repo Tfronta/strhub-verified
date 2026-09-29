@@ -1,0 +1,24 @@
+name: STR
+channels:
+- conda-forge
+- bioconda
+dependencies:
+# Python
+- python=3*
+- BioPython
+- PyVCF
+- pysam
+- pandas
+- statsmodels
+- scikit-learn
+- scipy
+- numpy
+- pybedtools
+# only required for development
+- pytest
+- coverage
+# command line tools
+- bedtools
+- htslib
+- goleft=0.1.8
+- mosdepth

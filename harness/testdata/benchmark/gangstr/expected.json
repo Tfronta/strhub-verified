@@ -1,0 +1,55 @@
+{
+  "_about": "Hand-checked against https://github.com/gymreklab/gangstr at 6ea9b2b8daca51dcab1f0e46210622b94b52ff17 on 2026-09-29, from README.md, the four wiki pages it links (no install or usage beyond the README), CMakeLists.txt, the v2.5 tag and release, Bioconda (api.anaconda.org and the bioconda-recipes gangstr recipe) and the Docker Hub history of gymreklab/str-toolkit.",
+  "program": {
+    "value": "GangSTR",
+    "subcommand": null,
+    "where": "README.md:72,101"
+  },
+  "command": {
+    "value": "GangSTR --bam file.bam \n        --ref ref.fa \n        --regions regions.bed \n        --out outprefix ",
+    "source": "readme",
+    "where": "README.md:101-104"
+  },
+  "install": {
+    "documented": "release tarball then mkdir build, cd build, cmake .., make, cmake --install (the README's default); or git clone + cmake; or conda install -c bioconda -c conda-forge gangstr (v2.5.0); or the gymreklab/str-toolkit Docker image",
+    "acceptable_methods": [
+      "cmake",
+      "bioconda",
+      "docker_image"
+    ],
+    "where": "README.md:18,25,29-93"
+  },
+  "published": {
+    "bioconda_documented": "gangstr",
+    "bioconda_available": {
+      "package": "gangstr",
+      "version_at_ref": "2.5.0"
+    },
+    "image_documented": "gymreklab/str-toolkit",
+    "release_binary_documented": false,
+    "where": "README.md:18 (Docker image), README.md:25,41-66 (the release tarball is source, built with cmake), README.md:88-93 (conda install -c bioconda -c conda-forge gangstr, v2.5.0); https://api.anaconda.org/package/bioconda/gangstr (versions: 2.5.0; the recipe builds https://github.com/gymreklab/GangSTR/releases/download/v2.5/GangSTR-2.5.0-Source.tar.gz); https://hub.docker.com/r/gymreklab/str-toolkit (only tag latest, pushed 2020-01-15)"
+  },
+  "input": {
+    "kinds": [
+      "bam"
+    ],
+    "platforms": [
+      "illumina"
+    ],
+    "strhub_type": "illumina-bam-hg38",
+    "where": "README.md:4,6,107,168,171"
+  },
+  "extra_inputs": [
+    {
+      "what": "TR regions BED in GangSTR layout: chrom, start, end, motif length, motif, optional off-target column; no header (genome-wide hg38 references are linked at README.md:279-298)",
+      "required": true,
+      "strhub_has": true,
+      "where": "README.md:103,109,176-190"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": true,
+    "why": "One sorted, indexed BAM, the matching FASTA and a GangSTR-layout regions BED are all the command takes (README.md:106-110,171-177). STRhub supplies all three for illumina-bam-hg38, and GangSTR genotypes one sample at a time (README.md:171), which is what the NA12878 BAM is."
+  },
+  "notes": "Version: the pin is master, two commits after the v2.5 tag (e368b9f) that only add README text (the readinfo table and the conda section), so the code is v2.5. Bioconda gangstr 2.5.0 builds the v2.5 release asset GangSTR-2.5.0-Source.tar.gz with Bioconda's own patches (dependencies unvendored via pkg-config). The documented image gymreklab/str-toolkit:latest was built 2020-01-15 and its layer history installs GangSTR-2.4.tar.gz: it runs GangSTR 2.4, not the pinned 2.5. From source at this commit, CMakeLists.txt:23-66 downloads nlopt, zlib, htslib 1.11 and gsl at build time and runs autoreconf on htslib without -i (CMakeLists.txt:49), which is where STRhub's generated environment stopped. The git-source block (README.md:78-86) runs cmake .. right after mkdir build, without cd build; the tarball block (README.md:47-56) has it. README.md:49 names GangSTR-X.X.tar.gz; the v2.5 asset is GangSTR-2.5.0-Source.tar.gz. The four command lines carry no backslash continuations (and trailing spaces, kept here). Output: a VCF under the --out prefix (README.md:6,110). The basic command uses none of --targeted, --coverage or --nonuniform, which the README reserves for targeted or exome data (README.md:113,123,127)."
+}

@@ -1,0 +1,391 @@
+{
+"repo": "https://github.com/quinlan-lab/STRling",
+"ref": "35c542d8046e6e6489f3bed4e85f7ceeb22e95ba",
+"tag": "v0.6.0",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"docs/source/install.rst",
+"docs/source/run.rst",
+"docs/source/cite.rst",
+"docs/source/contribute.rst",
+"docs/source/debug.rst",
+"docs/source/filter.rst",
+"docs/source/index.rst",
+"docs/source/outputs.rst",
+"docs/source/test.rst",
+"docs/source/workflows.rst"
+],
+"tree": [
+{
+"path": ".github",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".github/workflows",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".github/workflows/ci.yml",
+"type": "blob",
+"size": 4429
+},
+{
+"path": ".github/workflows/release.yml",
+"type": "blob",
+"size": 1361
+},
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 232
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 1091
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 1556
+},
+{
+"path": "data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "data/hg38.STR_disease_loci.bed",
+"type": "blob",
+"size": 1284
+},
+{
+"path": "docs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/Makefile",
+"type": "blob",
+"size": 584
+},
+{
+"path": "docs/source",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/source/cite.rst",
+"type": "blob",
+"size": 400
+},
+{
+"path": "docs/source/conf.py",
+"type": "blob",
+"size": 5273
+},
+{
+"path": "docs/source/contribute.rst",
+"type": "blob",
+"size": 1975
+},
+{
+"path": "docs/source/debug.rst",
+"type": "blob",
+"size": 547
+},
+{
+"path": "docs/source/filter.rst",
+"type": "blob",
+"size": 409
+},
+{
+"path": "docs/source/index.rst",
+"type": "blob",
+"size": 1524
+},
+{
+"path": "docs/source/install.rst",
+"type": "blob",
+"size": 1140
+},
+{
+"path": "docs/source/outputs.rst",
+"type": "blob",
+"size": 2854
+},
+{
+"path": "docs/source/run.rst",
+"type": "blob",
+"size": 3164
+},
+{
+"path": "docs/source/test.rst",
+"type": "blob",
+"size": 1179
+},
+{
+"path": "docs/source/workflows.rst",
+"type": "blob",
+"size": 796
+},
+{
+"path": "docs/strling-logo-webres.png",
+"type": "blob",
+"size": 44810
+},
+{
+"path": "environment.yml",
+"type": "blob",
+"size": 161
+},
+{
+"path": "nim.cfg",
+"type": "blob",
+"size": 21
+},
+{
+"path": "pipelines",
+"type": "tree",
+"size": 0
+},
+{
+"path": "pipelines/README.md",
+"type": "blob",
+"size": 448
+},
+{
+"path": "pipelines/bpipe.config",
+"type": "blob",
+"size": 346
+},
+{
+"path": "pipelines/pipeline-stages.groovy",
+"type": "blob",
+"size": 2782
+},
+{
+"path": "pipelines/strling-individual.groovy",
+"type": "blob",
+"size": 226
+},
+{
+"path": "pipelines/strling-joint-bychrom.groovy",
+"type": "blob",
+"size": 460
+},
+{
+"path": "pipelines/strling-joint.groovy",
+"type": "blob",
+"size": 264
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/strling-outliers.py",
+"type": "blob",
+"size": 22340
+},
+{
+"path": "sim",
+"type": "tree",
+"size": 0
+},
+{
+"path": "sim/combine_random_sim_results.py",
+"type": "blob",
+"size": 4465
+},
+{
+"path": "sim/disease_loci_sims_minpath.bed",
+"type": "blob",
+"size": 674
+},
+{
+"path": "sim/environment.yml",
+"type": "blob",
+"size": 105
+},
+{
+"path": "sim/generate_str_alleles.py",
+"type": "blob",
+"size": 19748
+},
+{
+"path": "sim/htt_locus.bed",
+"type": "blob",
+"size": 26
+},
+{
+"path": "sim/random_str_alleles.py",
+"type": "blob",
+"size": 2384
+},
+{
+"path": "sim/sim_shared.groovy",
+"type": "blob",
+"size": 4163
+},
+{
+"path": "sim/simulate_multi_loci.groovy",
+"type": "blob",
+"size": 445
+},
+{
+"path": "sim/simulate_random.groovy",
+"type": "blob",
+"size": 1407
+},
+{
+"path": "sim/test_generate_str_alleles.py",
+"type": "blob",
+"size": 793
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/strling.nim",
+"type": "blob",
+"size": 1462
+},
+{
+"path": "src/strpkg",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/strpkg/call.nim",
+"type": "blob",
+"size": 11168
+},
+{
+"path": "src/strpkg/callclusters.nim",
+"type": "blob",
+"size": 2463
+},
+{
+"path": "src/strpkg/cluster.nim",
+"type": "blob",
+"size": 13259
+},
+{
+"path": "src/strpkg/collect.nim",
+"type": "blob",
+"size": 6983
+},
+{
+"path": "src/strpkg/extract.nim",
+"type": "blob",
+"size": 13767
+},
+{
+"path": "src/strpkg/extract_region.nim",
+"type": "blob",
+"size": 2277
+},
+{
+"path": "src/strpkg/genome_strs.nim",
+"type": "blob",
+"size": 6557
+},
+{
+"path": "src/strpkg/genotyper.nim",
+"type": "blob",
+"size": 7089
+},
+{
+"path": "src/strpkg/merge.nim",
+"type": "blob",
+"size": 7774
+},
+{
+"path": "src/strpkg/read_bed.nim",
+"type": "blob",
+"size": 1344
+},
+{
+"path": "src/strpkg/simulate_reads.nim",
+"type": "blob",
+"size": 6388
+},
+{
+"path": "src/strpkg/spanning.nim",
+"type": "blob",
+"size": 12628
+},
+{
+"path": "src/strpkg/unpack.nim",
+"type": "blob",
+"size": 4364
+},
+{
+"path": "src/strpkg/utils.nim",
+"type": "blob",
+"size": 8872
+},
+{
+"path": "src/strpkg/version.nim",
+"type": "blob",
+"size": 168
+},
+{
+"path": "strling.nimble",
+"type": "blob",
+"size": 780
+},
+{
+"path": "tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/all.nim",
+"type": "blob",
+"size": 132
+},
+{
+"path": "tests/nim.cfg",
+"type": "blob",
+"size": 38
+},
+{
+"path": "tests/test_cluster.nim",
+"type": "blob",
+"size": 11103
+},
+{
+"path": "tests/test_collect.nim",
+"type": "blob",
+"size": 2353
+},
+{
+"path": "tests/test_extract.nim",
+"type": "blob",
+"size": 1627
+},
+{
+"path": "tests/test_genotyper.nim",
+"type": "blob",
+"size": 1071
+},
+{
+"path": "tests/test_strling.nim",
+"type": "blob",
+"size": 6333
+},
+{
+"path": "tests/test_utils.nim",
+"type": "blob",
+"size": 2237
+}
+]
+}

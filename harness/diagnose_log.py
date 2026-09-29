@@ -356,6 +356,19 @@ _rule(
 )
 
 _rule(
+    # BuildKit's own line for a RUN step that downloads and fails: STRsearch's
+    # Dockerfile fetches USEARCH with a 2019 licence link the server no longer
+    # honours (wget exit 8). Nobody's fault by class: a dead link in the
+    # repository's build, or a server that was down, look the same here.
+    r"process \"/bin/sh -c [^\"]*?\b(?:wget|curl)\b[^\"]*?(https?://[^\s\"]+)[^\"]*\" did not complete successfully",
+    "error", "build_download_failed",
+    "A download in the build failed: {0}",
+    "The build fetches that address and did not get the file. If the link is dead or needs a "
+    "licence, the install steps need a new source for it; if the server was down, trying again "
+    "will tell.",
+)
+
+_rule(
     # Docker Hub's anonymous pull quota is shared by every job on a runner IP.
     # Hitting it says nothing about the image or the tool.
     r"(?:toomanyrequests|You have reached your (?:unauthenticated )?pull rate limit)",
@@ -508,6 +521,7 @@ REVIEW_LABELS = {
     "segfault": "Tool crashed (segmentation fault)",
     "oom": "Ran out of memory",
     "run_timeout": "Did not finish in time",
+    "build_download_failed": "A download in the build failed",
     "permission_denied": "Permission denied",
     "cmd_not_found": "Command not found",
     "missing_module": "Required Python module not found",

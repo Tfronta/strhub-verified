@@ -25,6 +25,7 @@ FORMATS = {
     "gangstr": {"columns": "chrom start end period motif", "tools": ["GangSTR"]},
     "strsearch": {"columns": "11 columns with flanking sequences", "tools": ["STRsearch"]},
     "bed4": {"columns": "chrom start end name", "tools": []},
+    "motif": {"columns": "chrom start end motif", "tools": ["LongTR", "straglr", "NanoRepeat", "strkit"]},
 }
 
 #: Program names (lower-case) that identify a format outright.
@@ -35,7 +36,20 @@ TOOL_FORMATS = {
     "str_search": "strsearch",
     "str_search.py": "strsearch",
     "pipeline.py": "strsearch",
+    "longtr": "motif",
+    "straglr": "motif",
+    "straglr.py": "motif",
+    "nanorepeat": "motif",
+    "nanorepeat.py": "motif",
+    "strkit": "motif",
 }
+#: A README that lays the regions file out with the motif in column 4:
+#: "4 column BED format: chromosome start end repeat" (straglr), "CHROM |
+#: START | END | MOTIF" (LongTR), "contig start end [...] motif" (strkit).
+MOTIF_LAYOUT = re.compile(
+    r"(?:\b4|\bfour)[- ](?:required )?columns?[^.\n]{0,90}\b(?:motif|repeat)"
+    r"|\bchrom\w*\W{1,6}(?:0-based )?start\w*\W{1,6}end\w*\W{1,6}(?:\[[^\]]*\]\W{1,6})?(?:motif|repeat[_ ]?unit|repeat)\b"
+    r"|(?:\bfourth|\b4th) column[^.\n]{0,40}\b(?:motif|repeat)", re.I)
 
 MOTIF_RE = re.compile(r"^[ACGTN]{1,12}$", re.I)
 INT_RE = re.compile(r"^\d+$")
@@ -69,6 +83,11 @@ def format_for_tool(tool_name: str = "", cmd: str = "", readme: str = "") -> tup
         if n in TOOL_FORMATS:
             return TOOL_FORMATS[n], "tool"
     text = readme.lower()
+    # A column layout the README spells out is more specific than a name it
+    # mentions: LongTR is a modified HipSTR and says so, and its regions file
+    # carries the motif in column 4, which HipSTR's does not.
+    if MOTIF_LAYOUT.search(readme):
+        return "motif", "readme"
     if "hipstr" in text and re.search(r"\bregions?\b", text):
         return "hipstr", "readme"
     if "gangstr" in text and re.search(r"\bregions?\b", text):
@@ -101,6 +120,8 @@ def detect_format(bed_text: str) -> str | None:
         return "gangstr"
     if widths <= {6, 7} and col(3, INT_RE.match) and col(4, NUM_RE.match) and col(5, lambda v: not NUM_RE.match(v)):
         return "hipstr"
+    if widths <= {4} and col(3, MOTIF_RE.match):
+        return "motif"
     if widths <= {3, 4}:
         return "bed4"
     return None

@@ -1,0 +1,109 @@
+---
+title: "MPSproto tutorial (advanced)"
+#date: "01 08 2022"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+## About MPSproto mixture interpretation
+MPSproto is a R-package for interpreting MPS-STR mixtures. It requires a calibrated model in order to do so.
+The user can choose between two models for the reads: Gamma or NegativeBinomial.
+The differences are demonstrated in this tutorial.
+
+### Step 1: Preparing data
+```{r,fig.show='hide'}
+library(MPSproto) #load package
+pkg = path.package("MPSproto") #get package install folder
+path = paste0(pkg,"/examples") #path of data to use
+
+#Obtain calibrated model
+calibratedModelFile = paste0(path,"/tutorialDataCalibrated.RDS") #file name for the calibrated model
+calibration = readRDS(calibratedModelFile) #obtain the calibrated object
+
+#We import the allele frequency
+freqFile = paste0(path,"/ForenSeq_NIST1036cauc_FWbrack.csv") #frequency file to use
+popFreq =  importMPSfreqs(freqFile)[[1]]
+
+#import evidence and reference profiles
+evidData = importMPSsample(paste0(path,"/MPS_evid2p.csv") ) #LOAD EVIDENCE DATA
+refData = importMPSsample(paste0(path,"/MPS_evid2p_refs.csv") ) #LOAD REFERENCE DATA
+plotMPS(evidData,refData) #Show in graphical interface
+
+#Note: Ensure that the alleles are all in forward direction for all markers (not UAS)
+```
+
+### Step 2: Specify hypotheses for interpretation
+Hypothesis set: minor as POI \
+Hp: ref1 + 1 unknown \
+Hd: 2 unknowns
+
+```{r}
+NOC = 2 #Number of contributors
+fst0 = 0.01 #coancestry coefficient
+hypHp = list(NOC=NOC,cond=c(1,0),fst=fst0) #(also include fst here)
+hypHd = list(NOC=NOC,cond=c(0,0),fst=fst0,knownRef=1) #(also include fst here)
+
+#If the major was evaluated as POI instead then
+#hypHp = list(NOC=NOC,cond=c(0,1),fst=fst0) #(also include fst here)
+
+```
+
+### Step 3: Model fit based on gamma
+```{r,fig.show='hide'}
+mleHp = inferEvidence(evidData,popFreq,refData,hypHp , calibration, verbose=FALSE,model="GA")
+mleHd = inferEvidence(evidData,popFreq,refData,hypHd , calibration, verbose=FALSE,model="GA")
+
+#Obtain calculated LR
+par = getPar(mleHp,mleHd) #get estimated parameters
+LR = getLR(mleHp,mleHd) #get calculated LR (unlogged)
+log10LR = getlog10LR(mleHp,mleHd) #log10 scale
+log10LR
+par
+
+#Perform model validation
+validhp = validMLE(mleHp,"Hp",verbose=FALSE)
+validhd = validMLE(mleHd,"Hd",verbose=FALSE)
+
+#Provide deconvolution
+DCtableHp = deconvolve(mleHp)$table2
+DCtableHd = deconvolve(mleHd)$table2
+
+#Show model fit (expectation vs observations)
+plotTopMPS(mleHp)
+plotTopMPS(mleHd)
+```
+
+
+
+
+### Step 4: Model fit based on negative binomial
+```{r,fig.show='hide'}
+mleHp = inferEvidence(evidData,popFreq,refData,hypHp , calibration, verbose=FALSE,model="NB")
+mleHd = inferEvidence(evidData,popFreq,refData,hypHd , calibration, verbose=FALSE,model="NB")
+
+#Obtain calculated LR
+par = getPar(mleHp,mleHd) #get estimated parameters
+LR = getLR(mleHp,mleHd) #get calculated LR (unlogged)
+log10LR = getlog10LR(mleHp,mleHd) #log10 scale
+log10LR
+par
+
+#Perform model validation
+validhp = validMLE(mleHp,"Hp",verbose=FALSE)
+validhd = validMLE(mleHd,"Hd",verbose=FALSE)
+
+#Provide deconvolution
+DCtableHp = deconvolve(mleHp)$table2
+DCtableHd = deconvolve(mleHd)$table2
+
+#Show model fit (expectation vs observations)
+plotTopMPS(mleHp)
+plotTopMPS(mleHd)
+```
+
+

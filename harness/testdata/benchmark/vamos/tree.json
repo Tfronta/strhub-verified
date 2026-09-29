@@ -1,0 +1,6217 @@
+{
+"repo": "https://github.com/ChaissonLab/vamos",
+"ref": "5c4a069847fbe6ca6067de1bff6098c9403db9ec",
+"tag": "vamos-v3.1.1",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"tryvamos/README.md"
+],
+"tree": [
+{
+"path": ".gitmodules",
+"type": "blob",
+"size": 259
+},
+{
+"path": "LICENSE.txt",
+"type": "blob",
+"size": 15220
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 5935
+},
+{
+"path": "abPOA-1.4.1",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/.gitignore",
+"type": "blob",
+"size": 666
+},
+{
+"path": "abPOA-1.4.1/.gitmodules",
+"type": "blob",
+"size": 102
+},
+{
+"path": "abPOA-1.4.1/.travis.yml",
+"type": "blob",
+"size": 135
+},
+{
+"path": "abPOA-1.4.1/BLOSUM62.mtx",
+"type": "blob",
+"size": 2383
+},
+{
+"path": "abPOA-1.4.1/CMakeLists.txt",
+"type": "blob",
+"size": 1635
+},
+{
+"path": "abPOA-1.4.1/HOXD70.mtx",
+"type": "blob",
+"size": 335
+},
+{
+"path": "abPOA-1.4.1/LICENSE",
+"type": "blob",
+"size": 1074
+},
+{
+"path": "abPOA-1.4.1/MANIFEST.in",
+"type": "blob",
+"size": 503
+},
+{
+"path": "abPOA-1.4.1/Makefile",
+"type": "blob",
+"size": 4087
+},
+{
+"path": "abPOA-1.4.1/PAM250.mtx",
+"type": "blob",
+"size": 2382
+},
+{
+"path": "abPOA-1.4.1/README.md",
+"type": "blob",
+"size": 14382
+},
+{
+"path": "abPOA-1.4.1/abpoa.pc.in",
+"type": "blob",
+"size": 187
+},
+{
+"path": "abPOA-1.4.1/example.c",
+"type": "blob",
+"size": 8009
+},
+{
+"path": "abPOA-1.4.1/include",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/abpoa.h",
+"type": "blob",
+"size": 8686
+},
+{
+"path": "abPOA-1.4.1/include/simd_instruction.h",
+"type": "blob",
+"size": 32048
+},
+{
+"path": "abPOA-1.4.1/include/simde",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/CONTRIBUTING.md",
+"type": "blob",
+"size": 2787
+},
+{
+"path": "abPOA-1.4.1/include/simde/COPYING",
+"type": "blob",
+"size": 1077
+},
+{
+"path": "abPOA-1.4.1/include/simde/README.md",
+"type": "blob",
+"size": 27165
+},
+{
+"path": "abPOA-1.4.1/include/simde/amalgamate.py",
+"type": "blob",
+"size": 2151
+},
+{
+"path": "abPOA-1.4.1/include/simde/codecov.yml",
+"type": "blob",
+"size": 34
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/Dockerfile",
+"type": "blob",
+"size": 4286
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/README.md",
+"type": "blob",
+"size": 2211
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/bin",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/bin/arch2gcc.sh",
+"type": "blob",
+"size": 945
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/bin/simde-check-all.sh",
+"type": "blob",
+"size": 252
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/bin/simde-reset-build.sh",
+"type": "blob",
+"size": 754
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64+sve-clang-10.cross",
+"type": "blob",
+"size": 745
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64+sve-clang-11.cross",
+"type": "blob",
+"size": 745
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64+sve-gcc-10.cross",
+"type": "blob",
+"size": 505
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-clang-10.cross",
+"type": "blob",
+"size": 771
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-clang-11.cross",
+"type": "blob",
+"size": 797
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-clang-6.cross",
+"type": "blob",
+"size": 827
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-clang-7.cross",
+"type": "blob",
+"size": 815
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-clang-8.cross",
+"type": "blob",
+"size": 815
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-clang-9.cross",
+"type": "blob",
+"size": 765
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-gcc-10.cross",
+"type": "blob",
+"size": 529
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-gcc-11.cross",
+"type": "blob",
+"size": 529
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-gcc-7.cross",
+"type": "blob",
+"size": 505
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-gcc-8.cross",
+"type": "blob",
+"size": 505
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/aarch64-gcc-9.cross",
+"type": "blob",
+"size": 505
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv7-clang-11.cross",
+"type": "blob",
+"size": 771
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv7-clang-6.cross",
+"type": "blob",
+"size": 777
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv7-gcc-10.cross",
+"type": "blob",
+"size": 561
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv7-gcc-8.cross",
+"type": "blob",
+"size": 559
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv8+mve-gcc-10.cross",
+"type": "blob",
+"size": 565
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv8-clang-10.cross",
+"type": "blob",
+"size": 743
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv8-clang-11.cross",
+"type": "blob",
+"size": 743
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv8-clang-6.cross",
+"type": "blob",
+"size": 749
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv8-clang-8.cross",
+"type": "blob",
+"size": 737
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv8-clang-9.cross",
+"type": "blob",
+"size": 737
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv8-gcc-10.cross",
+"type": "blob",
+"size": 541
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/armv8-gcc-9.cross",
+"type": "blob",
+"size": 539
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/clang-10.cross",
+"type": "blob",
+"size": 372
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/clang-11.cross",
+"type": "blob",
+"size": 372
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/clang-9.cross",
+"type": "blob",
+"size": 366
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/emscripten.cross",
+"type": "blob",
+"size": 688
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/gcc-10.cross",
+"type": "blob",
+"size": 263
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/gcc-11.cross",
+"type": "blob",
+"size": 263
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/gcc-8.cross",
+"type": "blob",
+"size": 261
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/gcc-9.cross",
+"type": "blob",
+"size": 261
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/i686-all-gcc-10.cross",
+"type": "blob",
+"size": 426
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/i686-all-gcc-9.cross",
+"type": "blob",
+"size": 423
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/i686-clang-10.cross",
+"type": "blob",
+"size": 625
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/i686-clang-11.cross",
+"type": "blob",
+"size": 591
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/i686-clang-12.cross",
+"type": "blob",
+"size": 591
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/i686-gcc-10.cross",
+"type": "blob",
+"size": 353
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/i686-gcc-11.cross",
+"type": "blob",
+"size": 353
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/i686-gcc-9.cross",
+"type": "blob",
+"size": 351
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/icc.cross",
+"type": "blob",
+"size": 330
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/intel-all-clang-10.cross",
+"type": "blob",
+"size": 628
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/intel-all-clang-11.cross",
+"type": "blob",
+"size": 764
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/intel-all-gcc-10.cross",
+"type": "blob",
+"size": 402
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/intel-all-icc.cross",
+"type": "blob",
+"size": 469
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/loongson-gcc-10.cross",
+"type": "blob",
+"size": 573
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/loongson-gcc.cross",
+"type": "blob",
+"size": 523
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/mips64el+msa-gcc-10.cross",
+"type": "blob",
+"size": 598
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/mips64el-clang-11.cross",
+"type": "blob",
+"size": 800
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/mips64el-gcc-10.cross",
+"type": "blob",
+"size": 522
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/power8-clang-9.cross",
+"type": "blob",
+"size": 777
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/power8-gcc-10.cross",
+"type": "blob",
+"size": 543
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/power9-clang-10.cross",
+"type": "blob",
+"size": 783
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/power9-clang-11.cross",
+"type": "blob",
+"size": 783
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/power9-gcc-10.cross",
+"type": "blob",
+"size": 543
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/s390x-clang-11.cross",
+"type": "blob",
+"size": 774
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/s390x-gcc-10.cross",
+"type": "blob",
+"size": 500
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/s390x-gcc-11.cross",
+"type": "blob",
+"size": 500
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/s390x-gcc-8.cross",
+"type": "blob",
+"size": 498
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/s390x-gcc-9.cross",
+"type": "blob",
+"size": 444
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/cross-files/sleef-gcc-10.cross",
+"type": "blob",
+"size": 276
+},
+{
+"path": "abPOA-1.4.1/include/simde/docker/simde-dev.sh",
+"type": "blob",
+"size": 2644
+},
+{
+"path": "abPOA-1.4.1/include/simde/meson.build",
+"type": "blob",
+"size": 6589
+},
+{
+"path": "abPOA-1.4.1/include/simde/meson_options.txt",
+"type": "blob",
+"size": 227
+},
+{
+"path": "abPOA-1.4.1/include/simde/netlify.toml",
+"type": "blob",
+"size": 810
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon.h",
+"type": "blob",
+"size": 5589
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/aba.h",
+"type": "blob",
+"size": 6276
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/abd.h",
+"type": "blob",
+"size": 15460
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/abdl.h",
+"type": "blob",
+"size": 4266
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/abs.h",
+"type": "blob",
+"size": 13752
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/add.h",
+"type": "blob",
+"size": 21266
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/addhn.h",
+"type": "blob",
+"size": 7275
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/addl.h",
+"type": "blob",
+"size": 3912
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/addl_high.h",
+"type": "blob",
+"size": 4141
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/addlv.h",
+"type": "blob",
+"size": 8399
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/addv.h",
+"type": "blob",
+"size": 10476
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/addw.h",
+"type": "blob",
+"size": 7501
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/addw_high.h",
+"type": "blob",
+"size": 6592
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/and.h",
+"type": "blob",
+"size": 16286
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/bcax.h",
+"type": "blob",
+"size": 5564
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/bic.h",
+"type": "blob",
+"size": 14608
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/bsl.h",
+"type": "blob",
+"size": 26650
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cage.h",
+"type": "blob",
+"size": 5902
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cagt.h",
+"type": "blob",
+"size": 5934
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ceq.h",
+"type": "blob",
+"size": 25317
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ceqz.h",
+"type": "blob",
+"size": 11098
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cge.h",
+"type": "blob",
+"size": 27527
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cgez.h",
+"type": "blob",
+"size": 13009
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cgt.h",
+"type": "blob",
+"size": 24738
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cgtz.h",
+"type": "blob",
+"size": 13030
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cle.h",
+"type": "blob",
+"size": 25850
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/clez.h",
+"type": "blob",
+"size": 13121
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cls.h",
+"type": "blob",
+"size": 4854
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/clt.h",
+"type": "blob",
+"size": 25069
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cltz.h",
+"type": "blob",
+"size": 9949
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/clz.h",
+"type": "blob",
+"size": 12547
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cmla.h",
+"type": "blob",
+"size": 4712
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cmla_rot180.h",
+"type": "blob",
+"size": 5339
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cmla_rot270.h",
+"type": "blob",
+"size": 5385
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cmla_rot90.h",
+"type": "blob",
+"size": 5367
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cnt.h",
+"type": "blob",
+"size": 5869
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/combine.h",
+"type": "blob",
+"size": 11610
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/create.h",
+"type": "blob",
+"size": 5174
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/cvt.h",
+"type": "blob",
+"size": 39919
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/dot.h",
+"type": "blob",
+"size": 6728
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/dot_lane.h",
+"type": "blob",
+"size": 16404
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/dup_lane.h",
+"type": "blob",
+"size": 45828
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/dup_n.h",
+"type": "blob",
+"size": 19922
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/eor.h",
+"type": "blob",
+"size": 16286
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ext.h",
+"type": "blob",
+"size": 37965
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/fma.h",
+"type": "blob",
+"size": 4189
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/fma_lane.h",
+"type": "blob",
+"size": 8714
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/fma_n.h",
+"type": "blob",
+"size": 3660
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/get_high.h",
+"type": "blob",
+"size": 9471
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/get_lane.h",
+"type": "blob",
+"size": 14801
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/get_low.h",
+"type": "blob",
+"size": 10181
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/hadd.h",
+"type": "blob",
+"size": 10597
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/hsub.h",
+"type": "blob",
+"size": 10597
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ld1.h",
+"type": "blob",
+"size": 14926
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ld1_dup.h",
+"type": "blob",
+"size": 11068
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ld1_lane.h",
+"type": "blob",
+"size": 14058
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ld2.h",
+"type": "blob",
+"size": 21392
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ld3.h",
+"type": "blob",
+"size": 16637
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ld4.h",
+"type": "blob",
+"size": 18030
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/ld4_lane.h",
+"type": "blob",
+"size": 21587
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/max.h",
+"type": "blob",
+"size": 19557
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/maxnm.h",
+"type": "blob",
+"size": 7025
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/maxv.h",
+"type": "blob",
+"size": 9895
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/min.h",
+"type": "blob",
+"size": 21635
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/minnm.h",
+"type": "blob",
+"size": 7249
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/minv.h",
+"type": "blob",
+"size": 10751
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mla.h",
+"type": "blob",
+"size": 8908
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mla_n.h",
+"type": "blob",
+"size": 10388
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlal.h",
+"type": "blob",
+"size": 5025
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlal_high.h",
+"type": "blob",
+"size": 5259
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlal_high_n.h",
+"type": "blob",
+"size": 4299
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlal_lane.h",
+"type": "blob",
+"size": 4826
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlal_n.h",
+"type": "blob",
+"size": 4149
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mls.h",
+"type": "blob",
+"size": 8654
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mls_n.h",
+"type": "blob",
+"size": 5586
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlsl.h",
+"type": "blob",
+"size": 3888
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlsl_high.h",
+"type": "blob",
+"size": 4092
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlsl_high_n.h",
+"type": "blob",
+"size": 4299
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlsl_lane.h",
+"type": "blob",
+"size": 4826
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mlsl_n.h",
+"type": "blob",
+"size": 3110
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/movl.h",
+"type": "blob",
+"size": 7490
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/movl_high.h",
+"type": "blob",
+"size": 3784
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/movn.h",
+"type": "blob",
+"size": 5749
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/movn_high.h",
+"type": "blob",
+"size": 3905
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mul.h",
+"type": "blob",
+"size": 16404
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mul_lane.h",
+"type": "blob",
+"size": 23046
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mul_n.h",
+"type": "blob",
+"size": 6102
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mull.h",
+"type": "blob",
+"size": 7990
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mull_high.h",
+"type": "blob",
+"size": 4044
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mull_lane.h",
+"type": "blob",
+"size": 4634
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mull_n.h",
+"type": "blob",
+"size": 5368
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/mvn.h",
+"type": "blob",
+"size": 12486
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/neg.h",
+"type": "blob",
+"size": 11885
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/orn.h",
+"type": "blob",
+"size": 14783
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/orr.h",
+"type": "blob",
+"size": 16254
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/padal.h",
+"type": "blob",
+"size": 6129
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/padd.h",
+"type": "blob",
+"size": 11574
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/paddl.h",
+"type": "blob",
+"size": 10862
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/pmax.h",
+"type": "blob",
+"size": 8449
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/pmin.h",
+"type": "blob",
+"size": 9213
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qabs.h",
+"type": "blob",
+"size": 8316
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qadd.h",
+"type": "blob",
+"size": 25575
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qdmulh.h",
+"type": "blob",
+"size": 5129
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qdmulh_lane.h",
+"type": "blob",
+"size": 6291
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qdmulh_n.h",
+"type": "blob",
+"size": 2873
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qdmull.h",
+"type": "blob",
+"size": 5689
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qmovn.h",
+"type": "blob",
+"size": 8266
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qmovn_high.h",
+"type": "blob",
+"size": 4029
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qmovun.h",
+"type": "blob",
+"size": 5196
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qneg.h",
+"type": "blob",
+"size": 8600
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qrdmulh.h",
+"type": "blob",
+"size": 6167
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qrdmulh_lane.h",
+"type": "blob",
+"size": 6252
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qrdmulh_n.h",
+"type": "blob",
+"size": 4088
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qrshrn_n.h",
+"type": "blob",
+"size": 4913
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qrshrun_n.h",
+"type": "blob",
+"size": 3259
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qshl.h",
+"type": "blob",
+"size": 19189
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qshlu_n.h",
+"type": "blob",
+"size": 17502
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qshrn_n.h",
+"type": "blob",
+"size": 4888
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qshrun_n.h",
+"type": "blob",
+"size": 3280
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qsub.h",
+"type": "blob",
+"size": 22099
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qtbl.h",
+"type": "blob",
+"size": 18234
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/qtbx.h",
+"type": "blob",
+"size": 20301
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rbit.h",
+"type": "blob",
+"size": 6633
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/recpe.h",
+"type": "blob",
+"size": 7949
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/recps.h",
+"type": "blob",
+"size": 3893
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/reinterpret.h",
+"type": "blob",
+"size": 97470
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rev16.h",
+"type": "blob",
+"size": 4718
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rev32.h",
+"type": "blob",
+"size": 8045
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rev64.h",
+"type": "blob",
+"size": 11921
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rhadd.h",
+"type": "blob",
+"size": 17720
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rnd.h",
+"type": "blob",
+"size": 4379
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rndi.h",
+"type": "blob",
+"size": 4190
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rndm.h",
+"type": "blob",
+"size": 4408
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rndn.h",
+"type": "blob",
+"size": 4602
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rndp.h",
+"type": "blob",
+"size": 4400
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rshl.h",
+"type": "blob",
+"size": 45188
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rshr_n.h",
+"type": "blob",
+"size": 18114
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rshrn_n.h",
+"type": "blob",
+"size": 3506
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rsqrte.h",
+"type": "blob",
+"size": 12020
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rsqrts.h",
+"type": "blob",
+"size": 4450
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/rsra_n.h",
+"type": "blob",
+"size": 8089
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/set_lane.h",
+"type": "blob",
+"size": 13789
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/shl.h",
+"type": "blob",
+"size": 37056
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/shl_n.h",
+"type": "blob",
+"size": 19519
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/shll_n.h",
+"type": "blob",
+"size": 6147
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/shr_n.h",
+"type": "blob",
+"size": 21291
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/shrn_n.h",
+"type": "blob",
+"size": 5227
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/sqadd.h",
+"type": "blob",
+"size": 9516
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/sra_n.h",
+"type": "blob",
+"size": 7798
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/sri_n.h",
+"type": "blob",
+"size": 9661
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/st1.h",
+"type": "blob",
+"size": 12358
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/st1_lane.h",
+"type": "blob",
+"size": 12450
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/st2.h",
+"type": "blob",
+"size": 13088
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/st2_lane.h",
+"type": "blob",
+"size": 14198
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/st3.h",
+"type": "blob",
+"size": 35028
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/st3_lane.h",
+"type": "blob",
+"size": 14199
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/st4.h",
+"type": "blob",
+"size": 16018
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/st4_lane.h",
+"type": "blob",
+"size": 14151
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/sub.h",
+"type": "blob",
+"size": 19685
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/subhn.h",
+"type": "blob",
+"size": 7275
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/subl.h",
+"type": "blob",
+"size": 3912
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/subl_high.h",
+"type": "blob",
+"size": 4068
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/subw.h",
+"type": "blob",
+"size": 7418
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/subw_high.h",
+"type": "blob",
+"size": 7930
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/tbl.h",
+"type": "blob",
+"size": 8375
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/tbx.h",
+"type": "blob",
+"size": 9359
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/trn.h",
+"type": "blob",
+"size": 7435
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/trn1.h",
+"type": "blob",
+"size": 14460
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/trn2.h",
+"type": "blob",
+"size": 14595
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/tst.h",
+"type": "blob",
+"size": 18580
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/types.h",
+"type": "blob",
+"size": 38668
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/uqadd.h",
+"type": "blob",
+"size": 9983
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/uzp.h",
+"type": "blob",
+"size": 7435
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/uzp1.h",
+"type": "blob",
+"size": 21179
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/uzp2.h",
+"type": "blob",
+"size": 21357
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/xar.h",
+"type": "blob",
+"size": 2270
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/zip.h",
+"type": "blob",
+"size": 7435
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/zip1.h",
+"type": "blob",
+"size": 22121
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/neon/zip2.h",
+"type": "blob",
+"size": 20911
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve.h",
+"type": "blob",
+"size": 1606
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/add.h",
+"type": "blob",
+"size": 55418
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/and.h",
+"type": "blob",
+"size": 41067
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/cmplt.h",
+"type": "blob",
+"size": 24579
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/cnt.h",
+"type": "blob",
+"size": 2576
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/dup.h",
+"type": "blob",
+"size": 43805
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/ld1.h",
+"type": "blob",
+"size": 12726
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/ptest.h",
+"type": "blob",
+"size": 2326
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/ptrue.h",
+"type": "blob",
+"size": 4419
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/qadd.h",
+"type": "blob",
+"size": 18612
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/reinterpret.h",
+"type": "blob",
+"size": 66380
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/sel.h",
+"type": "blob",
+"size": 27124
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/st1.h",
+"type": "blob",
+"size": 11772
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/sub.h",
+"type": "blob",
+"size": 55418
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/types.h",
+"type": "blob",
+"size": 34105
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/arm/sve/whilelt.h",
+"type": "blob",
+"size": 31909
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/check.h",
+"type": "blob",
+"size": 9846
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/debug-trap.h",
+"type": "blob",
+"size": 3119
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/hedley.h",
+"type": "blob",
+"size": 77513
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa.h",
+"type": "blob",
+"size": 1537
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/add_a.h",
+"type": "blob",
+"size": 7730
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/adds.h",
+"type": "blob",
+"size": 14942
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/adds_a.h",
+"type": "blob",
+"size": 9262
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/addv.h",
+"type": "blob",
+"size": 5700
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/addvi.h",
+"type": "blob",
+"size": 6970
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/and.h",
+"type": "blob",
+"size": 2495
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/andi.h",
+"type": "blob",
+"size": 2820
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/ld.h",
+"type": "blob",
+"size": 6448
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/madd.h",
+"type": "blob",
+"size": 4432
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/st.h",
+"type": "blob",
+"size": 3528
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/subv.h",
+"type": "blob",
+"size": 5700
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/mips/msa/types.h",
+"type": "blob",
+"size": 12037
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-align.h",
+"type": "blob",
+"size": 18009
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-arch.h",
+"type": "blob",
+"size": 17620
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-common.h",
+"type": "blob",
+"size": 40938
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-complex.h",
+"type": "blob",
+"size": 5257
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-constify.h",
+"type": "blob",
+"size": 18585
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-detect-clang.h",
+"type": "blob",
+"size": 5054
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-diagnostic.h",
+"type": "blob",
+"size": 20459
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-f16.h",
+"type": "blob",
+"size": 9088
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-features.h",
+"type": "blob",
+"size": 22856
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/simde-math.h",
+"type": "blob",
+"size": 58922
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/wasm",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/wasm/relaxed-simd.h",
+"type": "blob",
+"size": 17450
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/wasm/simd128.h",
+"type": "blob",
+"size": 303675
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx.h",
+"type": "blob",
+"size": 196755
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx2.h",
+"type": "blob",
+"size": 197650
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512.h",
+"type": "blob",
+"size": 4134
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/2intersect.h",
+"type": "blob",
+"size": 8026
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/4dpwssd.h",
+"type": "blob",
+"size": 2637
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/4dpwssds.h",
+"type": "blob",
+"size": 2672
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/abs.h",
+"type": "blob",
+"size": 19089
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/add.h",
+"type": "blob",
+"size": 21097
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/adds.h",
+"type": "blob",
+"size": 18352
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/and.h",
+"type": "blob",
+"size": 9570
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/andnot.h",
+"type": "blob",
+"size": 7564
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/avg.h",
+"type": "blob",
+"size": 8799
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/bitshuffle.h",
+"type": "blob",
+"size": 7989
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/blend.h",
+"type": "blob",
+"size": 9480
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/broadcast.h",
+"type": "blob",
+"size": 29208
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cast.h",
+"type": "blob",
+"size": 9094
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cmp.h",
+"type": "blob",
+"size": 20945
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cmpeq.h",
+"type": "blob",
+"size": 6448
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cmpge.h",
+"type": "blob",
+"size": 50531
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cmpgt.h",
+"type": "blob",
+"size": 6266
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cmple.h",
+"type": "blob",
+"size": 50422
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cmplt.h",
+"type": "blob",
+"size": 4022
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cmpneq.h",
+"type": "blob",
+"size": 17516
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/compress.h",
+"type": "blob",
+"size": 21624
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/conflict.h",
+"type": "blob",
+"size": 11984
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/copysign.h",
+"type": "blob",
+"size": 3008
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cvt.h",
+"type": "blob",
+"size": 8860
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cvts.h",
+"type": "blob",
+"size": 23453
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/cvtt.h",
+"type": "blob",
+"size": 3794
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/dbsad.h",
+"type": "blob",
+"size": 15983
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/div.h",
+"type": "blob",
+"size": 5289
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/dpbf16.h",
+"type": "blob",
+"size": 9799
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/dpbusd.h",
+"type": "blob",
+"size": 10824
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/dpbusds.h",
+"type": "blob",
+"size": 13835
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/dpwssd.h",
+"type": "blob",
+"size": 8962
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/dpwssds.h",
+"type": "blob",
+"size": 11188
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/expand.h",
+"type": "blob",
+"size": 3115
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/extract.h",
+"type": "blob",
+"size": 9050
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/fixupimm.h",
+"type": "blob",
+"size": 28836
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/fixupimm_round.h",
+"type": "blob",
+"size": 26373
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/flushsubnormal.h",
+"type": "blob",
+"size": 2380
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/fmadd.h",
+"type": "blob",
+"size": 4563
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/fmsub.h",
+"type": "blob",
+"size": 9231
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/fnmadd.h",
+"type": "blob",
+"size": 3620
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/fnmsub.h",
+"type": "blob",
+"size": 3620
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/insert.h",
+"type": "blob",
+"size": 18325
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/kshift.h",
+"type": "blob",
+"size": 6599
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/load.h",
+"type": "blob",
+"size": 2556
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/loadu.h",
+"type": "blob",
+"size": 4062
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/lzcnt.h",
+"type": "blob",
+"size": 7815
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/madd.h",
+"type": "blob",
+"size": 5950
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/maddubs.h",
+"type": "blob",
+"size": 6126
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/max.h",
+"type": "blob",
+"size": 18597
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/min.h",
+"type": "blob",
+"size": 18599
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/mov.h",
+"type": "blob",
+"size": 30273
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/mov_mask.h",
+"type": "blob",
+"size": 11929
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/movm.h",
+"type": "blob",
+"size": 15715
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/mul.h",
+"type": "blob",
+"size": 9151
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/mulhi.h",
+"type": "blob",
+"size": 2282
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/mulhrs.h",
+"type": "blob",
+"size": 2272
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/mullo.h",
+"type": "blob",
+"size": 5509
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/multishift.h",
+"type": "blob",
+"size": 6519
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/negate.h",
+"type": "blob",
+"size": 2639
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/or.h",
+"type": "blob",
+"size": 9812
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/packs.h",
+"type": "blob",
+"size": 6819
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/packus.h",
+"type": "blob",
+"size": 6833
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/permutex2var.h",
+"type": "blob",
+"size": 69997
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/permutexvar.h",
+"type": "blob",
+"size": 49807
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/popcnt.h",
+"type": "blob",
+"size": 46335
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/range.h",
+"type": "blob",
+"size": 27800
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/range_round.h",
+"type": "blob",
+"size": 25064
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/rol.h",
+"type": "blob",
+"size": 14839
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/rolv.h",
+"type": "blob",
+"size": 14812
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/ror.h",
+"type": "blob",
+"size": 14869
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/rorv.h",
+"type": "blob",
+"size": 14732
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/round.h",
+"type": "blob",
+"size": 12991
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/roundscale.h",
+"type": "blob",
+"size": 23118
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/roundscale_round.h",
+"type": "blob",
+"size": 26544
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/sad.h",
+"type": "blob",
+"size": 2638
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/scalef.h",
+"type": "blob",
+"size": 14266
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/set.h",
+"type": "blob",
+"size": 15717
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/set1.h",
+"type": "blob",
+"size": 9209
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/set4.h",
+"type": "blob",
+"size": 3705
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/setone.h",
+"type": "blob",
+"size": 2104
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/setr.h",
+"type": "blob",
+"size": 4723
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/setr4.h",
+"type": "blob",
+"size": 3735
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/setzero.h",
+"type": "blob",
+"size": 2924
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/shldv.h",
+"type": "blob",
+"size": 5050
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/shuffle.h",
+"type": "blob",
+"size": 10711
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/sll.h",
+"type": "blob",
+"size": 8169
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/slli.h",
+"type": "blob",
+"size": 6854
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/sllv.h",
+"type": "blob",
+"size": 4081
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/sqrt.h",
+"type": "blob",
+"size": 3977
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/sra.h",
+"type": "blob",
+"size": 2684
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/srai.h",
+"type": "blob",
+"size": 2340
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/srav.h",
+"type": "blob",
+"size": 2271
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/srl.h",
+"type": "blob",
+"size": 6928
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/srli.h",
+"type": "blob",
+"size": 6641
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/srlv.h",
+"type": "blob",
+"size": 9485
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/store.h",
+"type": "blob",
+"size": 3507
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/storeu.h",
+"type": "blob",
+"size": 3429
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/sub.h",
+"type": "blob",
+"size": 10888
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/subs.h",
+"type": "blob",
+"size": 7107
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/ternarylogic.h",
+"type": "blob",
+"size": 112262
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/test.h",
+"type": "blob",
+"size": 7540
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/testn.h",
+"type": "blob",
+"size": 2130
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/types.h",
+"type": "blob",
+"size": 31286
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/unpackhi.h",
+"type": "blob",
+"size": 28925
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/unpacklo.h",
+"type": "blob",
+"size": 28831
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/xor.h",
+"type": "blob",
+"size": 10505
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/avx512/xorsign.h",
+"type": "blob",
+"size": 2426
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/clmul.h",
+"type": "blob",
+"size": 16019
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/f16c.h",
+"type": "blob",
+"size": 5539
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/fma.h",
+"type": "blob",
+"size": 22155
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/gfni.h",
+"type": "blob",
+"size": 53191
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/mmx.h",
+"type": "blob",
+"size": 76704
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/sse.h",
+"type": "blob",
+"size": 156055
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/sse2.h",
+"type": "blob",
+"size": 255138
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/sse3.h",
+"type": "blob",
+"size": 16133
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/sse4.1.h",
+"type": "blob",
+"size": 79366
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/sse4.2.h",
+"type": "blob",
+"size": 13033
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/ssse3.h",
+"type": "blob",
+"size": 36284
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/svml.h",
+"type": "blob",
+"size": 398844
+},
+{
+"path": "abPOA-1.4.1/include/simde/simde/x86/xop.h",
+"type": "blob",
+"size": 118352
+},
+{
+"path": "abPOA-1.4.1/include/simde/test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/.gitignore",
+"type": "blob",
+"size": 62
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/CMakeLists.txt",
+"type": "blob",
+"size": 7466
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/declare-suites.h",
+"type": "blob",
+"size": 61
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/meson.build",
+"type": "blob",
+"size": 29
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/aba.c",
+"type": "blob",
+"size": 64032
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/abd.c",
+"type": "blob",
+"size": 65331
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/abdl.c",
+"type": "blob",
+"size": 19867
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/abs.c",
+"type": "blob",
+"size": 26322
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/add.c",
+"type": "blob",
+"size": 77603
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/addhn.c",
+"type": "blob",
+"size": 20944
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/addl.c",
+"type": "blob",
+"size": 16988
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/addl_high.c",
+"type": "blob",
+"size": 24788
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/addlv.c",
+"type": "blob",
+"size": 24394
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/addv.c",
+"type": "blob",
+"size": 32347
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/addw.c",
+"type": "blob",
+"size": 18032
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/addw_high.c",
+"type": "blob",
+"size": 24893
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/and.c",
+"type": "blob",
+"size": 50977
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/bcax.c",
+"type": "blob",
+"size": 46921
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/bic.c",
+"type": "blob",
+"size": 58640
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/bsl.c",
+"type": "blob",
+"size": 91277
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cage.c",
+"type": "blob",
+"size": 25680
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cagt.c",
+"type": "blob",
+"size": 25574
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/ceq.c",
+"type": "blob",
+"size": 94401
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/ceqz.c",
+"type": "blob",
+"size": 54971
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cge.c",
+"type": "blob",
+"size": 97391
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cgez.c",
+"type": "blob",
+"size": 36073
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cgt.c",
+"type": "blob",
+"size": 84408
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cgtz.c",
+"type": "blob",
+"size": 36091
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cle.c",
+"type": "blob",
+"size": 84408
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/clez.c",
+"type": "blob",
+"size": 36028
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cls.c",
+"type": "blob",
+"size": 38016
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/clt.c",
+"type": "blob",
+"size": 84412
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cltz.c",
+"type": "blob",
+"size": 28298
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/clz.c",
+"type": "blob",
+"size": 44891
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cmla.c",
+"type": "blob",
+"size": 12314
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cmla_rot180.c",
+"type": "blob",
+"size": 12415
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cmla_rot270.c",
+"type": "blob",
+"size": 12413
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cmla_rot90.c",
+"type": "blob",
+"size": 12403
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cnt.c",
+"type": "blob",
+"size": 15346
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/combine.c",
+"type": "blob",
+"size": 32705
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/create.c",
+"type": "blob",
+"size": 15409
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/cvt.c",
+"type": "blob",
+"size": 77542
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/dot.c",
+"type": "blob",
+"size": 22166
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/dot_lane.c",
+"type": "blob",
+"size": 48360
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/dup_lane.c",
+"type": "blob",
+"size": 117791
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/dup_n.c",
+"type": "blob",
+"size": 35705
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/eor.c",
+"type": "blob",
+"size": 50976
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/ext.c",
+"type": "blob",
+"size": 78180
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/fma.c",
+"type": "blob",
+"size": 14813
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/fma_lane.c",
+"type": "blob",
+"size": 52753
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/fma_n.c",
+"type": "blob",
+"size": 13854
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/get_high.c",
+"type": "blob",
+"size": 21373
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/get_lane.c",
+"type": "blob",
+"size": 34530
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/get_low.c",
+"type": "blob",
+"size": 21341
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/hadd.c",
+"type": "blob",
+"size": 49099
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/hsub.c",
+"type": "blob",
+"size": 49098
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/ld1.c",
+"type": "blob",
+"size": 38793
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/ld1_dup.c",
+"type": "blob",
+"size": 46471
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/ld1_lane.c",
+"type": "blob",
+"size": 55121
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/ld2.c",
+"type": "blob",
+"size": 89726
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/ld4_lane.c",
+"type": "blob",
+"size": 129460
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/max.c",
+"type": "blob",
+"size": 65252
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/maxnm.c",
+"type": "blob",
+"size": 12436
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/maxv.c",
+"type": "blob",
+"size": 29039
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/meson.build",
+"type": "blob",
+"size": 1121
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/min.c",
+"type": "blob",
+"size": 63837
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/minnm.c",
+"type": "blob",
+"size": 12432
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/minv.c",
+"type": "blob",
+"size": 29858
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mla.c",
+"type": "blob",
+"size": 68822
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mla_n.c",
+"type": "blob",
+"size": 37718
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlal.c",
+"type": "blob",
+"size": 26356
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlal_high.c",
+"type": "blob",
+"size": 34204
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlal_high_n.c",
+"type": "blob",
+"size": 15580
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlal_lane.c",
+"type": "blob",
+"size": 48456
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlal_n.c",
+"type": "blob",
+"size": 13626
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mls.c",
+"type": "blob",
+"size": 78354
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mls_n.c",
+"type": "blob",
+"size": 37703
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlsl.c",
+"type": "blob",
+"size": 26352
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlsl_high.c",
+"type": "blob",
+"size": 34194
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlsl_high_n.c",
+"type": "blob",
+"size": 15580
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlsl_lane.c",
+"type": "blob",
+"size": 48618
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mlsl_n.c",
+"type": "blob",
+"size": 13550
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/movl.c",
+"type": "blob",
+"size": 12342
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/movl_high.c",
+"type": "blob",
+"size": 16285
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/movn.c",
+"type": "blob",
+"size": 14429
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/movn_high.c",
+"type": "blob",
+"size": 23933
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mul.c",
+"type": "blob",
+"size": 62558
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mul_lane.c",
+"type": "blob",
+"size": 98387
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mul_n.c",
+"type": "blob",
+"size": 32170
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mull.c",
+"type": "blob",
+"size": 16997
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mull_high.c",
+"type": "blob",
+"size": 27710
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mull_lane.c",
+"type": "blob",
+"size": 38924
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mull_n.c",
+"type": "blob",
+"size": 9972
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/mvn.c",
+"type": "blob",
+"size": 34387
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/neg.c",
+"type": "blob",
+"size": 29090
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/orn.c",
+"type": "blob",
+"size": 58641
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/orr.c",
+"type": "blob",
+"size": 50977
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/padal.c",
+"type": "blob",
+"size": 40821
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/padd.c",
+"type": "blob",
+"size": 62237
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/paddl.c",
+"type": "blob",
+"size": 26032
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/pmax.c",
+"type": "blob",
+"size": 54296
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/pmin.c",
+"type": "blob",
+"size": 54277
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qabs.c",
+"type": "blob",
+"size": 26283
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qadd.c",
+"type": "blob",
+"size": 70704
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qdmulh.c",
+"type": "blob",
+"size": 13898
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qdmulh_lane.c",
+"type": "blob",
+"size": 59821
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qdmulh_n.c",
+"type": "blob",
+"size": 6778
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qdmull.c",
+"type": "blob",
+"size": 5921
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qmovn.c",
+"type": "blob",
+"size": 15422
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qmovn_high.c",
+"type": "blob",
+"size": 24900
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qmovun.c",
+"type": "blob",
+"size": 7345
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qneg.c",
+"type": "blob",
+"size": 26357
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qrdmulh.c",
+"type": "blob",
+"size": 13916
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qrdmulh_lane.c",
+"type": "blob",
+"size": 63323
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qrdmulh_n.c",
+"type": "blob",
+"size": 11450
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qrshrn_n.c",
+"type": "blob",
+"size": 50126
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qrshrun_n.c",
+"type": "blob",
+"size": 25552
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qshl.c",
+"type": "blob",
+"size": 74656
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qshlu_n.c",
+"type": "blob",
+"size": 55966
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qshrn_n.c",
+"type": "blob",
+"size": 49951
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qshrun_n.c",
+"type": "blob",
+"size": 24769
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qsub.c",
+"type": "blob",
+"size": 70707
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qtbl.c",
+"type": "blob",
+"size": 154098
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/qtbx.c",
+"type": "blob",
+"size": 181230
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rbit.c",
+"type": "blob",
+"size": 15537
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/recpe.c",
+"type": "blob",
+"size": 15556
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/recps.c",
+"type": "blob",
+"size": 15180
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/reinterpret.c",
+"type": "blob",
+"size": 263966
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rev16.c",
+"type": "blob",
+"size": 15555
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rev32.c",
+"type": "blob",
+"size": 26173
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rev64.c",
+"type": "blob",
+"size": 39386
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rhadd.c",
+"type": "blob",
+"size": 49128
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rnd.c",
+"type": "blob",
+"size": 10169
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rndi.c",
+"type": "blob",
+"size": 10191
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rndm.c",
+"type": "blob",
+"size": 10191
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rndn.c",
+"type": "blob",
+"size": 10187
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rndp.c",
+"type": "blob",
+"size": 10187
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rshl.c",
+"type": "blob",
+"size": 71546
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rshr_n.c",
+"type": "blob",
+"size": 122857
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rshrn_n.c",
+"type": "blob",
+"size": 38009
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rsqrte.c",
+"type": "blob",
+"size": 14984
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rsqrts.c",
+"type": "blob",
+"size": 14936
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/rsra_n.c",
+"type": "blob",
+"size": 125983
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/run-tests-neon.h",
+"type": "blob",
+"size": 82
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/run-tests.c",
+"type": "blob",
+"size": 1114
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/run-tests.h",
+"type": "blob",
+"size": 209
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/set_lane.c",
+"type": "blob",
+"size": 67544
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/shl.c",
+"type": "blob",
+"size": 51335
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/shl_n.c",
+"type": "blob",
+"size": 101869
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/shll_n.c",
+"type": "blob",
+"size": 39037
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/shr_n.c",
+"type": "blob",
+"size": 111141
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/shrn_n.c",
+"type": "blob",
+"size": 37708
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/skel-single.c",
+"type": "blob",
+"size": 16119
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/skel-triple.c",
+"type": "blob",
+"size": 24727
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/skel.c",
+"type": "blob",
+"size": 20423
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/sqadd.c",
+"type": "blob",
+"size": 35339
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/sra_n.c",
+"type": "blob",
+"size": 127788
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/sri_n.c",
+"type": "blob",
+"size": 133624
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/st1_lane.c",
+"type": "blob",
+"size": 46001
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/st2.c",
+"type": "blob",
+"size": 87642
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/st2_lane.c",
+"type": "blob",
+"size": 58411
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/st3.c",
+"type": "blob",
+"size": 147127
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/st3_lane.c",
+"type": "blob",
+"size": 63436
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/st4.c",
+"type": "blob",
+"size": 187834
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/st4_lane.c",
+"type": "blob",
+"size": 76067
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/sub.c",
+"type": "blob",
+"size": 60184
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/subhn.c",
+"type": "blob",
+"size": 20944
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/subl.c",
+"type": "blob",
+"size": 19865
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/subl_high.c",
+"type": "blob",
+"size": 27714
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/subw.c",
+"type": "blob",
+"size": 20908
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/subw_high.c",
+"type": "blob",
+"size": 24893
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/tbl.c",
+"type": "blob",
+"size": 48998
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/tbx.c",
+"type": "blob",
+"size": 58554
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/test-neon-footer.h",
+"type": "blob",
+"size": 1189
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/test-neon.h",
+"type": "blob",
+"size": 37086
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/trn.c",
+"type": "blob",
+"size": 67760
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/trn1.c",
+"type": "blob",
+"size": 55744
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/trn2.c",
+"type": "blob",
+"size": 55744
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/tst.c",
+"type": "blob",
+"size": 68410
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/uqadd.c",
+"type": "blob",
+"size": 36108
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/uzp.c",
+"type": "blob",
+"size": 67732
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/uzp1.c",
+"type": "blob",
+"size": 55703
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/uzp2.c",
+"type": "blob",
+"size": 55703
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/xar.c",
+"type": "blob",
+"size": 3506
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/zip.c",
+"type": "blob",
+"size": 67760
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/zip1.c",
+"type": "blob",
+"size": 53593
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/neon/zip2.c",
+"type": "blob",
+"size": 53593
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/run-tests.c",
+"type": "blob",
+"size": 642
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/run-tests.h",
+"type": "blob",
+"size": 239
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/add.c",
+"type": "blob",
+"size": 760837
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/and.c",
+"type": "blob",
+"size": 415393
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/cmplt.c",
+"type": "blob",
+"size": 210305
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/dup.c",
+"type": "blob",
+"size": 398269
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/meson.build",
+"type": "blob",
+"size": 1213
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/qadd.c",
+"type": "blob",
+"size": 297180
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/run-tests-neon.h",
+"type": "blob",
+"size": 81
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/run-tests.c",
+"type": "blob",
+"size": 1105
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/run-tests.h",
+"type": "blob",
+"size": 206
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/sel.c",
+"type": "blob",
+"size": 478963
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/sub.c",
+"type": "blob",
+"size": 990913
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/test-sve-footer.h",
+"type": "blob",
+"size": 1183
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/sve/test-sve.h",
+"type": "blob",
+"size": 657
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm/test-arm.h",
+"type": "blob",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/arm64cl.txt",
+"type": "blob",
+"size": 365
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/check-flags.sh",
+"type": "blob",
+"size": 1137
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/cmake",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/cmake/AddCompilerFlags.cmake",
+"type": "blob",
+"size": 5694
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/cmake/ExtraWarningFlags.cmake",
+"type": "blob",
+"size": 1673
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/common",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/common/common.c",
+"type": "blob",
+"size": 3212
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/common/meson.build",
+"type": "blob",
+"size": 869
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/declare-suites.h",
+"type": "blob",
+"size": 122
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.Ubuntu1404",
+"type": "blob",
+"size": 846
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.Ubuntu1604",
+"type": "blob",
+"size": 1438
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.Ubuntu1804",
+"type": "blob",
+"size": 441
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.arm64",
+"type": "blob",
+"size": 1052
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.arm7",
+"type": "blob",
+"size": 1296
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.icc",
+"type": "blob",
+"size": 799
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.mipsel",
+"type": "blob",
+"size": 547
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.ppc64el",
+"type": "blob",
+"size": 1317
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.qemu5.s390x",
+"type": "blob",
+"size": 1109
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/docker/Dockerfile.s390x",
+"type": "blob",
+"size": 1105
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/download-iig.sh",
+"type": "blob",
+"size": 392
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/download-sde.sh",
+"type": "blob",
+"size": 450
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/meson.build",
+"type": "blob",
+"size": 1935
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/declare-suites.h",
+"type": "blob",
+"size": 30
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/meson.build",
+"type": "blob",
+"size": 14
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/add_a.c",
+"type": "blob",
+"size": 18268
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/adds.c",
+"type": "blob",
+"size": 35678
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/adds_a.c",
+"type": "blob",
+"size": 18290
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/addv.c",
+"type": "blob",
+"size": 18250
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/addvi.c",
+"type": "blob",
+"size": 24436
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/and.c",
+"type": "blob",
+"size": 6968
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/andi.c",
+"type": "blob",
+"size": 9294
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/ld.c",
+"type": "blob",
+"size": 10067
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/madd.c",
+"type": "blob",
+"size": 8917
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/meson.build",
+"type": "blob",
+"size": 1122
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/run-tests-msa.h",
+"type": "blob",
+"size": 87
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/run-tests.c",
+"type": "blob",
+"size": 1137
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/run-tests.h",
+"type": "blob",
+"size": 209
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/st.c",
+"type": "blob",
+"size": 12456
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/subv.c",
+"type": "blob",
+"size": 18254
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/test-msa-footer.h",
+"type": "blob",
+"size": 1194
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/msa/test-msa.h",
+"type": "blob",
+"size": 7859
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/run-tests.c",
+"type": "blob",
+"size": 645
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/mips/run-tests.h",
+"type": "blob",
+"size": 214
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/.appveyor.yml",
+"type": "blob",
+"size": 647
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/.dir-locals.el",
+"type": "blob",
+"size": 60
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/.gitignore",
+"type": "blob",
+"size": 35
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/.travis.yml",
+"type": "blob",
+"size": 3798
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/COPYING",
+"type": "blob",
+"size": 1106
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/Makefile",
+"type": "blob",
+"size": 1022
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/README.md",
+"type": "blob",
+"size": 1787
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/example.c",
+"type": "blob",
+"size": 14070
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/meson.build",
+"type": "blob",
+"size": 948
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/munit.c",
+"type": "blob",
+"size": 67816
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/munit/munit.h",
+"type": "blob",
+"size": 17605
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/native-aliases.sh",
+"type": "blob",
+"size": 1098
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/run-tests.c",
+"type": "blob",
+"size": 700
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/run-tests.h",
+"type": "blob",
+"size": 237
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/test.h",
+"type": "blob",
+"size": 43157
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/declare-suites.h",
+"type": "blob",
+"size": 73
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/meson.build",
+"type": "blob",
+"size": 41
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/blend.c",
+"type": "blob",
+"size": 26506
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/fma.c",
+"type": "blob",
+"size": 11151
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/fms.c",
+"type": "blob",
+"size": 11183
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/meson.build",
+"type": "blob",
+"size": 1184
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/run-tests-wasm.h",
+"type": "blob",
+"size": 91
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/run-tests.c",
+"type": "blob",
+"size": 1193
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/run-tests.h",
+"type": "blob",
+"size": 236
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/swizzle.c",
+"type": "blob",
+"size": 8922
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/test-relaxed-simd-footer.h",
+"type": "blob",
+"size": 1243
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/test-relaxed-simd.h",
+"type": "blob",
+"size": 453
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/relaxed-simd/trunc.c",
+"type": "blob",
+"size": 12465
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/run-tests.c",
+"type": "blob",
+"size": 645
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/run-tests.h",
+"type": "blob",
+"size": 254
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/abs.c",
+"type": "blob",
+"size": 20755
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/add.c",
+"type": "blob",
+"size": 28258
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/add_sat.c",
+"type": "blob",
+"size": 25601
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/all_true.c",
+"type": "blob",
+"size": 11793
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/and.c",
+"type": "blob",
+"size": 5112
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/andnot.c",
+"type": "blob",
+"size": 5127
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/any_true.c",
+"type": "blob",
+"size": 4840
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/avgr.c",
+"type": "blob",
+"size": 13172
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/bitmask.c",
+"type": "blob",
+"size": 10723
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/bitselect.c",
+"type": "blob",
+"size": 6273
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/ceil.c",
+"type": "blob",
+"size": 6998
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/convert.c",
+"type": "blob",
+"size": 12001
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/demote.c",
+"type": "blob",
+"size": 4222
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/div.c",
+"type": "blob",
+"size": 9044
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/dot.c",
+"type": "blob",
+"size": 5903
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/eq.c",
+"type": "blob",
+"size": 29846
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/extadd_pairwise.c",
+"type": "blob",
+"size": 16138
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/extend_high.c",
+"type": "blob",
+"size": 20959
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/extend_low.c",
+"type": "blob",
+"size": 20877
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/extmul_high.c",
+"type": "blob",
+"size": 30401
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/extmul_low.c",
+"type": "blob",
+"size": 30387
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/extract_lane.c",
+"type": "blob",
+"size": 24501
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/floor.c",
+"type": "blob",
+"size": 7092
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/ge.c",
+"type": "blob",
+"size": 46540
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/gt.c",
+"type": "blob",
+"size": 46540
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/le.c",
+"type": "blob",
+"size": 46540
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/load.c",
+"type": "blob",
+"size": 16756
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/load_lane.c",
+"type": "blob",
+"size": 18513
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/load_splat.c",
+"type": "blob",
+"size": 10702
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/load_zero.c",
+"type": "blob",
+"size": 5173
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/lt.c",
+"type": "blob",
+"size": 46540
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/make.c",
+"type": "blob",
+"size": 21003
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/max.c",
+"type": "blob",
+"size": 40622
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/meson.build",
+"type": "blob",
+"size": 1798
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/min.c",
+"type": "blob",
+"size": 40622
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/mul.c",
+"type": "blob",
+"size": 20763
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/narrow.c",
+"type": "blob",
+"size": 21429
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/ne.c",
+"type": "blob",
+"size": 29846
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/nearest.c",
+"type": "blob",
+"size": 7025
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/neg.c",
+"type": "blob",
+"size": 20755
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/not.c",
+"type": "blob",
+"size": 4002
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/or.c",
+"type": "blob",
+"size": 5107
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/pmax.c",
+"type": "blob",
+"size": 9053
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/pmin.c",
+"type": "blob",
+"size": 9053
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/popcnt.c",
+"type": "blob",
+"size": 6750
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/promote.c",
+"type": "blob",
+"size": 4227
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/q15mulr_sat.c",
+"type": "blob",
+"size": 6303
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/replace_lane.c",
+"type": "blob",
+"size": 23011
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/run-tests-wasm.h",
+"type": "blob",
+"size": 86
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/run-tests.c",
+"type": "blob",
+"size": 1148
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/run-tests.h",
+"type": "blob",
+"size": 221
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/shl.c",
+"type": "blob",
+"size": 16513
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/shr.c",
+"type": "blob",
+"size": 31199
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/shuffle.c",
+"type": "blob",
+"size": 22825
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/splat.c",
+"type": "blob",
+"size": 14601
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/sqrt.c",
+"type": "blob",
+"size": 6998
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/store_lane.c",
+"type": "blob",
+"size": 13146
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/sub.c",
+"type": "blob",
+"size": 28214
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/sub_sat.c",
+"type": "blob",
+"size": 25606
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/swizzle.c",
+"type": "blob",
+"size": 8821
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/test-simd128-footer.h",
+"type": "blob",
+"size": 1213
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/test-simd128.h",
+"type": "blob",
+"size": 458
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/trunc.c",
+"type": "blob",
+"size": 7007
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/trunc_sat.c",
+"type": "blob",
+"size": 15340
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/simd128/xor.c",
+"type": "blob",
+"size": 5112
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/test-simd128-footer.h",
+"type": "blob",
+"size": 1184
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/wasm/test-simd128.h",
+"type": "blob",
+"size": 6920
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx.c",
+"type": "blob",
+"size": 1133388
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx2.c",
+"type": "blob",
+"size": 1407590
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/2intersect.c",
+"type": "blob",
+"size": 26606
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/4dpwssd.c",
+"type": "blob",
+"size": 67242
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/4dpwssds.c",
+"type": "blob",
+"size": 67256
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/abs.c",
+"type": "blob",
+"size": 246578
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/add.c",
+"type": "blob",
+"size": 350205
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/adds.c",
+"type": "blob",
+"size": 430135
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/and.c",
+"type": "blob",
+"size": 155756
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/andnot.c",
+"type": "blob",
+"size": 153163
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/avg.c",
+"type": "blob",
+"size": 238792
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/bitshuffle.c",
+"type": "blob",
+"size": 24839
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/blend.c",
+"type": "blob",
+"size": 159369
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/broadcast.c",
+"type": "blob",
+"size": 297131
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cast.c",
+"type": "blob",
+"size": 108350
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cmp.c",
+"type": "blob",
+"size": 163994
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cmpeq.c",
+"type": "blob",
+"size": 84613
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cmpge.c",
+"type": "blob",
+"size": 563042
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cmpgt.c",
+"type": "blob",
+"size": 75497
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cmple.c",
+"type": "blob",
+"size": 562993
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cmplt.c",
+"type": "blob",
+"size": 59246
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cmpneq.c",
+"type": "blob",
+"size": 157046
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/compress.c",
+"type": "blob",
+"size": 150143
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/conflict.c",
+"type": "blob",
+"size": 92131
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/copysign.c",
+"type": "blob",
+"size": 21111
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cvt.c",
+"type": "blob",
+"size": 75533
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cvts.c",
+"type": "blob",
+"size": 180390
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/cvtt.c",
+"type": "blob",
+"size": 9036
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/dbsad.c",
+"type": "blob",
+"size": 152902
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/div.c",
+"type": "blob",
+"size": 74412
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/dpbf16.c",
+"type": "blob",
+"size": 101101
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/dpbusd.c",
+"type": "blob",
+"size": 82013
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/dpbusds.c",
+"type": "blob",
+"size": 82051
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/dpwssd.c",
+"type": "blob",
+"size": 82013
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/dpwssds.c",
+"type": "blob",
+"size": 100327
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/expand.c",
+"type": "blob",
+"size": 12175
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/extract.c",
+"type": "blob",
+"size": 97905
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/fixupimm.c",
+"type": "blob",
+"size": 246774
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/fixupimm_round.c",
+"type": "blob",
+"size": 148190
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/flushsubnormal.c",
+"type": "blob",
+"size": 4051
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/fmadd.c",
+"type": "blob",
+"size": 58763
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/fmsub.c",
+"type": "blob",
+"size": 99940
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/fnmadd.c",
+"type": "blob",
+"size": 26066
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/fnmsub.c",
+"type": "blob",
+"size": 26066
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/insert.c",
+"type": "blob",
+"size": 230707
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/kshift.c",
+"type": "blob",
+"size": 15709
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/load.c",
+"type": "blob",
+"size": 7423
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/loadu.c",
+"type": "blob",
+"size": 82792
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/lzcnt.c",
+"type": "blob",
+"size": 9417
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/madd.c",
+"type": "blob",
+"size": 73663
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/maddubs.c",
+"type": "blob",
+"size": 116250
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/max.c",
+"type": "blob",
+"size": 444110
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/meson.build",
+"type": "blob",
+"size": 1016
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/min.c",
+"type": "blob",
+"size": 444366
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/mov.c",
+"type": "blob",
+"size": 291776
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/mov_mask.c",
+"type": "blob",
+"size": 49255
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/movm.c",
+"type": "blob",
+"size": 49477
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/mul.c",
+"type": "blob",
+"size": 145352
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/mulhi.c",
+"type": "blob",
+"size": 16699
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/mulhrs.c",
+"type": "blob",
+"size": 16738
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/mullo.c",
+"type": "blob",
+"size": 77230
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/multishift.c",
+"type": "blob",
+"size": 125529
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/negate.c",
+"type": "blob",
+"size": 14838
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/or.c",
+"type": "blob",
+"size": 135785
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/packs.c",
+"type": "blob",
+"size": 31746
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/packus.c",
+"type": "blob",
+"size": 31185
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/permutex2var.c",
+"type": "blob",
+"size": 820066
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/permutexvar.c",
+"type": "blob",
+"size": 471157
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/popcnt.c",
+"type": "blob",
+"size": 269753
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/range.c",
+"type": "blob",
+"size": 204394
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/range_round.c",
+"type": "blob",
+"size": 124134
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/rol.c",
+"type": "blob",
+"size": 121385
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/rolv.c",
+"type": "blob",
+"size": 120199
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/ror.c",
+"type": "blob",
+"size": 121205
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/rorv.c",
+"type": "blob",
+"size": 120249
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/round.c",
+"type": "blob",
+"size": 33387
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/roundscale.c",
+"type": "blob",
+"size": 395618
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/roundscale_round.c",
+"type": "blob",
+"size": 111451
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/run-tests.c",
+"type": "blob",
+"size": 1132
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/run-tests.h",
+"type": "blob",
+"size": 215
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/sad.c",
+"type": "blob",
+"size": 19628
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/scalef.c",
+"type": "blob",
+"size": 156212
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/set.c",
+"type": "blob",
+"size": 53459
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/set1.c",
+"type": "blob",
+"size": 112445
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/set4.c",
+"type": "blob",
+"size": 21222
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/setone.c",
+"type": "blob",
+"size": 1708
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/setr.c",
+"type": "blob",
+"size": 30614
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/setr4.c",
+"type": "blob",
+"size": 21255
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/setzero.c",
+"type": "blob",
+"size": 2159
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/shldv.c",
+"type": "blob",
+"size": 4849
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/shuffle.c",
+"type": "blob",
+"size": 341322
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/skel.c",
+"type": "blob",
+"size": 1401
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/sll.c",
+"type": "blob",
+"size": 85942
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/slli.c",
+"type": "blob",
+"size": 46279
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/sllv.c",
+"type": "blob",
+"size": 35597
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/sqrt.c",
+"type": "blob",
+"size": 34590
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/sra.c",
+"type": "blob",
+"size": 12399
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/srai.c",
+"type": "blob",
+"size": 31914
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/srav.c",
+"type": "blob",
+"size": 16694
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/srl.c",
+"type": "blob",
+"size": 58496
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/srli.c",
+"type": "blob",
+"size": 26055
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/srlv.c",
+"type": "blob",
+"size": 78530
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/store.c",
+"type": "blob",
+"size": 10158
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/storeu.c",
+"type": "blob",
+"size": 10131
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/sub.c",
+"type": "blob",
+"size": 271453
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/subs.c",
+"type": "blob",
+"size": 259828
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/ternarylogic.c",
+"type": "blob",
+"size": 403545
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/test-avx512-footer.h",
+"type": "blob",
+"size": 1201
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/test-avx512.h",
+"type": "blob",
+"size": 3585
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/test.c",
+"type": "blob",
+"size": 99770
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/testn.c",
+"type": "blob",
+"size": 7340
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/unpackhi.c",
+"type": "blob",
+"size": 425790
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/unpacklo.c",
+"type": "blob",
+"size": 435899
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/xor.c",
+"type": "blob",
+"size": 131583
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/avx512/xorsign.c",
+"type": "blob",
+"size": 21102
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/clmul.c",
+"type": "blob",
+"size": 19988
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/f16c.c",
+"type": "blob",
+"size": 23764
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/fma.c",
+"type": "blob",
+"size": 175006
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/gfni.c",
+"type": "blob",
+"size": 575567
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/meson.build",
+"type": "blob",
+"size": 1215
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/mmx.c",
+"type": "blob",
+"size": 281388
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/run-tests.c",
+"type": "blob",
+"size": 1182
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/run-tests.h",
+"type": "blob",
+"size": 221
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/skel.c",
+"type": "blob",
+"size": 70906
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/sse.c",
+"type": "blob",
+"size": 349038
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/sse2.c",
+"type": "blob",
+"size": 617962
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/sse3.c",
+"type": "blob",
+"size": 48385
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/sse4.1.c",
+"type": "blob",
+"size": 236877
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/sse4.2.c",
+"type": "blob",
+"size": 58002
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/ssse3.c",
+"type": "blob",
+"size": 130062
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/svml.c",
+"type": "blob",
+"size": 2672346
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/test-avx.h",
+"type": "blob",
+"size": 2674
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/test-mmx.h",
+"type": "blob",
+"size": 2606
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/test-sse.h",
+"type": "blob",
+"size": 490
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/test-sse2.h",
+"type": "blob",
+"size": 2355
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/test-x86-footer.h",
+"type": "blob",
+"size": 1184
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/test-x86.h",
+"type": "blob",
+"size": 10113
+},
+{
+"path": "abPOA-1.4.1/include/simde/test/x86/xop.c",
+"type": "blob",
+"size": 517321
+},
+{
+"path": "abPOA-1.4.1/python",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/python/README.md",
+"type": "blob",
+"size": 4261
+},
+{
+"path": "abPOA-1.4.1/python/cabpoa.pxd",
+"type": "blob",
+"size": 6981
+},
+{
+"path": "abPOA-1.4.1/python/example.py",
+"type": "blob",
+"size": 3423
+},
+{
+"path": "abPOA-1.4.1/python/pyabpoa.pyx",
+"type": "blob",
+"size": 7716
+},
+{
+"path": "abPOA-1.4.1/setup.py",
+"type": "blob",
+"size": 2731
+},
+{
+"path": "abPOA-1.4.1/src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/src/abpoa.c",
+"type": "blob",
+"size": 11547
+},
+{
+"path": "abPOA-1.4.1/src/abpoa.h",
+"type": "blob",
+"size": 8686
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_align.c",
+"type": "blob",
+"size": 22146
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_align.h",
+"type": "blob",
+"size": 5040
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_graph.c",
+"type": "blob",
+"size": 31979
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_graph.h",
+"type": "blob",
+"size": 2203
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_output.c",
+"type": "blob",
+"size": 37501
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_output.h",
+"type": "blob",
+"size": 179
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_plot.c",
+"type": "blob",
+"size": 5342
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_seed.c",
+"type": "blob",
+"size": 31653
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_seed.h",
+"type": "blob",
+"size": 534
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_seq.c",
+"type": "blob",
+"size": 28021
+},
+{
+"path": "abPOA-1.4.1/src/abpoa_seq.h",
+"type": "blob",
+"size": 432
+},
+{
+"path": "abPOA-1.4.1/src/kalloc.c",
+"type": "blob",
+"size": 7530
+},
+{
+"path": "abPOA-1.4.1/src/kalloc.h",
+"type": "blob",
+"size": 974
+},
+{
+"path": "abPOA-1.4.1/src/kdq.h",
+"type": "blob",
+"size": 4272
+},
+{
+"path": "abPOA-1.4.1/src/khash.h",
+"type": "blob",
+"size": 21381
+},
+{
+"path": "abPOA-1.4.1/src/kseq.h",
+"type": "blob",
+"size": 9232
+},
+{
+"path": "abPOA-1.4.1/src/ksort.h",
+"type": "blob",
+"size": 5145
+},
+{
+"path": "abPOA-1.4.1/src/kstring.c",
+"type": "blob",
+"size": 6185
+},
+{
+"path": "abPOA-1.4.1/src/kstring.h",
+"type": "blob",
+"size": 7045
+},
+{
+"path": "abPOA-1.4.1/src/kvec.h",
+"type": "blob",
+"size": 3029
+},
+{
+"path": "abPOA-1.4.1/src/simd_abpoa_align.c",
+"type": "blob",
+"size": 150636
+},
+{
+"path": "abPOA-1.4.1/src/simd_abpoa_align.h",
+"type": "blob",
+"size": 554
+},
+{
+"path": "abPOA-1.4.1/src/simd_check.c",
+"type": "blob",
+"size": 2764
+},
+{
+"path": "abPOA-1.4.1/src/simd_instruction.h",
+"type": "blob",
+"size": 32048
+},
+{
+"path": "abPOA-1.4.1/src/utils.c",
+"type": "blob",
+"size": 9537
+},
+{
+"path": "abPOA-1.4.1/src/utils.h",
+"type": "blob",
+"size": 9905
+},
+{
+"path": "abPOA-1.4.1/sub_example.c",
+"type": "blob",
+"size": 5026
+},
+{
+"path": "abPOA-1.4.1/test_data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "abPOA-1.4.1/test_data/heter.fa",
+"type": "blob",
+"size": 10927
+},
+{
+"path": "abPOA-1.4.1/test_data/seq.fa",
+"type": "blob",
+"size": 553
+},
+{
+"path": "abPOA-1.4.1/test_data/test.fa",
+"type": "blob",
+"size": 72
+},
+{
+"path": "analysis",
+"type": "tree",
+"size": 0
+},
+{
+"path": "analysis/blockParsimony",
+"type": "tree",
+"size": 0
+},
+{
+"path": "analysis/blockParsimony/closestRecomb.py",
+"type": "blob",
+"size": 1411
+},
+{
+"path": "analysis/blockParsimony/filterHotspot.py",
+"type": "blob",
+"size": 1517
+},
+{
+"path": "analysis/blockParsimony/parsimony_block.py",
+"type": "blob",
+"size": 7671
+},
+{
+"path": "analysis/blockParsimony/patternTRF.py",
+"type": "blob",
+"size": 9394
+},
+{
+"path": "analysis/blockParsimony/process_block.py",
+"type": "blob",
+"size": 4330
+},
+{
+"path": "analysis/blockParsimony/summary.py",
+"type": "blob",
+"size": 699
+},
+{
+"path": "analysis/mutRate",
+"type": "tree",
+"size": 0
+},
+{
+"path": "analysis/mutRate/bedIntersect.py",
+"type": "blob",
+"size": 868
+},
+{
+"path": "analysis/mutRate/extractRefBySegdup.py",
+"type": "blob",
+"size": 1256
+},
+{
+"path": "analysis/mutRate/get_mask_bed.rmDip.py",
+"type": "blob",
+"size": 7870
+},
+{
+"path": "analysis/mutRate/hotspotPermutation.py",
+"type": "blob",
+"size": 1743
+},
+{
+"path": "analysis/mutRate/hotspotRegions.py",
+"type": "blob",
+"size": 10586
+},
+{
+"path": "analysis/mutRate/hotspotTest.py",
+"type": "blob",
+"size": 2201
+},
+{
+"path": "analysis/mutRate/hotspotWindows.py",
+"type": "blob",
+"size": 6477
+},
+{
+"path": "analysis/mutRate/intersectEvan.py",
+"type": "blob",
+"size": 4387
+},
+{
+"path": "analysis/mutRate/intersectGymrek.py",
+"type": "blob",
+"size": 3462
+},
+{
+"path": "analysis/mutRate/process.py",
+"type": "blob",
+"size": 733
+},
+{
+"path": "analysis/mutRate/s01_extractRef.py",
+"type": "blob",
+"size": 3151
+},
+{
+"path": "analysis/mutRate/s02_alleles_filter.py",
+"type": "blob",
+"size": 6119
+},
+{
+"path": "analysis/mutRate/s02_getPositions.py",
+"type": "blob",
+"size": 2657
+},
+{
+"path": "analysis/mutRate/s03_summary.py",
+"type": "blob",
+"size": 5935
+},
+{
+"path": "analysis/mutRate/s04_finalTRmap.py",
+"type": "blob",
+"size": 2247
+},
+{
+"path": "analysis/mutRate/s04_finalTRmap_bio.py",
+"type": "blob",
+"size": 2253
+},
+{
+"path": "analysis/mutRate/s04_rate_bio_filter.py",
+"type": "blob",
+"size": 3829
+},
+{
+"path": "analysis/mutRate/s04_rate_filter.py",
+"type": "blob",
+"size": 4157
+},
+{
+"path": "analysis/mutRate/sum.py",
+"type": "blob",
+"size": 216
+},
+{
+"path": "analysis/mutRate/turnGymrek2bed.py",
+"type": "blob",
+"size": 268
+},
+{
+"path": "analysis/mutRate/windows.py",
+"type": "blob",
+"size": 597
+},
+{
+"path": "analysis/mutRate/z_combineGenomicTRandVariantCluster.py",
+"type": "blob",
+"size": 1387
+},
+{
+"path": "analysis/mutRate/z_entropy_purity.py",
+"type": "blob",
+"size": 3002
+},
+{
+"path": "analysis/plots",
+"type": "tree",
+"size": 0
+},
+{
+"path": "analysis/plots/assembly_stats_alleles.R",
+"type": "blob",
+"size": 32298
+},
+{
+"path": "analysis/plots/assembly_stats_coverage.R",
+"type": "blob",
+"size": 8907
+},
+{
+"path": "analysis/plots/cluster.R",
+"type": "blob",
+"size": 5356
+},
+{
+"path": "analysis/plots/evolution_mutRate.R",
+"type": "blob",
+"size": 64973
+},
+{
+"path": "analysis/plots/motifSets.R",
+"type": "blob",
+"size": 13004
+},
+{
+"path": "analysis/quickFeature_alleleNT.py",
+"type": "blob",
+"size": 8166
+},
+{
+"path": "analysis/variability",
+"type": "tree",
+"size": 0
+},
+{
+"path": "analysis/variability/ANOVA.py",
+"type": "blob",
+"size": 4283
+},
+{
+"path": "analysis/variability/alleles.py",
+"type": "blob",
+"size": 6172
+},
+{
+"path": "buildTRs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "buildTRs/buildTRs.smk",
+"type": "blob",
+"size": 17565
+},
+{
+"path": "buildTRs/example.sh",
+"type": "blob",
+"size": 304
+},
+{
+"path": "buildTRs/example.yaml",
+"type": "blob",
+"size": 2147
+},
+{
+"path": "buildTRs/input.csv",
+"type": "blob",
+"size": 484
+},
+{
+"path": "buildTRs/lib",
+"type": "tree",
+"size": 0
+},
+{
+"path": "buildTRs/lib/bedlib.py",
+"type": "blob",
+"size": 6891
+},
+{
+"path": "buildTRs/lib/boundaryDecompose.py",
+"type": "blob",
+"size": 7375
+},
+{
+"path": "buildTRs/lib/boundaryDecomposeLift.py",
+"type": "blob",
+"size": 6042
+},
+{
+"path": "buildTRs/lib/boundaryDecomposeLiftRefine.py",
+"type": "blob",
+"size": 6033
+},
+{
+"path": "buildTRs/lib/boundaryDecomposeLiftRefineAggregate.py",
+"type": "blob",
+"size": 12341
+},
+{
+"path": "buildTRs/lib/centromere_GRCh38.tsv",
+"type": "blob",
+"size": 560
+},
+{
+"path": "buildTRs/lib/centromere_T2T-CHM13v2.0.tsv",
+"type": "blob",
+"size": 530
+},
+{
+"path": "buildTRs/lib/effMotifILP.py",
+"type": "blob",
+"size": 12189
+},
+{
+"path": "buildTRs/lib/effMotifSplit.py",
+"type": "blob",
+"size": 3142
+},
+{
+"path": "buildTRs/lib/header.tsv",
+"type": "blob",
+"size": 132
+},
+{
+"path": "buildTRs/lib/oriMotifFinal.py",
+"type": "blob",
+"size": 9219
+},
+{
+"path": "buildTRs/lib/oriMotifLift.py",
+"type": "blob",
+"size": 7295
+},
+{
+"path": "buildTRs/lib/oriMotifLiftDecompose.py",
+"type": "blob",
+"size": 4015
+},
+{
+"path": "buildTRs/lib/seqBasic.py",
+"type": "blob",
+"size": 416
+},
+{
+"path": "buildTRs/lib/seqDecompose.py",
+"type": "blob",
+"size": 7449
+},
+{
+"path": "buildTRs/lib/seqLift.py",
+"type": "blob",
+"size": 6097
+},
+{
+"path": "buildTRs/lib/seqShift.py",
+"type": "blob",
+"size": 3492
+},
+{
+"path": "buildTRs/lib/transposable_GRCh38.tsv.gz",
+"type": "blob",
+"size": 28799235
+},
+{
+"path": "buildTRs/lib/transposable_T2T-CHM13v2.0.tsv.gz",
+"type": "blob",
+"size": 29602572
+},
+{
+"path": "buildTRs/lib/trfCallMultiThread.py",
+"type": "blob",
+"size": 3873
+},
+{
+"path": "buildTRs/lib/trfCallMultiThreadCombineRaw.py",
+"type": "blob",
+"size": 3010
+},
+{
+"path": "buildTRs/lib/trfParseHTML.py",
+"type": "blob",
+"size": 5522
+},
+{
+"path": "buildTRs/lib/vamosFormatting.py",
+"type": "blob",
+"size": 6457
+},
+{
+"path": "example",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/demo.aln.bam",
+"type": "blob",
+"size": 66409559
+},
+{
+"path": "example/demo.aln.bam.bai",
+"type": "blob",
+"size": 32424
+},
+{
+"path": "example/one_region_motif.bed",
+"type": "blob",
+"size": 238
+},
+{
+"path": "example/region_motif.bed",
+"type": "blob",
+"size": 50748580
+},
+{
+"path": "fast_sd",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fast_sd/Makefile",
+"type": "blob",
+"size": 66
+},
+{
+"path": "fast_sd/sdpoa.cpp",
+"type": "blob",
+"size": 21787
+},
+{
+"path": "misc",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/annotation.smk",
+"type": "blob",
+"size": 12108
+},
+{
+"path": "misc/annotation.yaml",
+"type": "blob",
+"size": 966
+},
+{
+"path": "misc/configs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/configs/emotif_ILP.json",
+"type": "blob",
+"size": 693
+},
+{
+"path": "misc/configs/novel_vntr.config",
+"type": "blob",
+"size": 2078
+},
+{
+"path": "misc/configs/snakefile.json",
+"type": "blob",
+"size": 1492
+},
+{
+"path": "misc/configs/sv-vntr.config",
+"type": "blob",
+"size": 1615
+},
+{
+"path": "misc/emotif_ILP.snakefile",
+"type": "blob",
+"size": 4185
+},
+{
+"path": "misc/jupyternotebook",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/Analysis",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/Analysis/.ipynb_checkpoints",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/Analysis/.ipynb_checkpoints/Emotif_genomeSize_new-checkpoint.ipynb",
+"type": "blob",
+"size": 112972
+},
+{
+"path": "misc/jupyternotebook/Analysis/Emotif_genomeSize_new.ipynb",
+"type": "blob",
+"size": 112683
+},
+{
+"path": "misc/jupyternotebook/GreedyMotif",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/GreedyMotif/.ipynb_checkpoints",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/GreedyMotif/.ipynb_checkpoints/GreedyMotifSet-checkpoint.ipynb",
+"type": "blob",
+"size": 3405
+},
+{
+"path": "misc/jupyternotebook/GreedyMotif/.ipynb_checkpoints/ParseSummaryBed-checkpoint.ipynb",
+"type": "blob",
+"size": 19618
+},
+{
+"path": "misc/jupyternotebook/GreedyMotif/.ipynb_checkpoints/Threading_CompareWithGreedy-checkpoint.ipynb",
+"type": "blob",
+"size": 17521
+},
+{
+"path": "misc/jupyternotebook/GreedyMotif/GreedyMotifSet.ipynb",
+"type": "blob",
+"size": 3405
+},
+{
+"path": "misc/jupyternotebook/GreedyMotif/ParseSummaryBed.ipynb",
+"type": "blob",
+"size": 19618
+},
+{
+"path": "misc/jupyternotebook/GreedyMotif/Threading_CompareWithGreedy.ipynb",
+"type": "blob",
+"size": 17521
+},
+{
+"path": "misc/jupyternotebook/SV_allele_comparison",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/SV_allele_comparison/.ipynb_checkpoints",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/SV_allele_comparison/.ipynb_checkpoints/SV_allele_comparison-checkpoint.ipynb",
+"type": "blob",
+"size": 108491
+},
+{
+"path": "misc/jupyternotebook/SV_allele_comparison/SV_allele_comparison.ipynb",
+"type": "blob",
+"size": 108491
+},
+{
+"path": "misc/jupyternotebook/Simulation",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/Simulation/.ipynb_checkpoints",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/Simulation/.ipynb_checkpoints/SD_sim_Anno-checkpoint.ipynb",
+"type": "blob",
+"size": 230598
+},
+{
+"path": "misc/jupyternotebook/Simulation/SD_sim_Anno.ipynb",
+"type": "blob",
+"size": 231110
+},
+{
+"path": "misc/jupyternotebook/Special_loci",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/Special_loci/.ipynb_checkpoints",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/jupyternotebook/Special_loci/.ipynb_checkpoints/SplitSubjectAnno_twoHaps-checkpoint.ipynb",
+"type": "blob",
+"size": 3739
+},
+{
+"path": "misc/jupyternotebook/Special_loci/.ipynb_checkpoints/visualize_allele-ABCA7-checkpoint.ipynb",
+"type": "blob",
+"size": 269335
+},
+{
+"path": "misc/jupyternotebook/Special_loci/.ipynb_checkpoints/visualize_allele-ABCA7-length-checkpoint.ipynb",
+"type": "blob",
+"size": 59306
+},
+{
+"path": "misc/jupyternotebook/Special_loci/.ipynb_checkpoints/visualize_allele-ABCA7_with_diseaseSub-Copy1-checkpoint.ipynb",
+"type": "blob",
+"size": 95501
+},
+{
+"path": "misc/jupyternotebook/Special_loci/.ipynb_checkpoints/visualize_allele-checkpoint.ipynb",
+"type": "blob",
+"size": 917790
+},
+{
+"path": "misc/jupyternotebook/Special_loci/SplitSubjectAnno_twoHaps.ipynb",
+"type": "blob",
+"size": 3739
+},
+{
+"path": "misc/jupyternotebook/Special_loci/visualize_allele-ABCA7-length.ipynb",
+"type": "blob",
+"size": 55180
+},
+{
+"path": "misc/jupyternotebook/Special_loci/visualize_allele-ABCA7.ipynb",
+"type": "blob",
+"size": 269335
+},
+{
+"path": "misc/jupyternotebook/Special_loci/visualize_allele-ABCA7_with_diseaseSub-Copy1.ipynb",
+"type": "blob",
+"size": 95501
+},
+{
+"path": "misc/jupyternotebook/Special_loci/visualize_allele.ipynb",
+"type": "blob",
+"size": 600540
+},
+{
+"path": "misc/novel_vntr.step_1.snakefile",
+"type": "blob",
+"size": 12460
+},
+{
+"path": "misc/novel_vntr.step_2.snakefile",
+"type": "blob",
+"size": 1677
+},
+{
+"path": "misc/plot_special_loci.snakefile",
+"type": "blob",
+"size": 4133
+},
+{
+"path": "misc/process_before_sv-vntr.snakefile",
+"type": "blob",
+"size": 1745
+},
+{
+"path": "misc/py",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/py/CompareWithGreedy_new.py",
+"type": "blob",
+"size": 5389
+},
+{
+"path": "misc/py/ILP_Solver.ray.fast.py",
+"type": "blob",
+"size": 15197
+},
+{
+"path": "misc/py/arrange_format_for_Bida.py",
+"type": "blob",
+"size": 1772
+},
+{
+"path": "misc/py/arrange_ref_asm_fa.py",
+"type": "blob",
+"size": 2031
+},
+{
+"path": "misc/py/asm_trf_map_bed.py",
+"type": "blob",
+"size": 4880
+},
+{
+"path": "misc/py/compare_sv_vamos_allele_combineAll.py",
+"type": "blob",
+"size": 7921
+},
+{
+"path": "misc/py/extract_intv_asm_and_ref.py",
+"type": "blob",
+"size": 3836
+},
+{
+"path": "misc/py/filter_SNP_indels.py",
+"type": "blob",
+"size": 1769
+},
+{
+"path": "misc/py/flank_coordinate.py",
+"type": "blob",
+"size": 3110
+},
+{
+"path": "misc/py/intv_length_filter.py",
+"type": "blob",
+"size": 1414
+},
+{
+"path": "misc/py/merge_intv.py",
+"type": "blob",
+"size": 2030
+},
+{
+"path": "misc/py/merge_ref_intv.py",
+"type": "blob",
+"size": 2689
+},
+{
+"path": "misc/py/merge_ref_intv_dataset.py",
+"type": "blob",
+"size": 3216
+},
+{
+"path": "misc/py/postprocessing.py",
+"type": "blob",
+"size": 1408
+},
+{
+"path": "misc/py/process_jasmine_out_combineAll.py",
+"type": "blob",
+"size": 2980
+},
+{
+"path": "misc/pyscript",
+"type": "tree",
+"size": 0
+},
+{
+"path": "misc/pyscript/Assembly_alleles.py",
+"type": "blob",
+"size": 8942
+},
+{
+"path": "misc/pyscript/combine_vcf.py",
+"type": "blob",
+"size": 6861
+},
+{
+"path": "misc/pyscript/editSwapVamos.py",
+"type": "blob",
+"size": 2466
+},
+{
+"path": "misc/pyscript/motif_size_comp_plot.py",
+"type": "blob",
+"size": 2220
+},
+{
+"path": "misc/pyscript/phase.py",
+"type": "blob",
+"size": 2563
+},
+{
+"path": "misc/pyscript/readwise_anno.py",
+"type": "blob",
+"size": 7504
+},
+{
+"path": "misc/pyscript/split_for_phasing.py",
+"type": "blob",
+"size": 2239
+},
+{
+"path": "misc/pyscript/together_editSwapVamos.py",
+"type": "blob",
+"size": 4573
+},
+{
+"path": "misc/pyscript/visualAllele.py",
+"type": "blob",
+"size": 9749
+},
+{
+"path": "misc/readme.md",
+"type": "blob",
+"size": 797
+},
+{
+"path": "misc/separate_Jasmine_merge_by_chrom_indel20.snakefile",
+"type": "blob",
+"size": 3894
+},
+{
+"path": "misc/sv-vntr_combine.snakefile",
+"type": "blob",
+"size": 7537
+},
+{
+"path": "misc/vamos.disease.effMotifs-0.1.tsv",
+"type": "blob",
+"size": 118
+},
+{
+"path": "misc/vamos.disease.oriMotifs.tsv",
+"type": "blob",
+"size": 153
+},
+{
+"path": "misc/vamos_greedy_compare.snakefile",
+"type": "blob",
+"size": 3034
+},
+{
+"path": "requirements.txt",
+"type": "blob",
+"size": 42
+},
+{
+"path": "spoa-4.1.5",
+"type": "tree",
+"size": 0
+},
+{
+"path": "spoa-4.1.5/.github",
+"type": "tree",
+"size": 0
+},
+{
+"path": "spoa-4.1.5/.github/workflows",
+"type": "tree",
+"size": 0
+},
+{
+"path": "spoa-4.1.5/.github/workflows/spoa.yml",
+"type": "blob",
+"size": 1653
+},
+{
+"path": "spoa-4.1.5/.gitignore",
+"type": "blob",
+"size": 60
+},
+{
+"path": "spoa-4.1.5/CMakeLists.txt",
+"type": "blob",
+"size": 8232
+},
+{
+"path": "spoa-4.1.5/Config.cmake.in",
+"type": "blob",
+"size": 288
+},
+{
+"path": "spoa-4.1.5/LICENSE",
+"type": "blob",
+"size": 1079
+},
+{
+"path": "spoa-4.1.5/README.md",
+"type": "blob",
+"size": 5296
+},
+{
+"path": "spoa-4.1.5/include",
+"type": "tree",
+"size": 0
+},
+{
+"path": "spoa-4.1.5/include/meson.build",
+"type": "blob",
+"size": 292
+},
+{
+"path": "spoa-4.1.5/include/spoa",
+"type": "tree",
+"size": 0
+},
+{
+"path": "spoa-4.1.5/include/spoa/alignment_engine.hpp",
+"type": "blob",
+"size": 2195
+},
+{
+"path": "spoa-4.1.5/include/spoa/graph.hpp",
+"type": "blob",
+"size": 7825
+},
+{
+"path": "spoa-4.1.5/include/spoa/spoa.hpp",
+"type": "blob",
+"size": 186
+},
+{
+"path": "spoa-4.1.5/include/spoa/version.hpp",
+"type": "blob",
+"size": 201
+},
+{
+"path": "spoa-4.1.5/meson.build",
+"type": "blob",
+"size": 2602
+},
+{
+"path": "spoa-4.1.5/meson_options.txt",
+"type": "blob",
+"size": 1057
+},
+{
+"path": "spoa-4.1.5/src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "spoa-4.1.5/src/alignment_engine.cpp",
+"type": "blob",
+"size": 2758
+},
+{
+"path": "spoa-4.1.5/src/architectures.hpp",
+"type": "blob",
+"size": 261
+},
+{
+"path": "spoa-4.1.5/src/graph.cpp",
+"type": "blob",
+"size": 18533
+},
+{
+"path": "spoa-4.1.5/src/main.cpp",
+"type": "blob",
+"size": 11054
+},
+{
+"path": "spoa-4.1.5/src/meson.build",
+"type": "blob",
+"size": 1638
+},
+{
+"path": "spoa-4.1.5/src/simd_alignment_engine.hpp",
+"type": "blob",
+"size": 2744
+},
+{
+"path": "spoa-4.1.5/src/simd_alignment_engine_dispatch.cpp",
+"type": "blob",
+"size": 353
+},
+{
+"path": "spoa-4.1.5/src/simd_alignment_engine_dispatcher.cpp",
+"type": "blob",
+"size": 3085
+},
+{
+"path": "spoa-4.1.5/src/simd_alignment_engine_implementation.hpp",
+"type": "blob",
+"size": 69070
+},
+{
+"path": "spoa-4.1.5/src/sisd_alignment_engine.cpp",
+"type": "blob",
+"size": 29909
+},
+{
+"path": "spoa-4.1.5/src/sisd_alignment_engine.hpp",
+"type": "blob",
+"size": 1999
+},
+{
+"path": "spoa-4.1.5/src/spoa_config.h.in",
+"type": "blob",
+"size": 200
+},
+{
+"path": "spoa-4.1.5/src/version.cpp",
+"type": "blob",
+"size": 195
+},
+{
+"path": "spoa-4.1.5/subprojects",
+"type": "tree",
+"size": 0
+},
+{
+"path": "spoa-4.1.5/subprojects/bioparser.wrap",
+"type": "blob",
+"size": 93
+},
+{
+"path": "spoa-4.1.5/subprojects/biosoup.wrap",
+"type": "blob",
+"size": 90
+},
+{
+"path": "spoa-4.1.5/subprojects/cereal.wrap",
+"type": "blob",
+"size": 471
+},
+{
+"path": "spoa-4.1.5/subprojects/gtest.wrap",
+"type": "blob",
+"size": 516
+},
+{
+"path": "spoa-4.1.5/subprojects/simde.wrap",
+"type": "blob",
+"size": 262
+},
+{
+"path": "spoa-4.1.5/test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "spoa-4.1.5/test/data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "spoa-4.1.5/test/data/sample.fastq.gz",
+"type": "blob",
+"size": 15077
+},
+{
+"path": "spoa-4.1.5/test/meson.build",
+"type": "blob",
+"size": 730
+},
+{
+"path": "spoa-4.1.5/test/spoa_test.cpp",
+"type": "blob",
+"size": 16035
+},
+{
+"path": "spoa-4.1.5/test/spoa_test_config.h.in",
+"type": "blob",
+"size": 257
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/Makefile",
+"type": "blob",
+"size": 3681
+},
+{
+"path": "src/acc_lookup_table.cpp",
+"type": "blob",
+"size": 780
+},
+{
+"path": "src/acc_lookup_table.h",
+"type": "blob",
+"size": 337
+},
+{
+"path": "src/bounded_anno_local.cpp",
+"type": "blob",
+"size": 7426
+},
+{
+"path": "src/io.cpp",
+"type": "blob",
+"size": 27768
+},
+{
+"path": "src/io.h",
+"type": "blob",
+"size": 12613
+},
+{
+"path": "src/io_unrefined.cpp",
+"type": "blob",
+"size": 7824
+},
+{
+"path": "src/main.cpp",
+"type": "blob",
+"size": 31771
+},
+{
+"path": "src/msa.cpp",
+"type": "blob",
+"size": 7073
+},
+{
+"path": "src/msa.h",
+"type": "blob",
+"size": 2499
+},
+{
+"path": "src/option.h",
+"type": "blob",
+"size": 1124
+},
+{
+"path": "src/parasail",
+"type": "commit",
+"size": 0
+},
+{
+"path": "src/phase.cpp",
+"type": "blob",
+"size": 3892
+},
+{
+"path": "src/phase.h",
+"type": "blob",
+"size": 180
+},
+{
+"path": "src/read.h",
+"type": "blob",
+"size": 1536
+},
+{
+"path": "src/test.cpp",
+"type": "blob",
+"size": 2430
+},
+{
+"path": "src/threads.h",
+"type": "blob",
+"size": 885
+},
+{
+"path": "src/v2.6.2.tar.gz",
+"type": "blob",
+"size": 2563105
+},
+{
+"path": "src/vamos-beta.cpp",
+"type": "blob",
+"size": 5870
+},
+{
+"path": "src/vcf.cpp",
+"type": "blob",
+"size": 8717
+},
+{
+"path": "src/vcf.h",
+"type": "blob",
+"size": 1067
+},
+{
+"path": "src/vntr.cpp",
+"type": "blob",
+"size": 10129
+},
+{
+"path": "src/vntr.h",
+"type": "blob",
+"size": 8821
+},
+{
+"path": "tryvamos",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tryvamos/Makefile",
+"type": "blob",
+"size": 164
+},
+{
+"path": "tryvamos/README.md",
+"type": "blob",
+"size": 3651
+},
+{
+"path": "tryvamos/example",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tryvamos/example/HPRC_HG002_h1.contig.vcf",
+"type": "blob",
+"size": 24815
+},
+{
+"path": "tryvamos/example/HPRC_HG002_h2.contig.vcf",
+"type": "blob",
+"size": 24774
+},
+{
+"path": "tryvamos/example/HPRC_HG005_h1.contig.vcf",
+"type": "blob",
+"size": 24807
+},
+{
+"path": "tryvamos/example/HPRC_HG005_h2.contig.vcf",
+"type": "blob",
+"size": 22651
+},
+{
+"path": "tryvamos/example/chr1_73337-73514.png",
+"type": "blob",
+"size": 88732
+},
+{
+"path": "tryvamos/example/example.list",
+"type": "blob",
+"size": 132
+},
+{
+"path": "tryvamos/example/example.vcf",
+"type": "blob",
+"size": 25181
+},
+{
+"path": "tryvamos/example/loci_for_waterfall.bed",
+"type": "blob",
+"size": 17
+},
+{
+"path": "tryvamos/lib",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tryvamos/lib/combineVCF.py",
+"type": "blob",
+"size": 12005
+},
+{
+"path": "tryvamos/lib/general.py",
+"type": "blob",
+"size": 2139
+},
+{
+"path": "tryvamos/lib/pairwiseCompare.py",
+"type": "blob",
+"size": 2436
+},
+{
+"path": "tryvamos/lib/quickFeature.py",
+"type": "blob",
+"size": 3824
+},
+{
+"path": "tryvamos/lib/testTwoPanels.py",
+"type": "blob",
+"size": 8326
+},
+{
+"path": "tryvamos/lib/tr.py",
+"type": "blob",
+"size": 9756
+},
+{
+"path": "tryvamos/lib/waterfallPlot.py",
+"type": "blob",
+"size": 1340
+},
+{
+"path": "tryvamos/requirements.txt",
+"type": "blob",
+"size": 59
+},
+{
+"path": "tryvamos/tryvamos.py",
+"type": "blob",
+"size": 11942
+},
+{
+"path": "tryvamos/vAMOSSOMAtic.py",
+"type": "blob",
+"size": 6632
+},
+{
+"path": "tryvamos/vamossomatic.cpp",
+"type": "blob",
+"size": 9519
+}
+]
+}

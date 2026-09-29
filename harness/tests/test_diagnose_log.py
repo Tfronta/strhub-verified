@@ -118,3 +118,16 @@ def test_the_image_the_build_was_meant_to_produce_is_not_a_base_image_we_failed_
         "docker: Error response from daemon: pull access denied for toolimg, repository does not exist\n")
     assert "base_image_missing" in ids(
         "docker: Error response from daemon: pull access denied for ghcr.io/x/y, repository does not exist\n")
+
+
+def test_a_download_that_fails_in_the_build_is_named_with_its_address():
+    """STRsearch's Dockerfile fetches USEARCH with a licence link from 2019;
+    the build stopped with no explanation in the report."""
+    log = ('#14 ERROR: process "/bin/sh -c wget --quiet https://drive5.com/cgi-bin/upload3.py?license=2019110501245926689 '
+           '-O /usr/bin/usearch  && chmod +x /usr/bin/usearch" did not complete successfully: exit code: 8\n')
+    issues = d.diagnose(log)
+    ids = [i["id"] for i in issues]
+    assert "build_download_failed" in ids
+    hit = next(i for i in issues if i["id"] == "build_download_failed")
+    assert "drive5.com" in (hit.get("title") or "") + " ".join(map(str, hit.get("matches") or hit.get("examples") or []))
+    assert d.fault_of("build_download_failed") is None

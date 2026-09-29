@@ -1,0 +1,70 @@
+{
+  "_about": "Hand-checked against https://github.com/unique379r/strspy at dafdee7e7e5672c8dc732e8577dbe153f53a12f5 (head of branch STRspy2.0) on 2026-09-29, from README.md, STRspy_run_v2.0_Args.sh, src/STRspy_Normal_v2.0_Args.sh, setup/, config/, db-v2/ (including the contents of STRspy2.0-DB.zip), and Bioconda (api.anaconda.org).",
+  "program": {
+    "value": "STRspy_run_v2.0_Args.sh",
+    "subcommand": null,
+    "where": "README.md:113-120"
+  },
+  "command": {
+    "value": "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt",
+    "source": "readme",
+    "where": "README.md:120"
+  },
+  "install": {
+    "documented": "Miniconda; git clone --branch STRspy2.0; bash setup/STRspy_2.0.setup.sh (conda env strspy_env from setup/STRspy_2.0_env.yml); bash setup/GenerateToolConfig.sh and move the tools config into config/",
+    "acceptable_methods": [
+      "conda"
+    ],
+    "where": "README.md:52-107; setup/STRspy_2.0.setup.sh:84; setup/STRspy_2.0_env.yml:1-15"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": null,
+    "image_documented": null,
+    "release_binary_documented": false,
+    "where": "README.md:52-107 (a conda environment built from the repository; no package, image or download); https://api.anaconda.org/package/bioconda/strspy (no such package); the GitHub releases v1.0 and v1.1 (strspy_v1.x.tar.gz) belong to the 1.x line and are not mentioned"
+  },
+  "input": {
+    "kinds": [
+      "fastq",
+      "bam"
+    ],
+    "platforms": [
+      "ont",
+      "pacbio"
+    ],
+    "strhub_type": "ont-bam-hg38",
+    "where": "README.md:44,126-130,136,295; src/STRspy_Normal_v2.0_Args.sh:187,196"
+  },
+  "extra_inputs": [
+    {
+      "what": "STR allele database: a directory of per-locus FASTA files (alleles with 500 bp flanks), STR_FASTA / -f. STRhub does not hold it; the repository ships a prebuilt one only inside db-v2/STRspy2.0-DB.zip, which the README never mentions (README.md:33 says users can use the STRspy2.0 database or build their own from GenBank)",
+      "required": true,
+      "strhub_has": false,
+      "where": "README.md:33,132; src/STRspy_Normal_v2.0_Args.sh:205,403"
+    },
+    {
+      "what": "Per-locus BED files for the same loci, STR_BED / -b (same zip, hg38 coordinates)",
+      "required": true,
+      "strhub_has": false,
+      "where": "README.md:134; src/STRspy_Normal_v2.0_Args.sh:212,387-389"
+    },
+    {
+      "what": "One BED of all STR regions, REGION_BED / -l (coverage summary). STRhub has no regions file for ont-bam-hg38; the repository ships db-v2/STRspy_v2.DB.sort.bed (hg38 BED4, 24 autosomal and 28 chrY loci)",
+      "required": true,
+      "strhub_has": false,
+      "where": "README.md:138; src/STRspy_Normal_v2.0_Args.sh:154,368"
+    },
+    {
+      "what": "config/InputConfig.txt filled in by the user (INPUT_DIR as a directory of *.bam or *.fastq.gz, INPUT_BAM, READ_TYPE, STR_FASTA, STR_BED, GENOME_FASTA, REGION_BED, NORM_CUTOFF, OUTPUT_DIR, THREADS)",
+      "required": true,
+      "strhub_has": false,
+      "where": "README.md:111,124-144; config/InputConfig.txt:1-11; STRspy_run_v2.0_Args.sh:133-142"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": true,
+    "why": "The data fit: STRspy takes pre-aligned BAMs and recommends them (README.md:44,295), READ_TYPE ont, and with BAM input it never uses the genome FASTA (src/STRspy_Normal_v2.0_Args.sh:230-241); ont-bam-hg38 is ONT R10 aligned to hg38 around the CODIS loci, the coordinates of the database BEDs. The database and region BED are not STRhub's but ship in the repository (db-v2/). What does not run is the documented wrapper itself (see notes), so a faithful trial fails for a reason that belongs to the tool, not to the data."
+  },
+  "notes": "The documented command cannot run at this commit. The wrapper reads its configs with getopts -i/-t/-j (STRspy_run_v2.0_Args.sh:95-102; its header at line 32 and its -h output at README.md:190-196 show the flags), so the positional form of README.md:120 leaves both config paths empty. With the flags it still exits with 'please make sure you are in the same directory of STRspy': it tests for STRspy_Normal_v2.0_Args.sh in the working directory (lines 180,193) but then calls src/STRspy_Normal_v2.0_Args.sh (line 199), and the script lives only in src/, so no working directory satisfies both. What runs is the core script documented under Core scripts (README.md:200-228): bash src/STRspy_Normal_v2.0_Args.sh -s <reads dir> -r yes -t ont -f <db fasta dir> -b <db bed dir> -l <region bed> -k 0.4 -o <out dir> -c <tools config> -d <threads>. strhub_type: STRhub has no ONT FASTQ dataset, and the README accepts and recommends pre-aligned BAMs. Install: setup/STRspy_2.0.setup.sh waits at read ans for a y/n answer (line 42) before conda env create -n strspy_env -f setup/STRspy_2.0_env.yml (line 84); setup/GenerateToolConfig.sh writes UserToolsConfig.txt to the working directory (lines 7-17), so the documented mv setup/UserToolsConfig.txt config/ (README.md:104) finds nothing, and the run command expects config/ToolsConfig.txt. config/InputConfig.txt:11 spells THREAD while the wrapper reads THREADS (STRspy_run_v2.0_Args.sh:142). The database zip carries __MACOSX/._* entries, and for 9 autosomal loci its FASTA and BED names disagree (FGA.bed with FGAmod.fa; likewise D5S818, D7S820, D8S1179, D10S1248, D12S391, D13S317, TPOX, vWA); the core script pairs them by name (src/STRspy_Normal_v2.0_Args.sh:389,403), so those loci get no FASTA to align to. The README's Known bug section says the parallel script fails (README.md:291-293). The pin is the head of branch STRspy2.0, which README.md:90 clones; the default branch main holds 1.x."
+}

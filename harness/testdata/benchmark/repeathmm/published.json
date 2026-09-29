@@ -1,0 +1,25 @@
+{
+ "bioconda": {
+  "repeathmm": null
+ },
+ "release": {
+  "tag": "v2.0.3",
+  "assets": [
+   {
+    "name": "failed_regions.tar.gz",
+    "size": 14023,
+    "url": "https://github.com/WGLab/RepeatHMM/releases/download/v2.0.3/failed_regions.tar.gz"
+   },
+   {
+    "name": "RepeatHMM_DB.tar.gz",
+    "size": 14636715,
+    "url": "https://github.com/WGLab/RepeatHMM/releases/download/v2.0.3/RepeatHMM_DB.tar.gz"
+   },
+   {
+    "name": "SRR5363632.fastq.tar.gz",
+    "size": 5082990,
+    "url": "https://github.com/WGLab/RepeatHMM/releases/download/v2.0.3/SRR5363632.fastq.tar.gz"
+   }
+  ]
+ }
+}

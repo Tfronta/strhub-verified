@@ -33,7 +33,17 @@
       "license": "Open access (1000 Genomes / HPRC). Research use. STRhub is not the data provider.",
       "chemistry": "ONT R10, basecalling model SUP",
       "notes": "Pre-built CODIS slices in ont_slices/. Default external test: HG00113.codis.bam (~30 MB). See datasets/ont-bam-hg38/SOURCE.txt.",
-      "chrom_naming": "chr"
+      "chrom_naming": "chr",
+      "supported_loci": "datasets/ont-bam-hg38/loci.bed",
+      "regions_library": {
+        "hipstr": "datasets/ont-bam-hg38/regions/hipstr.bed",
+        "gangstr": "datasets/ont-bam-hg38/regions/gangstr.bed",
+        "strsearch": "datasets/ont-bam-hg38/regions/strsearch.bed",
+        "bed4": "datasets/ont-bam-hg38/regions/bed4.bed",
+        "motif": "datasets/ont-bam-hg38/regions/motif.bed"
+      },
+      "read_groups": false,
+      "sample": "HG00113"
     },
     "illumina-bam-hg38": {
       "dir": "datasets/illumina-bam-hg38",
@@ -62,7 +72,8 @@
         "hipstr": "datasets/illumina-bam-hg38/regions/hipstr.bed",
         "gangstr": "datasets/illumina-bam-hg38/regions/gangstr.bed",
         "strsearch": "datasets/illumina-bam-hg38/regions/strsearch.bed",
-        "bed4": "datasets/illumina-bam-hg38/regions/bed4.bed"
+        "bed4": "datasets/illumina-bam-hg38/regions/bed4.bed",
+        "motif": "datasets/illumina-bam-hg38/regions/motif.bed"
       }
     },
     "illumina-bam-hg38-y": {
@@ -92,7 +103,8 @@
         "hipstr": "datasets/illumina-bam-hg38-y/regions/hipstr.bed",
         "gangstr": "datasets/illumina-bam-hg38-y/regions/gangstr.bed",
         "strsearch": "datasets/illumina-bam-hg38-y/regions/strsearch.bed",
-        "bed4": "datasets/illumina-bam-hg38-y/regions/bed4.bed"
+        "bed4": "datasets/illumina-bam-hg38-y/regions/bed4.bed",
+        "motif": "datasets/illumina-bam-hg38-y/regions/motif.bed"
       }
     }
   },

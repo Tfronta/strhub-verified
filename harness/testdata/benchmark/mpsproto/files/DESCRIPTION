@@ -1,0 +1,15 @@
+Package: MPSproto
+Type: Package
+Title: A Quantitative Model for MPS data with complex stutters
+Version: 0.9.7
+Date: 2024-03-14
+Author: Oyvind Bleka <oyvble@hotmail.com>
+Maintainer: Oyvind Bleka <oyvble@hotmail.com>
+Description: Contains procedures for calibrating MPS models which can be used for mixture interpretation.
+NeedsCompilation: yes 
+License: GPL(>=2)
+Depends: R (>= 3.5.0)	
+Suggests: 
+	betareg, ggplot2, plotly, stringi, testthat,
+	gWidgets2, plotrix, LUSstrR
+RoxygenNote: 7.2.1

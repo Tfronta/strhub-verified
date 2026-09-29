@@ -1,0 +1,1755 @@
+{
+"repo": "https://github.com/Jerrythafast/FDSTools",
+"ref": "5cad6d057fd2f16bd77f9aa2420e920ccfcc7aa6",
+"tag": "v2.2.1",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [],
+"tree": [
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 48
+},
+{
+"path": "CHANGELOG.md",
+"type": "blob",
+"size": 52737
+},
+{
+"path": "LICENSE.txt",
+"type": "blob",
+"size": 35819
+},
+{
+"path": "LICENSES-3RD-PARTY.txt",
+"type": "blob",
+"size": 4775
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 11643
+},
+{
+"path": "fdstools",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/__init__.py",
+"type": "blob",
+"size": 1581
+},
+{
+"path": "fdstools/__main__.py",
+"type": "blob",
+"size": 1063
+},
+{
+"path": "fdstools/data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/data/libraries",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/data/libraries/ForenSeqA-UAS.ini",
+"type": "blob",
+"size": 6831
+},
+{
+"path": "fdstools/data/libraries/ForenSeqA.ini",
+"type": "blob",
+"size": 6429
+},
+{
+"path": "fdstools/data/libraries/ForenSeqB-UAS.ini",
+"type": "blob",
+"size": 10122
+},
+{
+"path": "fdstools/data/libraries/ForenSeqB.ini",
+"type": "blob",
+"size": 9720
+},
+{
+"path": "fdstools/data/libraries/ID-OmniSTR.ini",
+"type": "blob",
+"size": 1986
+},
+{
+"path": "fdstools/data/libraries/PowerSeq46GY.ini",
+"type": "blob",
+"size": 1902
+},
+{
+"path": "fdstools/fdstools.py",
+"type": "blob",
+"size": 7022
+},
+{
+"path": "fdstools/lib",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/lib/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "fdstools/lib/cli.py",
+"type": "blob",
+"size": 10988
+},
+{
+"path": "fdstools/lib/io.py",
+"type": "blob",
+"size": 13119
+},
+{
+"path": "fdstools/lib/library.py",
+"type": "blob",
+"size": 21794
+},
+{
+"path": "fdstools/lib/noise.py",
+"type": "blob",
+"size": 5130
+},
+{
+"path": "fdstools/lib/pair_align.c",
+"type": "blob",
+"size": 14748
+},
+{
+"path": "fdstools/lib/seq.py",
+"type": "blob",
+"size": 8435
+},
+{
+"path": "fdstools/lib/sg_align.c",
+"type": "blob",
+"size": 18253
+},
+{
+"path": "fdstools/lib/tssv.py",
+"type": "blob",
+"size": 2284
+},
+{
+"path": "fdstools/lib/util.py",
+"type": "blob",
+"size": 3936
+},
+{
+"path": "fdstools/tools",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/tools/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "fdstools/tools/allelefinder.py",
+"type": "blob",
+"size": 11299
+},
+{
+"path": "fdstools/tools/bam2fds.py",
+"type": "blob",
+"size": 16762
+},
+{
+"path": "fdstools/tools/bganalyse.py",
+"type": "blob",
+"size": 10732
+},
+{
+"path": "fdstools/tools/bgcorrect.py",
+"type": "blob",
+"size": 13398
+},
+{
+"path": "fdstools/tools/bgestimate.py",
+"type": "blob",
+"size": 27577
+},
+{
+"path": "fdstools/tools/bghomraw.py",
+"type": "blob",
+"size": 10881
+},
+{
+"path": "fdstools/tools/bghomstats.py",
+"type": "blob",
+"size": 9637
+},
+{
+"path": "fdstools/tools/bgmerge.py",
+"type": "blob",
+"size": 4670
+},
+{
+"path": "fdstools/tools/bgpredict.py",
+"type": "blob",
+"size": 16349
+},
+{
+"path": "fdstools/tools/demultiplex.py",
+"type": "blob",
+"size": 22582
+},
+{
+"path": "fdstools/tools/findnewalleles.py",
+"type": "blob",
+"size": 4269
+},
+{
+"path": "fdstools/tools/libconvert.py",
+"type": "blob",
+"size": 4250
+},
+{
+"path": "fdstools/tools/library.py",
+"type": "blob",
+"size": 11909
+},
+{
+"path": "fdstools/tools/mergereads.py",
+"type": "blob",
+"size": 11665
+},
+{
+"path": "fdstools/tools/mps2ce.py",
+"type": "blob",
+"size": 8387
+},
+{
+"path": "fdstools/tools/pipeline.py",
+"type": "blob",
+"size": 39729
+},
+{
+"path": "fdstools/tools/samplestats.py",
+"type": "blob",
+"size": 35308
+},
+{
+"path": "fdstools/tools/seqconvert.py",
+"type": "blob",
+"size": 9521
+},
+{
+"path": "fdstools/tools/stuttermark.py",
+"type": "blob",
+"size": 20041
+},
+{
+"path": "fdstools/tools/stuttermodel.py",
+"type": "blob",
+"size": 30097
+},
+{
+"path": "fdstools/tools/thresholds.py",
+"type": "blob",
+"size": 6409
+},
+{
+"path": "fdstools/tools/tssv.py",
+"type": "blob",
+"size": 33964
+},
+{
+"path": "fdstools/tools/vis.py",
+"type": "blob",
+"size": 22700
+},
+{
+"path": "fdstools/vis",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/vis/allelevis",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/vis/allelevis/allelevis.json",
+"type": "blob",
+"size": 6535
+},
+{
+"path": "fdstools/vis/allelevis/index.html",
+"type": "blob",
+"size": 26137
+},
+{
+"path": "fdstools/vis/bganalysevis",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/vis/bganalysevis/bganalysevis.json",
+"type": "blob",
+"size": 12729
+},
+{
+"path": "fdstools/vis/bganalysevis/index.html",
+"type": "blob",
+"size": 27598
+},
+{
+"path": "fdstools/vis/bgrawvis",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/vis/bgrawvis/bgrawvis.json",
+"type": "blob",
+"size": 8843
+},
+{
+"path": "fdstools/vis/bgrawvis/index.html",
+"type": "blob",
+"size": 27634
+},
+{
+"path": "fdstools/vis/d3.min.js",
+"type": "blob",
+"size": 151725
+},
+{
+"path": "fdstools/vis/profilevis",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/vis/profilevis/index.html",
+"type": "blob",
+"size": 29851
+},
+{
+"path": "fdstools/vis/profilevis/profilevis.json",
+"type": "blob",
+"size": 16726
+},
+{
+"path": "fdstools/vis/samplevis",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/vis/samplevis/index.html",
+"type": "blob",
+"size": 74971
+},
+{
+"path": "fdstools/vis/samplevis/samplevis.json",
+"type": "blob",
+"size": 28005
+},
+{
+"path": "fdstools/vis/samplevis/warning.svg",
+"type": "blob",
+"size": 984
+},
+{
+"path": "fdstools/vis/stuttermodelvis",
+"type": "tree",
+"size": 0
+},
+{
+"path": "fdstools/vis/stuttermodelvis/index.html",
+"type": "blob",
+"size": 33022
+},
+{
+"path": "fdstools/vis/stuttermodelvis/stuttermodelvis.json",
+"type": "blob",
+"size": 11993
+},
+{
+"path": "fdstools/vis/vega.min.js",
+"type": "blob",
+"size": 307279
+},
+{
+"path": "notes.txt",
+"type": "blob",
+"size": 11691
+},
+{
+"path": "pyproject.toml",
+"type": "blob",
+"size": 2690
+},
+{
+"path": "tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "tests/component",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/component/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "tests/component/test_allelefinder.py",
+"type": "blob",
+"size": 3680
+},
+{
+"path": "tests/component/test_bam2fds.py",
+"type": "blob",
+"size": 3721
+},
+{
+"path": "tests/component/test_bgcorrect.py",
+"type": "blob",
+"size": 4556
+},
+{
+"path": "tests/component/test_bgestimate.py",
+"type": "blob",
+"size": 5203
+},
+{
+"path": "tests/component/test_bgmerge.py",
+"type": "blob",
+"size": 1532
+},
+{
+"path": "tests/component/test_bgpredict.py",
+"type": "blob",
+"size": 4720
+},
+{
+"path": "tests/component/test_demultiplex.py",
+"type": "blob",
+"size": 4814
+},
+{
+"path": "tests/component/test_findnewalleles.py",
+"type": "blob",
+"size": 5176
+},
+{
+"path": "tests/component/test_mergereads.py",
+"type": "blob",
+"size": 2495
+},
+{
+"path": "tests/component/test_samplestats.py",
+"type": "blob",
+"size": 10164
+},
+{
+"path": "tests/component/test_seqconvert.py",
+"type": "blob",
+"size": 11578
+},
+{
+"path": "tests/component/test_stuttermark.py",
+"type": "blob",
+"size": 2999
+},
+{
+"path": "tests/component/test_stuttermodel.py",
+"type": "blob",
+"size": 5925
+},
+{
+"path": "tests/component/test_tssv.py",
+"type": "blob",
+"size": 8606
+},
+{
+"path": "tests/data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/_reads",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/_reads/OmniSTR_Mixture_Paired.bam",
+"type": "blob",
+"size": 9915651
+},
+{
+"path": "tests/data/_reads/OmniSTR_Mixture_Paired.bam.bai",
+"type": "blob",
+"size": 1608648
+},
+{
+"path": "tests/data/_reads/OmniSTR_Mixture_R1.bam",
+"type": "blob",
+"size": 6386251
+},
+{
+"path": "tests/data/_reads/OmniSTR_Mixture_R1.bam.bai",
+"type": "blob",
+"size": 1590344
+},
+{
+"path": "tests/data/_reads/OmniSTR_Mixture_R1_4lt2.fasta.gz",
+"type": "blob",
+"size": 2231535
+},
+{
+"path": "tests/data/_reads/OmniSTR_Mixture_R1_4lt2.fastq.gz",
+"type": "blob",
+"size": 2734147
+},
+{
+"path": "tests/data/_reads/OmniSTR_Mixture_R2_4lt2.fastq.gz",
+"type": "blob",
+"size": 2874683
+},
+{
+"path": "tests/data/_reads/OmniSTR_Mixture_interleaved_4lt2.fastq.gz",
+"type": "blob",
+"size": 5761350
+},
+{
+"path": "tests/data/_reads/ambiguous.fastq",
+"type": "blob",
+"size": 2282
+},
+{
+"path": "tests/data/_references",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/_references/F0107.txt",
+"type": "blob",
+"size": 14129
+},
+{
+"path": "tests/data/_references/F0108.txt",
+"type": "blob",
+"size": 8692
+},
+{
+"path": "tests/data/_references/F0109.txt",
+"type": "blob",
+"size": 10659
+},
+{
+"path": "tests/data/_references/F0110.txt",
+"type": "blob",
+"size": 14943
+},
+{
+"path": "tests/data/_references/F0207.txt",
+"type": "blob",
+"size": 8094
+},
+{
+"path": "tests/data/_references/F0208.txt",
+"type": "blob",
+"size": 4961
+},
+{
+"path": "tests/data/_references/F0209.txt",
+"type": "blob",
+"size": 6490
+},
+{
+"path": "tests/data/_references/F0210.txt",
+"type": "blob",
+"size": 4462
+},
+{
+"path": "tests/data/_references/F0307.txt",
+"type": "blob",
+"size": 5868
+},
+{
+"path": "tests/data/_references/F0308.txt",
+"type": "blob",
+"size": 3752
+},
+{
+"path": "tests/data/_references/F0309.txt",
+"type": "blob",
+"size": 3852
+},
+{
+"path": "tests/data/_references/F0310.txt",
+"type": "blob",
+"size": 5532
+},
+{
+"path": "tests/data/_references/F0407.txt",
+"type": "blob",
+"size": 5380
+},
+{
+"path": "tests/data/_references/F0408.txt",
+"type": "blob",
+"size": 5011
+},
+{
+"path": "tests/data/_references/F0409.txt",
+"type": "blob",
+"size": 3868
+},
+{
+"path": "tests/data/_references/F0410.txt",
+"type": "blob",
+"size": 4808
+},
+{
+"path": "tests/data/_references/F0507.txt",
+"type": "blob",
+"size": 10058
+},
+{
+"path": "tests/data/_references/F0508.txt",
+"type": "blob",
+"size": 6078
+},
+{
+"path": "tests/data/_references/F0509.txt",
+"type": "blob",
+"size": 5740
+},
+{
+"path": "tests/data/_references/F0510.txt",
+"type": "blob",
+"size": 12658
+},
+{
+"path": "tests/data/_references/F0607.txt",
+"type": "blob",
+"size": 8295
+},
+{
+"path": "tests/data/_references/F0608.txt",
+"type": "blob",
+"size": 27718
+},
+{
+"path": "tests/data/_references/F0609.txt",
+"type": "blob",
+"size": 5707
+},
+{
+"path": "tests/data/_references/F0610.txt",
+"type": "blob",
+"size": 5791
+},
+{
+"path": "tests/data/_references/F0707.txt",
+"type": "blob",
+"size": 8042
+},
+{
+"path": "tests/data/_references/F0708.txt",
+"type": "blob",
+"size": 5894
+},
+{
+"path": "tests/data/_references/F0709.txt",
+"type": "blob",
+"size": 11885
+},
+{
+"path": "tests/data/_references/F0710.txt",
+"type": "blob",
+"size": 10048
+},
+{
+"path": "tests/data/_references/F0807.txt",
+"type": "blob",
+"size": 15896
+},
+{
+"path": "tests/data/_references/F0808.txt",
+"type": "blob",
+"size": 12976
+},
+{
+"path": "tests/data/_references/F0809.txt",
+"type": "blob",
+"size": 5882
+},
+{
+"path": "tests/data/allelefinder",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/allelefinder/allelefinder_advanced1-report.txt",
+"type": "blob",
+"size": 25511
+},
+{
+"path": "tests/data/allelefinder/allelefinder_advanced1.txt",
+"type": "blob",
+"size": 13112
+},
+{
+"path": "tests/data/allelefinder/allelefinder_advanced2-report.txt",
+"type": "blob",
+"size": 4509
+},
+{
+"path": "tests/data/allelefinder/allelefinder_advanced2.txt",
+"type": "blob",
+"size": 176
+},
+{
+"path": "tests/data/allelefinder/allelefinder_default_accepted-report.txt",
+"type": "blob",
+"size": 0
+},
+{
+"path": "tests/data/allelefinder/allelefinder_default_accepted.txt",
+"type": "blob",
+"size": 1266
+},
+{
+"path": "tests/data/allelefinder/allelefinder_default_rejected-report.txt",
+"type": "blob",
+"size": 474
+},
+{
+"path": "tests/data/allelefinder/allelefinder_default_rejected.txt",
+"type": "blob",
+"size": 27
+},
+{
+"path": "tests/data/bam2fds",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/bam2fds/OmniSTR_Mixture_Paired_bam2fds_advanced1.txt",
+"type": "blob",
+"size": 14527
+},
+{
+"path": "tests/data/bam2fds/OmniSTR_Mixture_Paired_bam2fds_default.txt",
+"type": "blob",
+"size": 24623
+},
+{
+"path": "tests/data/bam2fds/OmniSTR_Mixture_R1_4lt2_bam2fds_advanced2.txt",
+"type": "blob",
+"size": 2889
+},
+{
+"path": "tests/data/bam2fds/OmniSTR_Mixture_R1_4lt2_bam2fds_advanced3.txt",
+"type": "blob",
+"size": 17360
+},
+{
+"path": "tests/data/bgcorrect",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_adv2_F0107.txt",
+"type": "blob",
+"size": 19487
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_adv2_F0108.txt",
+"type": "blob",
+"size": 12321
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_adv2_F0109.txt",
+"type": "blob",
+"size": 14489
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_adv3_F0107.txt",
+"type": "blob",
+"size": 23174
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_adv3_F0108.txt",
+"type": "blob",
+"size": 14119
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_adv3_F0109.txt",
+"type": "blob",
+"size": 17649
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_adv4_F0107.txt",
+"type": "blob",
+"size": 18930
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_adv4_F0108.txt",
+"type": "blob",
+"size": 11922
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_adv4_F0109.txt",
+"type": "blob",
+"size": 14255
+},
+{
+"path": "tests/data/bgcorrect/bgcorrect_default.txt",
+"type": "blob",
+"size": 20665
+},
+{
+"path": "tests/data/bgestimate",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/bgestimate/bgestimate_adv2.txt",
+"type": "blob",
+"size": 46233
+},
+{
+"path": "tests/data/bgestimate/bgestimate_adv4.txt",
+"type": "blob",
+"size": 3286
+},
+{
+"path": "tests/data/bgestimate/bgestimate_adv5.txt",
+"type": "blob",
+"size": 8396
+},
+{
+"path": "tests/data/bgestimate/bgestimate_default.txt",
+"type": "blob",
+"size": 3072
+},
+{
+"path": "tests/data/bgestimate/start_profile.txt",
+"type": "blob",
+"size": 906
+},
+{
+"path": "tests/data/bgmerge",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/bgmerge/bgmerge_default.txt",
+"type": "blob",
+"size": 109317
+},
+{
+"path": "tests/data/bgpredict",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/bgpredict/bgpredict-adv2.txt",
+"type": "blob",
+"size": 63279
+},
+{
+"path": "tests/data/bgpredict/bgpredict-adv3.txt",
+"type": "blob",
+"size": 119795
+},
+{
+"path": "tests/data/bgpredict/bgpredict-adv4.txt",
+"type": "blob",
+"size": 177771
+},
+{
+"path": "tests/data/bgpredict/bgpredict-adv5.txt",
+"type": "blob",
+"size": 113389
+},
+{
+"path": "tests/data/bgpredict/bgpredict-default.txt",
+"type": "blob",
+"size": 118828
+},
+{
+"path": "tests/data/bgpredict/stuttermodel_adapted_adv5.txt",
+"type": "blob",
+"size": 1084
+},
+{
+"path": "tests/data/demultiplex",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/demultiplex/Multiplexed_R1.fastq",
+"type": "blob",
+"size": 2711
+},
+{
+"path": "tests/data/demultiplex/Multiplexed_R2.fastq",
+"type": "blob",
+"size": 2711
+},
+{
+"path": "tests/data/demultiplex/Multiplexed_interleaved.fastq",
+"type": "blob",
+"size": 5422
+},
+{
+"path": "tests/data/demultiplex/SampleSheet.csv",
+"type": "blob",
+"size": 148
+},
+{
+"path": "tests/data/demultiplex/advanced1",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/demultiplex/advanced1/E0049_S1_R1_001.fastq.gz",
+"type": "blob",
+"size": 268
+},
+{
+"path": "tests/data/demultiplex/advanced1/E0049_S1_R2_001.fastq.gz",
+"type": "blob",
+"size": 268
+},
+{
+"path": "tests/data/demultiplex/advanced1/E0150_S2_R1_001.fastq.gz",
+"type": "blob",
+"size": 266
+},
+{
+"path": "tests/data/demultiplex/advanced1/E0150_S2_R2_001.fastq.gz",
+"type": "blob",
+"size": 266
+},
+{
+"path": "tests/data/demultiplex/advanced1/Undetermined_S0_R1_001.fastq.gz",
+"type": "blob",
+"size": 413
+},
+{
+"path": "tests/data/demultiplex/advanced1/Undetermined_S0_R2_001.fastq.gz",
+"type": "blob",
+"size": 413
+},
+{
+"path": "tests/data/demultiplex/advanced2a",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/demultiplex/advanced2a/E0049_S1_R1_001.fastq.gz",
+"type": "blob",
+"size": 234
+},
+{
+"path": "tests/data/demultiplex/advanced2a/E0049_S1_R2_001.fastq.gz",
+"type": "blob",
+"size": 234
+},
+{
+"path": "tests/data/demultiplex/advanced2a/E0150_S2_R1_001.fastq.gz",
+"type": "blob",
+"size": 198
+},
+{
+"path": "tests/data/demultiplex/advanced2a/E0150_S2_R2_001.fastq.gz",
+"type": "blob",
+"size": 198
+},
+{
+"path": "tests/data/demultiplex/advanced2a/Undetermined_S0_R1_001.fastq.gz",
+"type": "blob",
+"size": 356
+},
+{
+"path": "tests/data/demultiplex/advanced2a/Undetermined_S0_R2_001.fastq.gz",
+"type": "blob",
+"size": 356
+},
+{
+"path": "tests/data/demultiplex/advanced2b",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/demultiplex/advanced2b/E0049_S1_R1_001.fastq.gz",
+"type": "blob",
+"size": 327
+},
+{
+"path": "tests/data/demultiplex/advanced2b/E0049_S1_R2_001.fastq.gz",
+"type": "blob",
+"size": 327
+},
+{
+"path": "tests/data/demultiplex/advanced2b/E0150_S2_R1_001.fastq.gz",
+"type": "blob",
+"size": 239
+},
+{
+"path": "tests/data/demultiplex/advanced2b/E0150_S2_R2_001.fastq.gz",
+"type": "blob",
+"size": 239
+},
+{
+"path": "tests/data/demultiplex/advanced2b/Undetermined_S00_R1_001.fastq.gz",
+"type": "blob",
+"size": 289
+},
+{
+"path": "tests/data/demultiplex/advanced2b/Undetermined_S00_R2_001.fastq.gz",
+"type": "blob",
+"size": 289
+},
+{
+"path": "tests/data/demultiplex/advanced2b/Undetermined_S0_R1_001.fastq.gz",
+"type": "blob",
+"size": 356
+},
+{
+"path": "tests/data/demultiplex/advanced2b/Undetermined_S0_R2_001.fastq.gz",
+"type": "blob",
+"size": 356
+},
+{
+"path": "tests/data/demultiplex/barcodes-reversed-right.txt",
+"type": "blob",
+"size": 56
+},
+{
+"path": "tests/data/demultiplex/barcodes.txt",
+"type": "blob",
+"size": 56
+},
+{
+"path": "tests/data/demultiplex/default",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/demultiplex/default/E0049_S1_R1_001.fastq.gz",
+"type": "blob",
+"size": 209
+},
+{
+"path": "tests/data/demultiplex/default/E0049_S1_R2_001.fastq.gz",
+"type": "blob",
+"size": 209
+},
+{
+"path": "tests/data/demultiplex/default/E0150_S2_R1_001.fastq.gz",
+"type": "blob",
+"size": 228
+},
+{
+"path": "tests/data/demultiplex/default/E0150_S2_R2_001.fastq.gz",
+"type": "blob",
+"size": 228
+},
+{
+"path": "tests/data/demultiplex/default/Undetermined_S0_R1_001.fastq.gz",
+"type": "blob",
+"size": 249
+},
+{
+"path": "tests/data/demultiplex/default/Undetermined_S0_R2_001.fastq.gz",
+"type": "blob",
+"size": 249
+},
+{
+"path": "tests/data/demultiplex/xleap-channels.txt",
+"type": "blob",
+"size": 67
+},
+{
+"path": "tests/data/findnewalleles",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/findnewalleles/known.txt",
+"type": "blob",
+"size": 1916
+},
+{
+"path": "tests/data/findnewalleles/newalleles_adv3_F0107.txt",
+"type": "blob",
+"size": 19542
+},
+{
+"path": "tests/data/findnewalleles/newalleles_adv3_F0108.txt",
+"type": "blob",
+"size": 12171
+},
+{
+"path": "tests/data/findnewalleles/newalleles_adv3_F0109.txt",
+"type": "blob",
+"size": 14720
+},
+{
+"path": "tests/data/findnewalleles/newalleles_adv5_F0107.txt",
+"type": "blob",
+"size": 19437
+},
+{
+"path": "tests/data/findnewalleles/newalleles_adv6_F0107.txt",
+"type": "blob",
+"size": 14729
+},
+{
+"path": "tests/data/findnewalleles/newalleles_default.txt",
+"type": "blob",
+"size": 19542
+},
+{
+"path": "tests/data/mergereads",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/mergereads/OmniSTR_Mixture_4lt2_mergereads_advanced-R1.fastq.gz",
+"type": "blob",
+"size": 578850
+},
+{
+"path": "tests/data/mergereads/OmniSTR_Mixture_4lt2_mergereads_advanced-R2.fastq.gz",
+"type": "blob",
+"size": 632640
+},
+{
+"path": "tests/data/mergereads/OmniSTR_Mixture_4lt2_mergereads_advanced-report.txt",
+"type": "blob",
+"size": 452
+},
+{
+"path": "tests/data/mergereads/OmniSTR_Mixture_4lt2_mergereads_advanced.fastq.gz",
+"type": "blob",
+"size": 2157474
+},
+{
+"path": "tests/data/mergereads/OmniSTR_Mixture_4lt2_mergereads_default-report.txt",
+"type": "blob",
+"size": 296
+},
+{
+"path": "tests/data/mergereads/OmniSTR_Mixture_4lt2_mergereads_default.fastq",
+"type": "blob",
+"size": 8436325
+},
+{
+"path": "tests/data/samplestats",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/samplestats/newalleles_default_adapted_for_adv-10.txt",
+"type": "blob",
+"size": 1983
+},
+{
+"path": "tests/data/samplestats/samplestats_adv10.txt",
+"type": "blob",
+"size": 2067
+},
+{
+"path": "tests/data/samplestats/samplestats_adv4_F0107.txt",
+"type": "blob",
+"size": 48140
+},
+{
+"path": "tests/data/samplestats/samplestats_adv5_F0107.txt",
+"type": "blob",
+"size": 48158
+},
+{
+"path": "tests/data/samplestats/samplestats_adv6_F0107.txt",
+"type": "blob",
+"size": 48230
+},
+{
+"path": "tests/data/samplestats/samplestats_adv7_F0107.txt",
+"type": "blob",
+"size": 12607
+},
+{
+"path": "tests/data/samplestats/samplestats_adv8_F0107.txt",
+"type": "blob",
+"size": 14339
+},
+{
+"path": "tests/data/samplestats/samplestats_adv9.txt",
+"type": "blob",
+"size": 20142
+},
+{
+"path": "tests/data/samplestats/samplestats_default_F0107.txt",
+"type": "blob",
+"size": 19052
+},
+{
+"path": "tests/data/samplestats/samplestats_default_F0107_adapated_for_input_adv4-8.txt",
+"type": "blob",
+"size": 19052
+},
+{
+"path": "tests/data/samplestats/samplestats_default_F0107_bgcorrect_for_input_adv4-8.txt",
+"type": "blob",
+"size": 26298
+},
+{
+"path": "tests/data/samplestats/samplestats_default_F0108.txt",
+"type": "blob",
+"size": 11829
+},
+{
+"path": "tests/data/samplestats/samplestats_default_F0109.txt",
+"type": "blob",
+"size": 14341
+},
+{
+"path": "tests/data/samplestats/settings.txt",
+"type": "blob",
+"size": 42
+},
+{
+"path": "tests/data/seqconvert",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/seqconvert/F0107_seqconvert-allele-column_raw+tssv.txt",
+"type": "blob",
+"size": 31502
+},
+{
+"path": "tests/data/seqconvert/F0107_seqconvert-allele-column_tssv+allelename.txt",
+"type": "blob",
+"size": 18468
+},
+{
+"path": "tests/data/seqconvert/F0107_seqconvert-allele-column_tssv+tssv.txt",
+"type": "blob",
+"size": 26466
+},
+{
+"path": "tests/data/seqconvert/OmniSTR_Mixture_R1_4lt2_seqconvert-marker-column.txt",
+"type": "blob",
+"size": 171
+},
+{
+"path": "tests/data/seqconvert/OmniSTR_Mixture_R1_4lt2_seqconvert-marker_allelename_NonSTR.txt",
+"type": "blob",
+"size": 74430
+},
+{
+"path": "tests/data/seqconvert/OmniSTR_Mixture_R1_4lt2_seqconvert-marker_allelename_STR.txt",
+"type": "blob",
+"size": 42660
+},
+{
+"path": "tests/data/seqconvert/OmniSTR_Mixture_R1_4lt2_seqconvert-marker_tssv_NonSTR.txt",
+"type": "blob",
+"size": 32336
+},
+{
+"path": "tests/data/seqconvert/OmniSTR_Mixture_R1_4lt2_seqconvert-marker_tssv_STR.txt",
+"type": "blob",
+"size": 29377
+},
+{
+"path": "tests/data/seqconvert/OmniSTR_Mixture_R1_4lt2_seqconvert_allelename.txt",
+"type": "blob",
+"size": 14224
+},
+{
+"path": "tests/data/seqconvert/OmniSTR_Mixture_R1_4lt2_seqconvert_tssv.txt",
+"type": "blob",
+"size": 21742
+},
+{
+"path": "tests/data/seqconvert/RangeAdjust_ForenSeq.txt",
+"type": "blob",
+"size": 80
+},
+{
+"path": "tests/data/seqconvert/RangeAdjust_OmniSTR.txt",
+"type": "blob",
+"size": 87
+},
+{
+"path": "tests/data/stuttermark",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/stuttermark/advanced1",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/stuttermark/advanced1/F0107-stuttermark.out",
+"type": "blob",
+"size": 14911
+},
+{
+"path": "tests/data/stuttermark/advanced1/F0809-stuttermark.out",
+"type": "blob",
+"size": 6298
+},
+{
+"path": "tests/data/stuttermark/default",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/stuttermark/default/F0107-stuttermark.out",
+"type": "blob",
+"size": 15000
+},
+{
+"path": "tests/data/stuttermark/default/F0108-stuttermark.out",
+"type": "blob",
+"size": 9495
+},
+{
+"path": "tests/data/stuttermark/default/F0109-stuttermark.out",
+"type": "blob",
+"size": 11460
+},
+{
+"path": "tests/data/stuttermark/default/F0110-stuttermark.out",
+"type": "blob",
+"size": 15953
+},
+{
+"path": "tests/data/stuttermark/default/F0207-stuttermark.out",
+"type": "blob",
+"size": 8798
+},
+{
+"path": "tests/data/stuttermark/default/F0208-stuttermark.out",
+"type": "blob",
+"size": 5416
+},
+{
+"path": "tests/data/stuttermark/default/F0209-stuttermark.out",
+"type": "blob",
+"size": 7054
+},
+{
+"path": "tests/data/stuttermark/default/F0210-stuttermark.out",
+"type": "blob",
+"size": 4827
+},
+{
+"path": "tests/data/stuttermark/default/F0307-stuttermark.out",
+"type": "blob",
+"size": 6553
+},
+{
+"path": "tests/data/stuttermark/default/F0308-stuttermark.out",
+"type": "blob",
+"size": 4009
+},
+{
+"path": "tests/data/stuttermark/default/F0309-stuttermark.out",
+"type": "blob",
+"size": 4261
+},
+{
+"path": "tests/data/stuttermark/default/F0310-stuttermark.out",
+"type": "blob",
+"size": 6079
+},
+{
+"path": "tests/data/stuttermark/default/F0407-stuttermark.out",
+"type": "blob",
+"size": 5889
+},
+{
+"path": "tests/data/stuttermark/default/F0408-stuttermark.out",
+"type": "blob",
+"size": 5489
+},
+{
+"path": "tests/data/stuttermark/default/F0409-stuttermark.out",
+"type": "blob",
+"size": 4269
+},
+{
+"path": "tests/data/stuttermark/default/F0410-stuttermark.out",
+"type": "blob",
+"size": 5236
+},
+{
+"path": "tests/data/stuttermark/default/F0507-stuttermark.out",
+"type": "blob",
+"size": 10762
+},
+{
+"path": "tests/data/stuttermark/default/F0508-stuttermark.out",
+"type": "blob",
+"size": 6679
+},
+{
+"path": "tests/data/stuttermark/default/F0509-stuttermark.out",
+"type": "blob",
+"size": 6266
+},
+{
+"path": "tests/data/stuttermark/default/F0510-stuttermark.out",
+"type": "blob",
+"size": 13550
+},
+{
+"path": "tests/data/stuttermark/default/F0607-stuttermark.out",
+"type": "blob",
+"size": 9042
+},
+{
+"path": "tests/data/stuttermark/default/F0608-stuttermark.out",
+"type": "blob",
+"size": 28831
+},
+{
+"path": "tests/data/stuttermark/default/F0609-stuttermark.out",
+"type": "blob",
+"size": 6204
+},
+{
+"path": "tests/data/stuttermark/default/F0610-stuttermark.out",
+"type": "blob",
+"size": 6370
+},
+{
+"path": "tests/data/stuttermark/default/F0707-stuttermark.out",
+"type": "blob",
+"size": 8558
+},
+{
+"path": "tests/data/stuttermark/default/F0708-stuttermark.out",
+"type": "blob",
+"size": 6374
+},
+{
+"path": "tests/data/stuttermark/default/F0709-stuttermark.out",
+"type": "blob",
+"size": 12702
+},
+{
+"path": "tests/data/stuttermark/default/F0710-stuttermark.out",
+"type": "blob",
+"size": 10865
+},
+{
+"path": "tests/data/stuttermark/default/F0807-stuttermark.out",
+"type": "blob",
+"size": 16746
+},
+{
+"path": "tests/data/stuttermark/default/F0808-stuttermark.out",
+"type": "blob",
+"size": 13665
+},
+{
+"path": "tests/data/stuttermark/default/F0809-stuttermark.out",
+"type": "blob",
+"size": 6376
+},
+{
+"path": "tests/data/stuttermark/stuttermark_library_required.txt",
+"type": "blob",
+"size": 10510
+},
+{
+"path": "tests/data/stuttermodel",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel-default.txt",
+"type": "blob",
+"size": 393
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel-raw.txt",
+"type": "blob",
+"size": 1464
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced1-raw.txt",
+"type": "blob",
+"size": 2163
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced1.txt",
+"type": "blob",
+"size": 957
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced2-raw.txt",
+"type": "blob",
+"size": 1439
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced2.txt",
+"type": "blob",
+"size": 970
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced3-raw.txt",
+"type": "blob",
+"size": 2370
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced3.txt",
+"type": "blob",
+"size": 198
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced4-raw.txt",
+"type": "blob",
+"size": 391
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced4.txt",
+"type": "blob",
+"size": 117
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced5-raw.txt",
+"type": "blob",
+"size": 503
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_advanced5.txt",
+"type": "blob",
+"size": 322
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_marker-raw.txt",
+"type": "blob",
+"size": 197
+},
+{
+"path": "tests/data/stuttermodel/stuttermodel_marker.txt",
+"type": "blob",
+"size": 324
+},
+{
+"path": "tests/data/tssv",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/tssv/OmniSTR_Mixture_R1_4lt2_tssv_advanced1-report.txt",
+"type": "blob",
+"size": 1412
+},
+{
+"path": "tests/data/tssv/OmniSTR_Mixture_R1_4lt2_tssv_advanced1.txt",
+"type": "blob",
+"size": 14279
+},
+{
+"path": "tests/data/tssv/OmniSTR_Mixture_R1_4lt2_tssv_advanced2-report.txt",
+"type": "blob",
+"size": 1567
+},
+{
+"path": "tests/data/tssv/OmniSTR_Mixture_R1_4lt2_tssv_advanced2.txt",
+"type": "blob",
+"size": 2886
+},
+{
+"path": "tests/data/tssv/OmniSTR_Mixture_R1_4lt2_tssv_advanced3-report.txt",
+"type": "blob",
+"size": 1482
+},
+{
+"path": "tests/data/tssv/OmniSTR_Mixture_R1_4lt2_tssv_advanced3.txt",
+"type": "blob",
+"size": 18089
+},
+{
+"path": "tests/data/tssv/OmniSTR_Mixture_R1_4lt2_tssv_default-report.txt",
+"type": "blob",
+"size": 1412
+},
+{
+"path": "tests/data/tssv/OmniSTR_Mixture_R1_4lt2_tssv_default.txt",
+"type": "blob",
+"size": 31568
+},
+{
+"path": "tests/data/tssv/ambiguous-filtered_tssv-report.txt",
+"type": "blob",
+"size": 971
+},
+{
+"path": "tests/data/tssv/ambiguous-filtered_tssv.txt",
+"type": "blob",
+"size": 898
+},
+{
+"path": "tests/data/tssv/ambiguous-qualities_tssv.txt",
+"type": "blob",
+"size": 898
+},
+{
+"path": "tests/data/tssv/ambiguous_tssv-report.txt",
+"type": "blob",
+"size": 971
+},
+{
+"path": "tests/data/tssv/ambiguous_tssv.txt",
+"type": "blob",
+"size": 793
+},
+{
+"path": "tests/data/tssv/dir_advanced1",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/tssv/dir_advanced1/AmelogeninX",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/tssv/dir_advanced1/AmelogeninX/noend.fa",
+"type": "blob",
+"size": 183809
+},
+{
+"path": "tests/data/tssv/dir_advanced1/AmelogeninX/sequences.csv",
+"type": "blob",
+"size": 155
+},
+{
+"path": "tests/data/tssv/dir_advanced1/sequences.csv",
+"type": "blob",
+"size": 14279
+},
+{
+"path": "tests/data/tssv/dir_advanced1/statistics.csv",
+"type": "blob",
+"size": 1412
+},
+{
+"path": "tests/data/tssv/dir_advanced2",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/tssv/dir_advanced2/AmelogeninX",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/tssv/dir_advanced2/AmelogeninX/noend.fa",
+"type": "blob",
+"size": 513507
+},
+{
+"path": "tests/data/tssv/dir_advanced2/AmelogeninX/sequences.csv",
+"type": "blob",
+"size": 64
+},
+{
+"path": "tests/data/tssv/dir_advanced2/sequences.csv",
+"type": "blob",
+"size": 2886
+},
+{
+"path": "tests/data/tssv/dir_advanced2/statistics.csv",
+"type": "blob",
+"size": 1567
+},
+{
+"path": "tests/data/tssv/dir_advanced3",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/tssv/dir_advanced3/AmelogeninX",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/tssv/dir_advanced3/AmelogeninX/noend.fa",
+"type": "blob",
+"size": 187013
+},
+{
+"path": "tests/data/tssv/dir_advanced3/AmelogeninX/sequences.csv",
+"type": "blob",
+"size": 155
+},
+{
+"path": "tests/data/tssv/dir_advanced3/sequences.csv",
+"type": "blob",
+"size": 18089
+},
+{
+"path": "tests/data/tssv/dir_advanced3/statistics.csv",
+"type": "blob",
+"size": 1482
+},
+{
+"path": "tests/data/tssv/distrust-qualities_tssv-report.txt",
+"type": "blob",
+"size": 971
+},
+{
+"path": "tests/data/tssv/distrust-qualities_tssv.txt",
+"type": "blob",
+"size": 898
+},
+{
+"path": "tests/lib",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/lib/ComponentTestCase.py",
+"type": "blob",
+"size": 7443
+},
+{
+"path": "tests/lib/ComponentTestData.py",
+"type": "blob",
+"size": 4384
+},
+{
+"path": "tests/lib/__init__.py",
+"type": "blob",
+"size": 0
+}
+]
+}

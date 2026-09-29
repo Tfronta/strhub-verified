@@ -1,0 +1,21 @@
+[package]
+name = "pipeplot"
+version = "0.1.0"
+edition = "2021"
+include = [
+     "**/*.rs",
+     "Cargo.toml",
+     "assets/fonts/**/*",
+]
+
+[[package.metadata.third-party-licenses]]
+name = "Roboto Font"
+license = "Apache-2.0"
+source = "https://github.com/google/roboto"
+license-file = "licenses/LICENSE-ROBOTO.txt"
+
+[dependencies]
+resvg = "0.45"
+usvg = "0.45"
+svg2pdf = "0.13.0"
+tempfile = "3"

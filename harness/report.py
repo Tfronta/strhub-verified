@@ -399,7 +399,7 @@ def _summary_md(report: dict, slug: str) -> str:
             where = f"`{e['path']}`" + (f" line {e['line']}" if e.get("line") else "")
             # Whole, not clipped: the platform advice is the one line a reader
             # most needs entire, since the run may have gone against it.
-            txt = f": `{e['text']}`" if e.get("text") and e["kind"] == "readme" else ""
+            txt = f": `{e['text']}`" if e.get("text") and e["kind"] in ("readme", "doc", "wiki") else ""
             lines.append(f"- {CLAIM_LABELS.get(e['claim'], e['claim'])}: [{where}]({e['url']}){txt}")
 
     needed = report.get("needed_beyond_repo") or []
@@ -678,7 +678,7 @@ def _summary_html(report: dict, slug: str) -> str:
         for e in ev:
             where = esc(e["path"]) + (f" line {esc(e['line'])}" if e.get("line") else "")
             quote = (f": <code>{esc(e['text'])}</code>"
-                     if e.get("text") and e.get("kind") == "readme" else "")
+                     if e.get("text") and e.get("kind") in ("readme", "doc", "wiki") else "")
             items.append(f"<li>{esc(CLAIM_LABELS.get(e['claim'], e['claim']))}: "
                          f"<a href=\"{esc(e['url'])}\">{where}</a>{quote}</li>")
         evidence_block = (f"<h2>Evidence</h2><p>{esc(EVIDENCE_LEAD)}</p>"

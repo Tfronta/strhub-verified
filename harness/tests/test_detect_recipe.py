@@ -73,7 +73,10 @@ def test_gangstr_builds_the_pinned_commit_and_keeps_the_published_image_as_plan_
     # the README there and see the author pointing at it.
     assert fb["readme_line"] == 18
     assert [c["method"] for c in r["build"]["candidates"]] == ["cmake", "docker_image", "bioconda"]
-    assert "FROM ubuntu:22.04" in r["dockerfile"] and "cmake . && make" in r["dockerfile"]
+    # Out of the source tree, as CMake projects document it, and whatever it
+    # built is put on the PATH.
+    assert "FROM ubuntu:22.04" in r["dockerfile"] and "cmake -S . -B build" in r["dockerfile"]
+    assert "/usr/local/bin/" in r["dockerfile"]
     assert r["dockerfile_fallback"].startswith("# Proposed") and "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
     assert r["commands"][0]["invokes"] == "GangSTR"
     # One option per line in the README, no backslashes: all of them are kept.
@@ -98,7 +101,13 @@ def test_a_help_listing_is_not_a_command():
     assert all(not c["invokes"].endswith(":") and not c["invokes"].startswith("-") for c in r["commands"])
     assert r["commands"][0]["cmd"] == "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt"
     readme = "```\nUsage: tool [-h]\n\nwhere:\n  -h show the help\n  -s input bam\n  -o output dir\n```\n"
-    assert dr.detect_commands(readme, ["tool"]) and all(c["invokes"] == "tool" for c in dr.detect_commands(readme, ["tool"]))
+    # The options are not joined into a command; and a usage line that only
+    # offers -h documents nothing to run, so there is no command at all.
+    assert dr.detect_commands(readme, ["tool"]) == []
+    with_run = readme + "\n```\ntool -s reads.bam -o out\n```\n"
+    cmds = dr.detect_commands(with_run, ["tool"])
+    assert cmds and cmds[0]["cmd"] == "tool -s reads.bam -o out"
+    assert all(c["invokes"] == "tool" for c in cmds)
 
 
 def test_empty_repository_reports_every_gap():

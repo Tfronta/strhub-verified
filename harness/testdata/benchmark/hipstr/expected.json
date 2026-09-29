@@ -1,0 +1,54 @@
+{
+  "_about": "Hand-checked against https://github.com/tfwillems/HipSTR at b2033bfbb5cf55496b776463bdf2993fa763a4be on 2026-09-29, from README.md, the tutorial it links (https://hipstr-tool.github.io/HipSTR-tutorial/), the file tree, the v0.7 tag and release, and Bioconda (api.anaconda.org and the bioconda-recipes hipstr recipe).",
+  "program": {
+    "value": "HipSTR",
+    "subcommand": null,
+    "where": "README.md:61,69"
+  },
+  "command": {
+    "value": "./HipSTR --bams          run1.bam,run2.bam,run3.bam,run4.bam\n         --fasta         genome.fa\n         --regions       str_regions.bed\n         --str-vcf       str_calls.vcf.gz",
+    "source": "readme",
+    "where": "README.md:69-72"
+  },
+  "install": {
+    "documented": "git clone, then make in the checkout (build deps: apt install make g++ zlib1g-dev libhts-dev libbz2-dev liblzma-dev)",
+    "acceptable_methods": [
+      "make"
+    ],
+    "where": "README.md:38-63"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": {
+      "package": "hipstr",
+      "version_at_ref": "0.7"
+    },
+    "image_documented": null,
+    "release_binary_documented": false,
+    "where": "README.md:51-63 (git clone + make only; no conda, docker or download line anywhere in the README or the tutorial); https://api.anaconda.org/package/bioconda/hipstr (versions: 0.7; the recipe builds https://github.com/tfwillems/HipSTR/archive/refs/tags/v0.7.tar.gz); https://github.com/tfwillems/HipSTR/releases/tag/v0.7 (no assets)"
+  },
+  "input": {
+    "kinds": [
+      "bam",
+      "cram"
+    ],
+    "platforms": [
+      "illumina"
+    ],
+    "strhub_type": "illumina-bam-hg38",
+    "where": "README.md:36,75,152,280,304,435"
+  },
+  "extra_inputs": [
+    {
+      "what": "STR regions BED in HipSTR layout: chrom, start, end, motif length, reference copy number, optional locus name; no header",
+      "required": true,
+      "strhub_has": true,
+      "where": "README.md:71,76,308-320"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": true,
+    "why": "The command needs a sorted, indexed Illumina BAM whose @RG lines carry SM and LB (README.md:280-288), a FASTA of the same build and a HipSTR-layout regions BED. illumina-bam-hg38 is NA12878 on GRCh38 with a .bai and @RG ID:NA12878 SM:NA12878 LB:GIAB300x; STRhub supplies hg38.fa and the HipSTR-layout BED. Nothing is missing."
+  },
+  "notes": "Command: the Quick Start (README.md:65-73), which the README calls the most broadly applicable mode and repeats as Mode 1 (README.md:111-119); one invocation written over four lines with no backslash continuations. Its defaults are meant for many samples (stutter learned by EM, --min-reads 100, reads without mates and PCR duplicates dropped); for a single sample the README itself suggests --min-reads 15 --def-stutter-model (README.md:160,432-433) and names --use-unpaired and --no-rmdup for unpaired or PCR-amplified reads (README.md:231-232,426-429). Output: bgzipped VCF (README.md:84). Version: the pin is master, one commit after the v0.7 tag (12e989b) that only fixes a README link, so Bioconda's hipstr 0.7 (built from the v0.7 tag tarball) is this code; no document mentions Bioconda. README.md:54 clones HipSTR-Tool/HipSTR, a fork whose master differs from the pin in one README line; the tutorial clones tfwillems/HipSTR and runs make."
+}

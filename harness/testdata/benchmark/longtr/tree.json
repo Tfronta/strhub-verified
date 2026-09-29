@@ -1,0 +1,865 @@
+{
+"repo": "https://github.com/gymrek-lab/LongTR",
+"ref": "2be6cf5ec0b108601719c16171a3f0099d1cb88d",
+"tag": "v1.2",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [],
+"tree": [
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 471
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 18027
+},
+{
+"path": "Makefile",
+"type": "blob",
+"size": 6787
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 14285
+},
+{
+"path": "VizAln",
+"type": "blob",
+"size": 2746
+},
+{
+"path": "VizAlnPdf",
+"type": "blob",
+"size": 3058
+},
+{
+"path": "_config.yml",
+"type": "blob",
+"size": 25
+},
+{
+"path": "img",
+"type": "tree",
+"size": 0
+},
+{
+"path": "img/HipSTR_icon_small.png",
+"type": "blob",
+"size": 7435
+},
+{
+"path": "img/phasing.png",
+"type": "blob",
+"size": 61846
+},
+{
+"path": "lib",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/cephes",
+"type": "tree",
+"size": 0
+},
+{
+"path": "lib/cephes/Makefile",
+"type": "blob",
+"size": 474
+},
+{
+"path": "lib/cephes/README",
+"type": "blob",
+"size": 504
+},
+{
+"path": "lib/cephes/bdtr.c",
+"type": "blob",
+"size": 4886
+},
+{
+"path": "lib/cephes/btdtr.c",
+"type": "blob",
+"size": 1008
+},
+{
+"path": "lib/cephes/cephes.h",
+"type": "blob",
+"size": 162
+},
+{
+"path": "lib/cephes/chbevl.c",
+"type": "blob",
+"size": 1595
+},
+{
+"path": "lib/cephes/chdtr.c",
+"type": "blob",
+"size": 3477
+},
+{
+"path": "lib/cephes/const.c",
+"type": "blob",
+"size": 9558
+},
+{
+"path": "lib/cephes/drand.c",
+"type": "blob",
+"size": 3138
+},
+{
+"path": "lib/cephes/expx2.c",
+"type": "blob",
+"size": 1597
+},
+{
+"path": "lib/cephes/fdtr.c",
+"type": "blob",
+"size": 5197
+},
+{
+"path": "lib/cephes/gamma.c",
+"type": "blob",
+"size": 14053
+},
+{
+"path": "lib/cephes/gdtr.c",
+"type": "blob",
+"size": 1945
+},
+{
+"path": "lib/cephes/igam.c",
+"type": "blob",
+"size": 3924
+},
+{
+"path": "lib/cephes/igami.c",
+"type": "blob",
+"size": 3140
+},
+{
+"path": "lib/cephes/incbet.c",
+"type": "blob",
+"size": 6929
+},
+{
+"path": "lib/cephes/incbi.c",
+"type": "blob",
+"size": 5093
+},
+{
+"path": "lib/cephes/isnan.c",
+"type": "blob",
+"size": 3907
+},
+{
+"path": "lib/cephes/kolmogorov.c",
+"type": "blob",
+"size": 5034
+},
+{
+"path": "lib/cephes/mconf.h",
+"type": "blob",
+"size": 5442
+},
+{
+"path": "lib/cephes/msc.rsp",
+"type": "blob",
+"size": 146
+},
+{
+"path": "lib/cephes/mtherr.c",
+"type": "blob",
+"size": 2369
+},
+{
+"path": "lib/cephes/nbdtr.c",
+"type": "blob",
+"size": 3408
+},
+{
+"path": "lib/cephes/ndtr.c",
+"type": "blob",
+"size": 10927
+},
+{
+"path": "lib/cephes/ndtri.c",
+"type": "blob",
+"size": 10095
+},
+{
+"path": "lib/cephes/pdtr.c",
+"type": "blob",
+"size": 2589
+},
+{
+"path": "lib/cephes/polevl.c",
+"type": "blob",
+"size": 1605
+},
+{
+"path": "lib/cephes/stdtr.c",
+"type": "blob",
+"size": 4121
+},
+{
+"path": "lib/cephes/unity.c",
+"type": "blob",
+"size": 2648
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/GetStutterModels",
+"type": "blob",
+"size": 1209
+},
+{
+"path": "scripts/filter_haploid_vcf.py",
+"type": "blob",
+"size": 15901
+},
+{
+"path": "scripts/filter_vcf.py",
+"type": "blob",
+"size": 11290
+},
+{
+"path": "scripts/generate_aln_html.py",
+"type": "blob",
+"size": 7053
+},
+{
+"path": "scripts/html_alns_to_pdf.py",
+"type": "blob",
+"size": 7150
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/SeqAlignment",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/SeqAlignment/AlignmentData.h",
+"type": "blob",
+"size": 4710
+},
+{
+"path": "src/SeqAlignment/AlignmentOps.cpp",
+"type": "blob",
+"size": 6766
+},
+{
+"path": "src/SeqAlignment/AlignmentOps.h",
+"type": "blob",
+"size": 391
+},
+{
+"path": "src/SeqAlignment/AlignmentTraceback.cpp",
+"type": "blob",
+"size": 4647
+},
+{
+"path": "src/SeqAlignment/AlignmentTraceback.h",
+"type": "blob",
+"size": 4228
+},
+{
+"path": "src/SeqAlignment/AlignmentViz.cpp",
+"type": "blob",
+"size": 7312
+},
+{
+"path": "src/SeqAlignment/AlignmentViz.h",
+"type": "blob",
+"size": 552
+},
+{
+"path": "src/SeqAlignment/HTMLCreator.cpp",
+"type": "blob",
+"size": 3147
+},
+{
+"path": "src/SeqAlignment/HTMLCreator.h",
+"type": "blob",
+"size": 701
+},
+{
+"path": "src/SeqAlignment/HapAligner.cpp",
+"type": "blob",
+"size": 41694
+},
+{
+"path": "src/SeqAlignment/HapAligner.h",
+"type": "blob",
+"size": 5722
+},
+{
+"path": "src/SeqAlignment/HapBlock.cpp",
+"type": "blob",
+"size": 1198
+},
+{
+"path": "src/SeqAlignment/HapBlock.h",
+"type": "blob",
+"size": 5638
+},
+{
+"path": "src/SeqAlignment/Haplotype.cpp",
+"type": "blob",
+"size": 9569
+},
+{
+"path": "src/SeqAlignment/Haplotype.h",
+"type": "blob",
+"size": 4416
+},
+{
+"path": "src/SeqAlignment/HaplotypeGenerator.cpp",
+"type": "blob",
+"size": 25669
+},
+{
+"path": "src/SeqAlignment/HaplotypeGenerator.h",
+"type": "blob",
+"size": 3730
+},
+{
+"path": "src/SeqAlignment/NeedlemanWunsch.cpp",
+"type": "blob",
+"size": 18910
+},
+{
+"path": "src/SeqAlignment/NeedlemanWunsch.h",
+"type": "blob",
+"size": 684
+},
+{
+"path": "src/SeqAlignment/RepeatBlock.h",
+"type": "blob",
+"size": 2780
+},
+{
+"path": "src/SeqAlignment/RepeatStutterInfo.h",
+"type": "blob",
+"size": 2290
+},
+{
+"path": "src/SeqAlignment/StutterAlignerClass.cpp",
+"type": "blob",
+"size": 6302
+},
+{
+"path": "src/SeqAlignment/StutterAlignerClass.h",
+"type": "blob",
+"size": 4156
+},
+{
+"path": "src/alignment_filters.cpp",
+"type": "blob",
+"size": 6983
+},
+{
+"path": "src/alignment_filters.h",
+"type": "blob",
+"size": 1034
+},
+{
+"path": "src/bam_io.cpp",
+"type": "blob",
+"size": 11445
+},
+{
+"path": "src/bam_io.h",
+"type": "blob",
+"size": 17810
+},
+{
+"path": "src/bam_processor.cpp",
+"type": "blob",
+"size": 27295
+},
+{
+"path": "src/bam_processor.h",
+"type": "blob",
+"size": 6496
+},
+{
+"path": "src/base_quality.cpp",
+"type": "blob",
+"size": 957
+},
+{
+"path": "src/base_quality.h",
+"type": "blob",
+"size": 2701
+},
+{
+"path": "src/bgzf_streams.h",
+"type": "blob",
+"size": 3648
+},
+{
+"path": "src/check_phasing.cpp",
+"type": "blob",
+"size": 8984
+},
+{
+"path": "src/debruijn_graph.cpp",
+"type": "blob",
+"size": 7224
+},
+{
+"path": "src/debruijn_graph.h",
+"type": "blob",
+"size": 2456
+},
+{
+"path": "src/denovos",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/denovos/annotate_vcf_with_denovo_lls.py",
+"type": "blob",
+"size": 5400
+},
+{
+"path": "src/denovos/denovo_allele_priors.cpp",
+"type": "blob",
+"size": 1436
+},
+{
+"path": "src/denovos/denovo_allele_priors.h",
+"type": "blob",
+"size": 2817
+},
+{
+"path": "src/denovos/denovo_main.cpp",
+"type": "blob",
+"size": 12443
+},
+{
+"path": "src/denovos/denovo_scanner.cpp",
+"type": "blob",
+"size": 14753
+},
+{
+"path": "src/denovos/denovo_scanner.h",
+"type": "blob",
+"size": 1686
+},
+{
+"path": "src/denovos/mutation_model.h",
+"type": "blob",
+"size": 808
+},
+{
+"path": "src/denovos/trio_denovo_scanner.cpp",
+"type": "blob",
+"size": 10144
+},
+{
+"path": "src/denovos/trio_denovo_scanner.h",
+"type": "blob",
+"size": 1369
+},
+{
+"path": "src/directed_graph.cpp",
+"type": "blob",
+"size": 2357
+},
+{
+"path": "src/directed_graph.h",
+"type": "blob",
+"size": 3841
+},
+{
+"path": "src/em_stutter_genotyper.cpp",
+"type": "blob",
+"size": 9593
+},
+{
+"path": "src/em_stutter_genotyper.h",
+"type": "blob",
+"size": 4526
+},
+{
+"path": "src/error.cpp",
+"type": "blob",
+"size": 204
+},
+{
+"path": "src/error.h",
+"type": "blob",
+"size": 133
+},
+{
+"path": "src/extract_indels.cpp",
+"type": "blob",
+"size": 3667
+},
+{
+"path": "src/extract_indels.h",
+"type": "blob",
+"size": 471
+},
+{
+"path": "src/fasta_reader.cpp",
+"type": "blob",
+"size": 2859
+},
+{
+"path": "src/fasta_reader.h",
+"type": "blob",
+"size": 3483
+},
+{
+"path": "src/fastonebigheader.h",
+"type": "blob",
+"size": 17311
+},
+{
+"path": "src/genotyper.cpp",
+"type": "blob",
+"size": 21444
+},
+{
+"path": "src/genotyper.h",
+"type": "blob",
+"size": 6585
+},
+{
+"path": "src/genotyper_bam_processor.cpp",
+"type": "blob",
+"size": 15918
+},
+{
+"path": "src/genotyper_bam_processor.h",
+"type": "blob",
+"size": 11446
+},
+{
+"path": "src/haplotype_tracker.cpp",
+"type": "blob",
+"size": 8066
+},
+{
+"path": "src/haplotype_tracker.h",
+"type": "blob",
+"size": 6006
+},
+{
+"path": "src/hipstr_main.cpp",
+"type": "blob",
+"size": 33361
+},
+{
+"path": "src/mathops.cpp",
+"type": "blob",
+"size": 2922
+},
+{
+"path": "src/mathops.h",
+"type": "blob",
+"size": 1064
+},
+{
+"path": "src/null_ostream.h",
+"type": "blob",
+"size": 428
+},
+{
+"path": "src/pcr_duplicates.cpp",
+"type": "blob",
+"size": 4303
+},
+{
+"path": "src/pcr_duplicates.h",
+"type": "blob",
+"size": 2064
+},
+{
+"path": "src/pedigree.cpp",
+"type": "blob",
+"size": 12756
+},
+{
+"path": "src/pedigree.h",
+"type": "blob",
+"size": 6502
+},
+{
+"path": "src/process_timer.h",
+"type": "blob",
+"size": 545
+},
+{
+"path": "src/read_pooler.cpp",
+"type": "blob",
+"size": 885
+},
+{
+"path": "src/read_pooler.h",
+"type": "blob",
+"size": 1542
+},
+{
+"path": "src/region.cpp",
+"type": "blob",
+"size": 2573
+},
+{
+"path": "src/region.h",
+"type": "blob",
+"size": 4015
+},
+{
+"path": "src/seq_stutter_genotyper.cpp",
+"type": "blob",
+"size": 60073
+},
+{
+"path": "src/seq_stutter_genotyper.h",
+"type": "blob",
+"size": 9712
+},
+{
+"path": "src/snp_bam_processor.cpp",
+"type": "blob",
+"size": 11468
+},
+{
+"path": "src/snp_bam_processor.h",
+"type": "blob",
+"size": 4325
+},
+{
+"path": "src/snp_phasing_quality.cpp",
+"type": "blob",
+"size": 4534
+},
+{
+"path": "src/snp_phasing_quality.h",
+"type": "blob",
+"size": 1036
+},
+{
+"path": "src/snp_tree.cpp",
+"type": "blob",
+"size": 5401
+},
+{
+"path": "src/snp_tree.h",
+"type": "blob",
+"size": 4029
+},
+{
+"path": "src/stringops.cpp",
+"type": "blob",
+"size": 1607
+},
+{
+"path": "src/stringops.h",
+"type": "blob",
+"size": 631
+},
+{
+"path": "src/stutter_model.cpp",
+"type": "blob",
+"size": 3160
+},
+{
+"path": "src/stutter_model.h",
+"type": "blob",
+"size": 3117
+},
+{
+"path": "src/vcf_input.cpp",
+"type": "blob",
+"size": 4030
+},
+{
+"path": "src/vcf_input.h",
+"type": "blob",
+"size": 3230
+},
+{
+"path": "src/vcf_reader.cpp",
+"type": "blob",
+"size": 4705
+},
+{
+"path": "src/vcf_reader.h",
+"type": "blob",
+"size": 6689
+},
+{
+"path": "src/vcf_writer.cpp",
+"type": "blob",
+"size": 1199
+},
+{
+"path": "src/vcf_writer.h",
+"type": "blob",
+"size": 1990
+},
+{
+"path": "src/version.cpp",
+"type": "blob",
+"size": 66
+},
+{
+"path": "src/version.h",
+"type": "blob",
+"size": 100
+},
+{
+"path": "src/zalgorithm.cpp",
+"type": "blob",
+"size": 4248
+},
+{
+"path": "src/zalgorithm.h",
+"type": "blob",
+"size": 1695
+},
+{
+"path": "test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test/em_stutter_test.cpp",
+"type": "blob",
+"size": 4900
+},
+{
+"path": "test/fast_ops_test.cpp",
+"type": "blob",
+"size": 351
+},
+{
+"path": "test/haplotype_test.cpp",
+"type": "blob",
+"size": 2127
+},
+{
+"path": "test/input",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test/input/1kg.chr1.imputed.vcf.gz",
+"type": "blob",
+"size": 18485802
+},
+{
+"path": "test/input/1kg.chr1.imputed.vcf.gz.tbi",
+"type": "blob",
+"size": 6317
+},
+{
+"path": "test/input/chr1_regions.bed",
+"type": "blob",
+"size": 713
+},
+{
+"path": "test/input/chr1_regions_v2.bed",
+"type": "blob",
+"size": 980
+},
+{
+"path": "test/plot_stutter_results.py",
+"type": "blob",
+"size": 5142
+},
+{
+"path": "test/read_vcf_alleles_test.cpp",
+"type": "blob",
+"size": 1067
+},
+{
+"path": "test/run_stutter_em_test.sh",
+"type": "blob",
+"size": 998
+},
+{
+"path": "test/run_stutter_em_tests.sh",
+"type": "blob",
+"size": 610
+},
+{
+"path": "test/run_tests.sh",
+"type": "blob",
+"size": 313
+},
+{
+"path": "test/snp_tree_test.cpp",
+"type": "blob",
+"size": 3207
+},
+{
+"path": "test/vcf_snp_tree_test.cpp",
+"type": "blob",
+"size": 645
+},
+{
+"path": "test_data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test_data/HG002_sample_reads.bam",
+"type": "blob",
+"size": 2253859
+},
+{
+"path": "test_data/HG002_sample_reads.bam.bai",
+"type": "blob",
+"size": 3104
+},
+{
+"path": "test_data/HG003_sample_reads.bam",
+"type": "blob",
+"size": 2517576
+},
+{
+"path": "test_data/HG003_sample_reads.bam.bai",
+"type": "blob",
+"size": 3152
+},
+{
+"path": "test_data/HG004_sample_reads.bam",
+"type": "blob",
+"size": 2266092
+},
+{
+"path": "test_data/HG004_sample_reads.bam.bai",
+"type": "blob",
+"size": 2888
+},
+{
+"path": "test_data/job.sh",
+"type": "blob",
+"size": 304
+},
+{
+"path": "test_data/test_regions_hg38.bed",
+"type": "blob",
+"size": 2383
+}
+]
+}

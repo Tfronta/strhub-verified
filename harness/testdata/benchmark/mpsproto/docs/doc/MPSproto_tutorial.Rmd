@@ -1,0 +1,211 @@
+---
+title: "MPSproto tutorial"
+#date: "01 08 2022"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+
+## About MPSproto
+MPSproto is a R-package for interpreting MPS-STR mixtures. It requires a calibrated model in order to do so.
+
+The calibrated model ingredients must be: \
+1) Analytical threshold parameters \
+2) Marker efficiency parameters \
+3) Noise parameters \
+4) Stutter parameters (optional)
+
+These parameters must be defined per marker and stored in a list structure (calibrated objected): \
+*calibrated[[marker]]=list(markerEff,nNoiseParam,noiseSizeParam,AT,...)* \
+where *...* is stutter type names (optional).
+
+
+## Calibration
+The data used for calibration in this tutorial are based on positive control only (reference 2800M).
+Single source profiles must be provided where the genotype of the contributor is indicated.
+
+### Step 1: Preparing data for calibration
+```{r}
+library(MPSproto) #load package
+pkg = path.package("MPSproto") #get package install folder
+path = paste0(pkg,"/examples") #path of data to use
+
+#Load data for calibration;
+calibrationDataFile = paste0(path,"/tutorialDataCalibration.RDS") #already stored in package
+dat = readRDS(calibrationDataFile)  #load object
+
+#note the header names must be strictly specified as follows:
+colnames(dat) 
+#Alternatively table data (text format) can be loaded using tableReader()
+
+# Insert missing alleles with dose>0 (true alleles)
+dat = insertMissingTrueAlleles(dat) 
+
+#Specify Analytical threshold used (when exporting data)
+AT=11  
+
+#AT must be defined per marker:
+locNames = unique(dat[,3])  #obtain locus names (Must be upper case)
+if(length(AT)==1) AT = setNames( rep(AT,length(locNames)),locNames)
+
+```
+
+### Step 2: Calibrating marker efficiency
+```{r}
+markerEfficiency = inferMarkerEfficiency(dat,AT,verbose = FALSE) #fitting model MLE model
+Amhat = markerEfficiency$MLE$theta2[locNames] #estimated params
+
+```
+
+### Step 3: Preparing stutter data (pre-step)
+```{r}
+#dat2 = getFilteredData(dat) #deprecated since already built into the getStutterData function
+stutterData = getStutterData(dat, minStuttOccurence=5, verbose=FALSE) #obtaining stutter candidates (traversing different stutter types)
+stuttDat = stutterData$stutterdata #obtain stutter data
+```
+
+### Step 4: Infer stutter model and store coefficients
+```{r}
+#A beta regression model is used to fit the stutter proportions
+stuttMod = inferStutterModel(stuttDat)#,print2pdf="StutterModel")
+stuttModTab = stuttMod$betaTable #obtain coefficient table
+
+#Storing model coefficients in a list
+stuttModList = list() #obtain list of coefficients
+for(i in seq_len(nrow(stuttModTab))) {
+  row = unlist(stuttModTab[i,])
+  loc = row[1] #obtain locus name
+  type = row[2] #obtain stutter type
+  est =  as.numeric( na.omit(row[3:5]))    #obtain estimats
+  if( !loc%in%names(stuttModList)) stuttModList[[loc]] = list()
+  stuttModList[[loc]][[type]] = est
+}
+
+```
+
+
+### Step 5: Calibrate noise model (done after stutter calibration)
+```{r}
+noiseMod = inferNoiseModel(sampleNames=unique(dat$SampleName), locNames=locNames, noisedata=stutterData$noisedata, AT=AT)#,print2pdf="NoiseModel")
+```
+
+### Step 6: Storing calibration object
+```{r}
+calibration = list()
+for(loc in locNames) {
+  markerEff= Amhat[loc] #setNames(c(,AmSD[loc],AmSD[loc]),c("est","SD","SD2"))
+  noiseMods = lapply(noiseMod,function(x) x[loc])
+  stuttMods = stuttModList[[loc]] 
+  
+  calibration[[loc]] = list(markerEff=markerEff)  
+  calibration[[loc]] = append(calibration[[loc]],noiseMods)
+  
+  #put stutter model last (requirement!!)
+  calibration[[loc]] = append(calibration[[loc]],stuttMods)
+}
+
+#Store object for later use (mixture interpretation)
+saveRDS(calibration,"tutorialDataCalibrated.RDS")
+```
+
+### A model calibration wrapper function
+```{r, eval=FALSE}
+#It is possible to run the following wrapper function to perform model calibration (still under development):
+calibrateModel(dat,AT=11,minStuttOccurence=5,verbose=FALSE)
+```
+
+
+## Mixture interpretation
+
+### Step 1: Data import (calibrated model and frequencies)
+```{r}
+#The calibrated model is imported
+calibratedModelFile = paste0(path,"/tutorialDataCalibrated.RDS") #file name for the calibrated model
+calibration = readRDS(calibratedModelFile) #obtain the calibrated object
+
+#We import the allele frequency
+freqFile = paste0(path,"/ForenSeq_NIST1036cauc_FWbrack.csv") #frequency file to use
+popFreq =  importMPSfreqs(freqFile)[[1]]
+
+#Note: Ensure that the alleles are all in forward direction for all markers (not UAS)
+```
+
+### Step 2: Generating a fictive mixture dataset
+```{r}
+#SETTINGS FOR GENERATED SAMPLE
+NOC = 2 #Number of contributors
+fst0 = 0.01
+
+set.seed(1) #make reproducible
+gen = genMPSevidence(calibration,NOC,popFreq,mu=1000,omega=0.1)
+evidData = gen$samples #this is evidence data
+refData = gen$refData #this is reference data
+
+#We can Store Sample to text file:
+#write.csv2(sample_listToTable(evidData),file="MPS_evid2p.csv",row.names = FALSE)
+#write.csv2(sample_listToTable(refData),file="MPS_evid2p_refs.csv",row.names = FALSE)
+
+```
+
+
+### Step 3: Import and visualize profiles
+```{r}
+#Samples can also be obtained from a text file:
+evidData = importMPSsample(paste0(path,"/MPS_evid2p.csv") ) #LOAD EVIDENCE DATA
+refData = importMPSsample(paste0(path,"/MPS_evid2p_refs.csv") ) #LOAD REFERENCE DATA
+plotMPS(evidData,refData) #Show in graphical interface
+```
+
+### Step 4: Specify hypotheses for interpretation
+Hypothesis set: minor as POI \
+Hp: ref1 + 1 unknown \
+Hd: 2 unknowns
+
+```{r}
+hypHp = list(NOC=NOC,cond=c(1,0),fst=fst0) #(also include fst here)
+hypHd = list(NOC=NOC,cond=c(0,0),fst=fst0,knownRef=1) #(also include fst here)
+
+#If the major was evaluated as POI instead then
+#hypHp = list(NOC=NOC,cond=c(0,1),fst=fst0) #(also include fst here)
+#hypHd = list(NOC=NOC,cond=c(0,0),fst=fst0,knownRef=2) #(also include fst here)
+
+```
+
+### Step 5: Model fit of Hp and Hd 
+```{r}
+mleHp = inferEvidence(evidData,popFreq,refData,hypHp , calibration, verbose=FALSE)
+mleHd = inferEvidence(evidData,popFreq,refData,hypHd , calibration, verbose=FALSE)
+```
+
+### Step 6: Obtain calculated LR
+```{r}
+par = getPar(mleHp,mleHd) #get estimated parameters
+LR = getLR(mleHp,mleHd) #get calculated LR (unlogged)
+log10LR = getlog10LR(mleHp,mleHd) #log10 scale
+upperLR = getUpperLR(mleHd) #get upper LR-limit 1/RMP(theta)
+```
+
+### Step 7: Perform model validation
+```{r,fig.show='hide',eval=FALSE}
+validhp = validMLE(mleHp,"Hp")
+validhd = validMLE(mleHd,"Hd")
+```
+
+### Step 8: Provide deconvolution
+```{r}
+DCtableHp = deconvolve(mleHp)$table2
+DCtableHd = deconvolve(mleHd)$table2
+```
+
+### Step 9: Show model fit (expectation vs observations)
+```{r}
+plotTopMPS(mleHp)
+plotTopMPS(mleHd)
+```
+
+

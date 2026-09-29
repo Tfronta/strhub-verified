@@ -1,0 +1,29 @@
+{
+  "_about": "Hand-checked against Illumina/ExpansionHunterDenovo at 5a48ed8b6dceb8d772f702e239c5afede9d5108c (tag v0.9.0) on 2026-09-29, from README.md, documentation/00_Introduction.md, 01_Before_you_begin.md, 02_Installation.md, 03_Case_control_quickstart.md, 04_Outlier_quickstart.md, 05_Computing_profiles.md, examples/*/run-analysis.sh, source/app/ExpansionHunterDenovo.cpp, source/Makefile, the v0.9.0 GitHub release and api.anaconda.org.",
+  "program": {"value": "ExpansionHunterDenovo", "subcommand": "profile", "where": "documentation/05_Computing_profiles.md:32,35"},
+  "command": {"value": "ExpansionHunterDenovo profile --reads input.bam --reference reference.fasta --output-prefix output --min-anchor-mapq 50 --max-irr-mapq 40",
+              "source": "repo_docs",
+              "where": "documentation/05_Computing_profiles.md:35-40"},
+  "install": {"documented": "Download the compiled Linux binary from the GitHub releases page, or build from source with CMake pointed at source/ (mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release ../source && make; needs zlib/bzip2/liblzma dev packages and internet to fetch Boost).",
+              "acceptable_methods": ["release_binary", "cmake"],
+              "where": "documentation/02_Installation.md:3-34"},
+  "published": {"bioconda_documented": null,
+                "bioconda_available": {"package": "expansionhunterdenovo", "version_at_ref": "0.9.0"},
+                "image_documented": null,
+                "release_binary_documented": true,
+                "where": "documentation/02_Installation.md:3-7; https://github.com/Illumina/ExpansionHunterDenovo/releases/tag/v0.9.0 (ExpansionHunterDenovo-v0.9.0-linux_x86_64.tar.gz); https://api.anaconda.org/package/bioconda/expansionhunterdenovo"},
+  "input": {"kinds": ["bam", "cram"], "platforms": ["illumina"],
+            "strhub_type": null,
+            "where": "README.md:3-5,36-47; documentation/00_Introduction.md:7-9; documentation/01_Before_you_begin.md:3-14"},
+  "extra_inputs": [
+    {"what": "A cohort: BAM/CRAM files of further samples, cases and controls, sequenced on the same instrument to similar coverage (>=30x) and aligned with the same short-read aligner; each one is profiled and all profiles are merged (Illumina Polaris suggested when no controls exist).",
+     "required": true, "strhub_has": false,
+     "where": "README.md:3-5,44-47; documentation/00_Introduction.md:7-9; documentation/01_Before_you_begin.md:3-14"},
+    {"what": "Manifest TSV (sample id, case/control status, path to each sample's STR profile) for `ExpansionHunterDenovo merge` and for scripts/casecontrol.py or scripts/outlier.py.",
+     "required": true, "strhub_has": false,
+     "where": "documentation/03_Case_control_quickstart.md:30-52; documentation/04_Outlier_quickstart.md:9-27"}
+  ],
+  "runnable_on_strhub_data": {"value": false,
+                              "why": "EHdn is a cohort method: the documented analysis compares STR profiles of many samples (case-control or outlier), and STRhub holds one sample per dataset with no controls and no manifest. It also does not genotype (README.md:41-43) and ignores STRs shorter than the read length (README.md:38-39): the panel's reference repeats in illumina-bam-hg38 (up to 127 bp, D21S11) are shorter than its 148 bp reads, and the slice is +/-1 kb windows while `profile` is a genome-wide search. `profile` alone would execute on the BAM with hg38.fa, but that is not a faithful run of the tool."},
+  "notes": "EHdn has no genotyping step; `profile` is the per-sample step that reads the BAM/CRAM, so it is taken as the program. The pipeline continues with `ExpansionHunterDenovo merge --reference ... --manifest manifest.tsv --output-prefix ...` and scripts/casecontrol.py or scripts/outlier.py (Python 3; numpy/scipy pinned in scripts/requirements.txt), as in examples/case-control/run-analysis.sh:10-34. The quickstart form of the same command is `/path/to/ExpansionHunterDenovo profile --reads bamlets/sample1.bam --reference reference.fasta --output-prefix str-profiles/sample1 --min-anchor-mapq 50 --max-irr-mapq 40` (documentation/03_Case_control_quickstart.md:17-22); the options exist at the pinned commit (source/app/ExpansionHunterDenovo.cpp:95-101). The README has no command; it links documentation/00_Introduction.md (README.md:49-52). CMakeLists.txt is in source/, not the root; source/Makefile hard-codes /illumina/thirdparty compiler and Boost paths and is not the documented build, so make is not acceptable. Bioconda holds expansionhunterdenovo 0.9.0 (its only version) but no document mentions it. The release binary is Linux x86_64 only. scripts/casecontrol.py and outlier.py take an optional --target-regions BED (documentation/03_Case_control_quickstart.md:68-77)."
+}

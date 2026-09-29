@@ -1,0 +1,50 @@
+{
+  "_about": "Hand-checked against WGLab/RepeatHMM at fa6c108fa0cc8ab344577147e52a8fcc3adde990 (tag v2.0.3) on 2026-09-29, from README.md, INSTALL, docs/Install.md, docs/Usage.md, 'docs/Help on results interpretation.md', environment.yml, setup.py and the code the command runs (bin/repeatHMM.py, bin/RepeatHMM_scripts/myheader.py, myBAMhandler.py, myRepeatReAlignment.py, myPredefinedPatternReader.py, bin/reference_sts/hg38/hg38.predefined.pa) at that commit, api.anaconda.org, the v2.0.3 release, and STRhub's ont_slices/codis_pm10kb.bed and HG00113.codis.bam header.",
+  "program": {
+    "value": "repeatHMM.py",
+    "subcommand": "BAMinput",
+    "where": "docs/Usage.md:3,6-12,226; bin/repeatHMM.py:643,657"
+  },
+  "command": {
+    "value": "python repeatHMM.py BAMinput --Onebamfile XXX.bam --repeatName HTT;",
+    "source": "repo_docs",
+    "where": "docs/Usage.md:226 (docs/Usage.md is linked from README.md:27)"
+  },
+  "install": {
+    "documented": "git clone; conda env create -f environment.yml (Python 2.7 env 'repeathmmenv'); make in the UnsymmetricPairAlignment folder; run python bin/repeatHMM.py. Alternative: install the prerequisites by hand (Python 2.7, peakutils/hmmlearn/sklearn/biopython via pip, SWIG, BWA, TRF, samtools), then make in bin/RepeatHMM_scripts/UnsymmetricPairAlignment",
+    "acceptable_methods": ["conda", "make"],
+    "where": "INSTALL:2; docs/Install.md:2-16,22-43; environment.yml:1-63; bin/RepeatHMM_scripts/UnsymmetricPairAlignment/Makefile"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": null,
+    "image_documented": null,
+    "release_binary_documented": false,
+    "where": "README.md and docs/ give no Bioconda, container or binary install of RepeatHMM itself (the anaconda.org/bioconda links at docs/Install.md:32-36 are for the dependencies swig, bwa, trf and samtools); https://api.anaconda.org/package/bioconda/repeathmm (not found); https://github.com/WGLab/RepeatHMM/releases/tag/v2.0.3 (data assets only: RepeatHMM_DB.tar.gz, failed_regions.tar.gz, SRR5363632.fastq.tar.gz)"
+  },
+  "input": {
+    "kinds": ["bam", "fastq"],
+    "platforms": ["pacbio", "ont"],
+    "strhub_type": "ont-bam-hg38",
+    "where": "README.md:1,17,23; docs/Usage.md:25-27,131-165,230"
+  },
+  "extra_inputs": [
+    {
+      "what": "Predefined repeat-locus file hg38.predefined.pa (name,chr,start,end,motif,strand,range), shipped with the tool at bin/reference_sts/hg38/. It is looked up as reference_sts/<hg>/<hg>.predefined.pa under the working directory (else site-packages), or given with --Patternfile. It names the loci --repeatName accepts: disease genes plus 18 of the 20 CODIS loci in STRhub's ONT slice (all but FGA and vWA)",
+      "required": true,
+      "strhub_has": false,
+      "where": "docs/Usage.md:185-190; bin/RepeatHMM_scripts/myheader.py:29-30; bin/RepeatHMM_scripts/myPredefinedPatternReader.py:86-93; bin/reference_sts/hg38/hg38.predefined.pa:12-81"
+    },
+    {
+      "what": "BWA index of the FASTA given to --hgfile (index files next to it). The recommended p2sp result comes from the split-and-realign step, which runs TRF and then bwa mem against --hgfile. --SplitAndReAlign defaults to 1 in the code, although the help text and docs say 0. Derivable from STRhub's hg38.fa with bwa index; not needed with --SplitAndReAlign 0",
+      "required": true,
+      "strhub_has": false,
+      "where": "bin/repeatHMM.py:613-614; docs/Usage.md:195-196; bin/RepeatHMM_scripts/myBAMhandler.py:644-651; bin/RepeatHMM_scripts/myRepeatReAlignment.py:523-525,1125; bin/RepeatHMM_scripts/myheader.py:38; 'docs/Help on results interpretation.md':12"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": true,
+    "why": "BAMinput takes an aligned long-read BAM, and ont-bam-hg38 (minimap2, hg38, chr names, about 30 reads over D8S1179) fits. The shipped hg38.predefined.pa defines 18 of the slice's 20 CODIS loci (e.g. d8s1179, th01, tpox), so --repeatName needs no locus file from STRhub, and hg38.fa goes to --hgfile. The one thing STRhub does not hold is the BWA index for the default realignment step. A recipe can build it from hg38.fa with bwa index, or skip it with --SplitAndReAlign 0, the default the docs state."
+  },
+  "notes": "Three documented modes (docs/Usage.md:3): FASTQinput (section 1, docs/Usage.md:25-128), BAMinput (section 2) and Scan (section 3: genome-wide with a TRF BED and optional cluster jobs). FASTQinput aligns the reads itself with bwa mem, so it also needs a BWA index. BAMinput is recorded because STRhub's only long-read dataset is a BAM. The documented example omits --hgfile, so as written it only runs if the FASTA sits at mhgversion/hg38.fa under the working directory (bin/repeatHMM.py:174-184); the CLI's own epilog examples add --hgfile (bin/repeatHMM.py:644-646). Results go to logbam/RepBAM_*.log in the working directory (docs/Usage.md:233), and the p2sp line is the recommended call ('docs/Help on results interpretation.md':12). Doc/code mismatches: docs/Install.md:12 says cd bin/scripts/UnsymmetricPairAlignment, but the folder is bin/RepeatHMM_scripts/UnsymmetricPairAlignment. The --SplitAndReAlign help says Default=0, but the code default is 1. The second BAM example (docs/Usage.md:227) uses a nonexistent --Sepbamfile and a bare 'FlankLength 30'. The code runs on Python 2.7 only (environment.yml:47; it uses dict.has_key). environment.yml pins exact 2018-2020 builds. The README has no install section; install instructions are in docs/Install.md, reached from the top-level INSTALL file. --SeqTech accepts Illumina, but the README documents the tool for long reads (README.md:1,17). There is no wiki (the wiki URL redirects to the repository)."
+}

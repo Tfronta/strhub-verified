@@ -1,0 +1,54 @@
+{
+  "_about": "Hand-checked against https://github.com/Ahhgust/STRaitRazor at b618e9345ab40f348b504083ae8de2b39abb60fa on 2026-09-29, from README.md, the file tree (Makefile, kit configs, the committed binaries, batchCstr8.bash/.bat), the repository's commit history, and Bioconda (api.anaconda.org and the bioconda-recipes straitrazor recipe).",
+  "program": {
+    "value": "str8rzr",
+    "subcommand": null,
+    "where": "README.md:121,123"
+  },
+  "command": {
+    "value": "str8rzr -c configFile fastqfile > allsequences.txt",
+    "source": "readme",
+    "where": "README.md:123"
+  },
+  "install": {
+    "documented": "download the repository (Clone or download) and use its precompiled binary for the OS (str8rzr on Linux); compiling with make is optional",
+    "acceptable_methods": [
+      "script",
+      "make"
+    ],
+    "where": "README.md:18,74-75,119-121,240-284"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": {
+      "package": "straitrazor",
+      "version_at_ref": null
+    },
+    "image_documented": null,
+    "release_binary_documented": false,
+    "where": "README.md:121 (the binaries are files in the repository tree; the repository has no tags or releases); README.md:31-33 (an Executable page at unthsc.edu, which now redirects to unthealth.edu and returns 404); https://api.anaconda.org/package/bioconda/straitrazor (versions: 3.0.1; the bioconda-recipes recipe builds commit 191f2409441ca0d64c682194ca39bd40075a00d8)"
+  },
+  "input": {
+    "kinds": [
+      "fastq"
+    ],
+    "platforms": [
+      "illumina"
+    ],
+    "strhub_type": "illumina-str-fastq",
+    "where": "README.md:8,19,82,91,123,149"
+  },
+  "extra_inputs": [
+    {
+      "what": "Kit configuration file for -c (anchors, motif, period and offset per marker). STRhub does not hold it; the repository ships one per kit, and for the ForenSeq dataset that is ForenSeqv1.27.config at the root (the README's Forenseq.config is OldConfigs/Forenseq.config at this commit)",
+      "required": true,
+      "strhub_has": false,
+      "where": "README.md:7-8,19,77,162-182,228"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": true,
+    "why": "str8rzr reads a FASTQ and a kit config and needs no reference or BED. illumina-str-fastq is an uncompressed ForenSeq FASTQ (sample.fastq) and the ForenSeq config ships in the repository, so the documented command runs as written once the config and FASTQ names are filled in."
+  },
+  "notes": "Command: README.md:123, the plain-FASTQ form, because STRhub's illumina-str-fastq is an uncompressed sample.fastq; README.md:127 adds -p for threads and README.md:149,289 are the zcat forms for .fastq.gz. str8rzr reports every haplotype it finds per marker, stutter included; it does not call genotypes (README.md:12). Install: 'script' here means running the precompiled str8rzr committed at the repository root (a Linux x86-64 ELF, last rebuilt together with str8.cpp in 7fee36b, 2022-02-07), which is what the README tells Linux users to do (README.md:121, and README.md:242 says compiling should not be needed); make (README.md:276-284) is the optional route and writes the same str8rzr in place. Bioconda's straitrazor 3.0.1 builds 191f240 (December 2017), 39 commits before the pin, and str8.cpp, trie.cpp and parseConfig.cpp changed since (quality-value support, a second error model), so no Bioconda build is this commit; the README does not mention Bioconda. The README still names Forenseq.config and Powerseq.config (README.md:19,77,85-87); at this commit they sit in OldConfigs/ and the current configs are ForenSeqv1.27.config and PowerSeqv2.31.config. The quick starts are Windows batch runs (batchCstr8.bat); batchCstr8.bash, its unmentioned *nix analogue, hard-codes Forenseq.config."
+}

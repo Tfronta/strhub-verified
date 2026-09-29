@@ -1,0 +1,9 @@
+{
+ "bioconda": {
+  "stretch": null
+ },
+ "release": {
+  "tag": "v0.4.0",
+  "assets": []
+ }
+}

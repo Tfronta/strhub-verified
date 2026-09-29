@@ -1,0 +1,33 @@
+{
+  "_about": "Hand-checked against Jerrythafast/FDSTools at 5cad6d057fd2f16bd77f9aa2420e920ccfcc7aa6 (untagged in repos.tsv, but this commit is git tag v2.2.1) on 2026-09-29, from README.md, pyproject.toml, fdstools/tools/pipeline.py, fdstools/lib/cli.py, fdstools/lib/library.py and fdstools/data/libraries/ at that commit, the project site named in pyproject.toml (https://fdstools.nl: guide.html, tools.html), api.anaconda.org and PyPI.",
+  "program": {"value": "fdstools", "subcommand": "pipeline",
+              "where": "https://fdstools.nl/tools.html#pipeline; pyproject.toml:39-40 (console script fdstools)"},
+  "command": {"value": "fdstools pipeline your-filename.ini --analysis case-sample",
+              "source": "external_docs",
+              "where": "https://fdstools.nl/tools.html#pipeline (the same text is the built-in help, fdstools/tools/pipeline.py:36-41, shown by `fdstools --help pipeline` as README.md:9-12 directs)"},
+  "install": {"documented": "pip install -U fdstools (Python 3.9 or later); the site's guide also describes installing manually from the PyPI package",
+              "acceptable_methods": ["pip"],
+              "where": "README.md:15-23; https://fdstools.nl/guide.html (2. Installing FDSTools)"},
+  "published": {"bioconda_documented": null,
+                "bioconda_available": null,
+                "image_documented": null,
+                "release_binary_documented": false,
+                "where": "https://api.anaconda.org/package/bioconda/fdstools (not found; only the unrelated 'genomedk' channel has fdstools 1.2.0); https://pypi.org/project/fdstools/ has 2.2.1, the version at this commit (fdstools/__init__.py:27); the repository has no GitHub releases"},
+  "input": {"kinds": ["fastq", "fasta"], "platforms": ["illumina"],
+            "strhub_type": "illumina-str-fastq",
+            "where": "README.md:3-4; https://fdstools.nl/tools.html#pipeline (-s/--in-sample-raw: FastA or FastQ file); https://fdstools.nl/guide.html (1. targeted, amplicon-based MPS of forensic markers)"},
+  "extra_inputs": [
+    {"what": "FDSTools library file (marker definitions, INI) for the kit. It is built into FDSTools as 'ForenSeqA', 'ForenSeqA-UAS', 'ForenSeqB', 'ForenSeqB-UAS', 'ID-OmniSTR' or 'PowerSeq46GY', so STRhub's ForenSeq kit context is enough to pick 'ForenSeqB' (the NIST sample is primer mix B)",
+     "required": true, "strhub_has": true,
+     "where": "https://fdstools.nl/tools.html#pipeline (-l/--in-library); https://fdstools.nl/tools.html#tssv (LIBRARY: custom file or built-in); fdstools/lib/cli.py:62-67; fdstools/lib/library.py:46-49; fdstools/data/libraries/ForenSeqB.ini:1-2"},
+    {"what": "stutter model from Stuttermodel (-m/--in-stuttermodel), trained on homozygous reference samples",
+     "required": false, "strhub_has": false,
+     "where": "https://fdstools.nl/tools.html#pipeline; fdstools/tools/pipeline.py:601,625-640"},
+    {"what": "background noise profiles from BGEstimate (-p/--in-bgprofiles), built from reference samples",
+     "required": false, "strhub_has": false,
+     "where": "https://fdstools.nl/tools.html#pipeline; fdstools/tools/pipeline.py:602,633-653"}
+  ],
+  "runnable_on_strhub_data": {"value": true,
+    "why": "The case-sample pipeline requires only the raw sample FASTQ and a library (fdstools/tools/pipeline.py:598-605). STRhub's illumina-str-fastq is a ForenSeq primer-mix-B sample, and FDSTools ships the matching built-in 'ForenSeqB' library. The stutter model and noise profiles are optional (pipeline.py:601-602). No reference FASTA is needed, because flank sequence comes from the strnaming dependency (fdstools/lib/library.py:27,174). The tool writes the INI itself."},
+  "notes": "The README gives no analysis command, only `fdstools --help [TOOLNAME]` (README.md:7,12) and pip install. Usage lives in the built-in per-tool help, which https://fdstools.nl/tools.html reproduces. The guide's 'Getting started: Basic sample analysis' section is empty (guide.html calls the guide a work in progress). The documented invocation writes a default INI when the file does not exist and runs the analysis when it does (fdstools/tools/pipeline.py:942-962). Values given with -l/--in-library and -s/--in-sample-raw become the INI defaults (pipeline.py:862) and are merged into an existing INI (pipeline.py:822-826). So a faithful run is `fdstools pipeline case.ini -a case-sample -l ForenSeqB -s sample.fastq`, issued twice: the first call writes the INI, the second runs it. case-sample runs TSSV, then BGPredict/BGMerge/BGCorrect only when a stutter model or profiles are given, then Samplestats (threshold-based allele calling), seqconvert and vis (pipeline.py:596-680). Output is <tag>.csv and <tag>.html (pipeline.py:670,676). The step that calls alleles is Samplestats; `fdstools tssv` then `fdstools samplestats` by hand is the unpiped equivalent. Bam2fds (new in 2.2.0, README.md:39-42) reads aligned WGS BAMs with a library, but it is not the documented main flow. repos.tsv and the snapshot's tree.json leave the tag empty, but the pinned commit is tag v2.2.1 (2026-08-11). The site's front page and install text still speak of v2.1 and Python 3.5+, while README.md:17 requires Python 3.9."
+}

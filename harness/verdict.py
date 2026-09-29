@@ -54,6 +54,11 @@ LIMITATION_TEXT = {
                             "the repository ships no example to run, so nothing was executed",
     "input_type_guessed": "no sentence in the README says what the tool takes as input, so "
                           "the reference data was chosen on the strength of mentions alone",
+    "loci_outside_panel": "the loci the documented command genotypes, from a file the repository "
+                          "ships, are not in STRhub's reference sample, which covers a panel of "
+                          "forensic STR loci; run there, the tool would have nothing to genotype",
+    "documented_file_missing": "the documented command reads a file that neither the repository nor "
+                               "STRhub holds",
 }
 
 #: What stopped the run, as something a person can act on. Each blocker names
@@ -62,6 +67,33 @@ LIMITATION_TEXT = {
 #: and what to ask the tool's owner for (`ask_owner`: the issue to open). The
 #: web renders these as two buttons; the codes are the contract.
 BLOCKERS = {
+    "loci_outside_panel": {
+        "what": "The loci the documented command genotypes, from a file the repository ships, are not in "
+                "STRhub's reference sample, which covers a panel of forensic STR loci. Run there, the "
+                "tool would have nothing to genotype, so it was not taken as a result about the tool.",
+        "self_fix": "upload_regions",
+        "self_fix_text": "Provide a catalog or regions file for loci in STRhub's panel and try again.",
+        "ask_owner": {
+            "title": "Document how to genotype loci other than the shipped catalog",
+            "body": "STRhub Verified tried the documented command on a public hg38 sample that covers the "
+                    "forensic STR loci (CODIS and the usual expanded panel). The catalog the repository "
+                    "ships covers other loci, so the run had nothing to genotype. A documented way to write "
+                    "a catalog for other loci would let users run the tool on the loci they need.",
+        },
+    },
+    "documented_file_missing": {
+        "what": "The documented command reads a file that is not in the repository at this commit and "
+                "that STRhub does not hold, so the command cannot run as written.",
+        "self_fix": "edit_command",
+        "self_fix_text": "Supply the file (or a command that does without it) and try again.",
+        "ask_owner": {
+            "title": "Ship, or link from the README, the file the documented command reads",
+            "body": "STRhub Verified tried to run the command the documentation shows, in a clean "
+                    "environment at the pinned commit. The command reads a file that is not in the "
+                    "repository at that commit. Shipping it, or a documented step that fetches it, would "
+                    "let a new user run the command as written.",
+        },
+    },
     "regions_format_unknown": {
         # Two claims were folded in here that nobody had checked: that the tool
         # requires a per-tool BED (STRhub's reference data does), and that the
