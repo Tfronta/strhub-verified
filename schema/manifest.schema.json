@@ -190,6 +190,16 @@
         "slug": { "type": "string", "description": "Filename stem for this variant's report + badge, e.g. 'strait-razor-PowerSeqv2.31'." }
       }
     },
+    "starts": {
+      "type": "object",
+      "description": "How to ask the installed program whether it starts, when the run command does not say (a README that documents no command). Otherwise the engine derives it from run.cmd: the program, then --help.",
+      "required": ["cmd"],
+      "additionalProperties": false,
+      "properties": {
+        "cmd": { "type": "string", "description": "A command that only starts the program, such as `tool --help`." },
+        "cwd": { "type": "string", "default": "/opt/tool" }
+      }
+    },
     "example": {
       "type": "object",
       "description": "The tool's OWN documented example: the command its README shows, run on the data its repository ships, inside the built image (the clone lives at /opt/tool). This is the reviewer's question, 'does the Quick Start work?', and it needs nothing from STRhub. Whatever the command creates is captured and checked for a non-empty result; declare `outputs` to check for specific files, and `expected` to compare against a golden file the repository publishes.",

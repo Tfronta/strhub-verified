@@ -592,6 +592,12 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
                    if input_type else {}),
         "outputs": outputs,
     }
+    if not best:
+        # Nothing documented to run, but the packaging says what the program
+        # is called: ask it for --help, so the report can say whether it starts.
+        exes = (proposal.get("packaging") or {}).get("executables") or []
+        if exes:
+            manifest["starts"] = {"cmd": f"{exes[0]} --help", "cwd": cwd}
     ex = proposal.get("example")
     if ex and ex.get("cmd"):
         ex_cmd, ex_notes = from_the_path(ex["cmd"], set(proposal.get("tree_paths") or []),

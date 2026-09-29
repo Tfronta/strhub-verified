@@ -337,6 +337,13 @@ def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     """The verdict, plus the blockers a reader can act on when it is not 'runs'."""
     v = _decide(gates, diagnostics, manual_verification, recipe_proposal, declared_compatibility,
                 fallback_used, strhub_fault)
+    # Whether the installed program starts, when the run did not get to the
+    # end: installed and starting, but nobody could tell how to run it, is a
+    # different finding from a program that does not start at all.
+    g = gates or {}
+    if v["code"] in ("undetermined", "fails") and g.get("installs") and not g.get("runs") and "starts" in g:
+        v["reason"] += (" The installed program starts: it answers --help." if g["starts"]
+                        else " The installed program does not start: --help fails.")
     # No blockers for a fault of ours: every blocker carries an issue to open
     # on the author's tracker, and there is nothing to ask them.
     if v["code"] in ("runs", "out_of_scope") or v.get("basis") == "strhub":

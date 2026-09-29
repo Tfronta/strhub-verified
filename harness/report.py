@@ -124,6 +124,10 @@ RECORD_NOTE = (
 
 LABELS.setdefault("example", "Reproduces own example")
 MEANING.setdefault("example", "the README's own command produced its documented output on the repository's own data")
+LABELS.setdefault("starts", "Starts")
+MEANING.setdefault("starts", "the installed program answers --help in the built environment")
+#: Checks outside the ladder, shown after it, in this order, when they ran.
+AUX_GATES = ("starts", "example")
 
 
 def _verdict_md(report: dict) -> list[str]:
@@ -225,8 +229,9 @@ def _summary_md(report: dict, slug: str) -> str:
     ]
     for g in LADDER:
         lines.append(f"| {LABELS[g]} | {mark[gates.get(g, False)]} | {MEANING.get(g, '')} |")
-    if "example" in gates:
-        lines.append(f"| {LABELS['example']} | {mark[bool(gates['example'])]} | {MEANING['example']} |")
+    for g in AUX_GATES:
+        if g in gates:
+            lines.append(f"| {LABELS[g]} | {mark[bool(gates[g])]} | {MEANING[g]} |")
 
     # Why the build failed, immediately after the ladder that says it did.
     # Nothing below this point ran, so the reader needs the reason here rather
@@ -457,7 +462,7 @@ def _summary_html(report: dict, slug: str) -> str:
         return _html.escape(str(s))
 
     rows = []
-    for g in LADDER + (["example"] if "example" in gates else []):
+    for g in LADDER + [a for a in AUX_GATES if a in gates]:
         ok = gates.get(g, False)
         chip = ('<span class="ok">PASS</span>' if ok
                 else '<span class="no">—</span>')
@@ -863,6 +868,8 @@ def main() -> int:
                     help="outcome of the own-example step (success/failure/skipped)")
     ap.add_argument("--example", default="example.json", help="path to check_example.py output")
     ap.add_argument("--log-example", default="", help="log of the own-example leg")
+    ap.add_argument("--starts", default="starts.json", help="check_starts.py output")
+    ap.add_argument("--log-starts", default="", help="log of the Starts check")
     ap.add_argument("--recipe-proposal", default="",
                     help="detect_recipe.py output when the recipe was proposed from the "
                          "repository; lets the verdict tell a documentation gap from a failure")
@@ -959,6 +966,14 @@ def main() -> int:
             example_detail = json.loads(ep.read_text())
         except Exception:  # noqa: BLE001
             example_detail = {}
+    sp = pathlib.Path(args.starts)
+    if sp.exists():
+        try:
+            starts_detail = json.loads(sp.read_text())
+        except ValueError:
+            starts_detail = {}
+        if starts_detail.get("applicable"):
+            gates["starts"] = bool(starts_detail.get("passed"))
     if example_detail.get("applicable"):
         # The files the example left behind count only if the example's own
         # command exited 0. The capture wrapper copies whatever was created
@@ -1160,7 +1175,7 @@ def main() -> int:
     # The build log rides along with the run logs. A reader told the build failed
     # will want the same thing a reader told a run failed wants: the output.
     for leg, flag in [("own", args.log_own), ("external", args.log_external),
-                      ("example", args.log_example), ("build", args.log_build)]:
+                      ("example", args.log_example), ("starts", args.log_starts), ("build", args.log_build)]:
         if not flag:
             continue
         lp = pathlib.Path(flag)

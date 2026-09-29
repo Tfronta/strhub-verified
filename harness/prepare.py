@@ -323,6 +323,41 @@ def unwrap_example(cmd: str) -> tuple[str, str | None]:
     return m.group("cmd"), m.group("cwd").strip("'")
 
 
+#: What may run the program without being it: an interpreter and its script.
+_RUNNERS = {"python", "python3", "python2", "bash", "sh", "perl", "Rscript", "julia", "java"}
+_NOT_THE_TOOL = {"mkdir", "cd", "export", "true", "echo", "touch", "cp", "mv", "rm", "ln", "gunzip", "zcat"}
+
+
+def starts_command(run_cmd: str, cwd: str | None = None) -> str:
+    """`<program> --help`, from the run command: the first segment of a chain
+    that is not STRhub's plumbing (mkdir, cd), and the interpreter with its
+    script when there is one (`python straglr.py`, `bash ./run.sh`). Empty
+    when there is no program to ask (`true  # no command found`)."""
+    cmd, wcwd = unwrap_example(run_cmd)
+    cwd = cwd or wcwd or ""
+    # A comment is not a command, whatever punctuation it holds.
+    cmd = re.sub(r"(?:^|\s)#.*$", "", cmd)
+    for seg in re.split(r"\s*(?:&&|;|\|\|)\s*", cmd):
+        if seg.split()[:1] == ["true"]:
+            return ""
+        toks = seg.split()
+        while toks and re.match(r"^\w+=", toks[0]):
+            toks.pop(0)
+        if not toks or toks[0].split("/")[-1] in _NOT_THE_TOOL:
+            continue
+        prog = toks[:1]
+        if toks[0].split("/")[-1] in _RUNNERS:
+            if toks[0].split("/")[-1] == "java" and len(toks) > 2 and toks[1] == "-jar":
+                prog = toks[:3]
+            elif len(toks) > 1:
+                prog = toks[:2]
+        head = " ".join(prog).split("|")[0].strip()
+        if not head or head.startswith(("-", "<", ">")):
+            return ""
+        return (f"cd {cwd!r} && " if cwd else "") + f"{head} --help"
+    return ""
+
+
 def _output_value(value) -> str:
     """One $GITHUB_OUTPUT value. Newlines are the delimiter of that file, so a
     manifest value carrying one could inject further keys (own_ready=1, ...)."""
@@ -443,6 +478,10 @@ def main() -> int:
 
     values = {
         "ref": m["source"]["ref"],
+        # Whether the installed program starts at all: its --help, in the
+        # built image, before anything is asked of it (the Starts check).
+        "starts_cmd": ((f"cd {m['starts'].get('cwd', '/opt/tool')!r} && " + m["starts"]["cmd"])
+                       if m.get("starts") else starts_command(m["run"]["cmd"])),
         "example_ready": "1" if example_ready else "0",
         "example_cmd": example_wrapper(example.get("cmd", ""), example_cwd) if example_ready else "",
         "cmd": m["run"]["cmd"],
