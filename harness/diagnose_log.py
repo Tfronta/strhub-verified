@@ -156,6 +156,18 @@ _rule(
 )
 
 _rule(
+    # Written by harness/run_container.sh, not by the tool: the only way a
+    # run that hit its limit says so. Nobody's fault by class — a tool that
+    # hangs and a limit set too low look the same from here.
+    r"STRhub: the run was stopped at the time limit of (\d+) minutes",
+    "error", "run_timeout",
+    "The run did not finish within its time limit ({0} minutes)",
+    "The container was stopped at the run's time limit. If the tool needs longer on "
+    "this data, raise run.timeout_minutes (at most 120); if it should have finished, "
+    "it may be waiting for input or stuck.",
+)
+
+_rule(
     r"[Oo]ut of memory|Cannot allocate memory|MemoryError|std::bad_alloc",
     "error", "oom",
     "Out of memory",
@@ -495,6 +507,7 @@ REVIEW_LABELS = {
     "vcf_gz_required": "Output path must end in .gz",
     "segfault": "Tool crashed (segmentation fault)",
     "oom": "Ran out of memory",
+    "run_timeout": "Did not finish in time",
     "permission_denied": "Permission denied",
     "cmd_not_found": "Command not found",
     "missing_module": "Required Python module not found",

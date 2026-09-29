@@ -102,6 +102,11 @@ def test_the_label_says_the_result_in_words_not_the_rung():
     assert ct.headline(doc("runs", "fails")) == ("Does not run as documented: no output", "red")
     assert ct.headline(doc("installs", "undetermined")) == ("Could not be determined", "lightgrey")
     assert ct.headline(doc("installs", "out_of_scope")) == ("Out of scope", "lightgrey")
+    # Plan B: the commit did not build, the image the README points at ran.
+    # Not a plain green: building from source is what a user meets first.
+    plan_b = doc("content", "runs", environment={"fallback_used": True})
+    assert ct.headline(plan_b) == (ct.RUNS_FALLBACK, "yellow")
+    assert "does not build" in ct.RUNS_FALLBACK
     # A recipe STRhub wrote, whatever it reached.
     assert ct.headline({**_report("curated"), "level": "content"}) == (ct.NOT_DOCUMENTED, "lightgrey")
     # A report from before the verdict: read off the rung.

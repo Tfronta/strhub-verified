@@ -454,6 +454,9 @@ def main() -> int:
         "dockerfile_from_repo": (m["environment"].get("from_repo") or "") if m["environment"].get("source") == "repository" else "",
         "dockerfile_fallback": fallback,
         "timeout": min(int(m["run"].get("timeout_minutes", 30)), 120),
+        # The step's own ceiling, a little above the run's: harness/run_container.sh
+        # enforces `timeout` and writes why into the log; this is only a backstop.
+        "step_timeout": min(int(m["run"].get("timeout_minutes", 30)), 120) + 3,
         "manifest": mf,
         "repo": m["source"]["repo"],
         "mode": mode,

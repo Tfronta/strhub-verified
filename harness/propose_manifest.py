@@ -234,7 +234,14 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         env = {"dockerfile": "Dockerfile", "os": ["ubuntu-22.04"], "source": "repository",
                "from_repo": build_info["file"]}
         cwd = "."
-        caveat_items.append(f"Environment: the repository's own {build_info['file']} was built as-is.")
+        caveat = f"Environment: the repository's own {build_info['file']} was built as-is."
+        fb = build_info.get("fallback") or {}
+        if fb and proposal.get("dockerfile_fallback"):
+            what = published_environment(fb)
+            env["fallback"] = {"dockerfile": "Dockerfile.fallback", "reason": what}
+            dockerfile_fallback_text = proposal["dockerfile_fallback"]
+            caveat += f" If it does not build, {what} stands in, and the report says so."
+        caveat_items.append(caveat)
     elif proposal.get("dockerfile"):
         dockerfile_text = proposal["dockerfile"]
         env = {"dockerfile": "Dockerfile", "os": ["ubuntu-22.04"], "source": "generated"}
