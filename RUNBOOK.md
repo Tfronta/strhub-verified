@@ -424,6 +424,23 @@ tabla; `harness/tests/test_benchmark.py` no deja bajar ningún total. Si un camb
 en el mismo commit. Línea de base (motor antes de la fase 2, 18 nuevas): install 10, input 12, program 3,
 clean 7, honest 15, viable 0.
 
+### Agente de recetas: "What STRhub had to do", escrito solo (fase 3)
+
+Cuando la corrida documentada no corre, `.github/workflows/assist.yml` (a mano: repo, commit, tag,
+intentos) corre `harness/assist.py`. Primero corre la receta documentada como ensayo; si no corre, un
+modelo (`claude-opus-5-5`) lee el repo en el commit fijado (README, docs, archivos, sitios de docs que el
+repo enlaza), propone una receta, y **cada receta se corre como ensayo real sin publicar**; lee el
+resultado y reintenta, hasta `max_attempts`. Reglas que el harness hace cumplir antes de cada ensayo:
+no tocar el código de la herramienta (`sed -i`, `patch`, `git apply` o redirecciones a archivos de
+programa; sí la configuración que los docs mandan editar), construir el commit fijado, entrypoint
+`bash -lc`, manifiesto válido contra el esquema. Cada desvío de la documentación queda en
+`recipe.workarounds` (qué, en lugar de qué, por qué). Si una receta corre, se abre un PR con
+`tools/<slug>/` de origen `curated`: una persona lo revisa antes de que el refresh mensual lo publique
+como nota bajo el resultado documentado, nunca como badge. El resumen del run y el PR dicen los
+intentos, los desvíos, las recomendaciones al autor y el costo aproximado.
+
+Necesita el secret `ANTHROPIC_API_KEY` en el repo. Tests sin red: `harness/tests/test_assist.py`.
+
 ### Compuerta "Reproduces own example"
 
 Bloque `example` del manifest: el comando del README, tal cual, corrido dentro
