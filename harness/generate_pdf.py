@@ -105,6 +105,7 @@ PANEL_MAP = {
     "illumina-bam-hg38":   "Autosomal STR",
     "illumina-bam-hg38-y": "Y-STR",
     "ont-bam-hg38":        "Autosomal STR (ONT)",
+    "pacbio-hifi-bam-hg38": "Autosomal STR (PacBio HiFi)",
     "illumina-str-fastq":  "STR / SNP panel",
 }
 

@@ -337,7 +337,8 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
 # Which input types add a suffix to a catalogue slug. The autosomal Illumina
 # BAM and the Illumina STR FASTQ are the canonical assays and add nothing; a
 # Y-STR or a nanopore run is a different claim about the same tool and gets
-# its own card. Unlisted types fall back to their last hyphen-segment. Kept
+# its own card, and so is a PacBio HiFi run. Unlisted types fall back to their
+# last hyphen-segment, which for pacbio-hifi-bam-hg38 would be "hg38". Kept
 # in step with TYPE_SLUG_SUFFIX in strhub-web/lib/verified/submission.ts.
 TYPE_SLUG_SUFFIX = {
     "illumina-bam-hg38": "",
@@ -345,6 +346,7 @@ TYPE_SLUG_SUFFIX = {
     "illumina-bam-hg38-y": "y",
     "ont-bam-hg38": "ont",
     "ont-fastq": "ont",
+    "pacbio-hifi-bam-hg38": "hifi",
     "illumina-snp-fastq": "snp",
     "capillary-fsa": "fsa",
 }

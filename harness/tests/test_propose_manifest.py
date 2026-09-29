@@ -189,6 +189,8 @@ def test_catalogue_slug_adds_a_suffix_only_for_a_non_canonical_assay():
     assert pm.catalogue_slug("HipSTR", "illumina-bam-hg38") == "hipstr"
     assert pm.catalogue_slug("HipSTR", "illumina-bam-hg38-y") == "hipstr-y"
     assert pm.catalogue_slug("STRspy", "ont-bam-hg38") == "strspy-ont"
+    # Not the last hyphen-segment, which would file a HiFi run as "trgt-hg38".
+    assert pm.catalogue_slug("TRGT", "pacbio-hifi-bam-hg38") == "trgt-hifi"
     assert pm.catalogue_slug("STRait Razor", "illumina-str-fastq") == "strait-razor"
     # Unlisted types fall back to their last segment; no type, no suffix.
     assert pm.catalogue_slug("Tool", "some-new-assay") == "tool-assay"

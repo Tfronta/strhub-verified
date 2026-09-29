@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 REPOS = ROOT / "harness" / "testdata" / "repos"
 
 
-BAM_TYPES = ("illumina-bam-hg38", "illumina-bam-hg38-y", "ont-bam-hg38")
+BAM_TYPES = ("illumina-bam-hg38", "illumina-bam-hg38-y", "ont-bam-hg38", "pacbio-hifi-bam-hg38")
 
 
 def test_every_bam_dataset_has_every_format():
@@ -79,6 +79,16 @@ def test_the_ont_panel_is_the_codis_loci_inside_its_slices():
     CODIS loci ±10 kb, at the same hg38 positions."""
     names = [ln.split("\t")[3] for ln in rl.library_path("ont-bam-hg38", "bed4").read_text().splitlines() if ln.strip()]
     assert len(names) == 20 and {"TH01", "vWA", "FGA", "D21S11", "TPOX"} <= set(names)
+
+
+def test_the_hifi_slice_has_the_same_windows_and_so_the_same_panel_as_ont():
+    """The PacBio HiFi slice was cut with the ONT windows; the two derived
+    libraries differ only in the file they name."""
+    assert (ROOT / "pacbio_slices" / "codis_pm10kb.bed").read_text() == \
+        (ROOT / "ont_slices" / "codis_pm10kb.bed").read_text()
+    for fmt in rl.available("ont-bam-hg38"):
+        assert rl.library_path("pacbio-hifi-bam-hg38", fmt).read_text() == \
+            rl.library_path("ont-bam-hg38", fmt).read_text(), fmt
 
 
 def test_the_manifest_schema_accepts_every_library_format():
