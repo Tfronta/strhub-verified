@@ -58,3 +58,10 @@ def test_a_readme_with_no_command_still_asks_the_packaged_program(tmp_path):
     r = pm.build(proposal, "fdstools-trial")
     assert "no_command" in r["limitations"]
     assert r["manifest"]["starts"] == {"cmd": "fdstools --help", "cwd": "/opt/tool"}
+
+
+def test_the_placeholder_command_is_not_a_run():
+    """FDSTools documents no command; the proposal's `true` "passed" Runs."""
+    assert prepare.is_placeholder_command("true  # no command found in the README; nothing to run")
+    assert prepare.is_placeholder_command(prepare.example_wrapper("true", "/opt/tool"))
+    assert not prepare.is_placeholder_command("HipSTR --bams x.bam")

@@ -328,6 +328,12 @@ _RUNNERS = {"python", "python3", "python2", "bash", "sh", "perl", "Rscript", "ju
 _NOT_THE_TOOL = {"mkdir", "cd", "export", "true", "echo", "touch", "cp", "mv", "rm", "ln", "gunzip", "zcat"}
 
 
+def is_placeholder_command(run_cmd: str) -> bool:
+    """The run command a proposal writes when the README documents none."""
+    cmd, _ = unwrap_example(run_cmd)
+    return re.sub(r"(?:^|\s)#.*$", "", cmd).strip() in ("", "true")
+
+
 def starts_command(run_cmd: str, cwd: str | None = None) -> str:
     """`<program> --help`, from the run command: the first segment of a chain
     that is not STRhub's plumbing (mkdir, cd), and the interpreter with its
@@ -404,6 +410,13 @@ def main() -> int:
         own_ready = stage_own(fixture, work / "in_own", canonical)
         fixture_source = "tool" if isinstance(fixture, dict) else "strhub"
     external_ready, dataset_name = stage_external(input_type, work / "in_external")
+    # No documented command: the proposal's placeholder is `true`, and running
+    # it "passed" Runs for FDSTools, whose README documents no command at all.
+    # Nothing is run; the legs are N/A and the ladder stops at Installs (the
+    # Starts check still asks the packaged program for --help).
+    if is_placeholder_command(m["run"]["cmd"]):
+        own_ready = False
+        external_ready = False
 
     # Stage tool-specific assets into both legs. A legacy per-tool regions.bed
     # lives here; an explicit inputs.regions (staged next) overrides it.
