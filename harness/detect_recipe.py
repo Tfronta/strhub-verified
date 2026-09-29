@@ -1600,7 +1600,13 @@ def generate_dockerfile(slug: str, ref: str, build: dict, image_layout: bool = F
                 + apt.format(pkgs=pkgs) + GIT_HTTPS + clone
                 + create + "&& micromamba clean -a -y\n" + "ENV ENV_NAME=tool\n" + then
                 + (EXPOSE if then else "")
-                + keep_path("/opt/conda/envs/tool/bin:/opt/tool", "export CONDA_PREFIX=/opt/conda/envs/tool")
+                # What the build on top linked against the environment's own
+                # libraries finds them when it runs: vamos, built with
+                # -L $(CONDA_PREFIX)/lib and no rpath, stopped with
+                # "libhts.so.3: cannot open shared object file".
+                + keep_path("/opt/conda/envs/tool/bin:/opt/tool", "export CONDA_PREFIX=/opt/conda/envs/tool"
+                            + ("; export LD_LIBRARY_PATH=/opt/conda/envs/tool/lib:${LD_LIBRARY_PATH:-}"
+                               if build.get("then") else ""))
                 + "WORKDIR /work\n"
                 + "ENTRYPOINT [\"micromamba\", \"run\", \"-n\", \"tool\", \"/bin/bash\", \"-lc\"]\n")
     if m == "pip":

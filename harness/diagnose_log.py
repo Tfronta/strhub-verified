@@ -264,6 +264,18 @@ _rule(
     "A required library failed to import. Check the Dockerfile installs all dependencies.",
 )
 
+_rule(
+    # The last line of a Python traceback: what the tool itself raised.
+    # NanoRepeat's run ended at its time limit with a numpy TypeError in its
+    # log that the report never named: "only 0-dimensional arrays can be
+    # converted to Python scalars", a dependency newer than the code.
+    # ModuleNotFoundError and ImportError have rules of their own above.
+    r"^(?:[\w.]+\.)?((?!ModuleNotFound|Import)\w+(?:Error|Exception)):\s+(.{3,200})$",
+    "error", "python_exception",
+    "The tool raised {0}: {1}",
+    "The traceback before this line in the log shows where in the program it was raised.",
+)
+
 # --- Empty output -----------------------------------------------------------
 _rule(
     r"Genotyping succeeded for 0/0 loci",
@@ -522,6 +534,7 @@ REVIEW_LABELS = {
     "oom": "Ran out of memory",
     "run_timeout": "Did not finish in time",
     "build_download_failed": "A download in the build failed",
+    "python_exception": "The tool raised a Python exception",
     "permission_denied": "Permission denied",
     "cmd_not_found": "Command not found",
     "missing_module": "Required Python module not found",
