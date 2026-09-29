@@ -213,3 +213,19 @@ def test_the_version_is_the_release_the_ref_came_from_else_the_short_sha(tmp_pat
     m = _valid(pm.build(p, "t", ref_label=sha)["manifest_yml"], tmp_path)
     assert m["tool"]["version"] == sha[:7]
 
+
+def test_a_loci_catalog_the_docs_download_becomes_the_panel_file():
+    # vamos's README fetches vamos.effMotifs-0.1.GRCh38.tsv from Zenodo for -r.
+    # Which loci to annotate is the user's choice, as HipSTR's regions BED is.
+    cmd = "vamos --read -b demo.aln.bam -r vamos.effMotifs-0.1.GRCh38.tsv -s S1 -o reads.vcf -t 8"
+    new, notes = pm.rewrite_for_strhub(cmd, "ont-bam-hg38", library_format="motif", tree_paths=["README.md"])
+    assert "-r /data/in/regions.bed" in new and "-o reads.vcf" in new
+    assert any("vamos.effMotifs-0.1.GRCh38.tsv (after -r)" in n and "user's choice" in n for n in notes)
+    # A catalog the repository ships is the tool's own, and an output is an output.
+    kept, _ = pm.rewrite_for_strhub("vamos --read -b x.bam -r example/region_motifs.tsv -o motifs.tsv",
+                                    "ont-bam-hg38", library_format="motif",
+                                    tree_paths=["example/region_motifs.tsv"])
+    assert "-r example/region_motifs.tsv" in kept and "-o motifs.tsv" in kept
+    # No layout STRhub writes for the tool: nothing to put in its place.
+    none, _ = pm.rewrite_for_strhub(cmd, "ont-bam-hg38", library_format=None)
+    assert "vamos.effMotifs-0.1.GRCh38.tsv" in none
