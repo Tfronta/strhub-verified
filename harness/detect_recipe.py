@@ -700,8 +700,12 @@ def detect_build(paths: list[str], readme: str, files: dict[str, str] | None = N
         sub = next((f for f in found if f["method"] == "make" and f.get("dir")), None)
         if m or sub:
             then.append(f"make -C {(sub or {}).get('dir') or m.group(1)}")
-        elif any(f["method"] == "pip" for f in found):
-            then.append("pip install --no-cache-dir .")
+        elif any(f["method"] == "pip" for f in found) and re.search(
+                r"pip3?\s+install\s+(?:-e\s+)?\.(?:\s|$)|setup\.py\s+install", readme + docs_text):
+            # Only when the docs install the package into the environment:
+            # straglr's README creates the environment and runs straglr.py
+            # from the clone, and a `pip install .` STRhub added failed there.
+            then.append("python -m pip install --no-cache-dir .")
         elif any(f["method"] == "make" for f in found):
             then.append("make")
     return {
@@ -1470,7 +1474,7 @@ EXPOSE = ("RUN find /opt/tool -xdev -type f -perm -u+x -newer /tmp/.strhub_built
 
 
 def _python_for(files: dict[str, str]) -> str:
-    """The newest of 3.12…3.8 that pyproject's requires-python admits."""
+    """3.11, or the nearest version pyproject's requires-python admits."""
     text = files.get("pyproject.toml", "") + files.get("setup.cfg", "") + files.get("setup.py", "")
     m = re.search(r"(?:requires-python|python_requires)\s*=\s*['\"]([^'\"]+)['\"]", text)
     if not m:
@@ -1489,7 +1493,10 @@ def _python_for(files: dict[str, str]) -> str:
                     or (op == "!=" and v == want) or (op == "~=" and (v < want or v[0] != want[0])):
                 return False
         return True
-    for v in ((3, 12), (3, 11), (3, 10), (3, 9), (3, 8)):
+    # 3.11 when the package admits it: the newest that still ships distutils,
+    # which NanoRepeat's dependencies import. Picking the newest admitted
+    # (3.12) failed a run on STRhub's choice, not the tool's.
+    for v in ((3, 11), (3, 10), (3, 12), (3, 9), (3, 8)):
         if ok(v):
             return f"{v[0]}.{v[1]}"
     return "3.11"
@@ -1561,7 +1568,12 @@ def generate_dockerfile(slug: str, ref: str, build: dict, image_layout: bool = F
     if m == "conda":
         create = (f"RUN micromamba create -y -n tool -c conda-forge -c bioconda --file {build['file']} "
                   if build.get("spec_list") else f"RUN micromamba create -y -n tool -f {build['file']} ")
-        then = "".join(f"RUN micromamba run -n tool bash -lc '{step}'\n" for step in build.get("then") or [])
+        # Built against the environment's own libraries: vamos's Makefile
+        # includes htslib/sam.h, which conda put under the environment, not
+        # where the compiler looks by default.
+        env_paths = ('export CPATH=$CONDA_PREFIX/include:${CPATH:-} LIBRARY_PATH=$CONDA_PREFIX/lib:${LIBRARY_PATH:-} '
+                     'LD_LIBRARY_PATH=$CONDA_PREFIX/lib:${LD_LIBRARY_PATH:-} PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig; ')
+        then = "".join(f"RUN micromamba run -n tool bash -lc '{env_paths}{step}'\n" for step in build.get("then") or [])
         # A make or pip step on top of the environment compiles: vamos's
         # Makefile runs cmake for parasail, and the plain image had none.
         pkgs = BUILD_APT if build.get("then") else "git ca-certificates build-essential"

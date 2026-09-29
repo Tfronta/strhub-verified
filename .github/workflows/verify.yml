@@ -560,7 +560,10 @@ jobs:
             # published as the tool not installing. The Dockerfile is not
             # touched; only the directory docker is pointed at changes, and
             # the build log says so.
-            if grep -Eiq "^[[:space:]]*(COPY|ADD)([[:space:]]+--[^[:space:]]+)*[[:space:]]+(\./)?${NAME}(/|[[:space:]])" "$SRC/$DOCKER_FILE"; then
+            # Only when the clone has no file or directory of that name itself:
+            # strkit's `COPY strkit strkit` copies its own package directory,
+            # and the parent context made every other COPY "not found".
+            if [ ! -e "$SRC/$NAME" ] && grep -Eiq "^[[:space:]]*(COPY|ADD)([[:space:]]+--[^[:space:]]+)*[[:space:]]+(\./)?${NAME}(/|[[:space:]])" "$SRC/$DOCKER_FILE"; then
               CONTEXT=work/ctx
               printf '==== STRhub: %s copies ./%s, so it is built from the directory that holds the clone ====\n\n' \
                 "$DOCKER_FILE" "$NAME" | tee -a work/log_build.txt
