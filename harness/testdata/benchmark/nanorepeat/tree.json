@@ -1,0 +1,140 @@
+{
+"repo": "https://github.com/WGLab/NanoRepeat",
+"ref": "aa5ceb4eb92bc92acc718434b2fcb9f387009084",
+"tag": "v1.8.3",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [],
+"tree": [
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 1799
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 1097
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 16020
+},
+{
+"path": "_config.yml",
+"type": "blob",
+"size": 26
+},
+{
+"path": "example_data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example_data/HTT_repeat_region.bed",
+"type": "blob",
+"size": 50
+},
+{
+"path": "images",
+"type": "tree",
+"size": 0
+},
+{
+"path": "images/HG002.1-7923034-7923187-TATTG.hist.png",
+"type": "blob",
+"size": 75986
+},
+{
+"path": "images/HTT.chr4-3074876-3074933-CAG.hist.png",
+"type": "blob",
+"size": 82717
+},
+{
+"path": "images/HTT.chr4-3074946-3074966-CCG.hist.png",
+"type": "blob",
+"size": 89009
+},
+{
+"path": "images/HTT.hist2d.png",
+"type": "blob",
+"size": 106413
+},
+{
+"path": "images/HTT.scatter.png",
+"type": "blob",
+"size": 153171
+},
+{
+"path": "images/classify_reads.jpg",
+"type": "blob",
+"size": 99503
+},
+{
+"path": "images/repeat_size_estimation.jpg",
+"type": "blob",
+"size": 96251
+},
+{
+"path": "pyproject.toml",
+"type": "blob",
+"size": 865
+},
+{
+"path": "setup.py",
+"type": "blob",
+"size": 934
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/NanoRepeat",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/NanoRepeat/__init__.py",
+"type": "blob",
+"size": 208
+},
+{
+"path": "src/NanoRepeat/nanoRepeat.py",
+"type": "blob",
+"size": 11253
+},
+{
+"path": "src/NanoRepeat/nanoRepeat_bam.py",
+"type": "blob",
+"size": 30553
+},
+{
+"path": "src/NanoRepeat/nanoRepeat_joint.py",
+"type": "blob",
+"size": 35701
+},
+{
+"path": "src/NanoRepeat/paf.py",
+"type": "blob",
+"size": 3078
+},
+{
+"path": "src/NanoRepeat/repeat_region.py",
+"type": "blob",
+"size": 7395
+},
+{
+"path": "src/NanoRepeat/split_alleles.py",
+"type": "blob",
+"size": 33071
+},
+{
+"path": "src/NanoRepeat/tk.py",
+"type": "blob",
+"size": 16220
+}
+]
+}

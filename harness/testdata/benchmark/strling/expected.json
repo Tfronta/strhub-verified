@@ -1,0 +1,29 @@
+{
+  "_about": "Hand-checked against quinlan-lab/STRling at 35c542d8046e6e6489f3bed4e85f7ceeb22e95ba (tag v0.6.0) on 2026-09-29, from README.md, docs/source/index.rst, install.rst, run.rst, outputs.rst, workflows.rst and test.rst (rendered at https://strling.readthedocs.io, the only documentation the README links), src/strpkg/call.nim, src/strpkg/extract.nim, strling.nimble, environment.yml, .github/workflows/release.yml, the v0.6.0 GitHub release, api.anaconda.org, quay.io and Docker Hub.",
+  "program": {"value": "strling", "subcommand": "call", "where": "docs/source/run.rst:28-33"},
+  "command": {"value": "strling call --output-prefix str-results/$sample -f $reference_fasta /path/to/$sample.cram $sample.bin",
+              "source": "repo_docs",
+              "where": "docs/source/run.rst:33"},
+  "install": {"documented": "Recommended: download the static `strling` binary from the latest GitHub release and chmod +x it; or `conda config --add channels bioconda` then `conda install -y strling` (suggested when running strling-outliers.py); or from source with nim: git clone, cd STRling, nimble install.",
+              "acceptable_methods": ["release_binary", "bioconda", "nim"],
+              "where": "docs/source/install.rst:9-44; docs/source/index.rst:34-42"},
+  "published": {"bioconda_documented": "strling",
+                "bioconda_available": {"package": "strling", "version_at_ref": "0.6.0"},
+                "image_documented": "quay.io/biocontainers/strling:0.5.0--h14cfee4_0; brwnj/strling",
+                "release_binary_documented": true,
+                "where": "docs/source/install.rst:9-28; docs/source/workflows.rst:22-27; https://github.com/quinlan-lab/STRling/releases/tag/v0.6.0 (strling, strling_debug); https://api.anaconda.org/package/bioconda/strling"},
+  "input": {"kinds": ["bam", "cram"], "platforms": ["illumina"],
+            "strhub_type": "illumina-bam-hg38",
+            "where": "README.md:9; docs/source/run.rst:17-38; src/strpkg/call.nim:61-62"},
+  "extra_inputs": [
+    {"what": "Per-sample binary of STR-containing read pairs ($sample.bin), made first from the same BAM/CRAM and reference by `strling extract -f $reference_fasta /path/to/$sample.cram $sample.bin`.",
+     "required": true, "strhub_has": false,
+     "where": "docs/source/run.rst:20-26"},
+    {"what": "Genome STR index of the reference (`strling index $reference_fasta`, passed to extract with -g); `strling extract` builds it itself when it is not given.",
+     "required": false, "strhub_has": false,
+     "where": "docs/source/run.rst:8-15"}
+  ],
+  "runnable_on_strhub_data": {"value": true,
+                              "why": "Single-sample calling needs only the BAM/CRAM and the reference FASTA: `strling extract` builds the .bin (and the genome STR index) from those two inputs, then `strling call` runs on the same BAM. No catalog or regions file is required, and illumina-bam-hg38 supplies an indexed BAM plus hg38.fa."},
+  "notes": "The single-sample path is two commands, `strling extract -f $reference_fasta /path/to/$sample.cram $sample.bin` then the call above (docs/source/run.rst:24,33); joint calling adds `strling merge` and `strling call -b joint-bounds.txt`, and the outlier test needs a cohort plus strling-outliers.py (run.rst:40-86). README.md has no command or install text: it links only to https://strling.readthedocs.io/en/latest/ (README.md:7,13), which renders docs/source/*.rst (only the 'latest' and 'stable' builds are active; on 2026-09-29 latest/run.html and latest/install.html carried the same commands as the pinned .rst files). STRling targets expansions longer than the read length (README.md:9; allele1_est is 'na' when no read supports an allele shorter than the read length, docs/source/outputs.rst:15), so at the normal-length forensic loci of a +/-1 kb slice expect few or no reported loci even though the run completes. `strling call -l/--loci` (src/strpkg/call.nim:57; in --help only, not in the docs) genotypes given loci from a 'chr start stop repeatunit [name]' BED; none of the HipSTR, GangSTR, STRsearch or BED4 layouts is that (GangSTR's puts the period in column 4), but the motif.bed layout (chrom start end motif) that appeared in the regions library on 2026-09-29 is. Containers: docs/source/workflows.rst:22-27 name quay.io/biocontainers/strling at tag 0.5.0--h14cfee4_0 and brwnj/strling on Docker Hub (last pushed 2021-11-04); neither is v0.6.0 and the page presents them under running workflows, not installation, so docker_image is left out of acceptable_methods. quay.io/biocontainers/strling:0.6.0--h7b50bb2_0 exists and is the Bioconda build. environment.yml (python, pandas, numpy, scipy, statsmodels, htslib) is not referenced by the docs and does not build strling, so conda is not acceptable. The release binaries are musl-static builds from .github/workflows/release.yml."
+}

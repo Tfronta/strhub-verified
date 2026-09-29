@@ -1,0 +1,59 @@
+{
+  "_about": "Hand-checked against https://github.com/AnJingwd/STRsearch at c70179b3b175adc82a7314409af06900b3861d61 on 2026-09-29, from README.md, pipeline.py, conf.py, scripts/, the Dockerfile, the paper the README links (https://doi.org/10.1186/s41065-020-00120-6, full text via Europe PMC PMC7075041), the Docker Hub image anjing123/strsearch and its layer history, and Bioconda (api.anaconda.org).",
+  "program": {
+    "value": "pipeline.py",
+    "subcommand": "from_bam",
+    "where": "README.md:107,186-200; pipeline.py:29-38"
+  },
+  "command": {
+    "value": "python3 pipeline.py from_bam \\\n--working_path example/test_results \\\n--sample test \\\n--sex male \\\n--bam example/test_results/alignments/test.bam \\\n--ref_bed example/ref_test.bed \\\n--genotypes example/test_results/test_genotypes.txt \\\n--multiple_alleles example/test_results/test_multiple_alleles.txt \\\n--qc_matrix example/test_results/test_qc_matrix.txt",
+    "source": "readme",
+    "where": "README.md:107-115"
+  },
+  "install": {
+    "documented": "git clone (or the master zip), install bwa, samtools, bamToFastq, seqtk and usearch and write their paths into conf.py (plus numpy, argparse, pathlib); or docker pull anjing123/strsearch:latest",
+    "acceptable_methods": [
+      "script",
+      "docker_image"
+    ],
+    "where": "README.md:11-41,218-267; conf.py:1-6"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": null,
+    "image_documented": "anjing123/strsearch:latest",
+    "release_binary_documented": false,
+    "where": "README.md:218-224 (docker pull anjing123/strsearch:latest); https://hub.docker.com/r/anjing123/strsearch (tags latest, pushed 2019-11-08, and v1); https://api.anaconda.org/package/bioconda/strsearch (no such package); the repository has no tags or releases"
+  },
+  "input": {
+    "kinds": [
+      "fastq",
+      "bam"
+    ],
+    "platforms": [
+      "illumina",
+      "ion_torrent"
+    ],
+    "strhub_type": "illumina-bam-hg38",
+    "where": "README.md:75-77,93,120; https://doi.org/10.1186/s41065-020-00120-6 (linked at README.md:275; Methods: Ion S5 single-end BAMs and Illumina MiSeq 2x250 paired-end reads)"
+  },
+  "extra_inputs": [
+    {
+      "what": "STR configuration file for --ref_bed: 11 tab-separated columns (chr, start, end, period, reference allele, marker, STR name, repeat structure, strand, 5' and 3' flanking sequences adjacent to the repeat) with one header line, which the scripts skip",
+      "required": true,
+      "strhub_has": true,
+      "where": "README.md:45-71,197; scripts/get_STR_fastq.py:112-119; scripts/STR_search.py:302-303; scripts/STR_parse.py:189-190"
+    },
+    {
+      "what": "Sample sex for --sex (male or female; female skips chrY loci, male treats X and Y as haploid)",
+      "required": true,
+      "strhub_has": true,
+      "where": "README.md:195; pipeline.py:33; scripts/STR_search.py:320; scripts/STR_parse.py:82-83"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": true,
+    "why": "from_bam needs an indexed BAM (it runs samtools view per locus and indexes the BAM itself when the .bai is missing, scripts/get_STR_fastq.py:41-57), a configuration in its 11-column layout and the sample's sex. illumina-bam-hg38 is paired-end (--type paired is the default) with a .bai; STRhub supplies the configuration in STRsearch layout on hg38 and records NA12878 as female. The repository's example/ref_test.bed is hg19 with five markers, unusable on hg38. usearch is only reached with --assemble_pairs True, which the command does not set."
+  },
+  "notes": "Subcommand: from_bam, for two reasons. STRhub's input is illumina-bam-hg38, a BAM; and at this commit from_fastq only aligns: pipeline.py:52-55 runs bwa_align (bwa mem, samtools sort and index) and then sys.exit(), so genotyping happens only in from_bam. The README's paired-end example chains the two, from_fastq writing example/test_results/alignments/test.bam and from_bam reading it (README.md:95-116). The command is the paired-end default (README.md:106-116); the single-end form adds --type single (README.md:134-146) and the Docker form (README.md:257-267) runs the same entrypoint. The example passes --sex male; NA12878 needs --sex female. conf.py ships YOUR PATH placeholders the user replaces (conf.py:2-6, README.md:29). The repository's Dockerfile is not mentioned in the README: it copies ./STRsearch into the image (Dockerfile:38), so it only builds from the directory above the clone, and it pins ubuntu:16.04, Miniconda3-4.3.31 and a usearch download tied to a licence key (Dockerfile:1,14,30); building it from the clone is not the documented install. The published image (created 2019-11-06, ENTRYPOINT python3 /STRsearch/pipeline.py) postdates the last change to pipeline.py and scripts/ (a79f2ea, 2019-11-05); later commits touch only the README, the Dockerfile and model/."
+}

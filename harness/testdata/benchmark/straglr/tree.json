@@ -1,0 +1,194 @@
+{
+"repo": "https://github.com/bcgsc/straglr",
+"ref": "edfa209c79290475fbeb2d74edb2a68f0df8c99d",
+"tag": "v1.5.6",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"docs/vcf.md",
+"docs/straglr_compare.md",
+"docs/clustering.md"
+],
+"tree": [
+{
+"path": "CHANGES.md",
+"type": "blob",
+"size": 6543
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 33294
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 8554
+},
+{
+"path": "docs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/clustering.md",
+"type": "blob",
+"size": 843
+},
+{
+"path": "docs/straglr_compare.md",
+"type": "blob",
+"size": 2539
+},
+{
+"path": "docs/vcf.md",
+"type": "blob",
+"size": 2859
+},
+{
+"path": "environment.yaml",
+"type": "blob",
+"size": 245
+},
+{
+"path": "extract_repeats.py",
+"type": "blob",
+"size": 3030
+},
+{
+"path": "requirements.txt",
+"type": "blob",
+"size": 106
+},
+{
+"path": "setup.py",
+"type": "blob",
+"size": 996
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/__init__.py",
+"type": "blob",
+"size": 33
+},
+{
+"path": "src/cluster.py",
+"type": "blob",
+"size": 7716
+},
+{
+"path": "src/ins.py",
+"type": "blob",
+"size": 22578
+},
+{
+"path": "src/tre.py",
+"type": "blob",
+"size": 69967
+},
+{
+"path": "src/utils.py",
+"type": "blob",
+"size": 4122
+},
+{
+"path": "src/variant.py",
+"type": "blob",
+"size": 9226
+},
+{
+"path": "src/vcf.py",
+"type": "blob",
+"size": 8423
+},
+{
+"path": "src/version.py",
+"type": "blob",
+"size": 22
+},
+{
+"path": "straglr.py",
+"type": "blob",
+"size": 6899
+},
+{
+"path": "straglr_compare.py",
+"type": "blob",
+"size": 14966
+},
+{
+"path": "test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test/README.md",
+"type": "blob",
+"size": 409
+},
+{
+"path": "test/genome_scan.bed",
+"type": "blob",
+"size": 187
+},
+{
+"path": "test/genome_scan.tsv",
+"type": "blob",
+"size": 2750
+},
+{
+"path": "test/genome_scan.vcf",
+"type": "blob",
+"size": 1943
+},
+{
+"path": "test/genotype.bed",
+"type": "blob",
+"size": 187
+},
+{
+"path": "test/genotype.tsv",
+"type": "blob",
+"size": 2919
+},
+{
+"path": "test/genotype.vcf",
+"type": "blob",
+"size": 1942
+},
+{
+"path": "test/test.bam",
+"type": "blob",
+"size": 122020
+},
+{
+"path": "test/test.bam.bai",
+"type": "blob",
+"size": 56888
+},
+{
+"path": "test/test.bed",
+"type": "blob",
+"size": 30
+},
+{
+"path": "test/test.fa.gz",
+"type": "blob",
+"size": 52405
+},
+{
+"path": "test/test.fa.gz.fai",
+"type": "blob",
+"size": 1121
+},
+{
+"path": "test/test.fa.gz.gzi",
+"type": "blob",
+"size": 56
+}
+]
+}

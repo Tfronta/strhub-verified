@@ -1,0 +1,44 @@
+{
+  "_about": "Hand-checked against ChaissonLab/vamos at 5c4a069847fbe6ca6067de1bff6098c9403db9ec (tag vamos-v3.1.1) on 2026-09-29, from README.md (no docs/ folder or wiki; tryvamos/README.md covers only downstream analysis), requirements.txt, .gitmodules, src/Makefile, src/main.cpp (usage text and argument checks) and example/ at that commit, the Zenodo records the README and the binary cite (13263615, 16286509), api.anaconda.org and the vamos-v3.1.1 release.",
+  "program": {
+    "value": "vamos",
+    "subcommand": "--read",
+    "where": "README.md:69; src/main.cpp:299-305,360-363"
+  },
+  "command": {
+    "value": "vamos --read -b ../example/demo.aln.bam -r vamos.effMotifs-0.1.GRCh38.tsv -s NA24385_CCS_h1 -o reads.vcf -t 8",
+    "source": "readme",
+    "where": "README.md:67-70"
+  },
+  "install": {
+    "documented": "conda create --name vamos python=3.10; conda activate vamos; conda install -c bioconda --file requirements.txt (htslib, boost, libdeflate); git clone https://github.com/ChaissonLab/vamos.git; cd vamos*/src/ && make (the Makefile builds the vendored abPOA, spoa and parasail and links htslib from $CONDA_PREFIX)",
+    "acceptable_methods": ["make"],
+    "where": "README.md:17-33; requirements.txt:1-3; src/Makefile:40-72"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": {"package": "vamos", "version_at_ref": "3.1.1"},
+    "image_documented": null,
+    "release_binary_documented": false,
+    "where": "README.md:19,26 name Bioconda only for dependencies (conda install -c bioconda --file requirements.txt), never for vamos itself; https://api.anaconda.org/package/bioconda/vamos (versions 1.2.6 to 3.1.1; 3.1.1 linux-64 and osx-64 builds uploaded 2026-07-25); https://github.com/ChaissonLab/vamos/releases/tag/vamos-v3.1.1 (no assets)"
+  },
+  "input": {
+    "kinds": ["bam"],
+    "platforms": ["pacbio", "ont"],
+    "strhub_type": "ont-bam-hg38",
+    "where": "README.md:5,61-71; src/main.cpp:309"
+  },
+  "extra_inputs": [
+    {
+      "what": "Motif catalog for -r: tab-separated chrom, start, end and a comma-separated motif list (the published sets add version, VNTR/STR type, period and TE-overlap columns), e.g. vamos.effMotifs-0.1.GRCh38.tsv from Zenodo record 13263615 (34.6 MB gzipped)",
+      "required": true,
+      "strhub_has": false,
+      "where": "README.md:35-55; src/main.cpp:310-312,590-593"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": false,
+    "why": "vamos --read needs a motif catalog (-r) that STRhub does not hold for any dataset. None of its region layouts carries a motif list in column 4, and ont-bam-hg38 has no regions file at all. The documented catalog is a separate Zenodo download (README.md:52-55). Nothing else is missing: --read needs no reference FASTA, and the ONT BAM would be a valid input."
+  },
+  "notes": "The mode flags --contig, --read and --somatic are what the binary's usage calls 'subcommand' (src/main.cpp:299-305); --read is the one for aligned reads. -b, -r, -s and -o are mandatory (src/main.cpp:587,592,602,607); -R (refine against a reference) is optional. Bioconda has vamos 3.1.1, the tag's version, but the README never tells users to install vamos itself from it. Its conda step installs only htslib, boost and libdeflate, and the 'Or download the latest code ... make' wording leaves the conda route without a vamos build (ambiguous); the only complete documented install is conda for the libraries, then make. The README's dependency list is stale: it says libalglib.a and libedlib.a ship with vamos, but neither is in the tree. The README describes motif set v2.1 (Zenodo 13263615), while the binary's help points to a newer record, 16286509 (TRcompDB v2.0, src/main.cpp:46). Ambiguity: the repository also ships example/demo.aln.bam and a genome-wide GRCh38 motif file, example/region_motif.bed (50 MB, never mentioned in the README), which would allow an offline run, but that is not the documented catalog. runnable is therefore false on a strict reading; it would be true if the recipe may fetch the documented Zenodo file. The README says only 'long-read'; its example sample is PacBio CCS (NA24385_CCS_h1). Output is a VCF of motif annotations per TR locus."
+}

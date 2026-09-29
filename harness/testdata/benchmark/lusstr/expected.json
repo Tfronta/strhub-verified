@@ -1,0 +1,44 @@
+{
+  "_about": "Hand-checked against bioforensics/lusSTR at 2425112706d03929ee3cf82588ddd6a2f315083c (tag 0.11) on 2026-09-29, from README.md (the only user document: no docs/ folder and no wiki), Makefile, setup.py, lusSTR/cli/__init__.py, lusSTR/cli/strs.py, lusSTR/cli/config.py, lusSTR/workflows/strs.smk and lusSTR/data/config.yaml at that commit, api.anaconda.org and the 0.11 release.",
+  "program": {
+    "value": "lusstr",
+    "subcommand": "strs",
+    "where": "README.md:72,112; setup.py:55; lusSTR/cli/strs.py:26-34"
+  },
+  "command": {
+    "value": "lusstr strs all",
+    "source": "readme",
+    "where": "README.md:110-113"
+  },
+  "install": {
+    "documented": "conda install -c bioconda lusstr ('for best results'); contributors: create a conda env, git clone, make devenv (which runs pip install -e .)",
+    "acceptable_methods": ["bioconda", "pip"],
+    "where": "README.md:33-45; Makefile:19-24"
+  },
+  "published": {
+    "bioconda_documented": "lusstr",
+    "bioconda_available": {"package": "lusstr", "version_at_ref": "0.11"},
+    "image_documented": null,
+    "release_binary_documented": false,
+    "where": "README.md:35-38 (conda install -c bioconda lusstr); https://api.anaconda.org/package/bioconda/lusstr (versions 0.1.1 to 0.11; 0.11 is a noarch build uploaded 2025-06-17); https://github.com/bioforensics/lusSTR/releases/tag/0.11 (no assets)"
+  },
+  "input": {
+    "kinds": ["uas_report", "straitrazor_report", "genemarker_report", "allele_table"],
+    "platforms": ["illumina"],
+    "strhub_type": null,
+    "where": "README.md:13-28,63-69; lusSTR/data/config.yaml:5-7"
+  },
+  "extra_inputs": [
+    {
+      "what": "config.yaml in the working directory, written by `lusstr config` (analysis_software uas/straitrazor/genemarker, samp_input, kit forenseq/powerseq, output_type strmix/efm/mpsproto, ...). The Snakemake workflow reads it, and it must point samp_input at the input reports",
+      "required": true,
+      "strhub_has": false,
+      "where": "README.md:69,74-101,116; lusSTR/cli/config.py:21-32; lusSTR/workflows/strs.smk:11"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": false,
+    "why": "lusSTR does not read sequencing reads or alignments. Its STR workflow takes UAS Sample Details or Sample Reports (.xlsx), STRait Razor v3 per-sample output (made with the ForenSeqv1.27 or PowerSeqv2.31 configs), GeneMarker v2.6 *_strresults_filtered.csv, or a CSV with Locus, NumReads, Sequence and SampleID columns. STRhub holds no such dataset. Its ForenSeq FASTQ would first have to go through STRait Razor, a different tool."
+  },
+  "notes": "Main analysis: `lusstr strs all`. It runs the Snakemake STR workflow format -> convert -> filter ('all' is a positional target, lusSTR/cli/strs.py:28-34) in a working directory that already holds config.yaml from `lusstr config`; -w sets that directory (README.md:119). Other entry points: `lusstr snps all` (the SNP workflow) and `lusstr gui` (a Streamlit GUI, README.md:49-58). The filter step writes input files for EuroForMix, MPSproto or STRmix. README.md:30 still calls 0.9 'the most recent lusSTR version' at tag 0.11. Plain `make` only prints help; `make devenv` is the developer install and amounts to pip install -e . in a conda env, hence 'pip'. Input kinds are labels, not file extensions: uas_report is .xlsx, straitrazor_report is STRait Razor .txt, genemarker_report and allele_table are .csv. Platform: ForenSeq Signature Prep and Kintelligence, and PowerSeq, are Illumina (MiSeq) kits; the README names the kits, not the sequencer."
+}

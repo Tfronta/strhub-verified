@@ -1,0 +1,11 @@
+name: strling
+channels:
+- conda-forge  # added for scipy/statsmodels builds
+- bioconda
+dependencies:
+- python=3*
+- pandas
+- numpy
+- scipy
+- statsmodels
+- htslib

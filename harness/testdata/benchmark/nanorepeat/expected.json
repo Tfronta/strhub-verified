@@ -1,0 +1,59 @@
+{
+  "_about": "Hand-checked against WGLab/NanoRepeat at aa5ceb4eb92bc92acc718434b2fcb9f387009084 (tag v1.8.3) on 2026-09-29, from README.md, setup.py, pyproject.toml and src/NanoRepeat/nanoRepeat.py at that commit, the v1.8.3 release notes, api.anaconda.org and PyPI.",
+  "program": {
+    "value": "nanoRepeat.py",
+    "subcommand": null,
+    "where": "README.md:69; setup.py:19"
+  },
+  "command": {
+    "value": "nanoRepeat.py -i path/to/NanoRepeat_v1.3_example_data/HG002/hg002_Q20.20210805_3flowcells.hs37d5.example_regions.bam -t bam -d ont_q20 -r path/to/NanoRepeat_v1.3_example_data/HG002/GRCh37_chr1.fasta -b path/to/NanoRepeat_v1.3_example_data/HG002/HG002_GRCh37_example_regions.bed -c 4 --samtools path/to/samtools --minimap2 path/to/minimap2 -o ./nanorepeat_output/HG002",
+    "source": "readme",
+    "where": "README.md:69-78"
+  },
+  "install": {
+    "documented": "conda create -n nanorepeat python=3.8, then either git clone and `pip install .` or `pip install NanoRepeat` from PyPI; prerequisites listed as Python >= 3.8 and minimap2 >= 2.22",
+    "acceptable_methods": [
+      "pip"
+    ],
+    "where": "README.md:16-42"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": null,
+    "image_documented": null,
+    "release_binary_documented": false,
+    "where": "https://api.anaconda.org/package/bioconda/nanorepeat (not found); PyPI NanoRepeat 1.8.3 matches the tag (README.md:3 badge, README.md:35-41); https://github.com/WGLab/NanoRepeat/releases/tag/v1.8.3 (no assets; README.md:51 downloads example data from the v1.3 release, not a binary)"
+  },
+  "input": {
+    "kinds": [
+      "bam",
+      "cram",
+      "fastq",
+      "fasta"
+    ],
+    "platforms": [
+      "ont",
+      "pacbio"
+    ],
+    "strhub_type": "ont-bam-hg38",
+    "where": "README.md:1,48,81,83,85; src/NanoRepeat/nanoRepeat.py:108-114"
+  },
+  "extra_inputs": [
+    {
+      "what": "repeat region BED for -b: chrom, 0-based start, end, repeat unit sequence (4 required columns); each interval must hold only that one motif",
+      "required": true,
+      "strhub_has": true,
+      "where": "README.md:74,89-101; src/NanoRepeat/nanoRepeat.py:112",
+      "revised": "2026-09-29: STRhub now supplies a chrom/start/end/motif regions file for ont-bam-hg38 (datasets/ont-bam-hg38/regions/motif.bed, the 20 CODIS loci inside the ONT slices)."
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": true,
+    "why": "2026-09-29: STRhub now supplies a chrom/start/end/motif regions file for ont-bam-hg38 (datasets/ont-bam-hg38/regions/motif.bed, the 20 CODIS loci inside the ONT slices). With the motif-in-column-4 file from STRhub's regions library as -b, the documented command has everything it needs on ont-bam-hg38.",
+    "was": {
+      "value": false,
+      "why": "-b/--repeat_region_bed is required and must carry the repeat unit in column 4. None of the layouts STRhub writes has it there: HipSTR and GangSTR put the period, BED4 a locus name, STRsearch the period after a header line. So no STRhub regions file fits, whichever dataset it is attached to. As specified for this benchmark, STRhub attaches regions only to the Illumina BAM datasets anyway."
+    }
+  },
+  "notes": "Command joined from the README's backslash-continued lines. Everything else a run needs is there: -t bam on STRhub's indexed BAM, -r hg38, and -d ont_q20, which README.md:85 prescribes for Q20+ chemistry such as R10 (STRhub's slice is R10, SUP basecalled). The README still lists minimap2 as a prerequisite (README.md:21-23) and passes --samtools/--minimap2 (README.md:76-77). At this commit both flags are deprecated and ignored (src/NanoRepeat/nanoRepeat.py:119-120), because v1.8.3 replaced minimap2 with pyminimap2 (release notes; setup.py:24). pip installs the script nanoRepeat.py (setup.py:19) and the console entry point nanoRepeat (pyproject.toml:27-28). The joint example calls nanoRepeat-joint.py (README.md:193), which neither packaging file installs; they install nanoRepeat_joint.py and nanoRepeat-joint. The README's example data is GRCh37 chr1 (README.md:87). NanoRepeat cannot handle mixed-motif repeats (README.md:297), which matters for compound forensic STRs. The conda step only creates a Python 3.8 environment; the install itself is pip."
+}

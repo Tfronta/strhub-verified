@@ -1,0 +1,205 @@
+{
+"repo": "https://github.com/WGLab/RepeatHMM",
+"ref": "fa6c108fa0cc8ab344577147e52a8fcc3adde990",
+"tag": "v2.0.3",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"docs/Usage.md",
+"README.md",
+"docs/Install.md",
+"docs/Help on results interpretation.md"
+],
+"tree": [
+{
+"path": "INSTALL",
+"type": "blob",
+"size": 100
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 715
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 2643
+},
+{
+"path": "bin",
+"type": "tree",
+"size": 0
+},
+{
+"path": "bin/RepeatHMM_scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "bin/RepeatHMM_scripts/UnsymmetricPairAlignment",
+"type": "tree",
+"size": 0
+},
+{
+"path": "bin/RepeatHMM_scripts/UnsymmetricPairAlignment/Makefile",
+"type": "blob",
+"size": 83
+},
+{
+"path": "bin/RepeatHMM_scripts/UnsymmetricPairAlignment/UnsymmetricPairAlignment.c",
+"type": "blob",
+"size": 15429
+},
+{
+"path": "bin/RepeatHMM_scripts/UnsymmetricPairAlignment/UnsymmetricPairAlignment.i",
+"type": "blob",
+"size": 1247
+},
+{
+"path": "bin/RepeatHMM_scripts/UnsymmetricPairAlignment/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "bin/RepeatHMM_scripts/UnsymmetricPairAlignment/setup.py",
+"type": "blob",
+"size": 326
+},
+{
+"path": "bin/RepeatHMM_scripts/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "bin/RepeatHMM_scripts/getAlignment.py",
+"type": "blob",
+"size": 2436
+},
+{
+"path": "bin/RepeatHMM_scripts/getTransition_start_emission_prob_x.py",
+"type": "blob",
+"size": 12183
+},
+{
+"path": "bin/RepeatHMM_scripts/myBAMhandler.py",
+"type": "blob",
+"size": 26965
+},
+{
+"path": "bin/RepeatHMM_scripts/myCommonFun.py",
+"type": "blob",
+"size": 3603
+},
+{
+"path": "bin/RepeatHMM_scripts/myFASTQhandler.py",
+"type": "blob",
+"size": 7053
+},
+{
+"path": "bin/RepeatHMM_scripts/myGaussianMixtureModel.py",
+"type": "blob",
+"size": 28426
+},
+{
+"path": "bin/RepeatHMM_scripts/myHMM.py",
+"type": "blob",
+"size": 8318
+},
+{
+"path": "bin/RepeatHMM_scripts/myPredefinedPatternReader.py",
+"type": "blob",
+"size": 3889
+},
+{
+"path": "bin/RepeatHMM_scripts/myRepeatReAlignment.py",
+"type": "blob",
+"size": 57300
+},
+{
+"path": "bin/RepeatHMM_scripts/myScanWholeGenome.py",
+"type": "blob",
+"size": 31156
+},
+{
+"path": "bin/RepeatHMM_scripts/mySetting.py",
+"type": "blob",
+"size": 1522
+},
+{
+"path": "bin/RepeatHMM_scripts/myheader.py",
+"type": "blob",
+"size": 1277
+},
+{
+"path": "bin/RepeatHMM_scripts/printHMMmatrix.py",
+"type": "blob",
+"size": 2789
+},
+{
+"path": "bin/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "bin/reference_sts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "bin/reference_sts/hg19",
+"type": "tree",
+"size": 0
+},
+{
+"path": "bin/reference_sts/hg19/hg19.predefined.pa",
+"type": "blob",
+"size": 3531
+},
+{
+"path": "bin/reference_sts/hg38",
+"type": "tree",
+"size": 0
+},
+{
+"path": "bin/reference_sts/hg38/hg38.predefined.pa",
+"type": "blob",
+"size": 3658
+},
+{
+"path": "bin/repeatHMM.py",
+"type": "blob",
+"size": 34979
+},
+{
+"path": "docs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/Help on results interpretation.md",
+"type": "blob",
+"size": 4129
+},
+{
+"path": "docs/Install.md",
+"type": "blob",
+"size": 1392
+},
+{
+"path": "docs/Usage.md",
+"type": "blob",
+"size": 28255
+},
+{
+"path": "environment.yml",
+"type": "blob",
+"size": 1593
+},
+{
+"path": "setup.py",
+"type": "blob",
+"size": 2170
+}
+]
+}

@@ -1,0 +1,33 @@
+{
+ "bioconda": {
+  "strling": [
+   "0.1.0",
+   "0.2.1",
+   "0.3.0",
+   "0.4.0",
+   "0.4.1",
+   "0.4.2",
+   "0.5.0",
+   "0.5.1",
+   "0.5.2",
+   "0.6.0"
+  ]
+ },
+ "release": {
+  "tag": "v0.6.0",
+  "assets": [
+   {
+    "name": "strling",
+    "size": 19262848,
+    "url": "https://github.com/quinlan-lab/STRling/releases/download/v0.6.0/strling",
+    "digest": "sha256:477c24920ef8c3b75d46563106682cf441edf85576bfcaaffc4d728c1a555152"
+   },
+   {
+    "name": "strling_debug",
+    "size": 19289544,
+    "url": "https://github.com/quinlan-lab/STRling/releases/download/v0.6.0/strling_debug",
+    "digest": "sha256:91416022c8af369cffb2227c91f7bb8989a349a3cc08e9c6b43f029ec78a417c"
+   }
+  ]
+ }
+}

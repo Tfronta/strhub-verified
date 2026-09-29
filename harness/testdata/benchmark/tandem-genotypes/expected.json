@@ -1,0 +1,31 @@
+{
+  "_about": "Hand-checked against mcfrith/tandem-genotypes at 706a6b6a134788afb689e35445c67b4c2ae40666 (untagged in repos.tsv, but this commit is git tag 1.9.2) on 2026-09-29, from README.md, setup.py and the tandem-genotypes script at that commit, the LAST alignment guide the README links to (https://github.com/mcfrith/last-rna/blob/master/last-long-reads.md), api.anaconda.org and the repository's tags.",
+  "program": {"value": "tandem-genotypes", "subcommand": null, "where": "README.md:21"},
+  "command": {"value": "tandem-genotypes -g refGene.txt microsat.txt alignments.maf > tg.txt",
+              "source": "readme",
+              "where": "README.md:21"},
+  "install": {"documented": "needs Python (R only for tandem-genotypes-plot); download the scripts and run them as-is from any directory, or get tandem-genotypes from Bioconda",
+              "acceptable_methods": ["script", "bioconda"],
+              "where": "README.md:6-13"},
+  "published": {"bioconda_documented": "tandem-genotypes",
+                "bioconda_available": {"package": "tandem-genotypes", "version_at_ref": "1.9.2"},
+                "image_documented": null,
+                "release_binary_documented": false,
+                "where": "README.md:12-13 (names Bioconda with a link to bioconda.github.io, no install command); https://api.anaconda.org/package/bioconda/tandem-genotypes (1.2.0 to 1.9.2); tag 1.9.2 points at the pinned commit (gh api repos/mcfrith/tandem-genotypes/tags); the repository has no GitHub releases"},
+  "input": {"kinds": ["maf"], "platforms": ["ont", "pacbio"],
+            "strhub_type": null, "where": "README.md:3-4,17-21,203-205,215-216; tandem-genotypes:664,697"},
+  "extra_inputs": [
+    {"what": "LAST alignments of the long reads to the genome in MAF format, in last-split order, made from FASTA/FASTQ reads with a LAST index of the genome (lastdb), trained parameters (last-train) and lastal --split",
+     "required": true, "strhub_has": false,
+     "where": "README.md:17-21,203-205; https://github.com/mcfrith/last-rna/blob/master/last-long-reads.md (lastdb, last-train, lastal --split)"},
+    {"what": "tandem-repeat table: UCSC microsat.txt, simpleRepeat.txt or rmsk.txt, RepeatMasker .out, tantan -f4 output, or chrom/start/end/unit columns; the bundled hg38-disease-tr.txt covers only a few disease repeats",
+     "required": true, "strhub_has": false,
+     "where": "README.md:21,111-156"},
+    {"what": "gene annotation for -g (refGene.txt, refFlat.txt or BED)",
+     "required": false, "strhub_has": false,
+     "where": "README.md:21,26,158-161"}
+  ],
+  "runnable_on_strhub_data": {"value": false,
+    "why": "No STRhub dataset fits. The input is LAST MAF alignments made from long reads in FASTA/FASTQ (lastdb, last-train, lastal --split). STRhub has ONT reads only as a minimap2 BAM (no ONT FASTQ, no MAF, no LAST index); its only FASTQ is Illumina ForenSeq amplicons, not long reads. It also has no repeat table in a UCSC or chrom/start/end/unit layout."},
+  "notes": "repos.tsv (and the snapshot's tree.json) leave the tag empty, but the pinned commit is exactly tag 1.9.2, a lightweight tag without a 'v' prefix. setup.py derives its version from git describe (setup.py:7-17), and Bioconda 1.9.2 matches. The script reads only MAF (usage 'microsat.txt alignments.maf', tandem-genotypes:664,697). The alignment recipe lives outside the repository, in the linked LAST guide. The basic output is per-read copy-number changes. The -o2 variant (README.md:86-94: tandem-genotypes -o2 -g refGene.txt microsat.txt alignments.maf > tg2.txt) adds a crude two-allele prediction, the closest thing to a genotype call. tandem-genotypes-plot, -join and -merge are helpers, not the genotyper. The bundled hg38-disease-tr.txt lists disease-associated repeats (names like ATXN7:SCA7), not forensic CODIS loci. 'script' means copying the scripts and running them as-is; setup.py exists but pip is not documented."
+}

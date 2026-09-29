@@ -1,0 +1,11 @@
+{
+ "bioconda": {
+  "longtr": [
+   "1.2"
+  ]
+ },
+ "release": {
+  "tag": "v1.2",
+  "assets": []
+ }
+}

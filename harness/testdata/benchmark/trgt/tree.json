@@ -1,0 +1,798 @@
+{
+"repo": "https://github.com/PacificBiosciences/trgt",
+"ref": "b21c6217eeaef9a080205932fe29f730dc00e31f",
+"tag": "v5.1.0",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"CHANGELOG.md",
+"docs/tutorial.md",
+"docs/trvz-plots.md",
+"docs/puretarget.md",
+"docs/cli.md",
+"docs/repeat_files.md",
+"docs/bam_files.md",
+"docs/vcf_files.md",
+"docs/remote_files.md",
+"docs/merge.md",
+"docs/deepdive.md",
+"docs/validate.md"
+],
+"tree": [
+{
+"path": "CHANGELOG.md",
+"type": "blob",
+"size": 10992
+},
+{
+"path": "CITATION.bib",
+"type": "blob",
+"size": 502
+},
+{
+"path": "Cargo.lock",
+"type": "blob",
+"size": 65176
+},
+{
+"path": "Cargo.toml",
+"type": "blob",
+"size": 1139
+},
+{
+"path": "LICENSE-THIRDPARTY.json",
+"type": "blob",
+"size": 86741
+},
+{
+"path": "LICENSE.md",
+"type": "blob",
+"size": 8568
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 5036
+},
+{
+"path": "build.rs",
+"type": "blob",
+"size": 766
+},
+{
+"path": "crates",
+"type": "tree",
+"size": 0
+},
+{
+"path": "crates/pipeplot",
+"type": "tree",
+"size": 0
+},
+{
+"path": "crates/pipeplot/Cargo.toml",
+"type": "blob",
+"size": 393
+},
+{
+"path": "crates/pipeplot/assets",
+"type": "tree",
+"size": 0
+},
+{
+"path": "crates/pipeplot/assets/fonts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "crates/pipeplot/assets/fonts/RobotoMono-Bold.ttf",
+"type": "blob",
+"size": 87392
+},
+{
+"path": "crates/pipeplot/licenses",
+"type": "tree",
+"size": 0
+},
+{
+"path": "crates/pipeplot/licenses/LICENSE-ROBOTO.txt",
+"type": "blob",
+"size": 11558
+},
+{
+"path": "crates/pipeplot/licenses/LICENSE-THIRDPARTY.json",
+"type": "blob",
+"size": 30483
+},
+{
+"path": "crates/pipeplot/licenses/LICENSE.md",
+"type": "blob",
+"size": 8568
+},
+{
+"path": "crates/pipeplot/src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "crates/pipeplot/src/common.rs",
+"type": "blob",
+"size": 383
+},
+{
+"path": "crates/pipeplot/src/image.rs",
+"type": "blob",
+"size": 1096
+},
+{
+"path": "crates/pipeplot/src/lib.rs",
+"type": "blob",
+"size": 622
+},
+{
+"path": "crates/pipeplot/src/pdf.rs",
+"type": "blob",
+"size": 470
+},
+{
+"path": "crates/pipeplot/src/pipeplot.rs",
+"type": "blob",
+"size": 1309
+},
+{
+"path": "crates/pipeplot/src/png.rs",
+"type": "blob",
+"size": 570
+},
+{
+"path": "crates/pipeplot/src/svg.rs",
+"type": "blob",
+"size": 10562
+},
+{
+"path": "docs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/bam_files.md",
+"type": "blob",
+"size": 1922
+},
+{
+"path": "docs/cli.md",
+"type": "blob",
+"size": 6581
+},
+{
+"path": "docs/deepdive.md",
+"type": "blob",
+"size": 3263
+},
+{
+"path": "docs/figures",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/figures/HG00281-TRGT-FMR1-plots.png",
+"type": "blob",
+"size": 189736
+},
+{
+"path": "docs/figures/HTT-allele.png",
+"type": "blob",
+"size": 76989
+},
+{
+"path": "docs/figures/HTT-waterfall.png",
+"type": "blob",
+"size": 43215
+},
+{
+"path": "docs/figures/TR1.svg",
+"type": "blob",
+"size": 29899
+},
+{
+"path": "docs/figures/VCF-overview.png",
+"type": "blob",
+"size": 100034
+},
+{
+"path": "docs/figures/fxn-fail-reads-example.png",
+"type": "blob",
+"size": 302417
+},
+{
+"path": "docs/figures/logo_TRGT.svg",
+"type": "blob",
+"size": 1634
+},
+{
+"path": "docs/figures/trgt-deepdive-igv-long.png",
+"type": "blob",
+"size": 131230
+},
+{
+"path": "docs/figures/trgt-deepdive-igv-short.png",
+"type": "blob",
+"size": 91429
+},
+{
+"path": "docs/merge.md",
+"type": "blob",
+"size": 3895
+},
+{
+"path": "docs/puretarget.md",
+"type": "blob",
+"size": 6152
+},
+{
+"path": "docs/remote_files.md",
+"type": "blob",
+"size": 4836
+},
+{
+"path": "docs/repeat_files.md",
+"type": "blob",
+"size": 1587
+},
+{
+"path": "docs/trvz-plots.md",
+"type": "blob",
+"size": 3867
+},
+{
+"path": "docs/tutorial.md",
+"type": "blob",
+"size": 5008
+},
+{
+"path": "docs/validate.md",
+"type": "blob",
+"size": 1154
+},
+{
+"path": "docs/vcf_files.md",
+"type": "blob",
+"size": 7162
+},
+{
+"path": "example",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/reference.fasta",
+"type": "blob",
+"size": 11252
+},
+{
+"path": "example/reference.fasta.fai",
+"type": "blob",
+"size": 19
+},
+{
+"path": "example/repeat.bed",
+"type": "blob",
+"size": 46
+},
+{
+"path": "example/sample.bam",
+"type": "blob",
+"size": 331422
+},
+{
+"path": "example/sample.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "repeats",
+"type": "tree",
+"size": 0
+},
+{
+"path": "repeats/pathogenic_repeats.hg38.bed",
+"type": "blob",
+"size": 3450
+},
+{
+"path": "repeats/repeat_catalog.hg38.bed",
+"type": "blob",
+"size": 12770708
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/cli.rs",
+"type": "blob",
+"size": 25709
+},
+{
+"path": "src/commands.rs",
+"type": "blob",
+"size": 83
+},
+{
+"path": "src/commands",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/commands/deepdive.rs",
+"type": "blob",
+"size": 10042
+},
+{
+"path": "src/commands/genotype.rs",
+"type": "blob",
+"size": 17759
+},
+{
+"path": "src/commands/merge.rs",
+"type": "blob",
+"size": 439
+},
+{
+"path": "src/commands/plot.rs",
+"type": "blob",
+"size": 1170
+},
+{
+"path": "src/commands/validate.rs",
+"type": "blob",
+"size": 3979
+},
+{
+"path": "src/hmm",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/hmm/builder.rs",
+"type": "blob",
+"size": 9563
+},
+{
+"path": "src/hmm/events.rs",
+"type": "blob",
+"size": 4300
+},
+{
+"path": "src/hmm/hmm_model.rs",
+"type": "blob",
+"size": 12492
+},
+{
+"path": "src/hmm/mod.rs",
+"type": "blob",
+"size": 383
+},
+{
+"path": "src/hmm/operations.rs",
+"type": "blob",
+"size": 3064
+},
+{
+"path": "src/hmm/purity.rs",
+"type": "blob",
+"size": 2946
+},
+{
+"path": "src/hmm/spans.rs",
+"type": "blob",
+"size": 631
+},
+{
+"path": "src/hmm/utils.rs",
+"type": "blob",
+"size": 1250
+},
+{
+"path": "src/lib.rs",
+"type": "blob",
+"size": 135
+},
+{
+"path": "src/main.rs",
+"type": "blob",
+"size": 2107
+},
+{
+"path": "src/merge",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/merge/field_descriptors.rs",
+"type": "blob",
+"size": 12396
+},
+{
+"path": "src/merge/field_registry.rs",
+"type": "blob",
+"size": 32006
+},
+{
+"path": "src/merge/genotype_types.rs",
+"type": "blob",
+"size": 6693
+},
+{
+"path": "src/merge/mod.rs",
+"type": "blob",
+"size": 167
+},
+{
+"path": "src/merge/strategy",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/merge/strategy/exact.rs",
+"type": "blob",
+"size": 6077
+},
+{
+"path": "src/merge/strategy/mod.rs",
+"type": "blob",
+"size": 15
+},
+{
+"path": "src/merge/tpool.rs",
+"type": "blob",
+"size": 12729
+},
+{
+"path": "src/merge/vcf_processor.rs",
+"type": "blob",
+"size": 72005
+},
+{
+"path": "src/merge/vcf_reader.rs",
+"type": "blob",
+"size": 21650
+},
+{
+"path": "src/merge/vcf_writer.rs",
+"type": "blob",
+"size": 7228
+},
+{
+"path": "src/trgt",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/trgt/genotype",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/trgt/genotype/consensus.rs",
+"type": "blob",
+"size": 7646
+},
+{
+"path": "src/trgt/genotype/diploid.rs",
+"type": "blob",
+"size": 3802
+},
+{
+"path": "src/trgt/genotype/genotype_cluster.rs",
+"type": "blob",
+"size": 12104
+},
+{
+"path": "src/trgt/genotype/genotype_flank.rs",
+"type": "blob",
+"size": 24922
+},
+{
+"path": "src/trgt/genotype/genotype_size.rs",
+"type": "blob",
+"size": 4133
+},
+{
+"path": "src/trgt/genotype/gt.rs",
+"type": "blob",
+"size": 422
+},
+{
+"path": "src/trgt/genotype/haploid.rs",
+"type": "blob",
+"size": 1717
+},
+{
+"path": "src/trgt/genotype/mod.rs",
+"type": "blob",
+"size": 204
+},
+{
+"path": "src/trgt/genotype/span_locater.rs",
+"type": "blob",
+"size": 2391
+},
+{
+"path": "src/trgt/genotype_reader.rs",
+"type": "blob",
+"size": 14129
+},
+{
+"path": "src/trgt/locus.rs",
+"type": "blob",
+"size": 9716
+},
+{
+"path": "src/trgt/locus_group.rs",
+"type": "blob",
+"size": 13031
+},
+{
+"path": "src/trgt/mod.rs",
+"type": "blob",
+"size": 130
+},
+{
+"path": "src/trgt/reads",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/trgt/reads/cigar.rs",
+"type": "blob",
+"size": 2078
+},
+{
+"path": "src/trgt/reads/clip_bases.rs",
+"type": "blob",
+"size": 9328
+},
+{
+"path": "src/trgt/reads/clip_region.rs",
+"type": "blob",
+"size": 9453
+},
+{
+"path": "src/trgt/reads/mod.rs",
+"type": "blob",
+"size": 215
+},
+{
+"path": "src/trgt/reads/read.rs",
+"type": "blob",
+"size": 8429
+},
+{
+"path": "src/trgt/reads/snp.rs",
+"type": "blob",
+"size": 21760
+},
+{
+"path": "src/trgt/reads/test_utils.rs",
+"type": "blob",
+"size": 716
+},
+{
+"path": "src/trgt/workflows",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/trgt/workflows/locus_result.rs",
+"type": "blob",
+"size": 988
+},
+{
+"path": "src/trgt/workflows/mod.rs",
+"type": "blob",
+"size": 140
+},
+{
+"path": "src/trgt/workflows/tr.rs",
+"type": "blob",
+"size": 18835
+},
+{
+"path": "src/trgt/writers",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/trgt/writers/mod.rs",
+"type": "blob",
+"size": 91
+},
+{
+"path": "src/trgt/writers/write_bam.rs",
+"type": "blob",
+"size": 6421
+},
+{
+"path": "src/trgt/writers/write_vcf.rs",
+"type": "blob",
+"size": 20087
+},
+{
+"path": "src/trvz",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/trvz/align.rs",
+"type": "blob",
+"size": 585
+},
+{
+"path": "src/trvz/align_allele.rs",
+"type": "blob",
+"size": 477
+},
+{
+"path": "src/trvz/align_consensus.rs",
+"type": "blob",
+"size": 3771
+},
+{
+"path": "src/trvz/align_reads.rs",
+"type": "blob",
+"size": 3654
+},
+{
+"path": "src/trvz/allele_plot.rs",
+"type": "blob",
+"size": 4206
+},
+{
+"path": "src/trvz/mod.rs",
+"type": "blob",
+"size": 159
+},
+{
+"path": "src/trvz/params.rs",
+"type": "blob",
+"size": 3305
+},
+{
+"path": "src/trvz/scale.rs",
+"type": "blob",
+"size": 894
+},
+{
+"path": "src/trvz/waterfall_plot.rs",
+"type": "blob",
+"size": 7925
+},
+{
+"path": "src/utils",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/utils/align.rs",
+"type": "blob",
+"size": 768
+},
+{
+"path": "src/utils/bam_utils.rs",
+"type": "blob",
+"size": 12505
+},
+{
+"path": "src/utils/genotyper.rs",
+"type": "blob",
+"size": 400
+},
+{
+"path": "src/utils/input.rs",
+"type": "blob",
+"size": 12516
+},
+{
+"path": "src/utils/input_source.rs",
+"type": "blob",
+"size": 17834
+},
+{
+"path": "src/utils/io_utils.rs",
+"type": "blob",
+"size": 6095
+},
+{
+"path": "src/utils/karyotype.rs",
+"type": "blob",
+"size": 6905
+},
+{
+"path": "src/utils/locus.rs",
+"type": "blob",
+"size": 3977
+},
+{
+"path": "src/utils/math.rs",
+"type": "blob",
+"size": 8741
+},
+{
+"path": "src/utils/mod.rs",
+"type": "blob",
+"size": 821
+},
+{
+"path": "src/utils/ploidy.rs",
+"type": "blob",
+"size": 426
+},
+{
+"path": "src/utils/presets.rs",
+"type": "blob",
+"size": 434
+},
+{
+"path": "src/utils/read.rs",
+"type": "blob",
+"size": 1583
+},
+{
+"path": "src/utils/readers.rs",
+"type": "blob",
+"size": 350
+},
+{
+"path": "src/utils/readers",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/utils/readers/bam.rs",
+"type": "blob",
+"size": 3869
+},
+{
+"path": "src/utils/readers/catalog.rs",
+"type": "blob",
+"size": 585
+},
+{
+"path": "src/utils/readers/genome.rs",
+"type": "blob",
+"size": 1465
+},
+{
+"path": "src/utils/readers/vcf.rs",
+"type": "blob",
+"size": 426
+},
+{
+"path": "src/utils/region.rs",
+"type": "blob",
+"size": 4706
+},
+{
+"path": "src/utils/test_util.rs",
+"type": "blob",
+"size": 25967
+},
+{
+"path": "src/utils/util.rs",
+"type": "blob",
+"size": 4540
+},
+{
+"path": "src/wfa2.rs",
+"type": "blob",
+"size": 54
+},
+{
+"path": "src/wfaligner.rs",
+"type": "blob",
+"size": 75171
+}
+]
+}

@@ -1,0 +1,56 @@
+{
+  "_about": "Hand-checked against oyvble/MPSproto at 16080a8c7a71493d89670ba39f2a33779c62dccf (tag v0.9.7) on 2026-09-29, from README.md, the doc folder it points to (doc/MPSproto_tutorial.Rmd, doc/MPSproto_tutorial_advanced.Rmd), DESCRIPTION, NAMESPACE, NEWS.md, src/Makevars and inst/ at that commit, the project page and binary URL the README cites (both HTTP 404 on 2026-09-29), api.anaconda.org, CRAN and the v0.9.7 release.",
+  "program": {
+    "value": "R",
+    "subcommand": "inferEvidence",
+    "where": "README.md:14-16; doc/MPSproto_tutorial.Rmd:34,181"
+  },
+  "command": {
+    "value": "mleHp = inferEvidence(evidData,popFreq,refData,hypHp , calibration, verbose=FALSE)",
+    "source": "repo_docs",
+    "where": "doc/MPSproto_tutorial.Rmd:181 (README.md:24 points to the doc folder without a link)"
+  },
+  "install": {
+    "documented": "Windows: install.packages() on the prebuilt MPSproto_0.9.7.zip (type='win.binary') from euroformix.com; otherwise install_github(\"oyvble/MPSproto\") in R (a source build with C++/OpenMP code)",
+    "acceptable_methods": ["r"],
+    "where": "README.md:5-11; DESCRIPTION:1-15; src/Makevars:1-2"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": null,
+    "image_documented": null,
+    "release_binary_documented": true,
+    "where": "README.md:7-8 (Windows-only binary http://www.euroformix.com/sites/default/files/MPSproto_0.9.7.zip, HTTP 404 on 2026-09-29); https://github.com/oyvble/MPSproto/releases/tag/v0.9.7 (single asset MPSproto_0.9.7.zip, 'For Windows OS only. Compiled with R 4.2.3.'); https://api.anaconda.org/package/bioconda/mpsproto and https://api.anaconda.org/package/bioconda/r-mpsproto (not found); not on CRAN"
+  },
+  "input": {
+    "kinds": ["allele_table"],
+    "platforms": ["illumina", "ce"],
+    "strhub_type": null,
+    "where": "README.md:3,29,43; doc/MPSproto_tutorial.Rmd:14-24,156-161"
+  },
+  "extra_inputs": [
+    {
+      "what": "Calibrated model: per-marker analytical threshold, marker efficiency, noise and stutter parameters, stored as an RDS list. It is fitted beforehand from single-source calibration profiles with inferMarkerEfficiency, getStutterData, inferStutterModel and inferNoiseModel, or with calibrateModel",
+      "required": true,
+      "strhub_has": false,
+      "where": "doc/MPSproto_tutorial.Rmd:15-24,28-129"
+    },
+    {
+      "what": "Population allele-frequency table in the same sequence nomenclature (e.g. the shipped inst/examples/ForenSeq_NIST1036cauc_FWbrack.csv), read with importMPSfreqs()",
+      "required": true,
+      "strhub_has": false,
+      "where": "doc/MPSproto_tutorial.Rmd:131-135; README.md:29"
+    },
+    {
+      "what": "Reference profile table of the known contributor(s) (refData, read with importMPSsample()), used to condition the hypotheses",
+      "required": true,
+      "strhub_has": false,
+      "where": "doc/MPSproto_tutorial.Rmd:158-160,164-171,181"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": false,
+    "why": "MPSproto is an R package that interprets MPS-STR (or CE) mixture profiles. It takes per-sample allele/read-count tables whose alleles are in lusSTR's Forward_Strand_Bracketed_form, plus a calibrated model, allele frequencies and reference profiles. It reads no sequencing reads or alignments, and STRhub holds none of these inputs."
+  },
+  "notes": "There is no executable. The analysis is R code run after library(MPSproto), so program is 'R' and the analysis function stands in as subcommand. The README documents only the interactive GUI: library(MPSproto), then gui(proj) on the shipped example project (README.md:13-20). The scripted workflow (calibration, then inferEvidence under Hp and Hd, then getLR and deconvolve) is in doc/MPSproto_tutorial.Rmd. The recorded command is its main interpretation call, run once per hypothesis (line 182 is the Hd call). Ambiguity: a reader who takes the README alone would record the GUI call as the main invocation. The README's install URL and its project page http://www.euroformix.com/MPSproto both return 404. install_github() needs devtools or remotes, which the README does not name. The Windows zip cannot be used on a Linux runner, so release_binary is not an acceptable method even though a binary is documented. lusSTR (`lusstr strs all` with output_type mpsproto) produces MPSproto's input format. On STRhub data, MPSproto could only be reached through a FASTQ -> STRait Razor -> lusSTR -> MPSproto chain, plus a calibration set and frequencies."
+}

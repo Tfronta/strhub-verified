@@ -1,0 +1,17 @@
+{
+ "bioconda": {
+  "gangstr": [
+   "2.5.0"
+  ]
+ },
+ "release": {
+  "tag": "v2.5",
+  "assets": [
+   {
+    "name": "GangSTR-2.5.0-Source.tar.gz",
+    "size": 2538223,
+    "url": "https://github.com/gymreklab/GangSTR/releases/download/v2.5/GangSTR-2.5.0-Source.tar.gz"
+   }
+  ]
+ }
+}

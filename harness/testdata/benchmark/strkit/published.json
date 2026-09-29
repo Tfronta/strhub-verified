@@ -1,0 +1,9 @@
+{
+ "bioconda": {
+  "strkit": null
+ },
+ "release": {
+  "tag": "v0.24.3",
+  "assets": []
+ }
+}

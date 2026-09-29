@@ -1,0 +1,283 @@
+{
+"repo": "https://github.com/giesselmann/STRique",
+"ref": "f4ee01b184e39160e211d2d2d67ec2d0a0bbb49f",
+"tag": "",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"docs/examples/intro.md",
+"docs/installation/docker.md",
+"docs/installation/prerequisites.md",
+"docs/installation/src.md",
+"docs/installation/test.md",
+"docs/citation.md",
+"docs/index.md"
+],
+"tree": [
+{
+"path": ".dockerignore",
+"type": "blob",
+"size": 85
+},
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 1157
+},
+{
+"path": ".gitmodules",
+"type": "blob",
+"size": 290
+},
+{
+"path": ".travis.yml",
+"type": "blob",
+"size": 2452
+},
+{
+"path": "CMakeLists.txt",
+"type": "blob",
+"size": 3822
+},
+{
+"path": "Dockerfile",
+"type": "blob",
+"size": 2291
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 1124
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 1816
+},
+{
+"path": "STRique_lib",
+"type": "tree",
+"size": 0
+},
+{
+"path": "STRique_lib/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "STRique_lib/fast5Index.py",
+"type": "blob",
+"size": 15641
+},
+{
+"path": "configs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "configs/STRique.json",
+"type": "blob",
+"size": 602
+},
+{
+"path": "configs/repeat_config.tsv",
+"type": "blob",
+"size": 716
+},
+{
+"path": "data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "data/c9orf72.fa",
+"type": "blob",
+"size": 35873
+},
+{
+"path": "data/c9orf72.fast5",
+"type": "blob",
+"size": 376582
+},
+{
+"path": "data/c9orf72.sam",
+"type": "blob",
+"size": 46417
+},
+{
+"path": "docs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/citation.md",
+"type": "blob",
+"size": 261
+},
+{
+"path": "docs/examples",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/examples/intro.md",
+"type": "blob",
+"size": 8689
+},
+{
+"path": "docs/images",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/images/signal_plot.png",
+"type": "blob",
+"size": 162460
+},
+{
+"path": "docs/images/workflow.png",
+"type": "blob",
+"size": 293877
+},
+{
+"path": "docs/index.md",
+"type": "blob",
+"size": 609
+},
+{
+"path": "docs/installation",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/installation/docker.md",
+"type": "blob",
+"size": 1064
+},
+{
+"path": "docs/installation/prerequisites.md",
+"type": "blob",
+"size": 1070
+},
+{
+"path": "docs/installation/src.md",
+"type": "blob",
+"size": 2067
+},
+{
+"path": "docs/installation/test.md",
+"type": "blob",
+"size": 771
+},
+{
+"path": "docs/license.md",
+"type": "blob",
+"size": 1142
+},
+{
+"path": "docs/release-notes.md",
+"type": "blob",
+"size": 653
+},
+{
+"path": "docs/requirements.txt",
+"type": "blob",
+"size": 16
+},
+{
+"path": "mkdocs.yml",
+"type": "blob",
+"size": 3031
+},
+{
+"path": "models",
+"type": "tree",
+"size": 0
+},
+{
+"path": "models/r9_4_450bps.model",
+"type": "blob",
+"size": 199158
+},
+{
+"path": "models/r9_4_450bps_mCpG.model",
+"type": "blob",
+"size": 187434
+},
+{
+"path": "requirements.txt",
+"type": "blob",
+"size": 233
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/STRique.py",
+"type": "blob",
+"size": 51588
+},
+{
+"path": "scripts/STRique_test.py",
+"type": "blob",
+"size": 7209
+},
+{
+"path": "scripts/fast5Masker.py",
+"type": "blob",
+"size": 4405
+},
+{
+"path": "setup.py",
+"type": "blob",
+"size": 4225
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/CMakeLists.txt",
+"type": "blob",
+"size": 1812
+},
+{
+"path": "src/align_raw.h",
+"type": "blob",
+"size": 7135
+},
+{
+"path": "src/pyalign.cpp",
+"type": "blob",
+"size": 3409
+},
+{
+"path": "src/score_distance.h",
+"type": "blob",
+"size": 9432
+},
+{
+"path": "submodules",
+"type": "tree",
+"size": 0
+},
+{
+"path": "submodules/ont_fast5_api",
+"type": "commit",
+"size": 0
+},
+{
+"path": "submodules/pybind11",
+"type": "commit",
+"size": 0
+},
+{
+"path": "submodules/seqan",
+"type": "commit",
+"size": 0
+}
+]
+}

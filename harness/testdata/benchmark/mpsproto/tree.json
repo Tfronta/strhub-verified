@@ -1,0 +1,708 @@
+{
+"repo": "https://github.com/oyvble/MPSproto",
+"ref": "16080a8c7a71493d89670ba39f2a33779c62dccf",
+"tag": "v0.9.7",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"doc/MPSproto_tutorial.Rmd",
+"doc/MPSproto_tutorial_advanced.Rmd"
+],
+"tree": [
+{
+"path": "DESCRIPTION",
+"type": "blob",
+"size": 490
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 7638
+},
+{
+"path": "NAMESPACE",
+"type": "blob",
+"size": 703
+},
+{
+"path": "NEWS.md",
+"type": "blob",
+"size": 5532
+},
+{
+"path": "R",
+"type": "tree",
+"size": 0
+},
+{
+"path": "R/calcLogLikC_prediction.R",
+"type": "blob",
+"size": 7604
+},
+{
+"path": "R/calcLogLikR_prediction.R",
+"type": "blob",
+"size": 10290
+},
+{
+"path": "R/calibrateModel.R",
+"type": "blob",
+"size": 4523
+},
+{
+"path": "R/convertBracket2seq.R",
+"type": "blob",
+"size": 1154
+},
+{
+"path": "R/convertMotifReps2seq.R",
+"type": "blob",
+"size": 774
+},
+{
+"path": "R/createDiagnosticPlots.R",
+"type": "blob",
+"size": 1497
+},
+{
+"path": "R/deconvolve.R",
+"type": "blob",
+"size": 5381
+},
+{
+"path": "R/diagnoseMCMC.R",
+"type": "blob",
+"size": 1729
+},
+{
+"path": "R/doMCMC.R",
+"type": "blob",
+"size": 2604
+},
+{
+"path": "R/dpareto.R",
+"type": "blob",
+"size": 440
+},
+{
+"path": "R/fitSUMmodel.R",
+"type": "blob",
+"size": 3970
+},
+{
+"path": "R/genMPSevidence.R",
+"type": "blob",
+"size": 11780
+},
+{
+"path": "R/getMPSkit.R",
+"type": "blob",
+"size": 1932
+},
+{
+"path": "R/getMarkerEffStat.R",
+"type": "blob",
+"size": 1466
+},
+{
+"path": "R/getMotifReps.R",
+"type": "blob",
+"size": 639
+},
+{
+"path": "R/getMotifRepsSequences.R",
+"type": "blob",
+"size": 563
+},
+{
+"path": "R/getResults.R",
+"type": "blob",
+"size": 579
+},
+{
+"path": "R/getStutterData.R",
+"type": "blob",
+"size": 7923
+},
+{
+"path": "R/getStutterExpectations.R",
+"type": "blob",
+"size": 966
+},
+{
+"path": "R/getStutterIndex.R",
+"type": "blob",
+"size": 6238
+},
+{
+"path": "R/getStutterTypeRule.R",
+"type": "blob",
+"size": 2117
+},
+{
+"path": "R/getStutteredSequence.R",
+"type": "blob",
+"size": 2247
+},
+{
+"path": "R/getUpperLR.R",
+"type": "blob",
+"size": 2081
+},
+{
+"path": "R/gui.R",
+"type": "blob",
+"size": 57706
+},
+{
+"path": "R/importMPSfreqs.R",
+"type": "blob",
+"size": 1165
+},
+{
+"path": "R/importMPSsample.R",
+"type": "blob",
+"size": 2730
+},
+{
+"path": "R/inferEvidence.R",
+"type": "blob",
+"size": 10553
+},
+{
+"path": "R/inferEvidence2.R",
+"type": "blob",
+"size": 10574
+},
+{
+"path": "R/inferMarkerEfficiency.R",
+"type": "blob",
+"size": 9627
+},
+{
+"path": "R/inferNoiseModel.R",
+"type": "blob",
+"size": 5710
+},
+{
+"path": "R/inferStutterModel.R",
+"type": "blob",
+"size": 7385
+},
+{
+"path": "R/insertMissingTrueAlleles.R",
+"type": "blob",
+"size": 1741
+},
+{
+"path": "R/logLiki.R",
+"type": "blob",
+"size": 597
+},
+{
+"path": "R/optimizeLik.R",
+"type": "blob",
+"size": 1666
+},
+{
+"path": "R/plotMPS.R",
+"type": "blob",
+"size": 10726
+},
+{
+"path": "R/plotTopMPS.R",
+"type": "blob",
+"size": 14681
+},
+{
+"path": "R/prefit_prediction.R",
+"type": "blob",
+"size": 1722
+},
+{
+"path": "R/prepareC_prediction.R",
+"type": "blob",
+"size": 21070
+},
+{
+"path": "R/prepareData_prediction.R",
+"type": "blob",
+"size": 5944
+},
+{
+"path": "R/sample_listToTable.R",
+"type": "blob",
+"size": 1796
+},
+{
+"path": "R/tableReader.R",
+"type": "blob",
+"size": 812
+},
+{
+"path": "R/validMLE.R",
+"type": "blob",
+"size": 10389
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 1911
+},
+{
+"path": "doc",
+"type": "tree",
+"size": 0
+},
+{
+"path": "doc/MPSproto_MathematicalDetails.docx",
+"type": "blob",
+"size": 30928
+},
+{
+"path": "doc/MPSproto_tutorial.Rmd",
+"type": "blob",
+"size": 6748
+},
+{
+"path": "doc/MPSproto_tutorial.html",
+"type": "blob",
+"size": 738270
+},
+{
+"path": "doc/MPSproto_tutorial_advanced.Rmd",
+"type": "blob",
+"size": 3356
+},
+{
+"path": "doc/MPSproto_tutorial_advanced.html",
+"type": "blob",
+"size": 733969
+},
+{
+"path": "doc/tutorialDataCalibrated.RDS",
+"type": "blob",
+"size": 2089
+},
+{
+"path": "inst",
+"type": "tree",
+"size": 0
+},
+{
+"path": "inst/MPSproto_stutterCharPaper",
+"type": "tree",
+"size": 0
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/README.txt",
+"type": "blob",
+"size": 263
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/calibrate.R",
+"type": "blob",
+"size": 5151
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/data/ForenSeq_Norway_FWbrack.csv",
+"type": "blob",
+"size": 50839
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/data/calibrated_MPSproto_stutterCharPaper.RDS",
+"type": "blob",
+"size": 2096
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/data/calibrated_StutterCoef.csv",
+"type": "blob",
+"size": 3184
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/data/data_excludedStutters.csv",
+"type": "blob",
+"size": 3281
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/data/data_noise.csv",
+"type": "blob",
+"size": 35492
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/data/data_sumPerMarker.csv",
+"type": "blob",
+"size": 215699
+},
+{
+"path": "inst/MPSproto_stutterCharPaper/interpret.R",
+"type": "blob",
+"size": 4693
+},
+{
+"path": "inst/examples",
+"type": "tree",
+"size": 0
+},
+{
+"path": "inst/examples/ForenSeq_NIST1036cauc_FWbrack.csv",
+"type": "blob",
+"size": 32625
+},
+{
+"path": "inst/examples/MPS_evid2p.csv",
+"type": "blob",
+"size": 4107
+},
+{
+"path": "inst/examples/MPS_evid2p_CE.csv",
+"type": "blob",
+"size": 4391
+},
+{
+"path": "inst/examples/MPS_evid2p_missing.csv",
+"type": "blob",
+"size": 4000
+},
+{
+"path": "inst/examples/MPS_evid2p_missing2.csv",
+"type": "blob",
+"size": 4065
+},
+{
+"path": "inst/examples/MPS_evid2p_refs.csv",
+"type": "blob",
+"size": 3581
+},
+{
+"path": "inst/examples/MPS_evid2p_refsMissing.csv",
+"type": "blob",
+"size": 3470
+},
+{
+"path": "inst/examples/proj.Rdata",
+"type": "blob",
+"size": 6560
+},
+{
+"path": "inst/examples/tutorialDataCalibrated.RDS",
+"type": "blob",
+"size": 1438
+},
+{
+"path": "inst/examples/tutorialDataCalibration.RDS",
+"type": "blob",
+"size": 25267
+},
+{
+"path": "inst/examples/tutorialData_preparedCobj.RDS",
+"type": "blob",
+"size": 6555
+},
+{
+"path": "inst/extdata",
+"type": "tree",
+"size": 0
+},
+{
+"path": "inst/extdata/BLMM_CE_table.txt",
+"type": "blob",
+"size": 355
+},
+{
+"path": "inst/extdata/kit.txt",
+"type": "blob",
+"size": 463956
+},
+{
+"path": "inst/extdata/kit_mps.txt",
+"type": "blob",
+"size": 24169
+},
+{
+"path": "man",
+"type": "tree",
+"size": 0
+},
+{
+"path": "man/calcLogLikC_prediction.Rd",
+"type": "blob",
+"size": 724
+},
+{
+"path": "man/calcLogLikR_prediction.Rd",
+"type": "blob",
+"size": 486
+},
+{
+"path": "man/calibrateModel.Rd",
+"type": "blob",
+"size": 1632
+},
+{
+"path": "man/convertBracket2seq.Rd",
+"type": "blob",
+"size": 432
+},
+{
+"path": "man/convertMotifReps2seq.Rd",
+"type": "blob",
+"size": 445
+},
+{
+"path": "man/createDiagnosticPlots.Rd",
+"type": "blob",
+"size": 386
+},
+{
+"path": "man/deconvolve.Rd",
+"type": "blob",
+"size": 1203
+},
+{
+"path": "man/diagnoseMCMC.Rd",
+"type": "blob",
+"size": 674
+},
+{
+"path": "man/doMCMC.Rd",
+"type": "blob",
+"size": 513
+},
+{
+"path": "man/dpareto.Rd",
+"type": "blob",
+"size": 449
+},
+{
+"path": "man/fitSUMmodel.Rd",
+"type": "blob",
+"size": 1188
+},
+{
+"path": "man/genMPSevidence.Rd",
+"type": "blob",
+"size": 2257
+},
+{
+"path": "man/getMPSkit.Rd",
+"type": "blob",
+"size": 628
+},
+{
+"path": "man/getMarkerEffStat.Rd",
+"type": "blob",
+"size": 543
+},
+{
+"path": "man/getMotifReps.Rd",
+"type": "blob",
+"size": 399
+},
+{
+"path": "man/getMotifRepsSequences.Rd",
+"type": "blob",
+"size": 402
+},
+{
+"path": "man/getStutterData.Rd",
+"type": "blob",
+"size": 1292
+},
+{
+"path": "man/getStutterExpectations.Rd",
+"type": "blob",
+"size": 464
+},
+{
+"path": "man/getStutterIndex.Rd",
+"type": "blob",
+"size": 1439
+},
+{
+"path": "man/getStutterTypeRule.Rd",
+"type": "blob",
+"size": 910
+},
+{
+"path": "man/getStutteredSequence.Rd",
+"type": "blob",
+"size": 553
+},
+{
+"path": "man/getUpperLR.Rd",
+"type": "blob",
+"size": 547
+},
+{
+"path": "man/gui.Rd",
+"type": "blob",
+"size": 386
+},
+{
+"path": "man/importMPSfreqs.Rd",
+"type": "blob",
+"size": 513
+},
+{
+"path": "man/importMPSsample.Rd",
+"type": "blob",
+"size": 359
+},
+{
+"path": "man/inferEvidence.Rd",
+"type": "blob",
+"size": 3360
+},
+{
+"path": "man/inferEvidence2.Rd",
+"type": "blob",
+"size": 1481
+},
+{
+"path": "man/inferMarkerEfficiency.Rd",
+"type": "blob",
+"size": 1461
+},
+{
+"path": "man/inferNoiseModel.Rd",
+"type": "blob",
+"size": 958
+},
+{
+"path": "man/inferStutterModel.Rd",
+"type": "blob",
+"size": 799
+},
+{
+"path": "man/insertMissingTrueAlleles.Rd",
+"type": "blob",
+"size": 434
+},
+{
+"path": "man/logLiki.Rd",
+"type": "blob",
+"size": 416
+},
+{
+"path": "man/optimizeLik.Rd",
+"type": "blob",
+"size": 694
+},
+{
+"path": "man/plotMPS.Rd",
+"type": "blob",
+"size": 1572
+},
+{
+"path": "man/plotTopMPS.Rd",
+"type": "blob",
+"size": 1001
+},
+{
+"path": "man/prefit_prediction.Rd",
+"type": "blob",
+"size": 500
+},
+{
+"path": "man/prepareC_prediction.Rd",
+"type": "blob",
+"size": 2191
+},
+{
+"path": "man/prepareData_prediction.Rd",
+"type": "blob",
+"size": 1555
+},
+{
+"path": "man/sample_listToTable.Rd",
+"type": "blob",
+"size": 464
+},
+{
+"path": "man/tableReader.Rd",
+"type": "blob",
+"size": 580
+},
+{
+"path": "man/validMLE.Rd",
+"type": "blob",
+"size": 1000
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/Makevars",
+"type": "blob",
+"size": 111
+},
+{
+"path": "src/Makevars.win",
+"type": "blob",
+"size": 96
+},
+{
+"path": "src/loglikPrediction_allcomb.cpp",
+"type": "blob",
+"size": 27055
+},
+{
+"path": "src/loglikPrediction_allcomb2.cpp",
+"type": "blob",
+"size": 27056
+},
+{
+"path": "src/loglikPrediction_cumprob.cpp",
+"type": "blob",
+"size": 30777
+},
+{
+"path": "tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/testthat.R",
+"type": "blob",
+"size": 42
+},
+{
+"path": "tests/testthat",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/testthat/test_getStutterIndex.R",
+"type": "blob",
+"size": 2605
+},
+{
+"path": "tests/testthat/test_interpretations_nodeg.R",
+"type": "blob",
+"size": 3717
+},
+{
+"path": "tests/testthat/test_interpretations_nodeg_missing.R",
+"type": "blob",
+"size": 2149
+},
+{
+"path": "tests/testthat/test_interpretations_withdeg.R",
+"type": "blob",
+"size": 5050
+},
+{
+"path": "tests/testthat/test_loglikPrediction_allcomb.R",
+"type": "blob",
+"size": 3257
+}
+]
+}

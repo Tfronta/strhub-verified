@@ -1,0 +1,2908 @@
+{
+"repo": "https://github.com/gymreklab/TRTools",
+"ref": "ce22d847ea954e4f015818dc288dfa87a47761a8",
+"tag": "v6.1.0",
+"readme_name": "README.rst",
+"truncated": false,
+"docs_order": [
+"doc/CODE_EXAMPLES.rst",
+"doc/API.rst",
+"doc/CALLERS.rst",
+"doc/LIBRARY.rst",
+"doc/LIBRARY_OVERVIEW.rst",
+"doc/LIBRARY_SPEC.rst",
+"doc/UTILITIES.rst",
+"doc/VIGNETTE-AFREQ.rst",
+"doc/VIGNETTE-COMPARE-CALLERS.rst",
+"doc/VIGNETTE-COMPARE.rst",
+"doc/VIGNETTE-FILTER-QC.rst",
+"doc/VIGNETTE-STATSTR.rst"
+],
+"tree": [
+{
+"path": ".devcontainer.json",
+"type": "blob",
+"size": 1546
+},
+{
+"path": ".github",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".github/pull_request_template.md",
+"type": "blob",
+"size": 2111
+},
+{
+"path": ".github/workflows",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".github/workflows/conventional-prs.yml",
+"type": "blob",
+"size": 540
+},
+{
+"path": ".github/workflows/release.yml",
+"type": "blob",
+"size": 1803
+},
+{
+"path": ".github/workflows/tests.yml",
+"type": "blob",
+"size": 3700
+},
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 3468
+},
+{
+"path": ".readthedocs.yml",
+"type": "blob",
+"size": 982
+},
+{
+"path": "CHANGELOG.md",
+"type": "blob",
+"size": 17240
+},
+{
+"path": "LICENSE.txt",
+"type": "blob",
+"size": 1067
+},
+{
+"path": "PUBLISHING.rst",
+"type": "blob",
+"size": 4475
+},
+{
+"path": "README.rst",
+"type": "blob",
+"size": 998
+},
+{
+"path": "dev-env.yml",
+"type": "blob",
+"size": 437
+},
+{
+"path": "doc",
+"type": "tree",
+"size": 0
+},
+{
+"path": "doc/API.rst",
+"type": "blob",
+"size": 77
+},
+{
+"path": "doc/CALLERS.rst",
+"type": "blob",
+"size": 11668
+},
+{
+"path": "doc/CODE_EXAMPLES.rst",
+"type": "blob",
+"size": 2653
+},
+{
+"path": "doc/LIBRARY.rst",
+"type": "blob",
+"size": 615
+},
+{
+"path": "doc/LIBRARY_OVERVIEW.rst",
+"type": "blob",
+"size": 5597
+},
+{
+"path": "doc/LIBRARY_SPEC.rst",
+"type": "blob",
+"size": 2121
+},
+{
+"path": "doc/Makefile",
+"type": "blob",
+"size": 634
+},
+{
+"path": "doc/UTILITIES.rst",
+"type": "blob",
+"size": 2064
+},
+{
+"path": "doc/VIGNETTE-AFREQ.rst",
+"type": "blob",
+"size": 2981
+},
+{
+"path": "doc/VIGNETTE-COMPARE-CALLERS.rst",
+"type": "blob",
+"size": 4264
+},
+{
+"path": "doc/VIGNETTE-COMPARE.rst",
+"type": "blob",
+"size": 3479
+},
+{
+"path": "doc/VIGNETTE-FILTER-QC.rst",
+"type": "blob",
+"size": 1570
+},
+{
+"path": "doc/VIGNETTE-STATSTR.rst",
+"type": "blob",
+"size": 3710
+},
+{
+"path": "doc/VIGNETTES.rst",
+"type": "blob",
+"size": 271
+},
+{
+"path": "doc/all_runx1-chr21-35348646.jpg",
+"type": "blob",
+"size": 178209
+},
+{
+"path": "doc/c57-compare-bubble-periodALL.jpg",
+"type": "blob",
+"size": 198284
+},
+{
+"path": "doc/conf.py",
+"type": "blob",
+"size": 2439
+},
+{
+"path": "doc/hipstr_vs_eh-bubble-periodALL.jpg",
+"type": "blob",
+"size": 154431
+},
+{
+"path": "doc/hipstr_vs_eh-locuscompare.jpg",
+"type": "blob",
+"size": 121309
+},
+{
+"path": "doc/hipstr_vs_eh-samplecompare.jpg",
+"type": "blob",
+"size": 117129
+},
+{
+"path": "doc/index.rst",
+"type": "blob",
+"size": 11941
+},
+{
+"path": "doc/make.bat",
+"type": "blob",
+"size": 795
+},
+{
+"path": "doc/popstr-qc-diffref-bias.jpg",
+"type": "blob",
+"size": 198772
+},
+{
+"path": "doc/popstr-qc-diffref-histogram.jpg",
+"type": "blob",
+"size": 200497
+},
+{
+"path": "doc/popstr-qc-quality.jpg",
+"type": "blob",
+"size": 148306
+},
+{
+"path": "doc/popstr-qc-sample-callnum.jpg",
+"type": "blob",
+"size": 131835
+},
+{
+"path": "doc/site_indices.rst",
+"type": "blob",
+"size": 102
+},
+{
+"path": "doc/source",
+"type": "tree",
+"size": 0
+},
+{
+"path": "doc/source/annotaTR.rst",
+"type": "blob",
+"size": 69
+},
+{
+"path": "doc/source/associaTR.rst",
+"type": "blob",
+"size": 71
+},
+{
+"path": "doc/source/compareSTR.rst",
+"type": "blob",
+"size": 73
+},
+{
+"path": "doc/source/dumpSTR.rst",
+"type": "blob",
+"size": 67
+},
+{
+"path": "doc/source/images",
+"type": "tree",
+"size": 0
+},
+{
+"path": "doc/source/images/README.txt",
+"type": "blob",
+"size": 903
+},
+{
+"path": "doc/source/images/chrom-callnum.png",
+"type": "blob",
+"size": 14088
+},
+{
+"path": "doc/source/images/diffref-bias.png",
+"type": "blob",
+"size": 205373
+},
+{
+"path": "doc/source/images/diffref-histogram.png",
+"type": "blob",
+"size": 17923
+},
+{
+"path": "doc/source/images/quality-locus-stratified.png",
+"type": "blob",
+"size": 26263
+},
+{
+"path": "doc/source/images/quality-per-call.png",
+"type": "blob",
+"size": 20086
+},
+{
+"path": "doc/source/images/quality-per-locus.png",
+"type": "blob",
+"size": 25283
+},
+{
+"path": "doc/source/images/quality-per-sample.png",
+"type": "blob",
+"size": 21730
+},
+{
+"path": "doc/source/images/quality-sample-stratified.png",
+"type": "blob",
+"size": 27032
+},
+{
+"path": "doc/source/images/sample-callnum.png",
+"type": "blob",
+"size": 14662
+},
+{
+"path": "doc/source/mergeSTR.rst",
+"type": "blob",
+"size": 69
+},
+{
+"path": "doc/source/prancSTR.rst",
+"type": "blob",
+"size": 69
+},
+{
+"path": "doc/source/qcSTR.rst",
+"type": "blob",
+"size": 63
+},
+{
+"path": "doc/source/simTR.rst",
+"type": "blob",
+"size": 63
+},
+{
+"path": "doc/source/statSTR.rst",
+"type": "blob",
+"size": 67
+},
+{
+"path": "doc/trtools.annotaTR.rst",
+"type": "blob",
+"size": 106
+},
+{
+"path": "doc/trtools.associaTR.rst",
+"type": "blob",
+"size": 110
+},
+{
+"path": "doc/trtools.compareSTR.rst",
+"type": "blob",
+"size": 112
+},
+{
+"path": "doc/trtools.dumpSTR.filters.rst",
+"type": "blob",
+"size": 104
+},
+{
+"path": "doc/trtools.dumpSTR.rst",
+"type": "blob",
+"size": 101
+},
+{
+"path": "doc/trtools.mergeSTR.rst",
+"type": "blob",
+"size": 108
+},
+{
+"path": "doc/trtools.prancSTR.rst",
+"type": "blob",
+"size": 106
+},
+{
+"path": "doc/trtools.qcSTR.rst",
+"type": "blob",
+"size": 102
+},
+{
+"path": "doc/trtools.simTR.rst",
+"type": "blob",
+"size": 100
+},
+{
+"path": "doc/trtools.statSTR.rst",
+"type": "blob",
+"size": 106
+},
+{
+"path": "doc/trtools.utils.common.rst",
+"type": "blob",
+"size": 95
+},
+{
+"path": "doc/trtools.utils.mergeutils.rst",
+"type": "blob",
+"size": 107
+},
+{
+"path": "doc/trtools.utils.tr_harmonizer.rst",
+"type": "blob",
+"size": 116
+},
+{
+"path": "doc/trtools.utils.utils.rst",
+"type": "blob",
+"size": 78
+},
+{
+"path": "doc/yri_ceu_runx1-chr21-35348646.jpg",
+"type": "blob",
+"size": 175456
+},
+{
+"path": "example-files",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example-files/CBL.fa",
+"type": "blob",
+"size": 10044
+},
+{
+"path": "example-files/CBL.fa.fai",
+"type": "blob",
+"size": 31
+},
+{
+"path": "example-files/CBL_dataset.fa",
+"type": "blob",
+"size": 30281
+},
+{
+"path": "example-files/CEU_filtered_subset.vcf.gz.tbi",
+"type": "blob",
+"size": 80
+},
+{
+"path": "example-files/CEU_subset.vcf.gz",
+"type": "blob",
+"size": 3441024
+},
+{
+"path": "example-files/CEU_subset.vcf.gz.tbi",
+"type": "blob",
+"size": 2054
+},
+{
+"path": "example-files/CEU_subset_unindexed.vcf.gz",
+"type": "blob",
+"size": 92589
+},
+{
+"path": "example-files/CEU_subset_unzipped.vcf",
+"type": "blob",
+"size": 77752
+},
+{
+"path": "example-files/HG002_htt_test.vcf.gz",
+"type": "blob",
+"size": 23924
+},
+{
+"path": "example-files/HG002_htt_test.vcf.gz.tbi",
+"type": "blob",
+"size": 144
+},
+{
+"path": "example-files/HG003_htt_test.vcf.gz",
+"type": "blob",
+"size": 23702
+},
+{
+"path": "example-files/HG003_htt_test.vcf.gz.tbi",
+"type": "blob",
+"size": 144
+},
+{
+"path": "example-files/NA12878_chr21_advntr.sorted.vcf.gz",
+"type": "blob",
+"size": 137845
+},
+{
+"path": "example-files/NA12878_chr21_advntr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 7712
+},
+{
+"path": "example-files/NA12878_chr21_eh.sorted.vcf.gz",
+"type": "blob",
+"size": 130708
+},
+{
+"path": "example-files/NA12878_chr21_eh.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 16649
+},
+{
+"path": "example-files/NA12878_chr21_gangstr.sorted.vcf.gz",
+"type": "blob",
+"size": 411165
+},
+{
+"path": "example-files/NA12878_chr21_gangstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19082
+},
+{
+"path": "example-files/NA12878_chr21_hipstr.sorted.vcf.gz",
+"type": "blob",
+"size": 419010
+},
+{
+"path": "example-files/NA12878_chr21_hipstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19465
+},
+{
+"path": "example-files/NA12878_chr21_popstr.sorted.vcf.gz",
+"type": "blob",
+"size": 214632
+},
+{
+"path": "example-files/NA12878_chr21_popstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19152
+},
+{
+"path": "example-files/NA12891_chr21_advntr.sorted.vcf.gz",
+"type": "blob",
+"size": 137659
+},
+{
+"path": "example-files/NA12891_chr21_advntr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 7709
+},
+{
+"path": "example-files/NA12891_chr21_eh.sorted.vcf.gz",
+"type": "blob",
+"size": 130795
+},
+{
+"path": "example-files/NA12891_chr21_eh.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 16573
+},
+{
+"path": "example-files/NA12891_chr21_gangstr.sorted.vcf.gz",
+"type": "blob",
+"size": 409447
+},
+{
+"path": "example-files/NA12891_chr21_gangstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19124
+},
+{
+"path": "example-files/NA12891_chr21_hipstr.sorted.vcf.gz",
+"type": "blob",
+"size": 409053
+},
+{
+"path": "example-files/NA12891_chr21_hipstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19483
+},
+{
+"path": "example-files/NA12891_chr21_popstr.sorted.vcf.gz",
+"type": "blob",
+"size": 213190
+},
+{
+"path": "example-files/NA12891_chr21_popstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19070
+},
+{
+"path": "example-files/NA12892_chr21_advntr.sorted.vcf.gz",
+"type": "blob",
+"size": 137674
+},
+{
+"path": "example-files/NA12892_chr21_advntr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 7663
+},
+{
+"path": "example-files/NA12892_chr21_eh.sorted.vcf.gz",
+"type": "blob",
+"size": 131404
+},
+{
+"path": "example-files/NA12892_chr21_eh.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 16624
+},
+{
+"path": "example-files/NA12892_chr21_gangstr.sorted.vcf.gz",
+"type": "blob",
+"size": 408785
+},
+{
+"path": "example-files/NA12892_chr21_gangstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19064
+},
+{
+"path": "example-files/NA12892_chr21_hipstr.sorted.vcf.gz",
+"type": "blob",
+"size": 411975
+},
+{
+"path": "example-files/NA12892_chr21_hipstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19470
+},
+{
+"path": "example-files/NA12892_chr21_popstr.sorted.vcf.gz",
+"type": "blob",
+"size": 213939
+},
+{
+"path": "example-files/NA12892_chr21_popstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19036
+},
+{
+"path": "example-files/c57_ex1.vcf.gz",
+"type": "blob",
+"size": 6885336
+},
+{
+"path": "example-files/c57_ex1.vcf.gz.tbi",
+"type": "blob",
+"size": 103928
+},
+{
+"path": "example-files/c57_ex2.vcf.gz",
+"type": "blob",
+"size": 7434356
+},
+{
+"path": "example-files/c57_ex2.vcf.gz.tbi",
+"type": "blob",
+"size": 103995
+},
+{
+"path": "example-files/c57_ex3.vcf.gz",
+"type": "blob",
+"size": 6946715
+},
+{
+"path": "example-files/c57_ex3.vcf.gz.tbi",
+"type": "blob",
+"size": 103892
+},
+{
+"path": "example-files/ceu_ex.vcf.gz",
+"type": "blob",
+"size": 824219
+},
+{
+"path": "example-files/ceu_ex.vcf.gz.tbi",
+"type": "blob",
+"size": 752
+},
+{
+"path": "example-files/dummy_A_pos.bed",
+"type": "blob",
+"size": 28
+},
+{
+"path": "example-files/ex-samples.txt",
+"type": "blob",
+"size": 8
+},
+{
+"path": "example-files/hg19.fa.fai",
+"type": "blob",
+"size": 788
+},
+{
+"path": "example-files/longtr_testfile.vcf.gz",
+"type": "blob",
+"size": 18309
+},
+{
+"path": "example-files/longtr_testfile.vcf.gz.tbi",
+"type": "blob",
+"size": 178
+},
+{
+"path": "example-files/sample1_advntr.vcf.gz",
+"type": "blob",
+"size": 436
+},
+{
+"path": "example-files/sample1_advntr.vcf.gz.tbi",
+"type": "blob",
+"size": 173
+},
+{
+"path": "example-files/sample2_advntr.vcf.gz",
+"type": "blob",
+"size": 436
+},
+{
+"path": "example-files/sample2_advntr.vcf.gz.tbi",
+"type": "blob",
+"size": 173
+},
+{
+"path": "example-files/simulated_traits_0.npy",
+"type": "blob",
+"size": 7968
+},
+{
+"path": "example-files/simulated_traits_1.npy",
+"type": "blob",
+"size": 4048
+},
+{
+"path": "example-files/test_sample1.vcf.gz",
+"type": "blob",
+"size": 411165
+},
+{
+"path": "example-files/test_sample1.vcf.gz.csi",
+"type": "blob",
+"size": 15540
+},
+{
+"path": "example-files/test_sample2.vcf.gz",
+"type": "blob",
+"size": 409447
+},
+{
+"path": "example-files/test_sample2.vcf.gz.csi",
+"type": "blob",
+"size": 15563
+},
+{
+"path": "example-files/trio_chr21_gangstr.sorted.vcf.gz",
+"type": "blob",
+"size": 807884
+},
+{
+"path": "example-files/trio_chr21_gangstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19159
+},
+{
+"path": "example-files/trio_chr21_hipstr.sorted.vcf.gz",
+"type": "blob",
+"size": 662248
+},
+{
+"path": "example-files/trio_chr21_hipstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19553
+},
+{
+"path": "example-files/trio_chr21_popstr.sorted.vcf.gz",
+"type": "blob",
+"size": 360104
+},
+{
+"path": "example-files/trio_chr21_popstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19412
+},
+{
+"path": "example-files/yri_ex.vcf.gz",
+"type": "blob",
+"size": 924556
+},
+{
+"path": "example-files/yri_ex.vcf.gz.tbi",
+"type": "blob",
+"size": 762
+},
+{
+"path": "noxfile.py",
+"type": "blob",
+"size": 2131
+},
+{
+"path": "poetry.lock",
+"type": "blob",
+"size": 105051
+},
+{
+"path": "pyproject.toml",
+"type": "blob",
+"size": 2323
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/trtools_prep_beagle_vcf.sh",
+"type": "blob",
+"size": 3345
+},
+{
+"path": "test",
+"type": "tree",
+"size": 0
+},
+{
+"path": "test/cmdline_tests.sh",
+"type": "blob",
+"size": 18442
+},
+{
+"path": "trtools",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/__init__.py",
+"type": "blob",
+"size": 324
+},
+{
+"path": "trtools/annotaTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/annotaTR/README.rst",
+"type": "blob",
+"size": 10323
+},
+{
+"path": "trtools/annotaTR/__init__.py",
+"type": "blob",
+"size": 177
+},
+{
+"path": "trtools/annotaTR/annotaTR.py",
+"type": "blob",
+"size": 30232
+},
+{
+"path": "trtools/annotaTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/annotaTR/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/annotaTR/tests/test_annotaTR.py",
+"type": "blob",
+"size": 17781
+},
+{
+"path": "trtools/associaTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/associaTR/README.rst",
+"type": "blob",
+"size": 7932
+},
+{
+"path": "trtools/associaTR/__init__.py",
+"type": "blob",
+"size": 183
+},
+{
+"path": "trtools/associaTR/associaTR.py",
+"type": "blob",
+"size": 25633
+},
+{
+"path": "trtools/associaTR/load_and_filter_genotypes.py",
+"type": "blob",
+"size": 9267
+},
+{
+"path": "trtools/associaTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/associaTR/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/associaTR/tests/test_associaTR.py",
+"type": "blob",
+"size": 12374
+},
+{
+"path": "trtools/compareSTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/compareSTR/README.rst",
+"type": "blob",
+"size": 7905
+},
+{
+"path": "trtools/compareSTR/__init__.py",
+"type": "blob",
+"size": 189
+},
+{
+"path": "trtools/compareSTR/compareSTR.py",
+"type": "blob",
+"size": 36488
+},
+{
+"path": "trtools/compareSTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/compareSTR/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/compareSTR/tests/test_compareSTR.py",
+"type": "blob",
+"size": 11959
+},
+{
+"path": "trtools/dumpSTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/dumpSTR/Example_Files",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/dumpSTR/Example_Files/test_run_gangstr.vcf",
+"type": "blob",
+"size": 1074060
+},
+{
+"path": "trtools/dumpSTR/Example_Files/test_run_original.vcf",
+"type": "blob",
+"size": 1088396
+},
+{
+"path": "trtools/dumpSTR/README.rst",
+"type": "blob",
+"size": 11133
+},
+{
+"path": "trtools/dumpSTR/__init__.py",
+"type": "blob",
+"size": 171
+},
+{
+"path": "trtools/dumpSTR/dumpSTR.py",
+"type": "blob",
+"size": 57689
+},
+{
+"path": "trtools/dumpSTR/filter_files",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/dumpSTR/filter_files/hg19_segmentalduplications.bed.gz",
+"type": "blob",
+"size": 567156
+},
+{
+"path": "trtools/dumpSTR/filter_files/hg19_segmentalduplications.bed.gz.tbi",
+"type": "blob",
+"size": 68192
+},
+{
+"path": "trtools/dumpSTR/filter_files/hs37_segmentalduplications.bed.gz",
+"type": "blob",
+"size": 559531
+},
+{
+"path": "trtools/dumpSTR/filter_files/hs37_segmentalduplications.bed.gz.tbi",
+"type": "blob",
+"size": 67900
+},
+{
+"path": "trtools/dumpSTR/filters.py",
+"type": "blob",
+"size": 29407
+},
+{
+"path": "trtools/dumpSTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/dumpSTR/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/dumpSTR/tests/test_dumpSTR.py",
+"type": "blob",
+"size": 31503
+},
+{
+"path": "trtools/dumpSTR/tests/test_filters.py",
+"type": "blob",
+"size": 21578
+},
+{
+"path": "trtools/mergeSTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/mergeSTR/Example_Files",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/mergeSTR/Example_Files/test_run_original.vcf",
+"type": "blob",
+"size": 1266725
+},
+{
+"path": "trtools/mergeSTR/README.rst",
+"type": "blob",
+"size": 6500
+},
+{
+"path": "trtools/mergeSTR/__init__.py",
+"type": "blob",
+"size": 177
+},
+{
+"path": "trtools/mergeSTR/mergeSTR.py",
+"type": "blob",
+"size": 25529
+},
+{
+"path": "trtools/mergeSTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/mergeSTR/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/mergeSTR/tests/test_mergeSTR.py",
+"type": "blob",
+"size": 14625
+},
+{
+"path": "trtools/prancSTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/prancSTR/README.rst",
+"type": "blob",
+"size": 10055
+},
+{
+"path": "trtools/prancSTR/__init__.py",
+"type": "blob",
+"size": 177
+},
+{
+"path": "trtools/prancSTR/prancSTR.py",
+"type": "blob",
+"size": 20002
+},
+{
+"path": "trtools/prancSTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/prancSTR/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/prancSTR/tests/test_prancSTR.py",
+"type": "blob",
+"size": 10900
+},
+{
+"path": "trtools/qcSTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/qcSTR/README.rst",
+"type": "blob",
+"size": 8112
+},
+{
+"path": "trtools/qcSTR/__init__.py",
+"type": "blob",
+"size": 159
+},
+{
+"path": "trtools/qcSTR/images",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/qcSTR/images/README.txt",
+"type": "blob",
+"size": 903
+},
+{
+"path": "trtools/qcSTR/images/chrom-callnum.png",
+"type": "blob",
+"size": 14088
+},
+{
+"path": "trtools/qcSTR/images/diffref-bias.png",
+"type": "blob",
+"size": 205373
+},
+{
+"path": "trtools/qcSTR/images/diffref-histogram.png",
+"type": "blob",
+"size": 17923
+},
+{
+"path": "trtools/qcSTR/images/quality-locus-stratified.png",
+"type": "blob",
+"size": 26263
+},
+{
+"path": "trtools/qcSTR/images/quality-per-call.png",
+"type": "blob",
+"size": 20086
+},
+{
+"path": "trtools/qcSTR/images/quality-per-locus.png",
+"type": "blob",
+"size": 25283
+},
+{
+"path": "trtools/qcSTR/images/quality-per-sample.png",
+"type": "blob",
+"size": 21730
+},
+{
+"path": "trtools/qcSTR/images/quality-sample-stratified.png",
+"type": "blob",
+"size": 27032
+},
+{
+"path": "trtools/qcSTR/images/sample-callnum.png",
+"type": "blob",
+"size": 14662
+},
+{
+"path": "trtools/qcSTR/qcSTR.py",
+"type": "blob",
+"size": 25113
+},
+{
+"path": "trtools/qcSTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/qcSTR/tests/.bandit",
+"type": "blob",
+"size": 21
+},
+{
+"path": "trtools/qcSTR/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/qcSTR/tests/test_qcSTR.py",
+"type": "blob",
+"size": 10418
+},
+{
+"path": "trtools/qcSTR/wishlist.rst",
+"type": "blob",
+"size": 243
+},
+{
+"path": "trtools/simTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/simTR/README.rst",
+"type": "blob",
+"size": 4267
+},
+{
+"path": "trtools/simTR/__init__.py",
+"type": "blob",
+"size": 158
+},
+{
+"path": "trtools/simTR/simTR.py",
+"type": "blob",
+"size": 13796
+},
+{
+"path": "trtools/simTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/simTR/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/simTR/tests/test_simTR.py",
+"type": "blob",
+"size": 12746
+},
+{
+"path": "trtools/statSTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/statSTR/README.rst",
+"type": "blob",
+"size": 5074
+},
+{
+"path": "trtools/statSTR/__init__.py",
+"type": "blob",
+"size": 171
+},
+{
+"path": "trtools/statSTR/statSTR.py",
+"type": "blob",
+"size": 25847
+},
+{
+"path": "trtools/statSTR/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/statSTR/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/statSTR/tests/test_statSTR.py",
+"type": "blob",
+"size": 10403
+},
+{
+"path": "trtools/testsupport",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/testsupport/dataloader.py",
+"type": "blob",
+"size": 959
+},
+{
+"path": "trtools/testsupport/sample_regions",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_regions/README.txt",
+"type": "blob",
+"size": 169
+},
+{
+"path": "trtools/testsupport/sample_regions/test_regions1.bed.gz",
+"type": "blob",
+"size": 1181
+},
+{
+"path": "trtools/testsupport/sample_regions/test_regions1.bed.gz.tbi",
+"type": "blob",
+"size": 121
+},
+{
+"path": "trtools/testsupport/sample_regions/test_regions2.bed.gz",
+"type": "blob",
+"size": 935
+},
+{
+"path": "trtools/testsupport/sample_regions/test_regions2.bed.gz.tbi",
+"type": "blob",
+"size": 186
+},
+{
+"path": "trtools/testsupport/sample_regions/test_regions3.bed.gz",
+"type": "blob",
+"size": 935
+},
+{
+"path": "trtools/testsupport/sample_regions/test_regions4.bed.gz",
+"type": "blob",
+"size": 925
+},
+{
+"path": "trtools/testsupport/sample_regions/test_regions4.bed.gz.tbi",
+"type": "blob",
+"size": 186
+},
+{
+"path": "trtools/testsupport/sample_simtrdata",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_simtrdata/CBL.fa",
+"type": "blob",
+"size": 29
+},
+{
+"path": "trtools/testsupport/sample_simtrdata/CBL.fa.fai",
+"type": "blob",
+"size": 33
+},
+{
+"path": "trtools/testsupport/sample_simtrdata/README.txt",
+"type": "blob",
+"size": 169
+},
+{
+"path": "trtools/testsupport/sample_stats",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_stats/many_samples_all.tab",
+"type": "blob",
+"size": 364708
+},
+{
+"path": "trtools/testsupport/sample_stats/many_samples_all_strat.tab",
+"type": "blob",
+"size": 542715
+},
+{
+"path": "trtools/testsupport/sample_vcfs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/CEU_test.vcf.gz",
+"type": "blob",
+"size": 26753
+},
+{
+"path": "trtools/testsupport/sample_vcfs/CEU_test.vcf.gz.tbi",
+"type": "blob",
+"size": 135
+},
+{
+"path": "trtools/testsupport/sample_vcfs/README.txt",
+"type": "blob",
+"size": 169
+},
+{
+"path": "trtools/testsupport/sample_vcfs/annotaTR_vcfs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/annotaTR_vcfs/beagleap_trimmed.vcf",
+"type": "blob",
+"size": 21933
+},
+{
+"path": "trtools/testsupport/sample_vcfs/annotaTR_vcfs/create_test_files.sh",
+"type": "blob",
+"size": 1804
+},
+{
+"path": "trtools/testsupport/sample_vcfs/annotaTR_vcfs/gangstr_bestguess.vcf",
+"type": "blob",
+"size": 76296
+},
+{
+"path": "trtools/testsupport/sample_vcfs/annotaTR_vcfs/gangstr_bestguess_norm.vcf",
+"type": "blob",
+"size": 76301
+},
+{
+"path": "trtools/testsupport/sample_vcfs/annotaTR_vcfs/hipstr_beagle.vcf",
+"type": "blob",
+"size": 363788
+},
+{
+"path": "trtools/testsupport/sample_vcfs/annotaTR_vcfs/hipstr_bestguess_norm.vcf",
+"type": "blob",
+"size": 83618
+},
+{
+"path": "trtools/testsupport/sample_vcfs/artificial_gangstr.vcf",
+"type": "blob",
+"size": 5220
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/.gitignore",
+"type": "blob",
+"size": 79
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/35_samples.txt",
+"type": "blob",
+"size": 211
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/45_samples.txt",
+"type": "blob",
+"size": 266
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/README",
+"type": "blob",
+"size": 120
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/ap1_dosage_header.hdr",
+"type": "blob",
+"size": 91
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/ap1_multi_dosages.tsv.gz",
+"type": "blob",
+"size": 459
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/ap2_dosage_header.hdr",
+"type": "blob",
+"size": 91
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/ap2_multi_dosages.tsv.gz",
+"type": "blob",
+"size": 450
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/combined.plink2.trait_0.glm.linear",
+"type": "blob",
+"size": 56064
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/combined_35.plink2.trait_0.glm.linear",
+"type": "blob",
+"size": 55782
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/combined_traits_for_plink.tab",
+"type": "blob",
+"size": 9396
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/generate_plink_output.sh",
+"type": "blob",
+"size": 2617
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/generate_traits.py",
+"type": "blob",
+"size": 2568
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/gp_dosage_header.hdr",
+"type": "blob",
+"size": 74
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/make_dosages.py",
+"type": "blob",
+"size": 5190
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/many_samples_biallelic.vcf.gz",
+"type": "blob",
+"size": 301290
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/many_samples_biallelic.vcf.gz.tbi",
+"type": "blob",
+"size": 1618
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/many_samples_biallelic_dosages.vcf.gz",
+"type": "blob",
+"size": 563008
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/many_samples_biallelic_dosages.vcf.gz.tbi",
+"type": "blob",
+"size": 1660
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/many_samples_multiallelic.vcf.gz",
+"type": "blob",
+"size": 5147
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/many_samples_multiallelic_dosages.vcf.gz",
+"type": "blob",
+"size": 6226
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/many_samples_multiallelic_dosages.vcf.gz.tbi",
+"type": "blob",
+"size": 116
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/samples.txt",
+"type": "blob",
+"size": 296
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/samples_6_to_45.txt",
+"type": "blob",
+"size": 241
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/single.plink2.trait_0.glm.linear",
+"type": "blob",
+"size": 56030
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/single_35.plink2.trait_0.glm.linear",
+"type": "blob",
+"size": 55778
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/single_40.plink2.trait_0.glm.linear",
+"type": "blob",
+"size": 55882
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/single_40_dosages.plink2.trait_0.glm.linear",
+"type": "blob",
+"size": 56040
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/single_cutoff_5.plink2.trait_0.glm.linear",
+"type": "blob",
+"size": 29752
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/single_dosages.plink2.trait_0.glm.linear",
+"type": "blob",
+"size": 56058
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/single_traits_for_plink.tab",
+"type": "blob",
+"size": 6373
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/traits_0.npy",
+"type": "blob",
+"size": 4128
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/traits_0_40_samples.npy",
+"type": "blob",
+"size": 3648
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/traits_1.npy",
+"type": "blob",
+"size": 2128
+},
+{
+"path": "trtools/testsupport/sample_vcfs/associaTR/traits_1_45_samples.npy",
+"type": "blob",
+"size": 2288
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/1kg_snpstr_21_first_100k_first_50_annotated.vcf.gz",
+"type": "blob",
+"size": 2188499
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/1kg_snpstr_21_first_100k_first_50_annotated.vcf.gz.tbi",
+"type": "blob",
+"size": 5929
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/1kg_snpstr_21_first_100k_second_50_STRs_imputed.vcf.gz",
+"type": "blob",
+"size": 2254470
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/1kg_snpstr_21_first_100k_second_50_STRs_imputed.vcf.gz.tbi",
+"type": "blob",
+"size": 6129
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/advntr_imputed.vcf.gz",
+"type": "blob",
+"size": 15590
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/advntr_imputed_missing_infos.vcf.gz",
+"type": "blob",
+"size": 14423
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_badap.vcf.gz",
+"type": "blob",
+"size": 17577
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_badap.vcf.gz.tbi",
+"type": "blob",
+"size": 196
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_imputed_badalleles.vcf.gz",
+"type": "blob",
+"size": 825
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_imputed_badalleles.vcf.gz.tbi",
+"type": "blob",
+"size": 154
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_imputed_goodalleles.vcf.gz",
+"type": "blob",
+"size": 824
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_imputed_goodalleles.vcf.gz.tbi",
+"type": "blob",
+"size": 154
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_imputed_noTRs.vcf.gz",
+"type": "blob",
+"size": 787
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_imputed_noTRs.vcf.gz.tbi",
+"type": "blob",
+"size": 139
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_imputed_withap.vcf.gz",
+"type": "blob",
+"size": 17572
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_imputed_withap.vcf.gz.tbi",
+"type": "blob",
+"size": 196
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_refpanel.vcf.gz",
+"type": "blob",
+"size": 157186
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_refpanel.vcf.gz.tbi",
+"type": "blob",
+"size": 201
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_refpanel_duplocus.vcf.gz",
+"type": "blob",
+"size": 157207
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_refpanel_duplocus.vcf.gz.tbi",
+"type": "blob",
+"size": 201
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_refpanel_missinginfoheader.vcf.gz",
+"type": "blob",
+"size": 157191
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_refpanel_missinginfoheader.vcf.gz.tbi",
+"type": "blob",
+"size": 202
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_refpanel_nostrs.vcf.gz",
+"type": "blob",
+"size": 152469
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_refpanel_nostrs.vcf.gz.tbi",
+"type": "blob",
+"size": 200
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_tinyrefpanel.vcf.gz",
+"type": "blob",
+"size": 3131
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/beagle_tinyrefpanel.vcf.gz.tbi",
+"type": "blob",
+"size": 158
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/eh_imputed.vcf.gz",
+"type": "blob",
+"size": 40721
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/eh_imputed_missing_infos.vcf.gz",
+"type": "blob",
+"size": 38340
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/gangstr_imputed.vcf.gz",
+"type": "blob",
+"size": 97550
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/gangstr_imputed_missing_infos.vcf.gz",
+"type": "blob",
+"size": 96591
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/hipstr_imputed.vcf.gz",
+"type": "blob",
+"size": 40586
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/hipstr_imputed.vcf.gz.tbi",
+"type": "blob",
+"size": 935
+},
+{
+"path": "trtools/testsupport/sample_vcfs/beagle/hipstr_imputed_missing_infos.vcf.gz",
+"type": "blob",
+"size": 39873
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/empty_list.txt",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/sample_list.txt",
+"type": "blob",
+"size": 24
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_advntr.vcf",
+"type": "blob",
+"size": 956
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_better_comparability_calculation_1.vcf.gz",
+"type": "blob",
+"size": 1594
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_better_comparability_calculation_1.vcf.gz.tbi",
+"type": "blob",
+"size": 119
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_better_comparability_calculation_2.vcf.gz",
+"type": "blob",
+"size": 1611
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_better_comparability_calculation_2.vcf.gz.tbi",
+"type": "blob",
+"size": 119
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_gangstr1.vcf.gz",
+"type": "blob",
+"size": 72769
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_gangstr1.vcf.gz.tbi",
+"type": "blob",
+"size": 1385
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_gangstr2.vcf.gz",
+"type": "blob",
+"size": 73563
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_gangstr2.vcf.gz.tbi",
+"type": "blob",
+"size": 1359
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_gangstr2_wrongsamp.vcf.gz",
+"type": "blob",
+"size": 73567
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_gangstr2_wrongsamp.vcf.gz.tbi",
+"type": "blob",
+"size": 1359
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_hipstr.vcf.gz",
+"type": "blob",
+"size": 451903
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_hipstr.vcf.gz.tbi",
+"type": "blob",
+"size": 7418
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_hipstr_flanking_bp_flanking.vcf.gz",
+"type": "blob",
+"size": 1646
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_hipstr_flanking_bp_flanking.vcf.gz.tbi",
+"type": "blob",
+"size": 119
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_hipstr_flanking_bp_non_flanking.vcf.gz",
+"type": "blob",
+"size": 1631
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_hipstr_flanking_bp_non_flanking.vcf.gz.tbi",
+"type": "blob",
+"size": 119
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_no_comparable_records_1.vcf.gz",
+"type": "blob",
+"size": 1535
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_no_comparable_records_1.vcf.gz.tbi",
+"type": "blob",
+"size": 104
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_no_comparable_records_2.vcf.gz",
+"type": "blob",
+"size": 1535
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_no_comparable_records_2.vcf.gz.tbi",
+"type": "blob",
+"size": 104
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_popstr.vcf.gz",
+"type": "blob",
+"size": 360104
+},
+{
+"path": "trtools/testsupport/sample_vcfs/compareSTR_vcfs/test_popstr.vcf.gz.tbi",
+"type": "blob",
+"size": 19412
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/NA12878_chr21_advntr.sorted.vcf.gz",
+"type": "blob",
+"size": 137845
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/NA12878_chr21_advntr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 7712
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/NA12878_chr21_eh.sorted.vcf.gz",
+"type": "blob",
+"size": 135233
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/NA12878_chr21_eh.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 16649
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/NA12878_chr21_popstr.sorted.vcf.gz",
+"type": "blob",
+"size": 216691
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/NA12878_chr21_popstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19152
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/advntr_filters.loclog.tab",
+"type": "blob",
+"size": 75
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/advntr_filters.samplog.tab",
+"type": "blob",
+"size": 180
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/advntr_filters.vcf",
+"type": "blob",
+"size": 873522
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/bad_preexisting_filter_ac_refac.vcf",
+"type": "blob",
+"size": 1191
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/bad_preexisting_het_hwep.vcf",
+"type": "blob",
+"size": 1097
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/bad_preexisting_hrun.vcf",
+"type": "blob",
+"size": 1035
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/create_test_files.sh",
+"type": "blob",
+"size": 3048
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/drop_filtered.vcf",
+"type": "blob",
+"size": 410550
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/gangstr_filters_expansion.loclog.tab",
+"type": "blob",
+"size": 76
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/gangstr_filters_expansion.samplog.tab",
+"type": "blob",
+"size": 173
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/gangstr_filters_expansion.vcf",
+"type": "blob",
+"size": 1054238
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/gangstr_filters_most.loclog.tab",
+"type": "blob",
+"size": 91
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/gangstr_filters_most.samplog.tab",
+"type": "blob",
+"size": 303
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/gangstr_filters_most.vcf",
+"type": "blob",
+"size": 5027852
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/hipstr_filters.loclog.tab",
+"type": "blob",
+"size": 168
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/hipstr_filters.samplog.tab",
+"type": "blob",
+"size": 306
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/hipstr_filters.vcf",
+"type": "blob",
+"size": 5611172
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/locus_filters.loclog.tab",
+"type": "blob",
+"size": 197
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/locus_filters.samplog.tab",
+"type": "blob",
+"size": 116
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/locus_filters.vcf",
+"type": "blob",
+"size": 5655083
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/longtr_filters.loclog.tab",
+"type": "blob",
+"size": 143
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/longtr_filters.samplog.tab",
+"type": "blob",
+"size": 358
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/longtr_filters.vcf",
+"type": "blob",
+"size": 90361
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/longtr_testfile.vcf.gz",
+"type": "blob",
+"size": 18309
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/longtr_testfile.vcf.gz.tbi",
+"type": "blob",
+"size": 178
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/popstr_filters.loclog.tab",
+"type": "blob",
+"size": 77
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/popstr_filters.samplog.tab",
+"type": "blob",
+"size": 137
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/popstr_filters.vcf",
+"type": "blob",
+"size": 1679789
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/README",
+"type": "blob",
+"size": 89
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/advntr_filters.loclog.tab",
+"type": "blob",
+"size": 63
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/advntr_filters.samplog.tab",
+"type": "blob",
+"size": 167
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/advntr_filters.vcf",
+"type": "blob",
+"size": 835766
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/drop_filtered.vcf",
+"type": "blob",
+"size": 429184
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/gangstr_filters_expansion.loclog.tab",
+"type": "blob",
+"size": 61
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/gangstr_filters_expansion.samplog.tab",
+"type": "blob",
+"size": 157
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/gangstr_filters_expansion.vcf",
+"type": "blob",
+"size": 978585
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/gangstr_filters_most.loclog.tab",
+"type": "blob",
+"size": 60
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/gangstr_filters_most.samplog.tab",
+"type": "blob",
+"size": 295
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/gangstr_filters_most.vcf",
+"type": "blob",
+"size": 5358879
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/hipstr_filters.loclog.tab",
+"type": "blob",
+"size": 140
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/hipstr_filters.samplog.tab",
+"type": "blob",
+"size": 289
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/hipstr_filters.vcf",
+"type": "blob",
+"size": 5825330
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/locus_filters.loclog.tab",
+"type": "blob",
+"size": 167
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/locus_filters.samplog.tab",
+"type": "blob",
+"size": 116
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/locus_filters.vcf",
+"type": "blob",
+"size": 5902481
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/popstr_filters.loclog.tab",
+"type": "blob",
+"size": 62
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/popstr_filters.samplog.tab",
+"type": "blob",
+"size": 130
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/pyvcf_output/popstr_filters.vcf",
+"type": "blob",
+"size": 1502665
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/sample_region.bed.gz",
+"type": "blob",
+"size": 79
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/sample_region.bed.gz.tbi",
+"type": "blob",
+"size": 137
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/sample_region2.bed.gz",
+"type": "blob",
+"size": 88
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/sample_region2.bed.gz.tbi",
+"type": "blob",
+"size": 161
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/test_advntr.vcf.gz",
+"type": "blob",
+"size": 451
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/test_advntr.vcf.gz.tbi",
+"type": "blob",
+"size": 172
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/test_broken.vcf.gz",
+"type": "blob",
+"size": 1730
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/test_broken.vcf.gz.tbi",
+"type": "blob",
+"size": 118
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/test_gangstr.vcf.gz",
+"type": "blob",
+"size": 211545
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/test_gangstr.vcf.gz.tbi",
+"type": "blob",
+"size": 3384
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/test_gangstr_nochr.vcf.gz",
+"type": "blob",
+"size": 210931
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/test_gangstr_nochr.vcf.gz.tbi",
+"type": "blob",
+"size": 3393
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/trio_chr21_gangstr.sorted.vcf.gz",
+"type": "blob",
+"size": 807884
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/trio_chr21_gangstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19159
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/trio_chr21_hipstr.sorted.vcf.gz",
+"type": "blob",
+"size": 663594
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/trio_chr21_hipstr.sorted.vcf.gz.tbi",
+"type": "blob",
+"size": 19553
+},
+{
+"path": "trtools/testsupport/sample_vcfs/dumpSTR_vcfs/worrisome_preexisting_filter.vcf",
+"type": "blob",
+"size": 1068
+},
+{
+"path": "trtools/testsupport/sample_vcfs/few_loci.vcf",
+"type": "blob",
+"size": 30140
+},
+{
+"path": "trtools/testsupport/sample_vcfs/few_samples_few_loci.vcf.gz",
+"type": "blob",
+"size": 9757
+},
+{
+"path": "trtools/testsupport/sample_vcfs/few_samples_few_loci.vcf.gz.tbi",
+"type": "blob",
+"size": 166
+},
+{
+"path": "trtools/testsupport/sample_vcfs/fewer_samples.txt",
+"type": "blob",
+"size": 16
+},
+{
+"path": "trtools/testsupport/sample_vcfs/many_samples.vcf.gz",
+"type": "blob",
+"size": 1357686
+},
+{
+"path": "trtools/testsupport/sample_vcfs/many_samples.vcf.gz.tbi",
+"type": "blob",
+"size": 2194
+},
+{
+"path": "trtools/testsupport/sample_vcfs/many_samples_multiple_chroms.vcf.gz",
+"type": "blob",
+"size": 229583
+},
+{
+"path": "trtools/testsupport/sample_vcfs/many_samples_multiple_chroms.vcf.gz.tbi",
+"type": "blob",
+"size": 454
+},
+{
+"path": "trtools/testsupport/sample_vcfs/many_samples_subsample1.txt",
+"type": "blob",
+"size": 48
+},
+{
+"path": "trtools/testsupport/sample_vcfs/many_samples_subsample2.txt",
+"type": "blob",
+"size": 96
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/advntr_merged.vcf",
+"type": "blob",
+"size": 1330
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/create_test_files.sh",
+"type": "blob",
+"size": 416
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/eh_X_no_alt_merged.vcf",
+"type": "blob",
+"size": 2119
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/eh_X_no_alt_merged_swap.vcf",
+"type": "blob",
+"size": 2119
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/eh_merged.vcf",
+"type": "blob",
+"size": 2263
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/eh_no_alt_merged.vcf",
+"type": "blob",
+"size": 2106
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/gangstr_merged.vcf",
+"type": "blob",
+"size": 1081425
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/hipstr-harmonized-merge-contains-flanking.vcf.gz",
+"type": "blob",
+"size": 2317
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/hipstr-harmonized-merge-contains-flanking.vcf.gz.tbi",
+"type": "blob",
+"size": 104
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/hipstr-harmonized-merge-no-flanking.vcf.gz",
+"type": "blob",
+"size": 2308
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/hipstr-harmonized-merge-no-flanking.vcf.gz.tbi",
+"type": "blob",
+"size": 104
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/hipstr_flanking_harmonization_test_output.vcf",
+"type": "blob",
+"size": 9353
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/hipstr_merged.vcf",
+"type": "blob",
+"size": 8604
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/longtr_merged.vcf",
+"type": "blob",
+"size": 184316
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/one_sample_multiple_chroms_diff_contig_order.vcf.gz",
+"type": "blob",
+"size": 23031
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/one_sample_multiple_chroms_diff_contig_order.vcf.gz.tbi",
+"type": "blob",
+"size": 415
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/popstr_merged.vcf",
+"type": "blob",
+"size": 1317122
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_advntr1.vcf.gz",
+"type": "blob",
+"size": 457
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_advntr1.vcf.gz.tbi",
+"type": "blob",
+"size": 174
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_advntr2.vcf.gz",
+"type": "blob",
+"size": 450
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_advntr2.vcf.gz.tbi",
+"type": "blob",
+"size": 174
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigdifferent1.vcf.gz",
+"type": "blob",
+"size": 2584
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigdifferent1.vcf.gz.tbi",
+"type": "blob",
+"size": 152
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigdifferent2.vcf.gz",
+"type": "blob",
+"size": 2632
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigdifferent2.vcf.gz.tbi",
+"type": "blob",
+"size": 151
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigdifflength.vcf.gz",
+"type": "blob",
+"size": 2263
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigdifflength.vcf.gz.tbi",
+"type": "blob",
+"size": 104
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigmissing1.vcf.gz",
+"type": "blob",
+"size": 2585
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigmissing1.vcf.gz.tbi",
+"type": "blob",
+"size": 152
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigmissing2.vcf.gz",
+"type": "blob",
+"size": 2630
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_contigmissing2.vcf.gz.tbi",
+"type": "blob",
+"size": 151
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh1.vcf.gz",
+"type": "blob",
+"size": 749
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh1.vcf.gz.tbi",
+"type": "blob",
+"size": 118
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh2.vcf.gz",
+"type": "blob",
+"size": 745
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh2.vcf.gz.tbi",
+"type": "blob",
+"size": 118
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh_X1.vcf.gz",
+"type": "blob",
+"size": 744
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh_X1.vcf.gz.tbi",
+"type": "blob",
+"size": 118
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh_X_no_alt.vcf.gz",
+"type": "blob",
+"size": 763
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh_X_no_alt.vcf.gz.tbi",
+"type": "blob",
+"size": 118
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh_no_alt.vcf.gz",
+"type": "blob",
+"size": 752
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_eh_no_alt.vcf.gz.tbi",
+"type": "blob",
+"size": 118
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr1.vcf.gz",
+"type": "blob",
+"size": 208508
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr1.vcf.gz.tbi",
+"type": "blob",
+"size": 3471
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr1_1contig.vcf.gz",
+"type": "blob",
+"size": 2909
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr1_1contig.vcf.gz.tbi",
+"type": "blob",
+"size": 161
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr2.vcf.gz",
+"type": "blob",
+"size": 207832
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr2.vcf.gz.tbi",
+"type": "blob",
+"size": 3448
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr2_1contig.vcf.gz",
+"type": "blob",
+"size": 3193
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr2_1contig.vcf.gz.tbi",
+"type": "blob",
+"size": 161
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_dupID.vcf.gz",
+"type": "blob",
+"size": 208508
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_dupID.vcf.gz.tbi",
+"type": "blob",
+"size": 3383
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_missingformat1.vcf.gz",
+"type": "blob",
+"size": 1791
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_missingformat1.vcf.gz.tbi",
+"type": "blob",
+"size": 118
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_missinginfo1.vcf.gz",
+"type": "blob",
+"size": 1784
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_missinginfo1.vcf.gz.tbi",
+"type": "blob",
+"size": 118
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_unindexed1.vcf.gz",
+"type": "blob",
+"size": 208508
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_unindexed2.vcf.gz",
+"type": "blob",
+"size": 205392
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_unzipped1.vcf",
+"type": "blob",
+"size": 937282
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_gangstr_unzipped2.vcf",
+"type": "blob",
+"size": 922219
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_hipstr1.vcf.gz",
+"type": "blob",
+"size": 2271
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_hipstr1.vcf.gz.tbi",
+"type": "blob",
+"size": 104
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_hipstr1_badinfo.vcf.gz",
+"type": "blob",
+"size": 2249
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_hipstr1_badinfo.vcf.gz.tbi",
+"type": "blob",
+"size": 104
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_hipstr2.vcf.gz",
+"type": "blob",
+"size": 2264
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_hipstr2.vcf.gz.tbi",
+"type": "blob",
+"size": 104
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_hipstr2_alt_v_ref.vcf.gz",
+"type": "blob",
+"size": 2248
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_hipstr2_alt_v_ref.vcf.gz.tbi",
+"type": "blob",
+"size": 115
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_longtr1.vcf.gz",
+"type": "blob",
+"size": 23924
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_longtr1.vcf.gz.tbi",
+"type": "blob",
+"size": 144
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_longtr2.vcf.gz",
+"type": "blob",
+"size": 23702
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_longtr2.vcf.gz.tbi",
+"type": "blob",
+"size": 144
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_popstr1.vcf.gz",
+"type": "blob",
+"size": 300092
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_popstr1.vcf.gz.tbi",
+"type": "blob",
+"size": 19354
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_popstr2.vcf.gz",
+"type": "blob",
+"size": 221385
+},
+{
+"path": "trtools/testsupport/sample_vcfs/mergeSTR_vcfs/test_file_popstr2.vcf.gz.tbi",
+"type": "blob",
+"size": 19221
+},
+{
+"path": "trtools/testsupport/sample_vcfs/missing_samples.txt",
+"type": "blob",
+"size": 34
+},
+{
+"path": "trtools/testsupport/sample_vcfs/one_sample_multiple_chroms.vcf.gz",
+"type": "blob",
+"size": 22930
+},
+{
+"path": "trtools/testsupport/sample_vcfs/one_sample_multiple_chroms.vcf.gz.tbi",
+"type": "blob",
+"size": 414
+},
+{
+"path": "trtools/testsupport/sample_vcfs/qc_vcfs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/testsupport/sample_vcfs/qc_vcfs/50by3.vcf",
+"type": "blob",
+"size": 7316
+},
+{
+"path": "trtools/testsupport/sample_vcfs/qc_vcfs/5by50.vcf",
+"type": "blob",
+"size": 28001
+},
+{
+"path": "trtools/testsupport/sample_vcfs/qc_vcfs/test_fakesample.txt",
+"type": "blob",
+"size": 33
+},
+{
+"path": "trtools/testsupport/sample_vcfs/qc_vcfs/test_popstr.vcf",
+"type": "blob",
+"size": 1400392
+},
+{
+"path": "trtools/testsupport/sample_vcfs/qc_vcfs/test_popstr_nocontig.vcf",
+"type": "blob",
+"size": 1400356
+},
+{
+"path": "trtools/testsupport/sample_vcfs/qc_vcfs/test_samplelist.txt",
+"type": "blob",
+"size": 17
+},
+{
+"path": "trtools/testsupport/sample_vcfs/snps.vcf",
+"type": "blob",
+"size": 1948
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_ExpansionHunter.vcf",
+"type": "blob",
+"size": 1911
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_ExpansionHunter_reheadered.vcf",
+"type": "blob",
+"size": 2812
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_advntr.vcf",
+"type": "blob",
+"size": 958
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_beagle-4.1.vcf",
+"type": "blob",
+"size": 5382204
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_beagle_4-0.vcf",
+"type": "blob",
+"size": 5815051
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_broken.vcf",
+"type": "blob",
+"size": 4522
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_gangstr.vcf",
+"type": "blob",
+"size": 937282
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_gangstr_nochr.vcf",
+"type": "blob",
+"size": 929242
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_gangstr_noqual.vcf",
+"type": "blob",
+"size": 3587
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_gangstr_samples.txt",
+"type": "blob",
+"size": 12
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_hipstr.vcf",
+"type": "blob",
+"size": 4136016
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_longtr.vcf",
+"type": "blob",
+"size": 62556
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_multitype.vcf",
+"type": "blob",
+"size": 1304
+},
+{
+"path": "trtools/testsupport/sample_vcfs/test_popstr.vcf",
+"type": "blob",
+"size": 19162
+},
+{
+"path": "trtools/testsupport/test_trtools.sh",
+"type": "blob",
+"size": 2391
+},
+{
+"path": "trtools/testsupport/utils.py",
+"type": "blob",
+"size": 9990
+},
+{
+"path": "trtools/utils",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/utils/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/utils/common.py",
+"type": "blob",
+"size": 687
+},
+{
+"path": "trtools/utils/mergeutils.py",
+"type": "blob",
+"size": 11896
+},
+{
+"path": "trtools/utils/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "trtools/utils/tests/.bandit",
+"type": "blob",
+"size": 21
+},
+{
+"path": "trtools/utils/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "trtools/utils/tests/test_common.py",
+"type": "blob",
+"size": 303
+},
+{
+"path": "trtools/utils/tests/test_mergeutils.py",
+"type": "blob",
+"size": 5346
+},
+{
+"path": "trtools/utils/tests/test_trharmonizer.py",
+"type": "blob",
+"size": 45985
+},
+{
+"path": "trtools/utils/tests/test_utils.py",
+"type": "blob",
+"size": 5443
+},
+{
+"path": "trtools/utils/tr_harmonizer.py",
+"type": "blob",
+"size": 66982
+},
+{
+"path": "trtools/utils/utils.py",
+"type": "blob",
+"size": 18141
+},
+{
+"path": "wishlist.txt",
+"type": "blob",
+"size": 80
+}
+]
+}

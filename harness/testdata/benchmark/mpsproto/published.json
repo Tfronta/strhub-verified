@@ -1,0 +1,15 @@
+{
+ "bioconda": {
+  "mpsproto": null
+ },
+ "release": {
+  "tag": "v0.9.7",
+  "assets": [
+   {
+    "name": "MPSproto_0.9.7.zip",
+    "size": 718431,
+    "url": "https://github.com/oyvble/MPSproto/releases/download/v0.9.7/MPSproto_0.9.7.zip"
+   }
+  ]
+ }
+}

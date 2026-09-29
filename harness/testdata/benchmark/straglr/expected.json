@@ -1,0 +1,60 @@
+{
+  "_about": "Hand-checked against bcgsc/straglr (now BirolLab/straglr) at edfa209c79290475fbeb2d74edb2a68f0df8c99d (tag v1.5.6) on 2026-09-29, from README.md, docs/vcf.md, docs/clustering.md, docs/straglr_compare.md, CHANGES.md, test/README.md, environment.yaml, setup.py, straglr.py and src/tre.py at that commit, api.anaconda.org, the v1.5.6 release, and the header of STRhub's ont_slices/HG00113.codis.bam.",
+  "program": {
+    "value": "straglr.py",
+    "subcommand": null,
+    "where": "README.md:29,69,88"
+  },
+  "command": {
+    "value": "straglr.py sample.mm2.bam hg38.fa batch0001 --genotype_in_size --min_support 2 --loci batch0001.bed --max_str_len 100 --max_num_clusters 2 --nprocs 32",
+    "source": "readme",
+    "where": "README.md:88"
+  },
+  "install": {
+    "documented": "conda env create --name straglr --file=environment.yaml (Python deps plus TRF and blastn, which must be on PATH), then run ./straglr.py from the clone or pip-install the repo into that env",
+    "acceptable_methods": [
+      "conda"
+    ],
+    "where": "README.md:5-22; environment.yaml:1-15"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": {
+      "package": "straglr",
+      "version_at_ref": "1.5.6"
+    },
+    "image_documented": null,
+    "release_binary_documented": false,
+    "where": "https://api.anaconda.org/package/bioconda/straglr (1.1.1 to 1.5.6); https://github.com/bcgsc/straglr/releases/tag/v1.5.6 (one asset, straglr-1.5.6.tar.gz, a source tarball the README does not mention); the README never mentions Bioconda or a container image"
+  },
+  "input": {
+    "kinds": [
+      "bam",
+      "cram"
+    ],
+    "platforms": [
+      "ont",
+      "pacbio"
+    ],
+    "strhub_type": "ont-bam-hg38",
+    "where": "README.md:1-3,24-25; CHANGES.md:37"
+  },
+  "extra_inputs": [
+    {
+      "what": "loci BED for --loci: chrom, start, end, repeat motif in column 4 ('-' allowed since v1.5.1 to skip the motif check), optional locus ID in column 5",
+      "required": true,
+      "strhub_has": true,
+      "where": "README.md:29,34,78-80,88; CHANGES.md:23; docs/vcf.md:25; src/tre.py:1404-1417",
+      "revised": "2026-09-29: STRhub now supplies a chrom/start/end/motif regions file for ont-bam-hg38 (datasets/ont-bam-hg38/regions/motif.bed, the 20 CODIS loci inside the ONT slices)."
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": true,
+    "why": "2026-09-29: STRhub now supplies a chrom/start/end/motif regions file for ont-bam-hg38 (datasets/ont-bam-hg38/regions/motif.bed, the 20 CODIS loci inside the ONT slices). With the motif-in-column-4 file from STRhub's regions library as --loci, the documented genotyping mode has everything it needs on ont-bam-hg38. Caveat kept from the first reading: the README asks for minimap2 -Y alignments and the slice was aligned with -y.",
+    "was": {
+      "value": false,
+      "why": "Genotyping needs a --loci BED with the repeat motif in column 4 (src/tre.py:1411-1415 takes column 4 as the motif). None of the layouts STRhub writes has the motif there: HipSTR and GangSTR put the period, BED4 a locus name, STRsearch the period after a header line. straglr would read those as motifs, so no STRhub regions file fits, whichever dataset it is attached to. As specified for this benchmark, STRhub attaches regions only to the Illumina BAM datasets anyway."
+    }
+  },
+  "notes": "The README documents two modes. The genome scan (README.md:66-70; no --loci) finds expansions at least --min_ins_size (default 100 bp) longer than the reference. Targeted genotyping (README.md:76-89) takes --loci; the genotyping invocation is recorded here. The scan needs only BAM + FASTA (--exclude is optional) and would start on ont-bam-hg38, but it does not genotype the CODIS loci. test/README.md:5 has a smaller in-repo genotype-mode example: straglr.py test.bam /path/to/hg38.fa <output_prefix> --loci test.bed --genotype_in_size. The platform is not named: the README says only 'long-read alignments' with minimap2 as the suggested aligner. README.md:25 asks for minimap2 -Y (soft-clipped supplementary alignments); STRhub's ONT slice was aligned with 'minimap2 -t 33 -y -a' (header @PG), i.e. without -Y. straglr aborts if trf is not on PATH (src/tre.py:28-31) and calls blastn. src/tre.py:2 imports distutils, which Python 3.12+ lacks unless setuptools provides it, and environment.yaml leaves python unpinned (>=3.8.13). The README's pip example pins v1.3.0 (README.md:16), not v1.5.6. pip alone (setup.py) does not bring TRF or blastn, so it is not a faithful install on its own. Bioconda has straglr 1.5.6 (matches the tag), but it is undocumented."
+}

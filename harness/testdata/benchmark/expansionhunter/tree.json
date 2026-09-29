@@ -1,0 +1,1954 @@
+{
+"repo": "https://github.com/Illumina/ExpansionHunter",
+"ref": "9f5db1d4ab72016b2d93330b9792842d71582622",
+"tag": "v5.0.0",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"LICENSE.txt",
+"COPYRIGHT.txt",
+"docs/01_Introduction.md",
+"docs/02_Installation.md",
+"docs/03_Usage.md",
+"docs/04_VariantCatalogFiles.md",
+"docs/05_OutputJsonFiles.md",
+"docs/06_OutputVcfFiles.md"
+],
+"tree": [
+{
+"path": ".gitattributes",
+"type": "blob",
+"size": 320
+},
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 106
+},
+{
+"path": ".travis.yml",
+"type": "blob",
+"size": 385
+},
+{
+"path": "CMakeLists.txt",
+"type": "blob",
+"size": 3034
+},
+{
+"path": "COPYRIGHT.txt",
+"type": "blob",
+"size": 12045
+},
+{
+"path": "LICENSE.txt",
+"type": "blob",
+"size": 11358
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 1792
+},
+{
+"path": "docs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/01_Introduction.md",
+"type": "blob",
+"size": 895
+},
+{
+"path": "docs/02_Installation.md",
+"type": "blob",
+"size": 1421
+},
+{
+"path": "docs/03_Usage.md",
+"type": "blob",
+"size": 2589
+},
+{
+"path": "docs/04_VariantCatalogFiles.md",
+"type": "blob",
+"size": 6706
+},
+{
+"path": "docs/05_OutputJsonFiles.md",
+"type": "blob",
+"size": 2107
+},
+{
+"path": "docs/06_OutputVcfFiles.md",
+"type": "blob",
+"size": 1698
+},
+{
+"path": "ehunter",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/.clang-format",
+"type": "blob",
+"size": 197
+},
+{
+"path": "ehunter/CMakeLists.txt",
+"type": "blob",
+"size": 6539
+},
+{
+"path": "ehunter/alignment",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/alignment/AlignmentClassifier.cpp",
+"type": "blob",
+"size": 4118
+},
+{
+"path": "ehunter/alignment/AlignmentClassifier.hh",
+"type": "blob",
+"size": 1839
+},
+{
+"path": "ehunter/alignment/AlignmentFilters.cpp",
+"type": "blob",
+"size": 4071
+},
+{
+"path": "ehunter/alignment/AlignmentFilters.hh",
+"type": "blob",
+"size": 1908
+},
+{
+"path": "ehunter/alignment/ClassifierOfAlignmentsToVariant.cpp",
+"type": "blob",
+"size": 3429
+},
+{
+"path": "ehunter/alignment/ClassifierOfAlignmentsToVariant.hh",
+"type": "blob",
+"size": 1813
+},
+{
+"path": "ehunter/alignment/GraphVariantAlignmentStats.cpp",
+"type": "blob",
+"size": 4192
+},
+{
+"path": "ehunter/alignment/GraphVariantAlignmentStats.hh",
+"type": "blob",
+"size": 2246
+},
+{
+"path": "ehunter/alignment/GreedyAlignmentIntersector.cpp",
+"type": "blob",
+"size": 7455
+},
+{
+"path": "ehunter/alignment/GreedyAlignmentIntersector.hh",
+"type": "blob",
+"size": 2214
+},
+{
+"path": "ehunter/alignment/HighQualityBaseRunFinder.cpp",
+"type": "blob",
+"size": 3195
+},
+{
+"path": "ehunter/alignment/HighQualityBaseRunFinder.hh",
+"type": "blob",
+"size": 1451
+},
+{
+"path": "ehunter/alignment/OperationsOnAlignments.cpp",
+"type": "blob",
+"size": 5081
+},
+{
+"path": "ehunter/alignment/OperationsOnAlignments.hh",
+"type": "blob",
+"size": 2021
+},
+{
+"path": "ehunter/alignment/OrientationPredictor.cpp",
+"type": "blob",
+"size": 2919
+},
+{
+"path": "ehunter/alignment/OrientationPredictor.hh",
+"type": "blob",
+"size": 1587
+},
+{
+"path": "ehunter/alignment/SoftclippingAligner.cpp",
+"type": "blob",
+"size": 2034
+},
+{
+"path": "ehunter/alignment/SoftclippingAligner.hh",
+"type": "blob",
+"size": 1252
+},
+{
+"path": "ehunter/app",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/app/ExpansionHunter.cpp",
+"type": "blob",
+"size": 4974
+},
+{
+"path": "ehunter/app/Version.hh",
+"type": "blob",
+"size": 943
+},
+{
+"path": "ehunter/core",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/core/Common.cpp",
+"type": "blob",
+"size": 2227
+},
+{
+"path": "ehunter/core/Common.hh",
+"type": "blob",
+"size": 2442
+},
+{
+"path": "ehunter/core/ConcurrentQueue.hh",
+"type": "blob",
+"size": 1475
+},
+{
+"path": "ehunter/core/CountTable.cpp",
+"type": "blob",
+"size": 2985
+},
+{
+"path": "ehunter/core/CountTable.hh",
+"type": "blob",
+"size": 2330
+},
+{
+"path": "ehunter/core/GenomicRegion.cpp",
+"type": "blob",
+"size": 4523
+},
+{
+"path": "ehunter/core/GenomicRegion.hh",
+"type": "blob",
+"size": 2590
+},
+{
+"path": "ehunter/core/HtsHelpers.cpp",
+"type": "blob",
+"size": 4477
+},
+{
+"path": "ehunter/core/HtsHelpers.hh",
+"type": "blob",
+"size": 1166
+},
+{
+"path": "ehunter/core/LocusStats.cpp",
+"type": "blob",
+"size": 4670
+},
+{
+"path": "ehunter/core/LocusStats.hh",
+"type": "blob",
+"size": 2940
+},
+{
+"path": "ehunter/core/LogSum.hh",
+"type": "blob",
+"size": 1468
+},
+{
+"path": "ehunter/core/Parameters.cpp",
+"type": "blob",
+"size": 736
+},
+{
+"path": "ehunter/core/Parameters.hh",
+"type": "blob",
+"size": 6053
+},
+{
+"path": "ehunter/core/Read.cpp",
+"type": "blob",
+"size": 2687
+},
+{
+"path": "ehunter/core/Read.hh",
+"type": "blob",
+"size": 4794
+},
+{
+"path": "ehunter/core/ReadPairs.cpp",
+"type": "blob",
+"size": 2801
+},
+{
+"path": "ehunter/core/ReadPairs.hh",
+"type": "blob",
+"size": 2294
+},
+{
+"path": "ehunter/core/ReadSupportCalculator.cpp",
+"type": "blob",
+"size": 1654
+},
+{
+"path": "ehunter/core/ReadSupportCalculator.hh",
+"type": "blob",
+"size": 1951
+},
+{
+"path": "ehunter/core/Reference.cpp",
+"type": "blob",
+"size": 3294
+},
+{
+"path": "ehunter/core/Reference.hh",
+"type": "blob",
+"size": 2604
+},
+{
+"path": "ehunter/core/ReferenceContigInfo.cpp",
+"type": "blob",
+"size": 2906
+},
+{
+"path": "ehunter/core/ReferenceContigInfo.hh",
+"type": "blob",
+"size": 1574
+},
+{
+"path": "ehunter/core/ThreadPool.hh",
+"type": "blob",
+"size": 36
+},
+{
+"path": "ehunter/core/WeightedPurityCalculator.cpp",
+"type": "blob",
+"size": 6998
+},
+{
+"path": "ehunter/core/WeightedPurityCalculator.hh",
+"type": "blob",
+"size": 1171
+},
+{
+"path": "ehunter/genotyping",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/genotyping/AlignMatrix.cpp",
+"type": "blob",
+"size": 6988
+},
+{
+"path": "ehunter/genotyping/AlignMatrix.hh",
+"type": "blob",
+"size": 1920
+},
+{
+"path": "ehunter/genotyping/AlignMatrixFiltering.cpp",
+"type": "blob",
+"size": 2803
+},
+{
+"path": "ehunter/genotyping/AlignMatrixFiltering.hh",
+"type": "blob",
+"size": 943
+},
+{
+"path": "ehunter/genotyping/AlleleChecker.cpp",
+"type": "blob",
+"size": 2765
+},
+{
+"path": "ehunter/genotyping/AlleleChecker.hh",
+"type": "blob",
+"size": 2110
+},
+{
+"path": "ehunter/genotyping/FragLogliks.cpp",
+"type": "blob",
+"size": 3353
+},
+{
+"path": "ehunter/genotyping/FragLogliks.hh",
+"type": "blob",
+"size": 1785
+},
+{
+"path": "ehunter/genotyping/OneAlleleStrGenotyper.cpp",
+"type": "blob",
+"size": 4903
+},
+{
+"path": "ehunter/genotyping/OneAlleleStrGenotyper.hh",
+"type": "blob",
+"size": 1615
+},
+{
+"path": "ehunter/genotyping/RepeatGenotype.cpp",
+"type": "blob",
+"size": 2228
+},
+{
+"path": "ehunter/genotyping/RepeatGenotype.hh",
+"type": "blob",
+"size": 3904
+},
+{
+"path": "ehunter/genotyping/SmallVariantGenotype.cpp",
+"type": "blob",
+"size": 1283
+},
+{
+"path": "ehunter/genotyping/SmallVariantGenotype.hh",
+"type": "blob",
+"size": 1846
+},
+{
+"path": "ehunter/genotyping/SmallVariantGenotyper.cpp",
+"type": "blob",
+"size": 3741
+},
+{
+"path": "ehunter/genotyping/SmallVariantGenotyper.hh",
+"type": "blob",
+"size": 2093
+},
+{
+"path": "ehunter/genotyping/StrAlign.cpp",
+"type": "blob",
+"size": 12033
+},
+{
+"path": "ehunter/genotyping/StrAlign.hh",
+"type": "blob",
+"size": 4414
+},
+{
+"path": "ehunter/genotyping/StrGenotyper.cpp",
+"type": "blob",
+"size": 4173
+},
+{
+"path": "ehunter/genotyping/StrGenotyper.hh",
+"type": "blob",
+"size": 1114
+},
+{
+"path": "ehunter/genotyping/TwoAlleleStrGenotyper.cpp",
+"type": "blob",
+"size": 7201
+},
+{
+"path": "ehunter/genotyping/TwoAlleleStrGenotyper.hh",
+"type": "blob",
+"size": 1848
+},
+{
+"path": "ehunter/io",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/io/BamletWriter.cpp",
+"type": "blob",
+"size": 8368
+},
+{
+"path": "ehunter/io/BamletWriter.hh",
+"type": "blob",
+"size": 2865
+},
+{
+"path": "ehunter/io/CatalogLoading.cpp",
+"type": "blob",
+"size": 6509
+},
+{
+"path": "ehunter/io/CatalogLoading.hh",
+"type": "blob",
+"size": 1087
+},
+{
+"path": "ehunter/io/GraphBlueprint.cpp",
+"type": "blob",
+"size": 8440
+},
+{
+"path": "ehunter/io/GraphBlueprint.hh",
+"type": "blob",
+"size": 2299
+},
+{
+"path": "ehunter/io/JsonWriter.cpp",
+"type": "blob",
+"size": 6069
+},
+{
+"path": "ehunter/io/JsonWriter.hh",
+"type": "blob",
+"size": 2131
+},
+{
+"path": "ehunter/io/LocusSpecDecoding.cpp",
+"type": "blob",
+"size": 13173
+},
+{
+"path": "ehunter/io/LocusSpecDecoding.hh",
+"type": "blob",
+"size": 1769
+},
+{
+"path": "ehunter/io/ParameterLoading.cpp",
+"type": "blob",
+"size": 11750
+},
+{
+"path": "ehunter/io/ParameterLoading.hh",
+"type": "blob",
+"size": 893
+},
+{
+"path": "ehunter/io/RegionGraph.cpp",
+"type": "blob",
+"size": 3433
+},
+{
+"path": "ehunter/io/RegionGraph.hh",
+"type": "blob",
+"size": 928
+},
+{
+"path": "ehunter/io/SampleStats.cpp",
+"type": "blob",
+"size": 2887
+},
+{
+"path": "ehunter/io/SampleStats.hh",
+"type": "blob",
+"size": 1043
+},
+{
+"path": "ehunter/io/VcfHeader.cpp",
+"type": "blob",
+"size": 8652
+},
+{
+"path": "ehunter/io/VcfHeader.hh",
+"type": "blob",
+"size": 2628
+},
+{
+"path": "ehunter/io/VcfWriter.cpp",
+"type": "blob",
+"size": 15003
+},
+{
+"path": "ehunter/io/VcfWriter.hh",
+"type": "blob",
+"size": 2498
+},
+{
+"path": "ehunter/io/VcfWriterHelpers.cpp",
+"type": "blob",
+"size": 3984
+},
+{
+"path": "ehunter/io/VcfWriterHelpers.hh",
+"type": "blob",
+"size": 1924
+},
+{
+"path": "ehunter/locus",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/locus/CMakeLists.txt",
+"type": "blob",
+"size": 789
+},
+{
+"path": "ehunter/locus/Definitions.hh",
+"type": "blob",
+"size": 1027
+},
+{
+"path": "ehunter/locus/IrrPairFinder.cpp",
+"type": "blob",
+"size": 1228
+},
+{
+"path": "ehunter/locus/IrrPairFinder.hh",
+"type": "blob",
+"size": 1155
+},
+{
+"path": "ehunter/locus/IrrPairFinderTest.cpp",
+"type": "blob",
+"size": 1494
+},
+{
+"path": "ehunter/locus/LocusAligner.cpp",
+"type": "blob",
+"size": 3030
+},
+{
+"path": "ehunter/locus/LocusAligner.hh",
+"type": "blob",
+"size": 1869
+},
+{
+"path": "ehunter/locus/LocusAlignerTest.cpp",
+"type": "blob",
+"size": 3662
+},
+{
+"path": "ehunter/locus/LocusAnalyzer.cpp",
+"type": "blob",
+"size": 6720
+},
+{
+"path": "ehunter/locus/LocusAnalyzer.hh",
+"type": "blob",
+"size": 3205
+},
+{
+"path": "ehunter/locus/LocusAnalyzerTest.cpp",
+"type": "blob",
+"size": 2875
+},
+{
+"path": "ehunter/locus/LocusAnalyzerUtil.cpp",
+"type": "blob",
+"size": 4702
+},
+{
+"path": "ehunter/locus/LocusAnalyzerUtil.hh",
+"type": "blob",
+"size": 1210
+},
+{
+"path": "ehunter/locus/LocusFindings.cpp",
+"type": "blob",
+"size": 740
+},
+{
+"path": "ehunter/locus/LocusFindings.hh",
+"type": "blob",
+"size": 1295
+},
+{
+"path": "ehunter/locus/LocusSpecification.cpp",
+"type": "blob",
+"size": 2880
+},
+{
+"path": "ehunter/locus/LocusSpecification.hh",
+"type": "blob",
+"size": 3589
+},
+{
+"path": "ehunter/locus/RepeatAnalyzer.cpp",
+"type": "blob",
+"size": 3885
+},
+{
+"path": "ehunter/locus/RepeatAnalyzer.hh",
+"type": "blob",
+"size": 2336
+},
+{
+"path": "ehunter/locus/SmallVariantAnalyzer.cpp",
+"type": "blob",
+"size": 5292
+},
+{
+"path": "ehunter/locus/SmallVariantAnalyzer.hh",
+"type": "blob",
+"size": 2470
+},
+{
+"path": "ehunter/locus/VariantAnalyzer.cpp",
+"type": "blob",
+"size": 742
+},
+{
+"path": "ehunter/locus/VariantAnalyzer.hh",
+"type": "blob",
+"size": 2077
+},
+{
+"path": "ehunter/locus/VariantFindings.cpp",
+"type": "blob",
+"size": 1659
+},
+{
+"path": "ehunter/locus/VariantFindings.hh",
+"type": "blob",
+"size": 5041
+},
+{
+"path": "ehunter/locus/VariantSpecification.cpp",
+"type": "blob",
+"size": 3587
+},
+{
+"path": "ehunter/locus/VariantSpecification.hh",
+"type": "blob",
+"size": 3232
+},
+{
+"path": "ehunter/sample",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/sample/AnalyzerFinder.cpp",
+"type": "blob",
+"size": 8598
+},
+{
+"path": "ehunter/sample/AnalyzerFinder.hh",
+"type": "blob",
+"size": 2619
+},
+{
+"path": "ehunter/sample/GenomeMask.cpp",
+"type": "blob",
+"size": 1681
+},
+{
+"path": "ehunter/sample/GenomeMask.hh",
+"type": "blob",
+"size": 1119
+},
+{
+"path": "ehunter/sample/GenomeQueryCollection.cpp",
+"type": "blob",
+"size": 1678
+},
+{
+"path": "ehunter/sample/GenomeQueryCollection.hh",
+"type": "blob",
+"size": 1146
+},
+{
+"path": "ehunter/sample/HtsFileSeeker.cpp",
+"type": "blob",
+"size": 3711
+},
+{
+"path": "ehunter/sample/HtsFileSeeker.hh",
+"type": "blob",
+"size": 2149
+},
+{
+"path": "ehunter/sample/HtsFileStreamer.cpp",
+"type": "blob",
+"size": 3446
+},
+{
+"path": "ehunter/sample/HtsFileStreamer.hh",
+"type": "blob",
+"size": 2751
+},
+{
+"path": "ehunter/sample/HtsSeekingSampleAnalysis.cpp",
+"type": "blob",
+"size": 13164
+},
+{
+"path": "ehunter/sample/HtsSeekingSampleAnalysis.hh",
+"type": "blob",
+"size": 1191
+},
+{
+"path": "ehunter/sample/HtsStreamingReadPairQueue.cpp",
+"type": "blob",
+"size": 2185
+},
+{
+"path": "ehunter/sample/HtsStreamingReadPairQueue.hh",
+"type": "blob",
+"size": 3516
+},
+{
+"path": "ehunter/sample/HtsStreamingSampleAnalysis.cpp",
+"type": "blob",
+"size": 13235
+},
+{
+"path": "ehunter/sample/HtsStreamingSampleAnalysis.hh",
+"type": "blob",
+"size": 1215
+},
+{
+"path": "ehunter/sample/IndexBasedDepthEstimate.cpp",
+"type": "blob",
+"size": 3201
+},
+{
+"path": "ehunter/sample/IndexBasedDepthEstimate.hh",
+"type": "blob",
+"size": 845
+},
+{
+"path": "ehunter/sample/MateExtractor.cpp",
+"type": "blob",
+"size": 4279
+},
+{
+"path": "ehunter/sample/MateExtractor.hh",
+"type": "blob",
+"size": 1583
+},
+{
+"path": "ehunter/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/tests/AlignMatrixTest.cpp",
+"type": "blob",
+"size": 5118
+},
+{
+"path": "ehunter/tests/AlignmentClassifierTest.cpp",
+"type": "blob",
+"size": 5959
+},
+{
+"path": "ehunter/tests/AlignmentSummaryTest.cpp",
+"type": "blob",
+"size": 2596
+},
+{
+"path": "ehunter/tests/AlleleCheckerTest.cpp",
+"type": "blob",
+"size": 2615
+},
+{
+"path": "ehunter/tests/ClassifierOfAlignmentsToVariantTest.cpp",
+"type": "blob",
+"size": 3250
+},
+{
+"path": "ehunter/tests/ConcurrentQueueTest.cpp",
+"type": "blob",
+"size": 1082
+},
+{
+"path": "ehunter/tests/CountTableTest.cpp",
+"type": "blob",
+"size": 2527
+},
+{
+"path": "ehunter/tests/FragLogliksTest.cpp",
+"type": "blob",
+"size": 3086
+},
+{
+"path": "ehunter/tests/GenomeMaskTest.cpp",
+"type": "blob",
+"size": 1993
+},
+{
+"path": "ehunter/tests/GenomicRegionTest.cpp",
+"type": "blob",
+"size": 3363
+},
+{
+"path": "ehunter/tests/GraphAlignmentOperationsTest.cpp",
+"type": "blob",
+"size": 4419
+},
+{
+"path": "ehunter/tests/GraphBlueprintTest.cpp",
+"type": "blob",
+"size": 2106
+},
+{
+"path": "ehunter/tests/GreedyAlignmentIntersectorTest.cpp",
+"type": "blob",
+"size": 4163
+},
+{
+"path": "ehunter/tests/HighQualityBaseRunFinderTest.cpp",
+"type": "blob",
+"size": 5093
+},
+{
+"path": "ehunter/tests/LocusStatsTest.cpp",
+"type": "blob",
+"size": 2558
+},
+{
+"path": "ehunter/tests/ReadSupportCalculatorTest.cpp",
+"type": "blob",
+"size": 2278
+},
+{
+"path": "ehunter/tests/ReadTest.cpp",
+"type": "blob",
+"size": 1373
+},
+{
+"path": "ehunter/tests/RegionGraphTest.cpp",
+"type": "blob",
+"size": 2118
+},
+{
+"path": "ehunter/tests/RepeatAnalyzerTest.cpp",
+"type": "blob",
+"size": 2493
+},
+{
+"path": "ehunter/tests/RepeatGenotypeTest.cpp",
+"type": "blob",
+"size": 2965
+},
+{
+"path": "ehunter/tests/SmallVariantGenotyperTest.cpp",
+"type": "blob",
+"size": 1770
+},
+{
+"path": "ehunter/tests/SoftclippingAlignerTest.cpp",
+"type": "blob",
+"size": 3546
+},
+{
+"path": "ehunter/tests/StrAlignTest.cpp",
+"type": "blob",
+"size": 8374
+},
+{
+"path": "ehunter/tests/StrGenotyperTest.cpp",
+"type": "blob",
+"size": 3361
+},
+{
+"path": "ehunter/tests/UnitTests.cpp",
+"type": "blob",
+"size": 838
+},
+{
+"path": "ehunter/tests/WeightedPurityCalculatorTest.cpp",
+"type": "blob",
+"size": 1449
+},
+{
+"path": "ehunter/thirdparty",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/ctpl",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/ctpl/README.md",
+"type": "blob",
+"size": 140
+},
+{
+"path": "ehunter/thirdparty/ctpl/ctpl-0.0.2",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/ctpl/ctpl-0.0.2/LICENSE",
+"type": "blob",
+"size": 10737
+},
+{
+"path": "ehunter/thirdparty/ctpl/ctpl-0.0.2/README.md",
+"type": "blob",
+"size": 2467
+},
+{
+"path": "ehunter/thirdparty/ctpl/ctpl-0.0.2/ctpl.h",
+"type": "blob",
+"size": 9404
+},
+{
+"path": "ehunter/thirdparty/ctpl/ctpl-0.0.2/ctpl_stl.h",
+"type": "blob",
+"size": 10061
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/CMakeLists.txt",
+"type": "blob",
+"size": 2539
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/Dockerfile",
+"type": "blob",
+"size": 959
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/LICENSE.txt",
+"type": "blob",
+"size": 11358
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/README.md",
+"type": "blob",
+"size": 1264
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/RELEASES.md",
+"type": "blob",
+"size": 2743
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/cmake",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/cmake/GetGoogleTest.cmake",
+"type": "blob",
+"size": 1925
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/docs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/docs/alignment.md",
+"type": "blob",
+"size": 1895
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/docs/development.md",
+"type": "blob",
+"size": 1520
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/docs/graph.md",
+"type": "blob",
+"size": 3000
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/docs/path_families.md",
+"type": "blob",
+"size": 3248
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/docs/paths.md",
+"type": "blob",
+"size": 3508
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/docs/query_and_reference_sequences.md",
+"type": "blob",
+"size": 2772
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/googletest-release-1.10.0.tar.gz",
+"type": "blob",
+"size": 904349
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/include",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/include/nlohmann",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/include/nlohmann/json.hpp",
+"type": "blob",
+"size": 926233
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/README.md",
+"type": "blob",
+"size": 121
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/LICENSE",
+"type": "blob",
+"size": 1860
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp/spp.h",
+"type": "blob",
+"size": 166904
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp/spp_config.h",
+"type": "blob",
+"size": 25399
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp/spp_dlalloc.h",
+"type": "blob",
+"size": 129989
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp/spp_memory.h",
+"type": "blob",
+"size": 5265
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp/spp_smartptr.h",
+"type": "blob",
+"size": 2081
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp/spp_stdint.h",
+"type": "blob",
+"size": 356
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp/spp_timer.h",
+"type": "blob",
+"size": 2102
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp/spp_traits.h",
+"type": "blob",
+"size": 5584
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/external/sparsepp/sparsepp-e40d7a0/sparsepp/spp_utils.h",
+"type": "blob",
+"size": 14871
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/DagAlignerAffine.hh",
+"type": "blob",
+"size": 14776
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/GappedAligner.hh",
+"type": "blob",
+"size": 6542
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/GraphAligner.hh",
+"type": "blob",
+"size": 1010
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/GraphAlignment.hh",
+"type": "blob",
+"size": 3241
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/GraphAlignmentOperations.hh",
+"type": "blob",
+"size": 2866
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/KmerIndex.hh",
+"type": "blob",
+"size": 2080
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/KmerIndexOperations.hh",
+"type": "blob",
+"size": 1404
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/LinearAlignment.hh",
+"type": "blob",
+"size": 3279
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/LinearAlignmentOperations.hh",
+"type": "blob",
+"size": 3191
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/LinearAlignmentParameters.hh",
+"type": "blob",
+"size": 1538
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/Operation.hh",
+"type": "blob",
+"size": 1774
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/OperationOperations.hh",
+"type": "blob",
+"size": 1426
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/PinnedAligner.hh",
+"type": "blob",
+"size": 2182
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/PinnedDagAligner.hh",
+"type": "blob",
+"size": 24335
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/PinnedPathAligner.hh",
+"type": "blob",
+"size": 3816
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/TracebackMatrix.hh",
+"type": "blob",
+"size": 2955
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/TracebackRunner.hh",
+"type": "blob",
+"size": 1764
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrix.hh",
+"type": "blob",
+"size": 9594
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrixVectorized.hh",
+"type": "blob",
+"size": 11651
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/BaseMatchingPenaltyMatrix.hh",
+"type": "blob",
+"size": 3851
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/Details.hh",
+"type": "blob",
+"size": 17917
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/PenaltyMatrix.hh",
+"type": "blob",
+"size": 8349
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/Graph.hh",
+"type": "blob",
+"size": 4508
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/GraphBuilders.hh",
+"type": "blob",
+"size": 3932
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/GraphCoordinates.hh",
+"type": "blob",
+"size": 2823
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/GraphOperations.hh",
+"type": "blob",
+"size": 1037
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/GraphReferenceMapping.hh",
+"type": "blob",
+"size": 4215
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/Path.hh",
+"type": "blob",
+"size": 6853
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/PathFamily.hh",
+"type": "blob",
+"size": 2186
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/PathFamilyOperations.hh",
+"type": "blob",
+"size": 3122
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/PathOperations.hh",
+"type": "blob",
+"size": 5557
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphio",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphio/AlignmentWriter.hh",
+"type": "blob",
+"size": 1583
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphio/GraphJson.hh",
+"type": "blob",
+"size": 1725
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphutils",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphutils/BaseMatching.hh",
+"type": "blob",
+"size": 7117
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphutils/DepthTest.hh",
+"type": "blob",
+"size": 1778
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphutils/IntervalBuffer.hh",
+"type": "blob",
+"size": 2055
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphutils/IntervalList.hh",
+"type": "blob",
+"size": 7006
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphutils/KmerEncoding.hh",
+"type": "blob",
+"size": 2840
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphutils/PairHashing.hh",
+"type": "blob",
+"size": 1346
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphutils/SequenceOperations.hh",
+"type": "blob",
+"size": 2254
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/GappedAligner.cpp",
+"type": "blob",
+"size": 12780
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/GraphAlignment.cpp",
+"type": "blob",
+"size": 7243
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/GraphAlignmentOperations.cpp",
+"type": "blob",
+"size": 8273
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/KmerIndex.cpp",
+"type": "blob",
+"size": 10377
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/KmerIndexOperations.cpp",
+"type": "blob",
+"size": 3329
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/LinearAlignment.cpp",
+"type": "blob",
+"size": 6071
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/LinearAlignmentOperations.cpp",
+"type": "blob",
+"size": 7907
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/Operation.cpp",
+"type": "blob",
+"size": 3297
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/OperationOperations.cpp",
+"type": "blob",
+"size": 3687
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/PinnedAligner.cpp",
+"type": "blob",
+"size": 4408
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/TracebackMatrix.cpp",
+"type": "blob",
+"size": 5147
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/TracebackRunner.cpp",
+"type": "blob",
+"size": 3769
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/dagAligner",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/dagAligner/PenaltyMatrix.cpp",
+"type": "blob",
+"size": 1962
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/Graph.cpp",
+"type": "blob",
+"size": 4877
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/GraphBuilders.cpp",
+"type": "blob",
+"size": 3500
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/GraphCoordinates.cpp",
+"type": "blob",
+"size": 7096
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/GraphOperations.cpp",
+"type": "blob",
+"size": 1887
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/GraphReferenceMapping.cpp",
+"type": "blob",
+"size": 4396
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/Path.cpp",
+"type": "blob",
+"size": 12810
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/PathFamily.cpp",
+"type": "blob",
+"size": 3638
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/PathFamilyOperations.cpp",
+"type": "blob",
+"size": 6363
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/PathOperations.cpp",
+"type": "blob",
+"size": 26200
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphio",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphio/AlignmentWriter.cpp",
+"type": "blob",
+"size": 1150
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphio/GraphJson.cpp",
+"type": "blob",
+"size": 4647
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphutils",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphutils/DepthTest.cpp",
+"type": "blob",
+"size": 1614
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphutils/IntervalBuffer.cpp",
+"type": "blob",
+"size": 4026
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphutils/KmerEncoding.cpp",
+"type": "blob",
+"size": 833
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphutils/SequenceOperations.cpp",
+"type": "blob",
+"size": 5330
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/sh",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/sh/check-format.sh",
+"type": "blob",
+"size": 568
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/sh/docker-build.sh",
+"type": "blob",
+"size": 1804
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/sh/docker-check-format.sh",
+"type": "blob",
+"size": 545
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/sh/docker-cppcheck.sh",
+"type": "blob",
+"size": 834
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/sh/docker-format-everything.sh",
+"type": "blob",
+"size": 549
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/sh/format-everything.sh",
+"type": "blob",
+"size": 926
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/src/sh/valgrind-check.py",
+"type": "blob",
+"size": 544
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/BaseMatchingTest.cpp",
+"type": "blob",
+"size": 1813
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/CMakeLists.txt",
+"type": "blob",
+"size": 5519
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/DagAlignerTest.cpp",
+"type": "blob",
+"size": 25285
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/DepthTestTest.cpp",
+"type": "blob",
+"size": 1210
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GappedAlignerTest.cpp",
+"type": "blob",
+"size": 12478
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphAlignmentOperationsTest.cpp",
+"type": "blob",
+"size": 5755
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphAlignmentTest.cpp",
+"type": "blob",
+"size": 8913
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphBuildersTest.cpp",
+"type": "blob",
+"size": 4655
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphCoordinatesTest.cpp",
+"type": "blob",
+"size": 3894
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphJsonTest.cpp",
+"type": "blob",
+"size": 5385
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphOperationsTest.cpp",
+"type": "blob",
+"size": 3055
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphReferenceMappingTest.cpp",
+"type": "blob",
+"size": 2372
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphTest.cpp",
+"type": "blob",
+"size": 4590
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/IntervalBufferTest.cpp",
+"type": "blob",
+"size": 7179
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/IntervalListTest.cpp",
+"type": "blob",
+"size": 7392
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/KmerEncodingTest.cpp",
+"type": "blob",
+"size": 1071
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/KmerIndexOperationsTest.cpp",
+"type": "blob",
+"size": 1393
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/KmerIndexTest.cpp",
+"type": "blob",
+"size": 5342
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/LinearAlignmentOperationsTest.cpp",
+"type": "blob",
+"size": 7048
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/LinearAlignmentTest.cpp",
+"type": "blob",
+"size": 3814
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/OperationOperationsTest.cpp",
+"type": "blob",
+"size": 5308
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/OperationTest.cpp",
+"type": "blob",
+"size": 2971
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/PathFamilyOperationsTest.cpp",
+"type": "blob",
+"size": 7625
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/PathFamilyTest.cpp",
+"type": "blob",
+"size": 3894
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/PathOperationsTest.cpp",
+"type": "blob",
+"size": 21914
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/PathTest.cpp",
+"type": "blob",
+"size": 14939
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/PinnedAlignerTest.cpp",
+"type": "blob",
+"size": 3061
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/PinnedDagAlignerTest.cpp",
+"type": "blob",
+"size": 2334
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/SequenceOperationsTest.cpp",
+"type": "blob",
+"size": 3352
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/TracebackMatrixTest.cpp",
+"type": "blob",
+"size": 2592
+},
+{
+"path": "ehunter/thirdparty/graph-tools-master-f421f4c/tests/TracebackRunnerTest.cpp",
+"type": "blob",
+"size": 2338
+},
+{
+"path": "ehunter/thirdparty/intervaltree",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/intervaltree/IntervalTree.h",
+"type": "blob",
+"size": 11713
+},
+{
+"path": "ehunter/thirdparty/json",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/thirdparty/json/json.hpp",
+"type": "blob",
+"size": 926233
+},
+{
+"path": "ehunter/tools",
+"type": "tree",
+"size": 0
+},
+{
+"path": "ehunter/tools/README.md",
+"type": "blob",
+"size": 333
+},
+{
+"path": "ehunter/tools/clang-format",
+"type": "blob",
+"size": 2162520
+},
+{
+"path": "ehunter/tools/updateSourceFormatting.bash",
+"type": "blob",
+"size": 566
+},
+{
+"path": "example",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/input",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/input/reference.fa",
+"type": "blob",
+"size": 4016
+},
+{
+"path": "example/input/variants.bam",
+"type": "blob",
+"size": 158779
+},
+{
+"path": "example/input/variants.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "example/input/variants.json",
+"type": "blob",
+"size": 277
+},
+{
+"path": "example/output",
+"type": "tree",
+"size": 0
+},
+{
+"path": "example/output/repeats.json",
+"type": "blob",
+"size": 1341
+},
+{
+"path": "example/output/repeats.vcf",
+"type": "blob",
+"size": 2139
+},
+{
+"path": "example/output/repeats_realigned.bam",
+"type": "blob",
+"size": 75248
+},
+{
+"path": "example/run.sh",
+"type": "blob",
+"size": 182
+},
+{
+"path": "tools",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tools/README.md",
+"type": "blob",
+"size": 71
+},
+{
+"path": "tools/docker",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tools/docker/debug",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tools/docker/debug/mallinfo2",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tools/docker/debug/mallinfo2/Dockerfile",
+"type": "blob",
+"size": 277
+},
+{
+"path": "tools/docker/debug/mallinfo2/README.md",
+"type": "blob",
+"size": 406
+},
+{
+"path": "tools/docker/debug/mallinfo2/setup-docker-image-and-build.bash",
+"type": "blob",
+"size": 540
+},
+{
+"path": "variant_catalog",
+"type": "tree",
+"size": 0
+},
+{
+"path": "variant_catalog/grch37",
+"type": "tree",
+"size": 0
+},
+{
+"path": "variant_catalog/grch37/variant_catalog.json",
+"type": "blob",
+"size": 7873
+},
+{
+"path": "variant_catalog/grch38",
+"type": "tree",
+"size": 0
+},
+{
+"path": "variant_catalog/grch38/variant_catalog.json",
+"type": "blob",
+"size": 16623
+},
+{
+"path": "variant_catalog/hg19",
+"type": "tree",
+"size": 0
+},
+{
+"path": "variant_catalog/hg19/variant_catalog.json",
+"type": "blob",
+"size": 8131
+},
+{
+"path": "variant_catalog/hg38",
+"type": "tree",
+"size": 0
+},
+{
+"path": "variant_catalog/hg38/variant_catalog.json",
+"type": "blob",
+"size": 17604
+}
+]
+}

@@ -378,6 +378,52 @@ repo trae Dockerfile, se construye ese (`environment.source: repository`).
 Snapshots de los 5 repos del catálogo en `harness/testdata/repos/` para tests
 sin red (`harness/tests/test_detect_recipe.py`, `test_propose_manifest.py`).
 
+### Qué lee el motor además del README (fase 2)
+
+`detect_recipe.gather()` lee, en el commit fijado: el árbol, el README, los documentos del repo que el
+README enlaza (y las páginas de `docs/`, hasta dos niveles, primero las de uso), las páginas de la wiki que
+enlaza (y su barra lateral), los archivos de build y packaging (`files/`), los archivos de loci que el repo
+trae (catálogos, BED de regiones), las versiones del paquete en Bioconda y los assets del release del tag.
+Cada comando lleva el archivo y la línea donde se leyó, y la evidencia cita ese archivo (`kind: doc` o
+`wiki`; una wiki no está versionada con el código y el informe lo dice).
+
+- **Instalación**: Dockerfile del repo; si la documentación manda a bajar el binario del release y el tag
+  tiene uno para Linux x86-64, ese binario (es el build del autor de ese mismo commit); si no, el build del
+  commit: conda (con `make`/`pip` encima cuando la doc lo pide), pip, cmake fuera del árbol (también en
+  `source/`), autotools, make (también en `src/`), cargo, R, Nim, o el `install.sh` que la doc manda correr.
+  Los ejecutables que el build deja se ponen en el PATH. Un build que clona por SSH se hace por HTTPS, y el
+  informe lo avisa. Bioconda cuenta como documentado solo si la doc lo dice (comando, `bioconda::`, badge o
+  enlace); si no, queda como dato en `registry`.
+- **Comando**: el programa propio primero (nombres del árbol y los ejecutables que declara el packaging);
+  nada de `--help`, helpers (`-merge`, `plot`, `convert`) ni líneas de usage de argparse; el subcomando de
+  análisis (`call`, `genotype`); el modo lecturas antes que el de ensamblado; el que lee el tipo de dato que
+  STRhub le va a dar. Si solo hay `--help` documentado, no hay comando. Si el comando lee un archivo que
+  escribe un paso anterior del mismo documento (`strling extract` → `.bin` → `strling call`), se corren los dos.
+- **Reescritura**: `<descripciones>`, variables `$sample`, opcionales `[...]` (se omiten, salvo los loci),
+  `path/to/`, listas `a.bam,...`, `./tool` cuando el build lo deja en otro lado, archivos de exclusión (se
+  quitan), catálogos del repo (el de hg38). Si el BAM no tiene read group y la doc documenta `--bam-samps`,
+  se usa. Todo queda en `caveats`.
+- **Antes de correr**: si los loci del catálogo del repo no caen en el panel del dataset
+  (`loci_outside_panel`) o el comando lee un archivo que nadie tiene (`documented_file_missing`), el
+  veredicto es *Could not be determined* con esa razón, no una corrida que falla.
+- **Entrada**: lo que dice el README; si no dice nada, los documentos; si tampoco, lo que toma el comando.
+  PacBio HiFi, VCF y señal cruda son tipos sin dataset: el ensayo lo dice en vez de darle lecturas de Illumina.
+
+### Biblioteca de regiones: formato `motif`
+
+`datasets/<tipo>/regions/motif.bed` (`chrom start end motif`) es el formato de LongTR, straglr, NanoRepeat y
+strkit, que leen el motivo en la columna 4. `ont-bam-hg38` tiene biblioteca propia: los 20 loci CODIS del
+panel Illumina que caen dentro de los slices ONT (`build_regions_library.py --derived-only`, sin genoma).
+
+### Benchmark de recetas
+
+`harness/testdata/benchmark/`: 23 herramientas de STR fijadas a un commit (las 5 del catálogo y 18 que el
+motor no vio al escribirse), con su captura (`snapshot_repo.py --benchmark`) y su verdad de referencia
+(`expected.json`, leída a mano de la documentación, con cita). `python harness/benchmark_recipes.py` da la
+tabla; `harness/tests/test_benchmark.py` no deja bajar ningún total. Si un cambio sube uno, se sube el piso
+en el mismo commit. Línea de base (motor antes de la fase 2, 18 nuevas): install 10, input 12, program 3,
+clean 7, honest 15, viable 0.
+
 ### Compuerta "Reproduces own example"
 
 Bloque `example` del manifest: el comando del README, tal cual, corrido dentro

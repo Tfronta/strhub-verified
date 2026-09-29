@@ -303,7 +303,8 @@ jobs:
           TRIAL_REF_LABEL: ${{ github.event.inputs.ref_label }}
         run: |
           mkdir -p work
-          python harness/detect_recipe.py "$TRIAL_REPO" "$TRIAL_REF" --json recipe_proposal.json
+          python harness/detect_recipe.py "$TRIAL_REPO" "$TRIAL_REF" --tag "$TRIAL_REF_LABEL" \
+            --json recipe_proposal.json
           python harness/propose_manifest.py recipe_proposal.json --slug "$TOOL" \
             --ref-label "$TRIAL_REF_LABEL" \
             --out-dir work/proposal --recipe-b64-out work/recipe.b64

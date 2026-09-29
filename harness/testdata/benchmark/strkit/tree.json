@@ -1,0 +1,611 @@
+{
+"repo": "https://github.com/davidlougheed/strkit",
+"ref": "da09c8180fb19a3268fd3af8ad0487989b71f6b3",
+"tag": "v0.24.3",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"docs/caller_catalog.md",
+"docs/caller_usage.md",
+"docs/output_formats.md",
+"docs/trio_analyses.md",
+"docs/ploidy_configuration.md"
+],
+"tree": [
+{
+"path": ".github",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".github/workflows",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".github/workflows/publish-docker.yml",
+"type": "blob",
+"size": 1041
+},
+{
+"path": ".github/workflows/release.yml",
+"type": "blob",
+"size": 628
+},
+{
+"path": ".github/workflows/test.yml",
+"type": "blob",
+"size": 597
+},
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 258
+},
+{
+"path": ".idea",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".idea/.gitignore",
+"type": "blob",
+"size": 47
+},
+{
+"path": ".idea/.name",
+"type": "blob",
+"size": 6
+},
+{
+"path": ".idea/csv-editor.xml",
+"type": "blob",
+"size": 477
+},
+{
+"path": ".idea/inspectionProfiles",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".idea/inspectionProfiles/Project_Default.xml",
+"type": "blob",
+"size": 1417
+},
+{
+"path": ".idea/inspectionProfiles/profiles_settings.xml",
+"type": "blob",
+"size": 228
+},
+{
+"path": ".idea/jsLibraryMappings.xml",
+"type": "blob",
+"size": 213
+},
+{
+"path": ".idea/misc.xml",
+"type": "blob",
+"size": 523
+},
+{
+"path": ".idea/modules.xml",
+"type": "blob",
+"size": 264
+},
+{
+"path": ".idea/strkit.iml",
+"type": "blob",
+"size": 908
+},
+{
+"path": ".idea/vcs.xml",
+"type": "blob",
+"size": 180
+},
+{
+"path": "Dockerfile",
+"type": "blob",
+"size": 346
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 35149
+},
+{
+"path": "MANIFEST.in",
+"type": "blob",
+"size": 136
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 18420
+},
+{
+"path": "catalogs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "catalogs/pathogenic_assoc.hg38.tsv",
+"type": "blob",
+"size": 4387
+},
+{
+"path": "docs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/caller_catalog.md",
+"type": "blob",
+"size": 5245
+},
+{
+"path": "docs/caller_usage.md",
+"type": "blob",
+"size": 9267
+},
+{
+"path": "docs/images",
+"type": "tree",
+"size": 0
+},
+{
+"path": "docs/images/browser_hist.png",
+"type": "blob",
+"size": 1092835
+},
+{
+"path": "docs/images/browser_igv.png",
+"type": "blob",
+"size": 1039105
+},
+{
+"path": "docs/images/call_method_flow.png",
+"type": "blob",
+"size": 665186
+},
+{
+"path": "docs/images/strkit_logo_open_graph.png",
+"type": "blob",
+"size": 169253
+},
+{
+"path": "docs/images/strkit_logo_small.png",
+"type": "blob",
+"size": 241282
+},
+{
+"path": "docs/output_formats.md",
+"type": "blob",
+"size": 7115
+},
+{
+"path": "docs/ploidy_configuration.md",
+"type": "blob",
+"size": 678
+},
+{
+"path": "docs/trio_analyses.md",
+"type": "blob",
+"size": 1941
+},
+{
+"path": "pyproject.toml",
+"type": "blob",
+"size": 98
+},
+{
+"path": "requirements.txt",
+"type": "blob",
+"size": 743
+},
+{
+"path": "setup.py",
+"type": "blob",
+"size": 1618
+},
+{
+"path": "strkit",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/VERSION",
+"type": "blob",
+"size": 7
+},
+{
+"path": "strkit/__init__.py",
+"type": "blob",
+"size": 153
+},
+{
+"path": "strkit/call",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/call/__init__.py",
+"type": "blob",
+"size": 209
+},
+{
+"path": "strkit/call/align_matrix.py",
+"type": "blob",
+"size": 1300
+},
+{
+"path": "strkit/call/allele.py",
+"type": "blob",
+"size": 14293
+},
+{
+"path": "strkit/call/call_locus.py",
+"type": "blob",
+"size": 69274
+},
+{
+"path": "strkit/call/call_sample.py",
+"type": "blob",
+"size": 18710
+},
+{
+"path": "strkit/call/cigar.py",
+"type": "blob",
+"size": 355
+},
+{
+"path": "strkit/call/gmm.py",
+"type": "blob",
+"size": 3103
+},
+{
+"path": "strkit/call/loci.py",
+"type": "blob",
+"size": 8762
+},
+{
+"path": "strkit/call/non_daemonic_pool.py",
+"type": "blob",
+"size": 620
+},
+{
+"path": "strkit/call/output",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/call/output/__init__.py",
+"type": "blob",
+"size": 381
+},
+{
+"path": "strkit/call/output/json_report.py",
+"type": "blob",
+"size": 3810
+},
+{
+"path": "strkit/call/output/tsv.py",
+"type": "blob",
+"size": 1528
+},
+{
+"path": "strkit/call/output/vcf.py",
+"type": "blob",
+"size": 13687
+},
+{
+"path": "strkit/call/params.py",
+"type": "blob",
+"size": 8664
+},
+{
+"path": "strkit/call/realign.py",
+"type": "blob",
+"size": 4858
+},
+{
+"path": "strkit/call/repeats.py",
+"type": "blob",
+"size": 8427
+},
+{
+"path": "strkit/call/snvs.py",
+"type": "blob",
+"size": 6536
+},
+{
+"path": "strkit/call/types.py",
+"type": "blob",
+"size": 3634
+},
+{
+"path": "strkit/call/utils.py",
+"type": "blob",
+"size": 502
+},
+{
+"path": "strkit/catalog",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/catalog/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "strkit/catalog/combine.py",
+"type": "blob",
+"size": 969
+},
+{
+"path": "strkit/constants.py",
+"type": "blob",
+"size": 1340
+},
+{
+"path": "strkit/convert",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/convert/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "strkit/convert/_bed_4.py",
+"type": "blob",
+"size": 218
+},
+{
+"path": "strkit/convert/constants.py",
+"type": "blob",
+"size": 199
+},
+{
+"path": "strkit/convert/converter.py",
+"type": "blob",
+"size": 2248
+},
+{
+"path": "strkit/convert/expansionhunter.py",
+"type": "blob",
+"size": 506
+},
+{
+"path": "strkit/convert/gangstr.py",
+"type": "blob",
+"size": 267
+},
+{
+"path": "strkit/convert/hipstr.py",
+"type": "blob",
+"size": 283
+},
+{
+"path": "strkit/convert/trgt.py",
+"type": "blob",
+"size": 2568
+},
+{
+"path": "strkit/data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/data/ploidy_configs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/data/ploidy_configs/diploid_autosomes.json",
+"type": "blob",
+"size": 84
+},
+{
+"path": "strkit/data/ploidy_configs/diploid_xx.json",
+"type": "blob",
+"size": 76
+},
+{
+"path": "strkit/data/ploidy_configs/diploid_xy.json",
+"type": "blob",
+"size": 94
+},
+{
+"path": "strkit/data/ploidy_configs/haploid.json",
+"type": "blob",
+"size": 19
+},
+{
+"path": "strkit/entry.py",
+"type": "blob",
+"size": 27210
+},
+{
+"path": "strkit/exceptions.py",
+"type": "blob",
+"size": 130
+},
+{
+"path": "strkit/iupac.py",
+"type": "blob",
+"size": 1238
+},
+{
+"path": "strkit/json.py",
+"type": "blob",
+"size": 682
+},
+{
+"path": "strkit/logger.py",
+"type": "blob",
+"size": 865
+},
+{
+"path": "strkit/mi",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/mi/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "strkit/mi/base.py",
+"type": "blob",
+"size": 9153
+},
+{
+"path": "strkit/mi/expansionhunter.py",
+"type": "blob",
+"size": 3447
+},
+{
+"path": "strkit/mi/gangstr.py",
+"type": "blob",
+"size": 3072
+},
+{
+"path": "strkit/mi/generic_vcf.py",
+"type": "blob",
+"size": 4270
+},
+{
+"path": "strkit/mi/intervals.py",
+"type": "blob",
+"size": 4131
+},
+{
+"path": "strkit/mi/repeathmm.py",
+"type": "blob",
+"size": 3013
+},
+{
+"path": "strkit/mi/result.py",
+"type": "blob",
+"size": 35524
+},
+{
+"path": "strkit/mi/straglr.py",
+"type": "blob",
+"size": 3489
+},
+{
+"path": "strkit/mi/strkit.py",
+"type": "blob",
+"size": 13410
+},
+{
+"path": "strkit/mi/tandem_genotypes.py",
+"type": "blob",
+"size": 2518
+},
+{
+"path": "strkit/mi/trgt.py",
+"type": "blob",
+"size": 4480
+},
+{
+"path": "strkit/mi/vcf_utils.py",
+"type": "blob",
+"size": 575
+},
+{
+"path": "strkit/ploidy.py",
+"type": "blob",
+"size": 2730
+},
+{
+"path": "strkit/utils.py",
+"type": "blob",
+"size": 1578
+},
+{
+"path": "strkit/viz",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/viz/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "strkit/viz/server.py",
+"type": "blob",
+"size": 2119
+},
+{
+"path": "strkit/viz/static",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/viz/static/logo.png",
+"type": "blob",
+"size": 241282
+},
+{
+"path": "strkit/viz/templates",
+"type": "tree",
+"size": 0
+},
+{
+"path": "strkit/viz/templates/browser.html",
+"type": "blob",
+"size": 37948
+},
+{
+"path": "tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/data/test_loci.bed",
+"type": "blob",
+"size": 69
+},
+{
+"path": "tests/test_caller_loci_fns.py",
+"type": "blob",
+"size": 1395
+},
+{
+"path": "tests/test_caller_utils.py",
+"type": "blob",
+"size": 798
+},
+{
+"path": "tests/test_iupac.py",
+"type": "blob",
+"size": 530
+},
+{
+"path": "tests/test_mi_intervals.py",
+"type": "blob",
+"size": 1094
+},
+{
+"path": "tests/test_ploidy.py",
+"type": "blob",
+"size": 1568
+},
+{
+"path": "tests/test_utils.py",
+"type": "blob",
+"size": 265
+}
+]
+}

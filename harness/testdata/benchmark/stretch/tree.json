@@ -1,0 +1,241 @@
+{
+"repo": "https://github.com/Oshlack/STRetch",
+"ref": "ce74895ad7b469a43972c9571009fea8cb1fe39c",
+"tag": "v0.4.0",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"wiki/Home",
+"wiki/_Sidebar",
+"wiki/Installing-STRetch",
+"wiki/Running-STRetch",
+"wiki/Output-files"
+],
+"tree": [
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 136
+},
+{
+"path": ".testing",
+"type": "tree",
+"size": 0
+},
+{
+"path": ".testing/STRs.benchmark.tsv",
+"type": "blob",
+"size": 424
+},
+{
+"path": ".testing/install-ci.sh",
+"type": "blob",
+"size": 8069
+},
+{
+"path": ".travis.yml",
+"type": "blob",
+"size": 804
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 1072
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 1162
+},
+{
+"path": "environment.yml",
+"type": "blob",
+"size": 294
+},
+{
+"path": "install.sh",
+"type": "blob",
+"size": 7917
+},
+{
+"path": "pipelines",
+"type": "tree",
+"size": 0
+},
+{
+"path": "pipelines/STRetch_exome_bam_pipeline.groovy",
+"type": "blob",
+"size": 1041
+},
+{
+"path": "pipelines/STRetch_exome_pipeline.groovy",
+"type": "blob",
+"size": 494
+},
+{
+"path": "pipelines/STRetch_wgs_bam_pipeline.groovy",
+"type": "blob",
+"size": 1086
+},
+{
+"path": "pipelines/STRetch_wgs_pipeline.groovy",
+"type": "blob",
+"size": 458
+},
+{
+"path": "pipelines/config-examples",
+"type": "tree",
+"size": 0
+},
+{
+"path": "pipelines/config-examples/bpipe.config_meerkat",
+"type": "blob",
+"size": 159
+},
+{
+"path": "pipelines/config-examples/bpipe.config_template",
+"type": "blob",
+"size": 347
+},
+{
+"path": "pipelines/config-examples/pipeline_config_broad.groovy",
+"type": "blob",
+"size": 634
+},
+{
+"path": "pipelines/config-examples/pipeline_config_meerkat.groovy",
+"type": "blob",
+"size": 739
+},
+{
+"path": "pipelines/config-examples/pipeline_config_template.groovy",
+"type": "blob",
+"size": 1273
+},
+{
+"path": "pipelines/extract_fastq.groovy",
+"type": "blob",
+"size": 635
+},
+{
+"path": "pipelines/pipeline_stages.groovy",
+"type": "blob",
+"size": 9638
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/STRcov.model.ATXN8_AGC.csv",
+"type": "blob",
+"size": 11871
+},
+{
+"path": "scripts/STRcov.model.csv",
+"type": "blob",
+"size": 11572
+},
+{
+"path": "scripts/TRFdat_to_bed.py",
+"type": "blob",
+"size": 1770
+},
+{
+"path": "scripts/decoy_STR.py",
+"type": "blob",
+"size": 3907
+},
+{
+"path": "scripts/dedupSTRannotation.R",
+"type": "blob",
+"size": 1558
+},
+{
+"path": "scripts/estimateSTR.py",
+"type": "blob",
+"size": 20266
+},
+{
+"path": "scripts/generate.STRcov.model.R",
+"type": "blob",
+"size": 4637
+},
+{
+"path": "scripts/identify_locus.py",
+"type": "blob",
+"size": 13384
+},
+{
+"path": "scripts/median.awk",
+"type": "blob",
+"size": 183
+},
+{
+"path": "scripts/mosdepth_mean_region.py",
+"type": "blob",
+"size": 1908
+},
+{
+"path": "scripts/mosdepth_median.py",
+"type": "blob",
+"size": 2029
+},
+{
+"path": "scripts/sort_fasta.py",
+"type": "blob",
+"size": 1324
+},
+{
+"path": "scripts/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/tests/test_data",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/tests/test_data/11_L001_R1.STRdecoy.bam",
+"type": "blob",
+"size": 627078
+},
+{
+"path": "scripts/tests/test_data/11_L001_R1.STRdecoy.bam.bai",
+"type": "blob",
+"size": 84720
+},
+{
+"path": "scripts/tests/test_data/49_L001_R1.STRdecoy.bam",
+"type": "blob",
+"size": 621037
+},
+{
+"path": "scripts/tests/test_data/49_L001_R1.STRdecoy.bam.bai",
+"type": "blob",
+"size": 83544
+},
+{
+"path": "scripts/tests/test_data/49_tests.STRdecoy.sam",
+"type": "blob",
+"size": 3237792
+},
+{
+"path": "scripts/tests/test_data/README.md",
+"type": "blob",
+"size": 315
+},
+{
+"path": "scripts/tests/test_decoySTR.py",
+"type": "blob",
+"size": 1976
+},
+{
+"path": "scripts/tests/test_identify_locus.py",
+"type": "blob",
+"size": 6140
+}
+]
+}

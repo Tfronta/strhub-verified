@@ -1,0 +1,20 @@
+{
+ "bioconda": {
+  "lobstr-code": null
+ },
+ "release": {
+  "tag": "v4.0.6",
+  "assets": [
+   {
+    "name": "lobSTR-4.0.6.tar.gz",
+    "size": 12620276,
+    "url": "https://github.com/mgymrek/lobstr-code/releases/download/v4.0.6/lobSTR-4.0.6.tar.gz"
+   },
+   {
+    "name": "lobSTR-bin-Linux-x86_64-4.0.6.tar.gz",
+    "size": 1206782,
+    "url": "https://github.com/mgymrek/lobstr-code/releases/download/v4.0.6/lobSTR-bin-Linux-x86_64-4.0.6.tar.gz"
+   }
+  ]
+ }
+}

@@ -1,0 +1,2008 @@
+{
+"repo": "https://github.com/Illumina/ExpansionHunterDenovo",
+"ref": "5a48ed8b6dceb8d772f702e239c5afede9d5108c",
+"tag": "v0.9.0",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [
+"documentation/00_Introduction.md",
+"LICENSE.txt",
+"COPYRIGHT.txt",
+"documentation/02_Installation.md",
+"documentation/03_Case_control_quickstart.md",
+"documentation/04_Outlier_quickstart.md",
+"documentation/01_Before_you_begin.md",
+"documentation/05_Computing_profiles.md",
+"documentation/06_Merging_profiles.md",
+"documentation/07_Case_control_analysis.md",
+"documentation/08_Annotation.md",
+"documentation/09_Repeat_prioritization_strategies.md"
+],
+"tree": [
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 30
+},
+{
+"path": "COPYRIGHT.txt",
+"type": "blob",
+"size": 9097
+},
+{
+"path": "LICENSE.txt",
+"type": "blob",
+"size": 11358
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 2953
+},
+{
+"path": "documentation",
+"type": "tree",
+"size": 0
+},
+{
+"path": "documentation/00_Introduction.md",
+"type": "blob",
+"size": 1105
+},
+{
+"path": "documentation/01_Before_you_begin.md",
+"type": "blob",
+"size": 1681
+},
+{
+"path": "documentation/02_Installation.md",
+"type": "blob",
+"size": 987
+},
+{
+"path": "documentation/03_Case_control_quickstart.md",
+"type": "blob",
+"size": 4677
+},
+{
+"path": "documentation/04_Outlier_quickstart.md",
+"type": "blob",
+"size": 3346
+},
+{
+"path": "documentation/05_Computing_profiles.md",
+"type": "blob",
+"size": 5755
+},
+{
+"path": "documentation/06_Merging_profiles.md",
+"type": "blob",
+"size": 4013
+},
+{
+"path": "documentation/07_Case_control_analysis.md",
+"type": "blob",
+"size": 1643
+},
+{
+"path": "documentation/08_Annotation.md",
+"type": "blob",
+"size": 3420
+},
+{
+"path": "documentation/09_Repeat_prioritization_strategies.md",
+"type": "blob",
+"size": 3468
+},
+{
+"path": "documentation/images",
+"type": "tree",
+"size": 0
+},
+{
+"path": "documentation/images/analysis-types.png",
+"type": "blob",
+"size": 55094
+},
+{
+"path": "documentation/images/str-profile.png",
+"type": "blob",
+"size": 31925
+},
+{
+"path": "documentation/images/workflow.png",
+"type": "blob",
+"size": 31262
+},
+{
+"path": "documentation/images/zscores-in-controls.png",
+"type": "blob",
+"size": 423082
+},
+{
+"path": "documentation/images/zscores-ranks-sizes.png",
+"type": "blob",
+"size": 567345
+},
+{
+"path": "examples",
+"type": "tree",
+"size": 0
+},
+{
+"path": "examples/case-control",
+"type": "tree",
+"size": 0
+},
+{
+"path": "examples/case-control/bamlets",
+"type": "tree",
+"size": 0
+},
+{
+"path": "examples/case-control/bamlets/sample1.bam",
+"type": "blob",
+"size": 66155
+},
+{
+"path": "examples/case-control/bamlets/sample1.bam.bai",
+"type": "blob",
+"size": 176
+},
+{
+"path": "examples/case-control/bamlets/sample2.bam",
+"type": "blob",
+"size": 67197
+},
+{
+"path": "examples/case-control/bamlets/sample2.bam.bai",
+"type": "blob",
+"size": 176
+},
+{
+"path": "examples/case-control/bamlets/sample3.bam",
+"type": "blob",
+"size": 67845
+},
+{
+"path": "examples/case-control/bamlets/sample3.bam.bai",
+"type": "blob",
+"size": 176
+},
+{
+"path": "examples/case-control/bamlets/sample4.bam",
+"type": "blob",
+"size": 64400
+},
+{
+"path": "examples/case-control/bamlets/sample4.bam.bai",
+"type": "blob",
+"size": 176
+},
+{
+"path": "examples/case-control/bamlets/sample5.bam",
+"type": "blob",
+"size": 63975
+},
+{
+"path": "examples/case-control/bamlets/sample5.bam.bai",
+"type": "blob",
+"size": 176
+},
+{
+"path": "examples/case-control/bamlets/sample6.bam",
+"type": "blob",
+"size": 64624
+},
+{
+"path": "examples/case-control/bamlets/sample6.bam.bai",
+"type": "blob",
+"size": 176
+},
+{
+"path": "examples/case-control/bamlets/sample7.bam",
+"type": "blob",
+"size": 64490
+},
+{
+"path": "examples/case-control/bamlets/sample7.bam.bai",
+"type": "blob",
+"size": 176
+},
+{
+"path": "examples/case-control/example_dataset.casecontrol_locus.tsv",
+"type": "blob",
+"size": 482
+},
+{
+"path": "examples/case-control/example_dataset.casecontrol_motif.tsv",
+"type": "blob",
+"size": 259
+},
+{
+"path": "examples/case-control/example_dataset.multisample_profile.json",
+"type": "blob",
+"size": 1653
+},
+{
+"path": "examples/case-control/manifest.tsv",
+"type": "blob",
+"size": 369
+},
+{
+"path": "examples/case-control/reference.fasta",
+"type": "blob",
+"size": 8028
+},
+{
+"path": "examples/case-control/reference.fasta.fai",
+"type": "blob",
+"size": 47
+},
+{
+"path": "examples/case-control/run-analysis.sh",
+"type": "blob",
+"size": 948
+},
+{
+"path": "examples/case-control/str-profiles",
+"type": "tree",
+"size": 0
+},
+{
+"path": "examples/case-control/str-profiles/sample1.locus.tsv",
+"type": "blob",
+"size": 128
+},
+{
+"path": "examples/case-control/str-profiles/sample1.motif.tsv",
+"type": "blob",
+"size": 56
+},
+{
+"path": "examples/case-control/str-profiles/sample1.str_profile.json",
+"type": "blob",
+"size": 429
+},
+{
+"path": "examples/case-control/str-profiles/sample2.locus.tsv",
+"type": "blob",
+"size": 131
+},
+{
+"path": "examples/case-control/str-profiles/sample2.motif.tsv",
+"type": "blob",
+"size": 67
+},
+{
+"path": "examples/case-control/str-profiles/sample2.str_profile.json",
+"type": "blob",
+"size": 431
+},
+{
+"path": "examples/case-control/str-profiles/sample3.locus.tsv",
+"type": "blob",
+"size": 131
+},
+{
+"path": "examples/case-control/str-profiles/sample3.motif.tsv",
+"type": "blob",
+"size": 67
+},
+{
+"path": "examples/case-control/str-profiles/sample3.str_profile.json",
+"type": "blob",
+"size": 430
+},
+{
+"path": "examples/case-control/str-profiles/sample4.locus.tsv",
+"type": "blob",
+"size": 128
+},
+{
+"path": "examples/case-control/str-profiles/sample4.motif.tsv",
+"type": "blob",
+"size": 54
+},
+{
+"path": "examples/case-control/str-profiles/sample4.str_profile.json",
+"type": "blob",
+"size": 428
+},
+{
+"path": "examples/case-control/str-profiles/sample5.locus.tsv",
+"type": "blob",
+"size": 128
+},
+{
+"path": "examples/case-control/str-profiles/sample5.motif.tsv",
+"type": "blob",
+"size": 54
+},
+{
+"path": "examples/case-control/str-profiles/sample5.str_profile.json",
+"type": "blob",
+"size": 429
+},
+{
+"path": "examples/case-control/str-profiles/sample6.locus.tsv",
+"type": "blob",
+"size": 99
+},
+{
+"path": "examples/case-control/str-profiles/sample6.motif.tsv",
+"type": "blob",
+"size": 54
+},
+{
+"path": "examples/case-control/str-profiles/sample6.str_profile.json",
+"type": "blob",
+"size": 244
+},
+{
+"path": "examples/case-control/str-profiles/sample7.locus.tsv",
+"type": "blob",
+"size": 99
+},
+{
+"path": "examples/case-control/str-profiles/sample7.motif.tsv",
+"type": "blob",
+"size": 54
+},
+{
+"path": "examples/case-control/str-profiles/sample7.str_profile.json",
+"type": "blob",
+"size": 244
+},
+{
+"path": "examples/outlier",
+"type": "tree",
+"size": 0
+},
+{
+"path": "examples/outlier/bamlets",
+"type": "tree",
+"size": 0
+},
+{
+"path": "examples/outlier/bamlets/sample1.bam",
+"type": "blob",
+"size": 33741
+},
+{
+"path": "examples/outlier/bamlets/sample1.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample10.bam",
+"type": "blob",
+"size": 32359
+},
+{
+"path": "examples/outlier/bamlets/sample10.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample11.bam",
+"type": "blob",
+"size": 32701
+},
+{
+"path": "examples/outlier/bamlets/sample11.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample12.bam",
+"type": "blob",
+"size": 32385
+},
+{
+"path": "examples/outlier/bamlets/sample12.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample13.bam",
+"type": "blob",
+"size": 32589
+},
+{
+"path": "examples/outlier/bamlets/sample13.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample14.bam",
+"type": "blob",
+"size": 32429
+},
+{
+"path": "examples/outlier/bamlets/sample14.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample15.bam",
+"type": "blob",
+"size": 33621
+},
+{
+"path": "examples/outlier/bamlets/sample15.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample16.bam",
+"type": "blob",
+"size": 34172
+},
+{
+"path": "examples/outlier/bamlets/sample16.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample17.bam",
+"type": "blob",
+"size": 33569
+},
+{
+"path": "examples/outlier/bamlets/sample17.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample18.bam",
+"type": "blob",
+"size": 33783
+},
+{
+"path": "examples/outlier/bamlets/sample18.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample19.bam",
+"type": "blob",
+"size": 34280
+},
+{
+"path": "examples/outlier/bamlets/sample19.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample2.bam",
+"type": "blob",
+"size": 33569
+},
+{
+"path": "examples/outlier/bamlets/sample2.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample20.bam",
+"type": "blob",
+"size": 33846
+},
+{
+"path": "examples/outlier/bamlets/sample20.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample21.bam",
+"type": "blob",
+"size": 33886
+},
+{
+"path": "examples/outlier/bamlets/sample21.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample3.bam",
+"type": "blob",
+"size": 33009
+},
+{
+"path": "examples/outlier/bamlets/sample3.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample4.bam",
+"type": "blob",
+"size": 33187
+},
+{
+"path": "examples/outlier/bamlets/sample4.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample5.bam",
+"type": "blob",
+"size": 33376
+},
+{
+"path": "examples/outlier/bamlets/sample5.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample6.bam",
+"type": "blob",
+"size": 33201
+},
+{
+"path": "examples/outlier/bamlets/sample6.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample7.bam",
+"type": "blob",
+"size": 33556
+},
+{
+"path": "examples/outlier/bamlets/sample7.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample8.bam",
+"type": "blob",
+"size": 33388
+},
+{
+"path": "examples/outlier/bamlets/sample8.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/bamlets/sample9.bam",
+"type": "blob",
+"size": 33502
+},
+{
+"path": "examples/outlier/bamlets/sample9.bam.bai",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/example_dataset.multisample_profile.json",
+"type": "blob",
+"size": 2444
+},
+{
+"path": "examples/outlier/example_dataset.outlier_locus.tsv",
+"type": "blob",
+"size": 199
+},
+{
+"path": "examples/outlier/example_dataset.outlier_motif.tsv",
+"type": "blob",
+"size": 73
+},
+{
+"path": "examples/outlier/manifest.tsv",
+"type": "blob",
+"size": 1155
+},
+{
+"path": "examples/outlier/reference.fasta",
+"type": "blob",
+"size": 4014
+},
+{
+"path": "examples/outlier/reference.fasta.fai",
+"type": "blob",
+"size": 22
+},
+{
+"path": "examples/outlier/run-analysis.sh",
+"type": "blob",
+"size": 734
+},
+{
+"path": "examples/outlier/str-profiles",
+"type": "tree",
+"size": 0
+},
+{
+"path": "examples/outlier/str-profiles/sample1.locus.tsv",
+"type": "blob",
+"size": 99
+},
+{
+"path": "examples/outlier/str-profiles/sample1.motif.tsv",
+"type": "blob",
+"size": 54
+},
+{
+"path": "examples/outlier/str-profiles/sample1.str_profile.json",
+"type": "blob",
+"size": 244
+},
+{
+"path": "examples/outlier/str-profiles/sample10.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample10.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample10.str_profile.json",
+"type": "blob",
+"size": 242
+},
+{
+"path": "examples/outlier/str-profiles/sample11.locus.tsv",
+"type": "blob",
+"size": 98
+},
+{
+"path": "examples/outlier/str-profiles/sample11.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample11.str_profile.json",
+"type": "blob",
+"size": 244
+},
+{
+"path": "examples/outlier/str-profiles/sample12.locus.tsv",
+"type": "blob",
+"size": 67
+},
+{
+"path": "examples/outlier/str-profiles/sample12.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample12.str_profile.json",
+"type": "blob",
+"size": 58
+},
+{
+"path": "examples/outlier/str-profiles/sample13.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample13.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample13.str_profile.json",
+"type": "blob",
+"size": 242
+},
+{
+"path": "examples/outlier/str-profiles/sample14.locus.tsv",
+"type": "blob",
+"size": 98
+},
+{
+"path": "examples/outlier/str-profiles/sample14.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample14.str_profile.json",
+"type": "blob",
+"size": 244
+},
+{
+"path": "examples/outlier/str-profiles/sample15.locus.tsv",
+"type": "blob",
+"size": 67
+},
+{
+"path": "examples/outlier/str-profiles/sample15.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample15.str_profile.json",
+"type": "blob",
+"size": 58
+},
+{
+"path": "examples/outlier/str-profiles/sample16.locus.tsv",
+"type": "blob",
+"size": 98
+},
+{
+"path": "examples/outlier/str-profiles/sample16.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample16.str_profile.json",
+"type": "blob",
+"size": 243
+},
+{
+"path": "examples/outlier/str-profiles/sample17.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample17.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample17.str_profile.json",
+"type": "blob",
+"size": 242
+},
+{
+"path": "examples/outlier/str-profiles/sample18.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample18.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample18.str_profile.json",
+"type": "blob",
+"size": 242
+},
+{
+"path": "examples/outlier/str-profiles/sample19.locus.tsv",
+"type": "blob",
+"size": 99
+},
+{
+"path": "examples/outlier/str-profiles/sample19.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample19.str_profile.json",
+"type": "blob",
+"size": 244
+},
+{
+"path": "examples/outlier/str-profiles/sample2.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample2.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample2.str_profile.json",
+"type": "blob",
+"size": 242
+},
+{
+"path": "examples/outlier/str-profiles/sample20.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample20.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample20.str_profile.json",
+"type": "blob",
+"size": 242
+},
+{
+"path": "examples/outlier/str-profiles/sample21.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample21.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample21.str_profile.json",
+"type": "blob",
+"size": 242
+},
+{
+"path": "examples/outlier/str-profiles/sample3.locus.tsv",
+"type": "blob",
+"size": 67
+},
+{
+"path": "examples/outlier/str-profiles/sample3.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample3.str_profile.json",
+"type": "blob",
+"size": 58
+},
+{
+"path": "examples/outlier/str-profiles/sample4.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample4.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample4.str_profile.json",
+"type": "blob",
+"size": 242
+},
+{
+"path": "examples/outlier/str-profiles/sample5.locus.tsv",
+"type": "blob",
+"size": 97
+},
+{
+"path": "examples/outlier/str-profiles/sample5.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample5.str_profile.json",
+"type": "blob",
+"size": 244
+},
+{
+"path": "examples/outlier/str-profiles/sample6.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample6.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample6.str_profile.json",
+"type": "blob",
+"size": 241
+},
+{
+"path": "examples/outlier/str-profiles/sample7.locus.tsv",
+"type": "blob",
+"size": 98
+},
+{
+"path": "examples/outlier/str-profiles/sample7.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample7.str_profile.json",
+"type": "blob",
+"size": 243
+},
+{
+"path": "examples/outlier/str-profiles/sample8.locus.tsv",
+"type": "blob",
+"size": 96
+},
+{
+"path": "examples/outlier/str-profiles/sample8.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample8.str_profile.json",
+"type": "blob",
+"size": 242
+},
+{
+"path": "examples/outlier/str-profiles/sample9.locus.tsv",
+"type": "blob",
+"size": 97
+},
+{
+"path": "examples/outlier/str-profiles/sample9.motif.tsv",
+"type": "blob",
+"size": 43
+},
+{
+"path": "examples/outlier/str-profiles/sample9.str_profile.json",
+"type": "blob",
+"size": 243
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/.gitignore",
+"type": "blob",
+"size": 1712
+},
+{
+"path": "scripts/annotate_ehdn.sh",
+"type": "blob",
+"size": 3999
+},
+{
+"path": "scripts/casecontrol.py",
+"type": "blob",
+"size": 5667
+},
+{
+"path": "scripts/casecontrol",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/casecontrol/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "scripts/casecontrol/locusworkflow.py",
+"type": "blob",
+"size": 4292
+},
+{
+"path": "scripts/casecontrol/motifworkflow.py",
+"type": "blob",
+"size": 2741
+},
+{
+"path": "scripts/core",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/core/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "scripts/core/common.py",
+"type": "blob",
+"size": 5763
+},
+{
+"path": "scripts/core/regiontools.py",
+"type": "blob",
+"size": 5734
+},
+{
+"path": "scripts/core/wilcoxontest.py",
+"type": "blob",
+"size": 2220
+},
+{
+"path": "scripts/make-bamlet.py",
+"type": "blob",
+"size": 3488
+},
+{
+"path": "scripts/outlier.py",
+"type": "blob",
+"size": 3793
+},
+{
+"path": "scripts/outlier",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/outlier/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "scripts/outlier/locusworkflow.py",
+"type": "blob",
+"size": 3964
+},
+{
+"path": "scripts/outlier/motifworkflow.py",
+"type": "blob",
+"size": 2484
+},
+{
+"path": "scripts/requirements.txt",
+"type": "blob",
+"size": 27
+},
+{
+"path": "scripts/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/tests/__init__.py",
+"type": "blob",
+"size": 0
+},
+{
+"path": "scripts/tests/context.py",
+"type": "blob",
+"size": 124
+},
+{
+"path": "scripts/tests/test_regions.py",
+"type": "blob",
+"size": 8905
+},
+{
+"path": "scripts/tests/test_wilcoxon.py",
+"type": "blob",
+"size": 2013
+},
+{
+"path": "source",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/.clang-format",
+"type": "blob",
+"size": 170
+},
+{
+"path": "source/.gitignore",
+"type": "blob",
+"size": 334
+},
+{
+"path": "source/CMakeLists.txt",
+"type": "blob",
+"size": 4078
+},
+{
+"path": "source/Makefile",
+"type": "blob",
+"size": 1749
+},
+{
+"path": "source/app",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/app/ExpansionHunterDenovo.cpp",
+"type": "blob",
+"size": 6933
+},
+{
+"path": "source/app/GatherParameters.cpp",
+"type": "blob",
+"size": 3734
+},
+{
+"path": "source/app/GatherParameters.hh",
+"type": "blob",
+"size": 913
+},
+{
+"path": "source/app/Version.hh",
+"type": "blob",
+"size": 865
+},
+{
+"path": "source/common",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/common/CMakeLists.txt",
+"type": "blob",
+"size": 390
+},
+{
+"path": "source/common/Interval.cpp",
+"type": "blob",
+"size": 792
+},
+{
+"path": "source/common/Interval.hh",
+"type": "blob",
+"size": 1359
+},
+{
+"path": "source/common/Parameters.hh",
+"type": "blob",
+"size": 2725
+},
+{
+"path": "source/common/SequenceUtils.cpp",
+"type": "blob",
+"size": 1488
+},
+{
+"path": "source/common/SequenceUtils.hh",
+"type": "blob",
+"size": 946
+},
+{
+"path": "source/io",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/io/CMakeLists.txt",
+"type": "blob",
+"size": 1606
+},
+{
+"path": "source/io/HtsFileStreamer.cpp",
+"type": "blob",
+"size": 3319
+},
+{
+"path": "source/io/HtsFileStreamer.hh",
+"type": "blob",
+"size": 2143
+},
+{
+"path": "source/io/HtsHelpers.cpp",
+"type": "blob",
+"size": 2757
+},
+{
+"path": "source/io/HtsHelpers.hh",
+"type": "blob",
+"size": 1057
+},
+{
+"path": "source/io/Reference.cpp",
+"type": "blob",
+"size": 2737
+},
+{
+"path": "source/io/Reference.hh",
+"type": "blob",
+"size": 1331
+},
+{
+"path": "source/merge",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/merge/CMakeLists.txt",
+"type": "blob",
+"size": 312
+},
+{
+"path": "source/merge/MergeParameters.cpp",
+"type": "blob",
+"size": 7822
+},
+{
+"path": "source/merge/MergeParameters.hh",
+"type": "blob",
+"size": 1697
+},
+{
+"path": "source/merge/MergeWorkflow.cpp",
+"type": "blob",
+"size": 8855
+},
+{
+"path": "source/merge/MergeWorkflow.hh",
+"type": "blob",
+"size": 877
+},
+{
+"path": "source/merge/MultisampleProfile.cpp",
+"type": "blob",
+"size": 1385
+},
+{
+"path": "source/merge/MultisampleProfile.hh",
+"type": "blob",
+"size": 1373
+},
+{
+"path": "source/profile",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/profile/CMakeLists.txt",
+"type": "blob",
+"size": 311
+},
+{
+"path": "source/profile/PairCollector.cpp",
+"type": "blob",
+"size": 7620
+},
+{
+"path": "source/profile/PairCollector.hh",
+"type": "blob",
+"size": 3037
+},
+{
+"path": "source/profile/ProfileParameters.cpp",
+"type": "blob",
+"size": 8071
+},
+{
+"path": "source/profile/ProfileParameters.hh",
+"type": "blob",
+"size": 2182
+},
+{
+"path": "source/profile/ProfileWorkflow.cpp",
+"type": "blob",
+"size": 8738
+},
+{
+"path": "source/profile/ProfileWorkflow.hh",
+"type": "blob",
+"size": 886
+},
+{
+"path": "source/profile/ReadClassification.cpp",
+"type": "blob",
+"size": 1896
+},
+{
+"path": "source/profile/ReadClassification.hh",
+"type": "blob",
+"size": 1107
+},
+{
+"path": "source/profile/SampleRunStats.cpp",
+"type": "blob",
+"size": 3045
+},
+{
+"path": "source/profile/SampleRunStats.hh",
+"type": "blob",
+"size": 1860
+},
+{
+"path": "source/reads",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/reads/CMakeLists.txt",
+"type": "blob",
+"size": 291
+},
+{
+"path": "source/reads/IrrFinder.cpp",
+"type": "blob",
+"size": 5424
+},
+{
+"path": "source/reads/IrrFinder.hh",
+"type": "blob",
+"size": 1855
+},
+{
+"path": "source/reads/Purity.cpp",
+"type": "blob",
+"size": 4756
+},
+{
+"path": "source/reads/Purity.hh",
+"type": "blob",
+"size": 1738
+},
+{
+"path": "source/reads/Read.cpp",
+"type": "blob",
+"size": 1083
+},
+{
+"path": "source/reads/Read.hh",
+"type": "blob",
+"size": 1074
+},
+{
+"path": "source/reads/unit_tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/reads/unit_tests/CMakeLists.txt",
+"type": "blob",
+"size": 196
+},
+{
+"path": "source/reads/unit_tests/pair_collector_test.cc",
+"type": "blob",
+"size": 1045
+},
+{
+"path": "source/region",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/region/CMakeLists.txt",
+"type": "blob",
+"size": 230
+},
+{
+"path": "source/region/GenomicRegion.cpp",
+"type": "blob",
+"size": 4907
+},
+{
+"path": "source/region/GenomicRegion.hh",
+"type": "blob",
+"size": 5058
+},
+{
+"path": "source/region/ReferenceContigInfo.cpp",
+"type": "blob",
+"size": 2925
+},
+{
+"path": "source/region/ReferenceContigInfo.hh",
+"type": "blob",
+"size": 1582
+},
+{
+"path": "source/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/tests/GenomicRegionTest.cpp",
+"type": "blob",
+"size": 5036
+},
+{
+"path": "source/tests/IrrFinderTest.cpp",
+"type": "blob",
+"size": 8310
+},
+{
+"path": "source/tests/PurityScoreTest.cpp",
+"type": "blob",
+"size": 4230
+},
+{
+"path": "source/tests/SequenceUtilsTest.cpp",
+"type": "blob",
+"size": 1094
+},
+{
+"path": "source/tests/UnitTests.cpp",
+"type": "blob",
+"size": 826
+},
+{
+"path": "source/thirdparty",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/.gitignore",
+"type": "blob",
+"size": 42
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/.travis.yml",
+"type": "blob",
+"size": 1785
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/CMakeLists.txt",
+"type": "blob",
+"size": 2780
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/LICENSE.md",
+"type": "blob",
+"size": 1492
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/README.md",
+"type": "blob",
+"size": 2023
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/appveyor.sh",
+"type": "blob",
+"size": 376
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/appveyor.yml",
+"type": "blob",
+"size": 368
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Modules",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Modules/AddBoostLib.cmake",
+"type": "blob",
+"size": 1491
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Modules/AddBoostTest.cmake",
+"type": "blob",
+"size": 1987
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Modules/CheckPreprocessor.cmake",
+"type": "blob",
+"size": 303
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Modules/DownloadBoost.cmake",
+"type": "blob",
+"size": 4501
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Modules/FindIconv.cmake",
+"type": "blob",
+"size": 2025
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Modules/PlatformDetect.cmake",
+"type": "blob",
+"size": 261
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Modules/StandaloneBuild.cmake",
+"type": "blob",
+"size": 277
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Modules/ccache.cmake",
+"type": "blob",
+"size": 515
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Toolchains",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/cmake/Toolchains/ios.cmake",
+"type": "blob",
+"size": 3530
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/atomic.cmake",
+"type": "blob",
+"size": 681
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/chrono.cmake",
+"type": "blob",
+"size": 549
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/container.cmake",
+"type": "blob",
+"size": 4315
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/context.cmake",
+"type": "blob",
+"size": 1758
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/context",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/context/jump_combined.S",
+"type": "blob",
+"size": 821
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/context/make_combined.S",
+"type": "blob",
+"size": 821
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/context/ontop_combined.S",
+"type": "blob",
+"size": 828
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/coroutine.cmake",
+"type": "blob",
+"size": 760
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/date_time.cmake",
+"type": "blob",
+"size": 4172
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/exception.cmake",
+"type": "blob",
+"size": 2054
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/fiber.cmake",
+"type": "blob",
+"size": 3293
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/filesystem.cmake",
+"type": "blob",
+"size": 1560
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/graph.cmake",
+"type": "blob",
+"size": 165
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/graph_parallel.cmake",
+"type": "blob",
+"size": 245
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/header.cmake",
+"type": "blob",
+"size": 637
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/iostreams.cmake",
+"type": "blob",
+"size": 4397
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/locale.cmake",
+"type": "blob",
+"size": 6724
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/log.cmake",
+"type": "blob",
+"size": 9251
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/math.cmake",
+"type": "blob",
+"size": 983
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/mpi.cmake",
+"type": "blob",
+"size": 1179
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/program_options.cmake",
+"type": "blob",
+"size": 1521
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/random.cmake",
+"type": "blob",
+"size": 7163
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/regex.cmake",
+"type": "blob",
+"size": 917
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/serialization.cmake",
+"type": "blob",
+"size": 2842
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/signals.cmake",
+"type": "blob",
+"size": 301
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/system.cmake",
+"type": "blob",
+"size": 522
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/test.cmake",
+"type": "blob",
+"size": 1120
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/thread.cmake",
+"type": "blob",
+"size": 688
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/timer.cmake",
+"type": "blob",
+"size": 244
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/type_erasure.cmake",
+"type": "blob",
+"size": 153
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/libs/wave.cmake",
+"type": "blob",
+"size": 784
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/patch",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/patch/1.63.0",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/patch/1.63.0/context_0001_arm64_cpu.patch",
+"type": "blob",
+"size": 1746
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/patch/1.63.0/context_0002_macOS_execution_context.patch",
+"type": "blob",
+"size": 1078
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/repack.sh",
+"type": "blob",
+"size": 995
+},
+{
+"path": "source/thirdparty/boost-cmake-1.67.0/travis.sh",
+"type": "blob",
+"size": 1985
+},
+{
+"path": "source/thirdparty/catch2",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/catch2/catch.hpp",
+"type": "blob",
+"size": 517035
+},
+{
+"path": "source/thirdparty/htslib-1.9.tar.bz2",
+"type": "blob",
+"size": 1178859
+},
+{
+"path": "source/thirdparty/nlohmann_json",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/nlohmann_json/json.hpp",
+"type": "blob",
+"size": 801007
+},
+{
+"path": "source/thirdparty/spdlog",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/spdlog/async.h",
+"type": "blob",
+"size": 3082
+},
+{
+"path": "source/thirdparty/spdlog/async_logger.h",
+"type": "blob",
+"size": 2323
+},
+{
+"path": "source/thirdparty/spdlog/common.h",
+"type": "blob",
+"size": 5923
+},
+{
+"path": "source/thirdparty/spdlog/details",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/spdlog/details/async_logger_impl.h",
+"type": "blob",
+"size": 2989
+},
+{
+"path": "source/thirdparty/spdlog/details/circular_q.h",
+"type": "blob",
+"size": 1531
+},
+{
+"path": "source/thirdparty/spdlog/details/console_globals.h",
+"type": "blob",
+"size": 1195
+},
+{
+"path": "source/thirdparty/spdlog/details/file_helper.h",
+"type": "blob",
+"size": 3892
+},
+{
+"path": "source/thirdparty/spdlog/details/fmt_helper.h",
+"type": "blob",
+"size": 3444
+},
+{
+"path": "source/thirdparty/spdlog/details/log_msg.h",
+"type": "blob",
+"size": 1269
+},
+{
+"path": "source/thirdparty/spdlog/details/logger_impl.h",
+"type": "blob",
+"size": 11805
+},
+{
+"path": "source/thirdparty/spdlog/details/mpmc_blocking_q.h",
+"type": "blob",
+"size": 3437
+},
+{
+"path": "source/thirdparty/spdlog/details/null_mutex.h",
+"type": "blob",
+"size": 683
+},
+{
+"path": "source/thirdparty/spdlog/details/os.h",
+"type": "blob",
+"size": 10605
+},
+{
+"path": "source/thirdparty/spdlog/details/pattern_formatter.h",
+"type": "blob",
+"size": 39208
+},
+{
+"path": "source/thirdparty/spdlog/details/periodic_worker.h",
+"type": "blob",
+"size": 1844
+},
+{
+"path": "source/thirdparty/spdlog/details/registry.h",
+"type": "blob",
+"size": 8086
+},
+{
+"path": "source/thirdparty/spdlog/details/thread_pool.h",
+"type": "blob",
+"size": 6420
+},
+{
+"path": "source/thirdparty/spdlog/fmt",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bin_to_hex.h",
+"type": "blob",
+"size": 4360
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/LICENSE.rst",
+"type": "blob",
+"size": 1310
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/chrono.h",
+"type": "blob",
+"size": 13284
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/color.h",
+"type": "blob",
+"size": 21968
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/core.h",
+"type": "blob",
+"size": 47459
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/format-inl.h",
+"type": "blob",
+"size": 32309
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/format.h",
+"type": "blob",
+"size": 109393
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/locale.h",
+"type": "blob",
+"size": 2782
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/ostream.h",
+"type": "blob",
+"size": 4771
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/posix.h",
+"type": "blob",
+"size": 8820
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/printf.h",
+"type": "blob",
+"size": 25813
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/ranges.h",
+"type": "blob",
+"size": 9069
+},
+{
+"path": "source/thirdparty/spdlog/fmt/bundled/time.h",
+"type": "blob",
+"size": 4311
+},
+{
+"path": "source/thirdparty/spdlog/fmt/fmt.h",
+"type": "blob",
+"size": 534
+},
+{
+"path": "source/thirdparty/spdlog/fmt/ostr.h",
+"type": "blob",
+"size": 371
+},
+{
+"path": "source/thirdparty/spdlog/formatter.h",
+"type": "blob",
+"size": 436
+},
+{
+"path": "source/thirdparty/spdlog/logger.h",
+"type": "blob",
+"size": 6150
+},
+{
+"path": "source/thirdparty/spdlog/sinks",
+"type": "tree",
+"size": 0
+},
+{
+"path": "source/thirdparty/spdlog/sinks/android_sink.h",
+"type": "blob",
+"size": 3292
+},
+{
+"path": "source/thirdparty/spdlog/sinks/ansicolor_sink.h",
+"type": "blob",
+"size": 5177
+},
+{
+"path": "source/thirdparty/spdlog/sinks/base_sink.h",
+"type": "blob",
+"size": 1738
+},
+{
+"path": "source/thirdparty/spdlog/sinks/basic_file_sink.h",
+"type": "blob",
+"size": 1735
+},
+{
+"path": "source/thirdparty/spdlog/sinks/daily_file_sink.h",
+"type": "blob",
+"size": 4189
+},
+{
+"path": "source/thirdparty/spdlog/sinks/dist_sink.h",
+"type": "blob",
+"size": 2233
+},
+{
+"path": "source/thirdparty/spdlog/sinks/msvc_sink.h",
+"type": "blob",
+"size": 1034
+},
+{
+"path": "source/thirdparty/spdlog/sinks/null_sink.h",
+"type": "blob",
+"size": 1175
+},
+{
+"path": "source/thirdparty/spdlog/sinks/ostream_sink.h",
+"type": "blob",
+"size": 1276
+},
+{
+"path": "source/thirdparty/spdlog/sinks/rotating_file_sink.h",
+"type": "blob",
+"size": 4961
+},
+{
+"path": "source/thirdparty/spdlog/sinks/sink.h",
+"type": "blob",
+"size": 1416
+},
+{
+"path": "source/thirdparty/spdlog/sinks/stdout_color_sinks.h",
+"type": "blob",
+"size": 1659
+},
+{
+"path": "source/thirdparty/spdlog/sinks/stdout_sinks.h",
+"type": "blob",
+"size": 2867
+},
+{
+"path": "source/thirdparty/spdlog/sinks/syslog_sink.h",
+"type": "blob",
+"size": 2963
+},
+{
+"path": "source/thirdparty/spdlog/sinks/wincolor_sink.h",
+"type": "blob",
+"size": 4844
+},
+{
+"path": "source/thirdparty/spdlog/spdlog.h",
+"type": "blob",
+"size": 10861
+},
+{
+"path": "source/thirdparty/spdlog/tweakme.h",
+"type": "blob",
+"size": 6442
+},
+{
+"path": "source/thirdparty/spdlog/version.h",
+"type": "blob",
+"size": 305
+}
+]
+}

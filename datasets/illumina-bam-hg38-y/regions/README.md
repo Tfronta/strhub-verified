@@ -8,5 +8,6 @@
 | gangstr.bed | chrom start end period motif | GangSTR `--regions` |
 | strsearch.bed | 11 columns with flanking sequences | STRsearch `--ref_bed` |
 | bed4.bed | chrom start end name | any BED-reading tool |
+| motif.bed | chrom start end motif | LongTR `--regions`, straglr `--loci`, NanoRepeat `-b`, strkit `--loci` |
 
 The files carry no comment line on purpose: GangSTR and HipSTR reject or misread one.

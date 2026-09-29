@@ -147,8 +147,18 @@ def test_a_readme_that_says_nothing_about_input_gets_a_guess_that_says_so(tmp_pa
     """Phase C3: when the reading finds nothing, say so — never dress a count
     up as a reading. And a guess that turns out right is not a limitation."""
     import verdict
-    readme = "# mytool\n\nGenotypes STRs.\n\n```\nmytool sample.bam out.vcf\n```\n"
     tree = {"tree": [{"path": "Makefile", "type": "blob", "size": 1}], "truncated": False}
+    # A documented command that reads a BAM is read, not guessed: the input is
+    # what the command takes, and the note cites the line.
+    readme = "# mytool\n\nGenotypes STRs.\n\n```\nmytool sample.bam out.vcf\n```\n"
+    proposal = dr.detect("x/mytool", "abc", tree, readme, "README.md")
+    assert proposal["input_type"]["how"] == "command"
+    r = pm.build(proposal, "mytool-trial")
+    note = next(c for c in r["manifest"]["caveats"]["items"] if c.startswith("Input:"))
+    assert note.startswith("Input: the documented command takes BAM (README.md, line 6)")
+    assert "input_type_guessed" not in r["limitations"]
+    # No sentence and no command that names its reads: a count, and it says so.
+    readme = "# mytool\n\nGenotypes STRs from bam files of aligned reads.\n\n```\nmytool --run\n```\n"
     proposal = dr.detect("x/mytool", "abc", tree, readme, "README.md")
     assert proposal["input_type"]["how"] == "counted"
     r = pm.build(proposal, "mytool-trial")

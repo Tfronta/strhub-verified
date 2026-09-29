@@ -1,0 +1,210 @@
+{
+"repo": "https://github.com/mcfrith/tandem-genotypes",
+"ref": "706a6b6a134788afb689e35445c67b4c2ae40666",
+"tag": "1.9.2",
+"readme_name": "README.md",
+"truncated": false,
+"docs_order": [],
+"tree": [
+{
+"path": ".gitattributes",
+"type": "blob",
+"size": 46
+},
+{
+"path": "LICENSE",
+"type": "blob",
+"size": 35141
+},
+{
+"path": "README.md",
+"type": "blob",
+"size": 12440
+},
+{
+"path": "controls",
+"type": "tree",
+"size": 0
+},
+{
+"path": "controls/hg19-microsat-control201808.txt",
+"type": "blob",
+"size": 1876435
+},
+{
+"path": "controls/hg19-rmsk-control201808.txt",
+"type": "blob",
+"size": 17377664
+},
+{
+"path": "controls/hg19-simpleRepeat-control201808.txt",
+"type": "blob",
+"size": 42385018
+},
+{
+"path": "controls/hg38-microsat-control201808.txt",
+"type": "blob",
+"size": 1881396
+},
+{
+"path": "controls/hg38-rmsk-control201808.txt",
+"type": "blob",
+"size": 27502753
+},
+{
+"path": "controls/hg38-simpleRepeat-control201808.txt",
+"type": "blob",
+"size": 42830733
+},
+{
+"path": "hg19-disease-tr.txt",
+"type": "blob",
+"size": 2261
+},
+{
+"path": "hg38-disease-tr.txt",
+"type": "blob",
+"size": 2307
+},
+{
+"path": "setup.py",
+"type": "blob",
+"size": 1321
+},
+{
+"path": "tandem-genotypes",
+"type": "blob",
+"size": 27160
+},
+{
+"path": "tandem-genotypes-join",
+"type": "blob",
+"size": 8810
+},
+{
+"path": "tandem-genotypes-merge",
+"type": "blob",
+"size": 5589
+},
+{
+"path": "tandem-genotypes-plot",
+"type": "blob",
+"size": 8450
+},
+{
+"path": "tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/ape.txt",
+"type": "blob",
+"size": 10698
+},
+{
+"path": "tests/far.bed",
+"type": "blob",
+"size": 27
+},
+{
+"path": "tests/far.maf",
+"type": "blob",
+"size": 1197
+},
+{
+"path": "tests/microsat.txt",
+"type": "blob",
+"size": 34
+},
+{
+"path": "tests/min.txt",
+"type": "blob",
+"size": 38725
+},
+{
+"path": "tests/nano.maf",
+"type": "blob",
+"size": 7252439
+},
+{
+"path": "tests/nano.txt",
+"type": "blob",
+"size": 982
+},
+{
+"path": "tests/near-beg.bed",
+"type": "blob",
+"size": 18
+},
+{
+"path": "tests/near-beg.maf",
+"type": "blob",
+"size": 9820
+},
+{
+"path": "tests/pro.txt",
+"type": "blob",
+"size": 59708
+},
+{
+"path": "tests/refFlat.txt",
+"type": "blob",
+"size": 2065
+},
+{
+"path": "tests/refGene.txt",
+"type": "blob",
+"size": 2548
+},
+{
+"path": "tests/rmsk.out",
+"type": "blob",
+"size": 28224
+},
+{
+"path": "tests/rmsk.txt",
+"type": "blob",
+"size": 18435
+},
+{
+"path": "tests/simpleRepeat.txt",
+"type": "blob",
+"size": 4841
+},
+{
+"path": "tests/slop3.bed",
+"type": "blob",
+"size": 78
+},
+{
+"path": "tests/slop3.maf",
+"type": "blob",
+"size": 1200
+},
+{
+"path": "tests/small-rep.bed",
+"type": "blob",
+"size": 19
+},
+{
+"path": "tests/small-rep.maf",
+"type": "blob",
+"size": 9395
+},
+{
+"path": "tests/tantan.txt",
+"type": "blob",
+"size": 9346
+},
+{
+"path": "tests/tests.out",
+"type": "blob",
+"size": 160842
+},
+{
+"path": "tests/tests.sh",
+"type": "blob",
+"size": 1650
+}
+]
+}

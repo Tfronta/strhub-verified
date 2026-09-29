@@ -1,0 +1,1740 @@
+{
+"repo": "https://github.com/mgymrek/lobstr-code",
+"ref": "47da4cac554952f14a78bb4230d39efa1eaf8b0b",
+"tag": "v4.0.6",
+"readme_name": "README",
+"truncated": false,
+"docs_order": [],
+"tree": [
+{
+"path": ".gitignore",
+"type": "blob",
+"size": 1331
+},
+{
+"path": ".travis.yml",
+"type": "blob",
+"size": 358
+},
+{
+"path": "AUTHORS",
+"type": "blob",
+"size": 315
+},
+{
+"path": "COPYING",
+"type": "blob",
+"size": 35147
+},
+{
+"path": "ChangeLog",
+"type": "blob",
+"size": 3402
+},
+{
+"path": "HACKING.md",
+"type": "blob",
+"size": 10799
+},
+{
+"path": "INSTALL",
+"type": "blob",
+"size": 15578
+},
+{
+"path": "Makefile.am",
+"type": "blob",
+"size": 862
+},
+{
+"path": "NEWS",
+"type": "blob",
+"size": 0
+},
+{
+"path": "README",
+"type": "blob",
+"size": 78
+},
+{
+"path": "config",
+"type": "tree",
+"size": 0
+},
+{
+"path": "config/gen-coverage-report.sh",
+"type": "blob",
+"size": 1064
+},
+{
+"path": "config/git-version-gen",
+"type": "blob",
+"size": 7794
+},
+{
+"path": "config/rebuild-coverage.sh",
+"type": "blob",
+"size": 866
+},
+{
+"path": "configure.ac",
+"type": "blob",
+"size": 6768
+},
+{
+"path": "experimental",
+"type": "tree",
+"size": 0
+},
+{
+"path": "experimental/visualize_stutter.py",
+"type": "blob",
+"size": 6294
+},
+{
+"path": "lobSTR.rb",
+"type": "blob",
+"size": 1728
+},
+{
+"path": "m4",
+"type": "tree",
+"size": 0
+},
+{
+"path": "m4/Makefile.am",
+"type": "blob",
+"size": 763
+},
+{
+"path": "m4/acx_pthread.m4",
+"type": "blob",
+"size": 9468
+},
+{
+"path": "m4/ax_blas.m4",
+"type": "blob",
+"size": 8106
+},
+{
+"path": "m4/ax_boost_base.m4",
+"type": "blob",
+"size": 7548
+},
+{
+"path": "m4/ax_check_zlib.m4",
+"type": "blob",
+"size": 4572
+},
+{
+"path": "m4/ax_pthread.m4",
+"type": "blob",
+"size": 13758
+},
+{
+"path": "make_bin_dist.sh",
+"type": "blob",
+"size": 2068
+},
+{
+"path": "make_src_dist.sh",
+"type": "blob",
+"size": 523
+},
+{
+"path": "models",
+"type": "tree",
+"size": 0
+},
+{
+"path": "models/Makefile.am",
+"type": "blob",
+"size": 805
+},
+{
+"path": "models/illumina_v2.0.3.stepmodel",
+"type": "blob",
+"size": 2245
+},
+{
+"path": "models/illumina_v2.0.3.stuttermodel",
+"type": "blob",
+"size": 147
+},
+{
+"path": "models/illumina_v2.0.3.stutterproblem",
+"type": "blob",
+"size": 9816123
+},
+{
+"path": "models/illumina_v3.pcrfree.stepmodel",
+"type": "blob",
+"size": 2212
+},
+{
+"path": "models/illumina_v3.pcrfree.stuttermodel",
+"type": "blob",
+"size": 110
+},
+{
+"path": "reconf",
+"type": "blob",
+"size": 1294
+},
+{
+"path": "scripts",
+"type": "tree",
+"size": 0
+},
+{
+"path": "scripts/GetSTRInfo.py",
+"type": "blob",
+"size": 3053
+},
+{
+"path": "scripts/Makefile.am",
+"type": "blob",
+"size": 1221
+},
+{
+"path": "scripts/allelotype_validation_suite.sh",
+"type": "blob",
+"size": 4660
+},
+{
+"path": "scripts/checks_utils.py",
+"type": "blob",
+"size": 929
+},
+{
+"path": "scripts/lobSTR_alignment_checks.py",
+"type": "blob",
+"size": 8630
+},
+{
+"path": "scripts/lobSTR_allelotype_checks.py",
+"type": "blob",
+"size": 17282
+},
+{
+"path": "scripts/lobSTR_annotate_allele_freqs.py",
+"type": "blob",
+"size": 3770
+},
+{
+"path": "scripts/lobSTR_capillary_comparator.py",
+"type": "blob",
+"size": 6675
+},
+{
+"path": "scripts/lobSTR_download_ref_hg19.sh",
+"type": "blob",
+"size": 2921
+},
+{
+"path": "scripts/lobSTR_filter_vcf.py",
+"type": "blob",
+"size": 9487
+},
+{
+"path": "scripts/lobSTR_test_run.sh",
+"type": "blob",
+"size": 2341
+},
+{
+"path": "scripts/lobSTR_vcf_to_tab.py",
+"type": "blob",
+"size": 1680
+},
+{
+"path": "scripts/lobstr_index.py",
+"type": "blob",
+"size": 8157
+},
+{
+"path": "scripts/vcf_extract.py",
+"type": "blob",
+"size": 2311
+},
+{
+"path": "set_new_tag_version.sh",
+"type": "blob",
+"size": 2285
+},
+{
+"path": "src",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/AlignedRead.h",
+"type": "blob",
+"size": 1320
+},
+{
+"path": "src/Alignment.h",
+"type": "blob",
+"size": 1674
+},
+{
+"path": "src/AlignmentFilters.cpp",
+"type": "blob",
+"size": 9900
+},
+{
+"path": "src/AlignmentFilters.h",
+"type": "blob",
+"size": 2289
+},
+{
+"path": "src/AlignmentUtils.cpp",
+"type": "blob",
+"size": 11875
+},
+{
+"path": "src/AlignmentUtils.h",
+"type": "blob",
+"size": 1558
+},
+{
+"path": "src/BWAReadAligner.cpp",
+"type": "blob",
+"size": 37673
+},
+{
+"path": "src/BWAReadAligner.h",
+"type": "blob",
+"size": 4568
+},
+{
+"path": "src/BamFileReader.cpp",
+"type": "blob",
+"size": 1820
+},
+{
+"path": "src/BamFileReader.h",
+"type": "blob",
+"size": 1167
+},
+{
+"path": "src/BamPairedFileReader.cpp",
+"type": "blob",
+"size": 4001
+},
+{
+"path": "src/BamPairedFileReader.h",
+"type": "blob",
+"size": 1270
+},
+{
+"path": "src/EntropyDetection.cpp",
+"type": "blob",
+"size": 3628
+},
+{
+"path": "src/EntropyDetection.h",
+"type": "blob",
+"size": 1531
+},
+{
+"path": "src/FastaFileReader.cpp",
+"type": "blob",
+"size": 3036
+},
+{
+"path": "src/FastaFileReader.h",
+"type": "blob",
+"size": 1092
+},
+{
+"path": "src/FastaPairedFileReader.cpp",
+"type": "blob",
+"size": 1976
+},
+{
+"path": "src/FastaPairedFileReader.h",
+"type": "blob",
+"size": 1230
+},
+{
+"path": "src/FastqFileReader.cpp",
+"type": "blob",
+"size": 3810
+},
+{
+"path": "src/FastqFileReader.h",
+"type": "blob",
+"size": 1063
+},
+{
+"path": "src/FastqPairedFileReader.cpp",
+"type": "blob",
+"size": 1977
+},
+{
+"path": "src/FastqPairedFileReader.h",
+"type": "blob",
+"size": 1229
+},
+{
+"path": "src/FilterCounter.cpp",
+"type": "blob",
+"size": 2179
+},
+{
+"path": "src/FilterCounter.h",
+"type": "blob",
+"size": 1929
+},
+{
+"path": "src/Genotyper.cpp",
+"type": "blob",
+"size": 21854
+},
+{
+"path": "src/Genotyper.h",
+"type": "blob",
+"size": 3669
+},
+{
+"path": "src/IFileReader.h",
+"type": "blob",
+"size": 1105
+},
+{
+"path": "src/IFileWriter.h",
+"type": "blob",
+"size": 839
+},
+{
+"path": "src/IntervalTreeCore.h",
+"type": "blob",
+"size": 5901
+},
+{
+"path": "src/MSReadRecord.h",
+"type": "blob",
+"size": 2940
+},
+{
+"path": "src/Makefile.am",
+"type": "blob",
+"size": 9330
+},
+{
+"path": "src/MultithreadData.cpp",
+"type": "blob",
+"size": 2686
+},
+{
+"path": "src/MultithreadData.h",
+"type": "blob",
+"size": 3502
+},
+{
+"path": "src/NWNoRefEndPenalty.cpp",
+"type": "blob",
+"size": 9183
+},
+{
+"path": "src/NWNoRefEndPenalty.h",
+"type": "blob",
+"size": 1138
+},
+{
+"path": "src/NoiseModel.cpp",
+"type": "blob",
+"size": 15613
+},
+{
+"path": "src/NoiseModel.h",
+"type": "blob",
+"size": 2800
+},
+{
+"path": "src/QSufSort.c",
+"type": "blob",
+"size": 14352
+},
+{
+"path": "src/QSufSort.h",
+"type": "blob",
+"size": 1539
+},
+{
+"path": "src/ReadContainer.cpp",
+"type": "blob",
+"size": 26358
+},
+{
+"path": "src/ReadContainer.h",
+"type": "blob",
+"size": 3847
+},
+{
+"path": "src/ReadPair.cpp",
+"type": "blob",
+"size": 990
+},
+{
+"path": "src/ReadPair.h",
+"type": "blob",
+"size": 1844
+},
+{
+"path": "src/ReferenceSTR.cpp",
+"type": "blob",
+"size": 2676
+},
+{
+"path": "src/ReferenceSTR.h",
+"type": "blob",
+"size": 1588
+},
+{
+"path": "src/RemoveDuplicates.cpp",
+"type": "blob",
+"size": 2582
+},
+{
+"path": "src/RemoveDuplicates.h",
+"type": "blob",
+"size": 1397
+},
+{
+"path": "src/RunInfo.h",
+"type": "blob",
+"size": 4803
+},
+{
+"path": "src/STRDetector.cpp",
+"type": "blob",
+"size": 6116
+},
+{
+"path": "src/STRDetector.h",
+"type": "blob",
+"size": 1014
+},
+{
+"path": "src/STRIntervalTree.cpp",
+"type": "blob",
+"size": 2268
+},
+{
+"path": "src/STRIntervalTree.h",
+"type": "blob",
+"size": 1580
+},
+{
+"path": "src/STRRecord.h",
+"type": "blob",
+"size": 2788
+},
+{
+"path": "src/SamFileWriter.cpp",
+"type": "blob",
+"size": 13472
+},
+{
+"path": "src/SamFileWriter.h",
+"type": "blob",
+"size": 2005
+},
+{
+"path": "src/TextFileReader.cpp",
+"type": "blob",
+"size": 2445
+},
+{
+"path": "src/TextFileReader.h",
+"type": "blob",
+"size": 1357
+},
+{
+"path": "src/TextFileWriter.cpp",
+"type": "blob",
+"size": 1729
+},
+{
+"path": "src/TextFileWriter.h",
+"type": "blob",
+"size": 1259
+},
+{
+"path": "src/VCFWriter.cpp",
+"type": "blob",
+"size": 13480
+},
+{
+"path": "src/VCFWriter.h",
+"type": "blob",
+"size": 1397
+},
+{
+"path": "src/ZAlgorithm.cpp",
+"type": "blob",
+"size": 4775
+},
+{
+"path": "src/ZAlgorithm.h",
+"type": "blob",
+"size": 2321
+},
+{
+"path": "src/ZippedFastaFileReader.cpp",
+"type": "blob",
+"size": 3044
+},
+{
+"path": "src/ZippedFastaFileReader.h",
+"type": "blob",
+"size": 1105
+},
+{
+"path": "src/ZippedFastqFileReader.cpp",
+"type": "blob",
+"size": 3840
+},
+{
+"path": "src/ZippedFastqFileReader.h",
+"type": "blob",
+"size": 1105
+},
+{
+"path": "src/ZippedTextFileReader.cpp",
+"type": "blob",
+"size": 2430
+},
+{
+"path": "src/ZippedTextFileReader.h",
+"type": "blob",
+"size": 1373
+},
+{
+"path": "src/api",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/api/BGZF.h",
+"type": "blob",
+"size": 11197
+},
+{
+"path": "src/api/BamAlgorithms.h",
+"type": "blob",
+"size": 847
+},
+{
+"path": "src/api/BamAlignment.cpp",
+"type": "blob",
+"size": 36439
+},
+{
+"path": "src/api/BamAlignment.h",
+"type": "blob",
+"size": 23526
+},
+{
+"path": "src/api/BamAux.h",
+"type": "blob",
+"size": 14379
+},
+{
+"path": "src/api/BamAux.h~",
+"type": "blob",
+"size": 14358
+},
+{
+"path": "src/api/BamConstants.h",
+"type": "blob",
+"size": 9682
+},
+{
+"path": "src/api/BamIndex.h",
+"type": "blob",
+"size": 2767
+},
+{
+"path": "src/api/BamMultiReader.cpp",
+"type": "blob",
+"size": 13743
+},
+{
+"path": "src/api/BamMultiReader.h",
+"type": "blob",
+"size": 4189
+},
+{
+"path": "src/api/BamReader.cpp",
+"type": "blob",
+"size": 13322
+},
+{
+"path": "src/api/BamReader.h",
+"type": "blob",
+"size": 4360
+},
+{
+"path": "src/api/BamWriter.cpp",
+"type": "blob",
+"size": 5259
+},
+{
+"path": "src/api/BamWriter.h",
+"type": "blob",
+"size": 2201
+},
+{
+"path": "src/api/BamWriter.h~",
+"type": "blob",
+"size": 2199
+},
+{
+"path": "src/api/IBamIODevice.h",
+"type": "blob",
+"size": 2845
+},
+{
+"path": "src/api/SamConstants.h",
+"type": "blob",
+"size": 3679
+},
+{
+"path": "src/api/SamHeader.cpp",
+"type": "blob",
+"size": 6704
+},
+{
+"path": "src/api/SamHeader.h",
+"type": "blob",
+"size": 2853
+},
+{
+"path": "src/api/SamProgram.cpp",
+"type": "blob",
+"size": 3812
+},
+{
+"path": "src/api/SamProgram.h",
+"type": "blob",
+"size": 2294
+},
+{
+"path": "src/api/SamProgramChain.cpp",
+"type": "blob",
+"size": 11825
+},
+{
+"path": "src/api/SamProgramChain.h",
+"type": "blob",
+"size": 3127
+},
+{
+"path": "src/api/SamReadGroup.cpp",
+"type": "blob",
+"size": 6452
+},
+{
+"path": "src/api/SamReadGroup.h",
+"type": "blob",
+"size": 3336
+},
+{
+"path": "src/api/SamReadGroupDictionary.cpp",
+"type": "blob",
+"size": 10142
+},
+{
+"path": "src/api/SamReadGroupDictionary.h",
+"type": "blob",
+"size": 3281
+},
+{
+"path": "src/api/SamSequence.cpp",
+"type": "blob",
+"size": 4303
+},
+{
+"path": "src/api/SamSequence.h",
+"type": "blob",
+"size": 2454
+},
+{
+"path": "src/api/SamSequenceDictionary.cpp",
+"type": "blob",
+"size": 10272
+},
+{
+"path": "src/api/SamSequenceDictionary.h",
+"type": "blob",
+"size": 3248
+},
+{
+"path": "src/api/algorithms",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/api/algorithms/Sort.h",
+"type": "blob",
+"size": 12098
+},
+{
+"path": "src/api/api_global.h",
+"type": "blob",
+"size": 778
+},
+{
+"path": "src/api/api_global.h~",
+"type": "blob",
+"size": 757
+},
+{
+"path": "src/api/internal",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/api/internal/BamDeviceFactory_p.cpp",
+"type": "blob",
+"size": 1294
+},
+{
+"path": "src/api/internal/BamDeviceFactory_p.h",
+"type": "blob",
+"size": 1122
+},
+{
+"path": "src/api/internal/BamException_p.cpp",
+"type": "blob",
+"size": 682
+},
+{
+"path": "src/api/internal/BamException_p.h",
+"type": "blob",
+"size": 1474
+},
+{
+"path": "src/api/internal/BamFile_p.cpp",
+"type": "blob",
+"size": 2039
+},
+{
+"path": "src/api/internal/BamFile_p.h",
+"type": "blob",
+"size": 1395
+},
+{
+"path": "src/api/internal/BamFile_p.h~",
+"type": "blob",
+"size": 1395
+},
+{
+"path": "src/api/internal/BamFtp_p.cpp",
+"type": "blob",
+"size": 1336
+},
+{
+"path": "src/api/internal/BamFtp_p.h",
+"type": "blob",
+"size": 1550
+},
+{
+"path": "src/api/internal/BamHeader_p.cpp",
+"type": "blob",
+"size": 3842
+},
+{
+"path": "src/api/internal/BamHeader_p.h",
+"type": "blob",
+"size": 2132
+},
+{
+"path": "src/api/internal/BamHttp_p.cpp",
+"type": "blob",
+"size": 1351
+},
+{
+"path": "src/api/internal/BamHttp_p.h",
+"type": "blob",
+"size": 1558
+},
+{
+"path": "src/api/internal/BamIndexFactory_p.cpp",
+"type": "blob",
+"size": 4511
+},
+{
+"path": "src/api/internal/BamIndexFactory_p.h",
+"type": "blob",
+"size": 2206
+},
+{
+"path": "src/api/internal/BamMultiMerger_p.h",
+"type": "blob",
+"size": 7446
+},
+{
+"path": "src/api/internal/BamMultiReader_p.cpp",
+"type": "blob",
+"size": 28892
+},
+{
+"path": "src/api/internal/BamMultiReader_p.h",
+"type": "blob",
+"size": 3327
+},
+{
+"path": "src/api/internal/BamPipe_p.cpp",
+"type": "blob",
+"size": 1808
+},
+{
+"path": "src/api/internal/BamPipe_p.h",
+"type": "blob",
+"size": 1278
+},
+{
+"path": "src/api/internal/BamRandomAccessController_p.cpp",
+"type": "blob",
+"size": 10105
+},
+{
+"path": "src/api/internal/BamRandomAccessController_p.h",
+"type": "blob",
+"size": 2883
+},
+{
+"path": "src/api/internal/BamReader_p.cpp",
+"type": "blob",
+"size": 15571
+},
+{
+"path": "src/api/internal/BamReader_p.h",
+"type": "blob",
+"size": 3745
+},
+{
+"path": "src/api/internal/BamStandardIndex_p.cpp",
+"type": "blob",
+"size": 35294
+},
+{
+"path": "src/api/internal/BamStandardIndex_p.h",
+"type": "blob",
+"size": 8995
+},
+{
+"path": "src/api/internal/BamToolsIndex_p.cpp",
+"type": "blob",
+"size": 22301
+},
+{
+"path": "src/api/internal/BamToolsIndex_p.h",
+"type": "blob",
+"size": 5908
+},
+{
+"path": "src/api/internal/BamWriter_p.cpp",
+"type": "blob",
+"size": 18631
+},
+{
+"path": "src/api/internal/BamWriter_p.h",
+"type": "blob",
+"size": 2311
+},
+{
+"path": "src/api/internal/BgzfStream_p.cpp",
+"type": "blob",
+"size": 15270
+},
+{
+"path": "src/api/internal/BgzfStream_p.cpp~",
+"type": "blob",
+"size": 15214
+},
+{
+"path": "src/api/internal/BgzfStream_p.h",
+"type": "blob",
+"size": 3106
+},
+{
+"path": "src/api/internal/BgzfStream_p.h~",
+"type": "blob",
+"size": 3068
+},
+{
+"path": "src/api/internal/ILocalIODevice_p.cpp",
+"type": "blob",
+"size": 1880
+},
+{
+"path": "src/api/internal/ILocalIODevice_p.h",
+"type": "blob",
+"size": 1450
+},
+{
+"path": "src/api/internal/IRemoteIODevice_p.cpp",
+"type": "blob",
+"size": 0
+},
+{
+"path": "src/api/internal/IRemoteIODevice_p.h",
+"type": "blob",
+"size": 0
+},
+{
+"path": "src/api/internal/SamFormatParser_p.cpp",
+"type": "blob",
+"size": 9008
+},
+{
+"path": "src/api/internal/SamFormatParser_p.h",
+"type": "blob",
+"size": 1775
+},
+{
+"path": "src/api/internal/SamFormatPrinter_p.cpp",
+"type": "blob",
+"size": 6950
+},
+{
+"path": "src/api/internal/SamFormatPrinter_p.h",
+"type": "blob",
+"size": 1662
+},
+{
+"path": "src/api/internal/SamHeaderValidator_p.cpp",
+"type": "blob",
+"size": 16420
+},
+{
+"path": "src/api/internal/SamHeaderValidator_p.h",
+"type": "blob",
+"size": 3214
+},
+{
+"path": "src/api/internal/SamHeaderVersion_p.h",
+"type": "blob",
+"size": 4452
+},
+{
+"path": "src/bamlite.c",
+"type": "blob",
+"size": 4650
+},
+{
+"path": "src/bamlite.h",
+"type": "blob",
+"size": 2420
+},
+{
+"path": "src/bntseq.c",
+"type": "blob",
+"size": 9140
+},
+{
+"path": "src/bntseq.h",
+"type": "blob",
+"size": 2244
+},
+{
+"path": "src/bwape.c",
+"type": "blob",
+"size": 30070
+},
+{
+"path": "src/bwase.c",
+"type": "blob",
+"size": 21765
+},
+{
+"path": "src/bwase.h",
+"type": "blob",
+"size": 1109
+},
+{
+"path": "src/bwaseqio.c",
+"type": "blob",
+"size": 6380
+},
+{
+"path": "src/bwt.c",
+"type": "blob",
+"size": 7766
+},
+{
+"path": "src/bwt.h",
+"type": "blob",
+"size": 3603
+},
+{
+"path": "src/bwt_gen.c",
+"type": "blob",
+"size": 50449
+},
+{
+"path": "src/bwt_gen.h",
+"type": "blob",
+"size": 4036
+},
+{
+"path": "src/bwt_lite.c",
+"type": "blob",
+"size": 2641
+},
+{
+"path": "src/bwt_lite.h",
+"type": "blob",
+"size": 674
+},
+{
+"path": "src/bwtaln.c",
+"type": "blob",
+"size": 12298
+},
+{
+"path": "src/bwtaln.h",
+"type": "blob",
+"size": 3872
+},
+{
+"path": "src/bwtgap.c",
+"type": "blob",
+"size": 9270
+},
+{
+"path": "src/bwtgap.h",
+"type": "blob",
+"size": 942
+},
+{
+"path": "src/bwtindex.c",
+"type": "blob",
+"size": 6423
+},
+{
+"path": "src/bwtio.c",
+"type": "blob",
+"size": 1996
+},
+{
+"path": "src/bwtmisc.c",
+"type": "blob",
+"size": 6842
+},
+{
+"path": "src/bwtsw2.h",
+"type": "blob",
+"size": 977
+},
+{
+"path": "src/bwtsw2_aux.c",
+"type": "blob",
+"size": 20124
+},
+{
+"path": "src/bwtsw2_chain.c",
+"type": "blob",
+"size": 2600
+},
+{
+"path": "src/bwtsw2_core.c",
+"type": "blob",
+"size": 17798
+},
+{
+"path": "src/bwtsw2_main.c",
+"type": "blob",
+"size": 3862
+},
+{
+"path": "src/cigar.h",
+"type": "blob",
+"size": 1277
+},
+{
+"path": "src/common.cpp",
+"type": "blob",
+"size": 17113
+},
+{
+"path": "src/common.h",
+"type": "blob",
+"size": 4985
+},
+{
+"path": "src/cs2nt.c",
+"type": "blob",
+"size": 5944
+},
+{
+"path": "src/gzstream.cpp",
+"type": "blob",
+"size": 5093
+},
+{
+"path": "src/gzstream.h",
+"type": "blob",
+"size": 4601
+},
+{
+"path": "src/is.c",
+"type": "blob",
+"size": 6596
+},
+{
+"path": "src/khash.h",
+"type": "blob",
+"size": 16893
+},
+{
+"path": "src/kseq.h",
+"type": "blob",
+"size": 7490
+},
+{
+"path": "src/ksort.h",
+"type": "blob",
+"size": 9658
+},
+{
+"path": "src/kstring.c",
+"type": "blob",
+"size": 641
+},
+{
+"path": "src/kstring.h",
+"type": "blob",
+"size": 825
+},
+{
+"path": "src/kvec.h",
+"type": "blob",
+"size": 2886
+},
+{
+"path": "src/logistic_regression.cpp",
+"type": "blob",
+"size": 4717
+},
+{
+"path": "src/logistic_regression.h",
+"type": "blob",
+"size": 3990
+},
+{
+"path": "src/main.c",
+"type": "blob",
+"size": 557
+},
+{
+"path": "src/main.cpp",
+"type": "blob",
+"size": 34553
+},
+{
+"path": "src/main.h",
+"type": "blob",
+"size": 668
+},
+{
+"path": "src/main_allelotype.cpp",
+"type": "blob",
+"size": 27991
+},
+{
+"path": "src/nw.cpp",
+"type": "blob",
+"size": 10652
+},
+{
+"path": "src/nw.h",
+"type": "blob",
+"size": 1979
+},
+{
+"path": "src/runtime_parameters.cpp",
+"type": "blob",
+"size": 3243
+},
+{
+"path": "src/runtime_parameters.h",
+"type": "blob",
+"size": 3788
+},
+{
+"path": "src/shared",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/shared/bamtools_global.h",
+"type": "blob",
+"size": 1632
+},
+{
+"path": "src/shared/bamtools_global.h~",
+"type": "blob",
+"size": 1125
+},
+{
+"path": "src/simple_dp.c",
+"type": "blob",
+"size": 5154
+},
+{
+"path": "src/stdaln.c",
+"type": "blob",
+"size": 36271
+},
+{
+"path": "src/stdaln.h",
+"type": "blob",
+"size": 4721
+},
+{
+"path": "src/tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/tests/AlignmentFilters_test.cpp",
+"type": "blob",
+"size": 6047
+},
+{
+"path": "src/tests/AlignmentFilters_test.h",
+"type": "blob",
+"size": 1298
+},
+{
+"path": "src/tests/AlignmentUtils_test.cpp",
+"type": "blob",
+"size": 14189
+},
+{
+"path": "src/tests/AlignmentUtils_test.h",
+"type": "blob",
+"size": 1238
+},
+{
+"path": "src/tests/DNATools.cpp",
+"type": "blob",
+"size": 483
+},
+{
+"path": "src/tests/DNATools.h",
+"type": "blob",
+"size": 143
+},
+{
+"path": "src/tests/NWNoRefEndPenalty_test.cpp",
+"type": "blob",
+"size": 4642
+},
+{
+"path": "src/tests/NWNoRefEndPenalty_test.h",
+"type": "blob",
+"size": 1670
+},
+{
+"path": "src/tests/ReadContainer_test.cpp",
+"type": "blob",
+"size": 5440
+},
+{
+"path": "src/tests/ReadContainer_test.h",
+"type": "blob",
+"size": 1339
+},
+{
+"path": "src/tests/RemoveDuplicates_test.cpp",
+"type": "blob",
+"size": 2918
+},
+{
+"path": "src/tests/RemoveDuplicates_test.h",
+"type": "blob",
+"size": 1262
+},
+{
+"path": "src/tests/VCFWriter_test.cpp",
+"type": "blob",
+"size": 2984
+},
+{
+"path": "src/tests/VCFWriter_test.h",
+"type": "blob",
+"size": 1124
+},
+{
+"path": "src/tests/ZAlgorithm_test.cpp",
+"type": "blob",
+"size": 3164
+},
+{
+"path": "src/tests/ZAlgorithm_test.h",
+"type": "blob",
+"size": 1215
+},
+{
+"path": "src/tests/common_test.cpp",
+"type": "blob",
+"size": 8529
+},
+{
+"path": "src/tests/common_test.h",
+"type": "blob",
+"size": 1313
+},
+{
+"path": "src/tests/logistic_regression_test.cpp",
+"type": "blob",
+"size": 3755
+},
+{
+"path": "src/tests/logistic_regression_test.h",
+"type": "blob",
+"size": 1344
+},
+{
+"path": "src/tests/main_test.cpp",
+"type": "blob",
+"size": 1770
+},
+{
+"path": "src/utils.c",
+"type": "blob",
+"size": 2544
+},
+{
+"path": "src/utils.h",
+"type": "blob",
+"size": 2049
+},
+{
+"path": "src/utils",
+"type": "tree",
+"size": 0
+},
+{
+"path": "src/utils/CMakeLists.txt",
+"type": "blob",
+"size": 961
+},
+{
+"path": "src/utils/bamtools_fasta.cpp",
+"type": "blob",
+"size": 17542
+},
+{
+"path": "src/utils/bamtools_fasta.h",
+"type": "blob",
+"size": 1397
+},
+{
+"path": "src/utils/bamtools_filter_engine.h",
+"type": "blob",
+"size": 21075
+},
+{
+"path": "src/utils/bamtools_filter_properties.h",
+"type": "blob",
+"size": 7917
+},
+{
+"path": "src/utils/bamtools_filter_ruleparser.h",
+"type": "blob",
+"size": 9559
+},
+{
+"path": "src/utils/bamtools_options.cpp",
+"type": "blob",
+"size": 12207
+},
+{
+"path": "src/utils/bamtools_options.h",
+"type": "blob",
+"size": 7382
+},
+{
+"path": "src/utils/bamtools_pileup_engine.cpp",
+"type": "blob",
+"size": 11577
+},
+{
+"path": "src/utils/bamtools_pileup_engine.h",
+"type": "blob",
+"size": 2540
+},
+{
+"path": "src/utils/bamtools_utilities.cpp",
+"type": "blob",
+"size": 11510
+},
+{
+"path": "src/utils/bamtools_utilities.h",
+"type": "blob",
+"size": 2775
+},
+{
+"path": "src/utils/bamtools_utilities.h~",
+"type": "blob",
+"size": 2775
+},
+{
+"path": "src/utils/bamtools_variant.h",
+"type": "blob",
+"size": 3941
+},
+{
+"path": "src/utils/utils_global.h",
+"type": "blob",
+"size": 773
+},
+{
+"path": "src/xsemaphore.h",
+"type": "blob",
+"size": 2419
+},
+{
+"path": "tests",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/Makefile.am",
+"type": "blob",
+"size": 3321
+},
+{
+"path": "tests/command_line_tests.sh",
+"type": "blob",
+"size": 14092
+},
+{
+"path": "tests/runtest.sh",
+"type": "blob",
+"size": 4396
+},
+{
+"path": "tests/small.fq",
+"type": "blob",
+"size": 219786
+},
+{
+"path": "tests/smallref",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/smallref/lobstr_test_ref.bed",
+"type": "blob",
+"size": 1904
+},
+{
+"path": "tests/smallref/readme.txt",
+"type": "blob",
+"size": 481
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_chromsizes.tab",
+"type": "blob",
+"size": 365
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_mergedref.bed",
+"type": "blob",
+"size": 605
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref.fasta",
+"type": "blob",
+"size": 19940
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref.fasta.amb",
+"type": "blob",
+"size": 50
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref.fasta.ann",
+"type": "blob",
+"size": 104
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref.fasta.bwt",
+"type": "blob",
+"size": 7504
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref.fasta.pac",
+"type": "blob",
+"size": 4973
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref.fasta.rbwt",
+"type": "blob",
+"size": 7504
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref.fasta.rpac",
+"type": "blob",
+"size": 4973
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref.fasta.rsa",
+"type": "blob",
+"size": 2512
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref.fasta.sa",
+"type": "blob",
+"size": 2512
+},
+{
+"path": "tests/smallref/small_lobstr_ref_v2/lobSTR_ref_map.tab",
+"type": "blob",
+"size": 686
+},
+{
+"path": "tests/smallref/smallref_strinfo.tab",
+"type": "blob",
+"size": 1335
+},
+{
+"path": "tests/smallref_chrY",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/smallref_chrY/bad_strinfo_file.tab",
+"type": "blob",
+"size": 194
+},
+{
+"path": "tests/smallref_chrY/small_lobstr_ref_v2_chrY",
+"type": "tree",
+"size": 0
+},
+{
+"path": "tests/smallref_chrY/small_lobstr_ref_v2_chrY/lobSTR_ref.fasta",
+"type": "blob",
+"size": 8533651
+},
+{
+"path": "tests/smallref_chrY/small_lobstr_ref_v2_chrY/lobSTR_ref_map.tab",
+"type": "blob",
+"size": 202605
+},
+{
+"path": "tests/smallref_chrY/smallref_chrY.strinfo.tab",
+"type": "blob",
+"size": 349911
+},
+{
+"path": "tests/smallref_chrY/smallref_chrY_ref.bed",
+"type": "blob",
+"size": 529147
+},
+{
+"path": "tests/test.aligned.sorted.bam",
+"type": "blob",
+"size": 724
+},
+{
+"path": "tests/test.aligned.sorted.bam.bai",
+"type": "blob",
+"size": 18888
+},
+{
+"path": "tests/test.fa.gz",
+"type": "blob",
+"size": 145
+},
+{
+"path": "tests/test.fq.gz",
+"type": "blob",
+"size": 441
+},
+{
+"path": "tests/test.noindex.bam",
+"type": "blob",
+"size": 11631
+},
+{
+"path": "tests/test.norg.bam",
+"type": "blob",
+"size": 1627
+},
+{
+"path": "tests/test.norg.bam.bai",
+"type": "blob",
+"size": 376
+},
+{
+"path": "tests/test.nosample.bam",
+"type": "blob",
+"size": 1658
+},
+{
+"path": "tests/test.nosample.bam.bai",
+"type": "blob",
+"size": 376
+},
+{
+"path": "tests/test_chrY.bam",
+"type": "blob",
+"size": 6430896
+},
+{
+"path": "tests/test_chrY.bam.bai",
+"type": "blob",
+"size": 53296
+},
+{
+"path": "tests/tiny.fq",
+"type": "blob",
+"size": 864
+},
+{
+"path": "tests/tmp_1.fa",
+"type": "blob",
+"size": 291
+},
+{
+"path": "tests/tmp_1.fq",
+"type": "blob",
+"size": 3191202
+},
+{
+"path": "tests/tmp_2.fa",
+"type": "blob",
+"size": 289
+},
+{
+"path": "tests/tmp_2.fq",
+"type": "blob",
+"size": 3191202
+},
+{
+"path": "update_travis_mac.sh",
+"type": "blob",
+"size": 3731
+},
+{
+"path": "wishlist.txt",
+"type": "blob",
+"size": 345
+}
+]
+}

@@ -1,0 +1,62 @@
+{
+  "_about": "Hand-checked against giesselmann/STRique at f4ee01b184e39160e211d2d2d67ec2d0a0bbb49f (untagged; v0.4.2 plus 12 commits) on 2026-09-29, from README.md and the mkdocs sources it publishes on https://strique.readthedocs.io (docs/index.md, docs/installation/prerequisites.md, src.md, docker.md, test.md, docs/examples/intro.md; the rendered usage page was checked against docs/examples/intro.md), Dockerfile, requirements.txt, .gitmodules, configs/ and scripts/STRique.py at that commit, Docker Hub tags, api.anaconda.org and the GitHub releases.",
+  "program": {
+    "value": "STRique.py",
+    "subcommand": "count",
+    "where": "docs/examples/intro.md:56,75; scripts/STRique.py:875-879,902"
+  },
+  "command": {
+    "value": "cat ~/my_data.hg19.sam | python3 ~/src/STRique/scripts/STRique.py count ~/my_data/reads.fofn ~/src/STRique/models/r9_4_450bps.model ~/src/STRique/configs/repeat_config.tsv > ~/my_data.hg19.strique.tsv",
+    "source": "repo_docs",
+    "where": "docs/examples/intro.md:75-78, rendered at https://strique.readthedocs.io/en/latest/examples/intro/ (linked from README.md:19)"
+  },
+  "install": {
+    "documented": "Docker recommended: docker pull giesselmann/strique (tags per version). Or from source in a Python 3 virtualenv: git clone --recursive, pip3 install -r requirements.txt, python3 setup.py install (needs gcc/g++ with C++14, make, cmake, python3-dev, zlib and bzip2 headers)",
+    "acceptable_methods": ["docker_image", "dockerfile", "pip"],
+    "where": "docs/installation/prerequisites.md:17; docs/installation/docker.md:3-9; docs/installation/src.md:3-11,49-57; Dockerfile:38-62"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": null,
+    "image_documented": "giesselmann/strique",
+    "release_binary_documented": false,
+    "where": "docs/installation/docker.md:5,9; README.md:8 (Docker Hub badge); https://hub.docker.com/v2/repositories/giesselmann/strique/tags (latest, built 2021-03-17T17:21Z after the last code commit; v0.4.2, v0.4.1, development, v0.3.0, v0.2.1, v0.2.0; no tag for this commit); https://api.anaconda.org/package/bioconda/strique (not found); GitHub releases v0.2.0 to v0.4.2 have no assets"
+  },
+  "input": {
+    "kinds": ["fast5", "sam"],
+    "platforms": ["ont"],
+    "strhub_type": null,
+    "where": "README.md:13; docs/examples/intro.md:5,53-70"
+  },
+  "extra_inputs": [
+    {
+      "what": "Index of the raw-signal archive (reads.fofn), made with `STRique.py index` over the directory of single or bulk fast5 files, which must themselves be present",
+      "required": true,
+      "strhub_has": false,
+      "where": "docs/examples/intro.md:3-32,59"
+    },
+    {
+      "what": "ONT pore model, shipped as models/r9_4_450bps.model (R9.4, 450 bps; plus an mCpG model for the optional --mod_model)",
+      "required": true,
+      "strhub_has": false,
+      "where": "docs/examples/intro.md:60,76; tree: models/r9_4_450bps.model, models/r9_4_450bps_mCpG.model"
+    },
+    {
+      "what": "Repeat target config TSV with the header 'chr begin end name repeat prefix suffix' (flank sequences on the template strand, ~150 bp advised). The shipped configs/repeat_config.tsv has only c9orf72 and FMR1, in hg19 coordinates",
+      "required": true,
+      "strhub_has": false,
+      "where": "docs/examples/intro.md:34-48,61,77; configs/repeat_config.tsv:1-3"
+    },
+    {
+      "what": "HMM/alignment parameter JSON for --config (shipped as configs/STRique.json)",
+      "required": false,
+      "strhub_has": false,
+      "where": "docs/examples/intro.md:67; docs/installation/test.md:9; scripts/STRique.py:911"
+    }
+  ],
+  "runnable_on_strhub_data": {
+    "value": false,
+    "why": "STRique counts repeats in the raw nanopore signal. `count` needs the fast5 files behind the aligned reads, indexed with `STRique.py index`, and the alignment of those same reads. ont-bam-hg38 holds only basecalled, minimap2-aligned reads, with no signal. Its R10 chemistry also has no shipped pore model (R9.4 only). No STRhub dataset fits."
+  },
+  "notes": "README.md:3-4 says 'STRique is no longer maintained!' and that it may still work under Python 3.6/3.7. All usage lives in the mkdocs docs/ folder rendered on readthedocs; the README only links there, so the command is cited from the in-repository source of that page. Pinned commit f4ee01b (2023-03-17) is untagged: it is v0.4.2 plus 11 commits from 2021-03-17 (masker rewrite, pip and Docker fixes, docs) and a README edit. Docker Hub 'latest' was built after the last code commit, so it matches this code; the docs' Docker examples still use tag v0.3.0. The Dockerfile is what Docker Hub builds (README.md:8), hence 'dockerfile'. A source install needs the submodules (git clone --recursive: pybind11, seqan, ont_fast5_api) and installs pomegranate v0.10.0 from git (requirements.txt:11). The SAM can also be passed with --algn instead of stdin (scripts/STRique.py:909)."
+}

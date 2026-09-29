@@ -1,0 +1,11 @@
+{
+ "bioconda": {
+  "hipstr": [
+   "0.7"
+  ]
+ },
+ "release": {
+  "tag": "v0.7",
+  "assets": []
+ }
+}
