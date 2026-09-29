@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "STRhub Verified",
-  "message": "Runs as documented",
-  "color": "brightgreen"
+  "message": "Runs from its published image; the pinned commit does not build",
+  "color": "yellow"
 }

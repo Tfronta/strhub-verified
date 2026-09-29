@@ -1,6 +1,6 @@
 # STRhub Verified: GangSTR (gangstr)
 
-**Runs as documented.**
+**Runs from its published image; the pinned commit does not build.**
 
 ## As it is in the repository
 
@@ -50,9 +50,9 @@ GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regi
 
 - Source: `https://github.com/gymreklab/gangstr` @ `6ea9b2b8daca51dcab1f0e46210622b94b52ff17`
 - Environment: ubuntu-22.04 (`Dockerfile`); plan B: the published image gymreklab/str-toolkit the README points at (`Dockerfile.fallback`), after the build from the pinned commit failed
-- Generated: 2026-09-20T16:54:13+00:00
+- Generated: 2026-09-29T13:03:44+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35524020158
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36572064995
 
 ## Output content (plausibility evidence)
 

@@ -27,8 +27,8 @@
     },
     "fallback_used": true
   },
-  "generated": "2026-09-20T16:54:13+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524020158",
+  "generated": "2026-09-29T13:03:44+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36572064995",
   "run": {
     "cmd": "GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out outprefix",
     "cwd": "/opt/tool"
@@ -316,7 +316,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-20T16:54:13+00:00",
+    "checked": "2026-09-29T13:03:45+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -459,11 +459,11 @@
   },
   "certificate": {
     "schema": "strhub-verified/certificate/1",
-    "label": "Runs as documented",
+    "label": "Runs from its published image; the pinned commit does not build",
     "reached": "Runs + Plausible output",
     "summary": {
       "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
-      "result": "Runs as documented",
+      "result": "Runs from its published image; the pinned commit does not build",
       "reached": "Runs + Plausible output, 5/5 gates passed",
       "why": "The tool's run produced its documented output, on the published environment the README points at: the build from the pinned commit failed, so what ran is the version that environment holds.",
       "scope": "Installation, execution, and output structure verification.",
