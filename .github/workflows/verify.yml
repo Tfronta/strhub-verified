@@ -490,17 +490,20 @@ jobs:
           # a SHA that exists only in a fork of the repository, and a report
           # naming this repository must not attest a commit it does not hold.
           # Commits and trees only (no blobs), so this stays small.
-          rm -rf work/avail && mkdir -p work && git init -q work/avail
-          git -C work/avail fetch -q --filter=blob:none --tags -- "$TOOL_REPO" \
-            '+refs/heads/*:refs/remotes/origin/*'
-          if git -C work/avail cat-file -e "${TOOL_REF}^{commit}" 2>/dev/null \
-             || git -C work/avail cat-file -e "origin/${TOOL_REF}^{commit}" 2>/dev/null; then
+          # In the runner's temp dir, never cleaned up by hand: git's background
+          # maintenance can still be writing into it, and a failed `rm` here once
+          # failed the gate and read as the tool's source being unavailable.
+          AV="$RUNNER_TEMP/avail"
+          git init -q "$AV"
+          git -C "$AV" -c gc.auto=0 -c maintenance.auto=false fetch -q --no-auto-gc \
+            --filter=blob:none --tags -- "$TOOL_REPO" '+refs/heads/*:refs/remotes/origin/*'
+          if git -C "$AV" cat-file -e "${TOOL_REF}^{commit}" 2>/dev/null \
+             || git -C "$AV" cat-file -e "origin/${TOOL_REF}^{commit}" 2>/dev/null; then
             echo "pinned ref $TOOL_REF is in $TOOL_REPO"
           else
             echo "::error::the pinned ref $TOOL_REF is not a commit on any branch or tag of $TOOL_REPO"
             exit 1
           fi
-          rm -rf work/avail
 
       # --- Gate: Installs (docker build) -------------------------------------
       - id: installs
