@@ -1473,6 +1473,16 @@ EXPOSE = ("RUN find /opt/tool -xdev -type f -perm -u+x -newer /tmp/.strhub_built
           "-exec ln -sf {} /usr/local/bin/ \\;\n")
 
 
+def keep_path(path: str, extra: str = "") -> str:
+    """ENV PATH, and the same PATH for a login shell. The run is `bash -lc`,
+    and Debian's /etc/profile (micromamba, python:*-slim, rust, golang)
+    resets PATH: straglr's python, in the conda environment, was "not found"
+    by the very shell that ran it."""
+    exports = f"export PATH={path}:$PATH" + (f"; {extra}" if extra else "")
+    return (f"ENV PATH=\"{path}:$PATH\"\n"
+            f"RUN echo '{exports}' > /etc/profile.d/zz-strhub-path.sh\n")
+
+
 def _python_for(files: dict[str, str]) -> str:
     """3.11, or the nearest version pyproject's requires-python admits."""
     text = files.get("pyproject.toml", "") + files.get("setup.cfg", "") + files.get("setup.py", "")
@@ -1522,7 +1532,7 @@ def generate_dockerfile(slug: str, ref: str, build: dict, image_layout: bool = F
              f"    && cd tool && git checkout \"${{TOOL_REF}}\" \\\n"
              f"    && (git submodule update --init --recursive || true)\nWORKDIR /opt/tool\n"
              "RUN touch /tmp/.strhub_built\n")
-    tail = "ENV PATH=\"/opt/tool:/opt/tool/bin:$PATH\"\nWORKDIR /work\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n"
+    tail = keep_path("/opt/tool:/opt/tool/bin") + "WORKDIR /work\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n"
     head = "# Proposed by STRhub Verified detect_recipe. The build IS the Installs gate.\n"
     apt = ("RUN apt-get update && apt-get install -y --no-install-recommends \\\n"
            "        {pkgs} \\\n    && rm -rf /var/lib/apt/lists/*\n")
@@ -1563,7 +1573,7 @@ def generate_dockerfile(slug: str, ref: str, build: dict, image_layout: bool = F
                 + apt.format(pkgs="git ca-certificates") + clone
                 + f"RUN micromamba install -y -n base -c conda-forge -c bioconda {build['package']} "
                 "&& micromamba clean -a -y\n"
-                + "ENV PATH=\"/opt/conda/bin:/opt/tool:$PATH\"\nWORKDIR /work\n"
+                + keep_path("/opt/conda/bin:/opt/tool", "export CONDA_PREFIX=/opt/conda") + "WORKDIR /work\n"
                 + "ENTRYPOINT [\"micromamba\", \"run\", \"-n\", \"base\", \"/bin/bash\", \"-lc\"]\n")
     if m == "conda":
         create = (f"RUN micromamba create -y -n tool -c conda-forge -c bioconda --file {build['file']} "
@@ -1571,17 +1581,27 @@ def generate_dockerfile(slug: str, ref: str, build: dict, image_layout: bool = F
         # Built against the environment's own libraries: vamos's Makefile
         # includes htslib/sam.h, which conda put under the environment, not
         # where the compiler looks by default.
-        env_paths = ('export CPATH=$CONDA_PREFIX/include:${CPATH:-} LIBRARY_PATH=$CONDA_PREFIX/lib:${LIBRARY_PATH:-} '
+        # `micromamba run -n tool` leaves CONDA_PREFIX at the root prefix, and
+        # vamos's Makefile compiles with -I $(CONDA_PREFIX)/include: it expects
+        # the environment activated, so it is declared as such.
+        env_paths = ('export CONDA_PREFIX=/opt/conda/envs/tool; '
+                     'export CPATH=$CONDA_PREFIX/include:${CPATH:-} LIBRARY_PATH=$CONDA_PREFIX/lib:${LIBRARY_PATH:-} '
                      'LD_LIBRARY_PATH=$CONDA_PREFIX/lib:${LD_LIBRARY_PATH:-} PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig; ')
         then = "".join(f"RUN micromamba run -n tool bash -lc '{env_paths}{step}'\n" for step in build.get("then") or [])
         # A make or pip step on top of the environment compiles: vamos's
         # Makefile runs cmake for parasail, and the plain image had none.
         pkgs = BUILD_APT if build.get("then") else "git ca-certificates build-essential"
+        # ENV_NAME: the micromamba image's own .bashrc activates "the current
+        # environment" in every login shell, `base` unless told otherwise,
+        # and activating base takes the tool's environment off the PATH. The
+        # run is `bash -lc`: straglr's python was "not found" in the very
+        # environment it was installed in.
         return (head + "FROM mambaorg/micromamba:1.5.8\nUSER root\n"
                 + apt.format(pkgs=pkgs) + GIT_HTTPS + clone
-                + create + "&& micromamba clean -a -y\n" + then
+                + create + "&& micromamba clean -a -y\n" + "ENV ENV_NAME=tool\n" + then
                 + (EXPOSE if then else "")
-                + "ENV PATH=\"/opt/conda/envs/tool/bin:/opt/tool:$PATH\"\nWORKDIR /work\n"
+                + keep_path("/opt/conda/envs/tool/bin:/opt/tool", "export CONDA_PREFIX=/opt/conda/envs/tool")
+                + "WORKDIR /work\n"
                 + "ENTRYPOINT [\"micromamba\", \"run\", \"-n\", \"tool\", \"/bin/bash\", \"-lc\"]\n")
     if m == "pip":
         install = ("RUN pip install --no-cache-dir -r requirements.txt\n" if build["file"] == "requirements.txt"
@@ -1610,7 +1630,8 @@ def generate_dockerfile(slug: str, ref: str, build: dict, image_layout: bool = F
                                   "zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev")
                 + GIT_HTTPS + clone
                 + "RUN cargo build --release\n" + EXPOSE
-                + "ENV PATH=\"/opt/tool/target/release:$PATH\"\nWORKDIR /work\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n")
+                + keep_path("/opt/tool/target/release:/usr/local/cargo/bin")
+                + "WORKDIR /work\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n")
     if m == "go":
         return (head + "FROM golang:1.22\n" + clone + "RUN go build -o /usr/local/bin/ ./...\n" + tail)
     if m == "r":
