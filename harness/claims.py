@@ -53,6 +53,11 @@ from __future__ import annotations
 REGISTER: dict[str, tuple[str, str]] = {
     "4800fd91183e": ("certificate_text", "tree"),  # The repository ships example data (
     "3badef4c3d59": ("certificate_text", "tree"),  # ships no test or demo data of its own.
+    # The two sentences of step 1 that speak about somebody's repository. Both
+    # deny the reading they are most likely to get: neither says the tool does
+    # not work, because neither run established that (docs/PLAN-Paso-1.md).
+    "9bb264480cf8": ("certificate_text", "gates"),  # That does not mean the tool does not work. It means a third party following the README at this co
+    "f65b34dd9bd8": ("certificate_text", "readme"),  # Nothing was executed. That does not mean the tool does not work: what the guide asks for is miss
     "d2192e04fc10": ("diagnose_log", "run"),  # The container was stopped at the run's time limit. If the tool needs longer on this data, raise run.
     "ef1d9f98ef6e": ("verdict", "run"),  # The tool did not finish within the run's time limit, so it was stopped.
     "bd3265ea8d34": ("verdict", "tree"),  # the loci the documented command genotypes, from a file the repository ships, are not in STRhub's ref

@@ -139,6 +139,128 @@ def errors_reported(report: dict) -> bool:
 
 RUNS_FALLBACK = "Runs from its published image; the pinned commit does not build"
 
+#: The four blocks docs/GUIA-PASO-1.md asks for, in its words. A report that
+#: says a block is missing uses the same name the guide gives it, so correcting
+#: the commit is following that list rather than interpreting a paragraph.
+GUIDE = "docs/GUIA-PASO-1.md"
+GUIDE_BLOCKS = {
+    "install": "Installation, copyable",
+    "command": "One command",
+    "input": "The declared input",
+    "output": "The declared output",
+}
+
+#: Which block of the guide a `procedure.blocker` points at, and where the gap
+#: is. `commit` is a finding about the documentation, and the author can close
+#: it. `strhub` is ours: our sample shelf, or our own reader rewriting the
+#: command. A gap of ours is never told as a gap of theirs.
+STEP1_BLOCKERS = {
+    "no_install_procedure":  ("install", "commit"),
+    "published_image":       ("install", "commit"),
+    "no_command":            ("command", "commit"),
+    "synopsis_trimmed":      ("command", "commit"),
+    "output_unnamed":        ("output", "commit"),
+    "input_guessed":         ("input", "commit"),
+    "missing_file":          ("input", "commit"),
+    "flag_injected":         ("command", "strhub"),
+    "flag_dropped":          ("command", "strhub"),
+    "input_swapped":         ("input", "strhub"),
+    "input_not_substituted": ("input", "strhub"),
+    "missing_input":         ("input", "strhub"),
+    "loci_outside_panel":    ("input", "strhub"),
+    "regions_guessed":       ("input", "strhub"),
+    "ssh_rewritten":         ("install", "strhub"),
+}
+
+#: The three sentences of step 1, and the fourth case that is ours. None of
+#: them says the tool does not work: that is not what any of them observed.
+#: docs/PLAN-Paso-1.md fixes this wording; the web carries it in es/en/pt.
+STEP1_RUNS = (
+    "A third party installed the tool with the steps this commit states and ran the command it "
+    "writes, and the output file that command names appeared. This says nothing about genotypes "
+    "or about the forensic panel."
+)
+STEP1_DOES_NOT_RUN = (
+    "That does not mean the tool does not work. It means a third party following the README at "
+    "this commit did not reach the end. Fix the documentation, or the step that broke, and try "
+    "the link again on the new commit."
+)
+STEP1_CANNOT_TELL = (
+    "Nothing was executed. That does not mean the tool does not work: what the guide asks for is "
+    "missing from the README at this commit. Add it and try the link again on the new commit."
+)
+STEP1_OURS = (
+    "Nothing was executed, and the limitation is ours rather than the documentation's. Nothing "
+    "here is a finding about the tool. A small example file committed to the repository, or a "
+    "slice covering the coordinates this command reads, would let the run happen."
+)
+
+
+def step1_says(report: dict) -> dict:
+    """The step 1 result in the three sentences a maintainer is owed, plus the
+    block of the guide that is missing when one is.
+
+    `code` is `runs`, `does_not_run`, `cannot_tell` or `ours`. The first two
+    are findings about the commit; `cannot_tell` is a finding about its
+    documentation; `ours` is a limitation of STRhub's reference data or of its
+    own reader, and must not be rendered as the tool failing.
+
+    `missing` carries the guide's block keys, not their English names, so the
+    web can say them in es/en/pt without parsing a sentence. `missing_text` is
+    the same list in the words this repository prints.
+    """
+    verdict = report.get("verdict") or {}
+    code = verdict.get("code")
+    review = report.get("procedure_review") or {}
+    blocker = review.get("blocker") or ""
+    # The blocker decides whose the gap is, and the verdict's `basis` only
+    # stands in when the blocker is one this table does not know. They disagree
+    # on purpose for two of them: trimming a usage synopsis, or accepting an
+    # unnamed output, would be STRhub amending the procedure, which is why the
+    # classifier calls the amendment ours. But what the author can act on is
+    # that the commit states no command and names no output, so the reader is
+    # owed the block of the guide, not a sentence about our machinery
+    # (docs/PLAN-Paso-1.md).
+    block, whose = STEP1_BLOCKERS.get(blocker, (None, "")) if blocker in STEP1_BLOCKERS \
+        else (None, "strhub" if verdict.get("basis") == "strhub" else "commit")
+
+    def said(code, headline, body, missing=()):
+        return {"code": code, "headline": headline, "body": body, "missing": list(missing),
+                "missing_text": [GUIDE_BLOCKS[b] for b in missing], "guide": GUIDE}
+
+    if code == "runs":
+        return said("runs", "As documented, it runs.", STEP1_RUNS)
+    if code == "fails":
+        return said("does_not_run", "As documented, it does not run.",
+                    " ".join(x for x in (verdict.get("reason"), STEP1_DOES_NOT_RUN) if x))
+    if code != "undetermined":
+        return said(code or "none", "", "")
+
+    reason = review.get("reason") or verdict.get("reason") or ""
+    if whose == "strhub":
+        return said("ours", "STRhub could not attempt the documented run.",
+                    " ".join(x for x in (reason, STEP1_OURS) if x))
+    missing = [block] if block else _gap_blocks(verdict.get("readme_gaps") or [])
+    return said("cannot_tell", "As documented, a third party cannot tell how to run it.",
+                " ".join(x for x in (reason, STEP1_CANNOT_TELL) if x), missing)
+
+
+#: The README items check_readme.py already reports, mapped onto the guide's
+#: blocks. Those items are a word search and never decided whether a commit is
+#: runnable; here they only put a name on a gap the classifier already found.
+_GAP_BLOCK = {"install": "install", "install_steps": "install", "command": "command",
+              "usage": "command", "input": "input", "input_type": "input",
+              "output": "output", "output_format": "output"}
+
+
+def _gap_blocks(gaps: list) -> list[str]:
+    out = []
+    for gap in gaps:
+        block = _GAP_BLOCK.get(gap.get("item") or "")
+        if block and block not in out:
+            out.append(block)
+    return out
+
 
 def headline(report: dict) -> tuple[str, str]:
     """The label, in words, and its shields colour: what the run says about

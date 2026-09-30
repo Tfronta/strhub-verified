@@ -27,6 +27,7 @@ from certificate_text import (  # noqa: E402
     AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, FULL_RUN_HEADING, COLOR_HEX,
     certificate_for, display_name, LIMITATIONS, OUT_OF_SCOPE,
     INSTRUMENT_LINE, BADGE_INSTRUMENTS, CURATED_HEADING, CURATED_LEAD, CURATED_NEEDED,
+    step1_says,
 )
 import verdict as verdict_lib  # noqa: E402
 import upstream  # noqa: E402
@@ -126,11 +127,24 @@ LABELS.setdefault("example", "Reproduces own example")
 MEANING.setdefault("example", "the README's own command produced its documented output on the repository's own data")
 
 
+def _step1_md(report: dict) -> list[str]:
+    """Step 1 opens the summary, in its own words. The forensic pipeline is a
+    later section and never changes this sentence (docs/PLAN-Paso-1.md)."""
+    s = report.get("step1") or {}
+    if not s.get("headline"):
+        return []
+    lines = ["", f"**Step 1, the documented run: {s['headline']}** {s['body']}"]
+    if s.get("missing_text"):
+        lines += ["", f"Missing from the commit, by the blocks {s['guide']} asks for:", ""]
+        lines += [f"- {block}" for block in s["missing_text"]]
+    return lines
+
+
 def _verdict_md(report: dict) -> list[str]:
     v = report.get("verdict")
     if not v:
         return []
-    lines = ["", f"**Verdict: {v['title']}.** {v['reason']}"]
+    lines = _step1_md(report) + ["", f"**Verdict: {v['title']}.** {v['reason']}"]
     if v.get("blockers"):
         lines += ["", "What stopped it, and what can be done:", ""]
         for b in v["blockers"]:
@@ -1243,11 +1257,21 @@ def main() -> int:
             & diagnose_log.STRHUB_FIXABLE
         if ours:
             strhub_fault = ", ".join(sorted(ours))
+    procedure = (proposal or {}).get("procedure")
+    if procedure:
+        report["procedure_review"] = procedure
     report["verdict"] = verdict_lib.decide(
         gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
         fallback_used=args.environment_built == "fallback",
         strhub_fault=strhub_fault,
+        procedure=procedure,
     )
+
+    # Step 1 in the three sentences a maintainer is owed, with the block of
+    # docs/GUIA-PASO-1.md that is missing when one is. Derived from the
+    # classifier's blocker, not from check_readme's word search: searching a
+    # README for "install" never ran anything (docs/PLAN-Paso-1.md).
+    report["step1"] = step1_says(report)
 
     # The certificate's own words, as data: what the PDF prints in its
     # executive summary, its closing lists and its conclusion, so the page can
