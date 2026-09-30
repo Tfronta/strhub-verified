@@ -93,7 +93,9 @@ def test_the_label_says_the_result_in_words_not_the_rung():
     """One rule for the badge, both copies, the index and the certificate."""
     doc = lambda level, code, **k: {**_report("documented"), "level": level,
                                     "verdict": {"code": code, "title": "", "reason": ""}, **k}
-    assert ct.headline(doc("content", "runs")) == ("Runs as documented", "brightgreen")
+    # Looking like genotypes does not strengthen the claim. Both rungs are
+    # the same sentence and the same colour.
+    assert ct.headline(doc("content", "runs")) == ("Runs as documented", "green")
     assert ct.headline(doc("io", "runs")) == ("Runs as documented", "green")
     assert ct.headline(doc("io", "runs", diagnostics={"external": [{"id": "cannot_open", "severity": "error"}]})) \
         == ("Runs as documented (errors reported)", "yellow")
@@ -102,11 +104,10 @@ def test_the_label_says_the_result_in_words_not_the_rung():
     assert ct.headline(doc("runs", "fails")) == ("Does not run as documented: no output", "red")
     assert ct.headline(doc("installs", "undetermined")) == ("Could not be determined", "lightgrey")
     assert ct.headline(doc("installs", "out_of_scope")) == ("Out of scope", "lightgrey")
-    # Plan B: the commit did not build, the image the README points at ran.
-    # Not a plain green: building from source is what a user meets first.
-    plan_b = doc("content", "runs", environment={"fallback_used": True})
-    assert ct.headline(plan_b) == (ct.RUNS_FALLBACK, "yellow")
-    assert "does not build" in ct.RUNS_FALLBACK
+    # Plan B: gates may be green because the image ran. The commit did not
+    # build, and the label says that rather than calling it a run.
+    plan_b = doc("content", "fails", environment={"fallback_used": True})
+    assert ct.headline(plan_b) == ("Does not run as documented: stops at install", "red")
     # A recipe STRhub wrote, whatever it reached.
     assert ct.headline({**_report("curated"), "level": "content"}) == (ct.NOT_DOCUMENTED, "lightgrey")
     # A report from before the verdict: read off the rung.

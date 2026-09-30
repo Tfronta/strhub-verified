@@ -145,7 +145,7 @@ def test_the_tool_is_named_the_way_its_repository_writes_it():
 
 def test_a_readme_that_says_nothing_about_input_gets_a_guess_that_says_so(tmp_path):
     """Phase C3: when the reading finds nothing, say so — never dress a count
-    up as a reading. And a guess that turns out right is not a limitation."""
+    up as a reading. A file appearing afterwards does not make the guess a fact."""
     import verdict
     tree = {"tree": [{"path": "Makefile", "type": "blob", "size": 1}], "truncated": False}
     # A documented command that reads a BAM is read, not guessed: the input is
@@ -170,7 +170,7 @@ def test_a_readme_that_says_nothing_about_input_gets_a_guess_that_says_so(tmp_pa
     stopped = {"available": True, "installs": True, "runs": False, "io": False, "content": False}
     assert verdict.decide(stopped, recipe_proposal=proposal)["code"] == "undetermined"
     produced = {"available": True, "installs": True, "runs": True, "io": True, "content": True}
-    assert verdict.decide(produced, recipe_proposal=proposal)["code"] == "runs"
+    assert verdict.decide(produced, recipe_proposal=proposal)["code"] == "undetermined"
 
 
 def test_a_trial_is_filed_under_the_tool_s_catalogue_slug_not_the_run_s_name(tmp_path):

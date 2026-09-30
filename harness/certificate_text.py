@@ -163,20 +163,17 @@ def headline(report: dict) -> tuple[str, str]:
         return "Could not be determined", "lightgrey"
     if code == "out_of_scope":
         return "Out of scope", "lightgrey"
+    # The published image is a different claim. It does not make the commit
+    # a run, whatever the gates recorded after the fallback build.
+    if (report.get("environment") or {}).get("fallback_used"):
+        return "Does not run as documented: stops at install", "red"
     runs = code == "runs" if code else level in ("io", "content")
     if runs:
-        # Plan B: the pinned commit did not build and the published image the
-        # README points at ran instead. Both halves are findings, and the
-        # failure is the one a user building from source will meet first, so
-        # the label carries it instead of a plain green.
-        if (report.get("environment") or {}).get("fallback_used"):
-            label = RUNS_FALLBACK
-            if errors_reported(report):
-                label += " (errors reported)"
-            return label, "yellow"
         if errors_reported(report):
             return "Runs as documented (errors reported)", "yellow"
-        return "Runs as documented", ("brightgreen" if level == "content" else "green")
+        # Content (a file that looks like genotypes) does not strengthen the
+        # colour. Phase 1 claims execution, not analytical validity.
+        return "Runs as documented", "green"
     return f"Does not run as documented: {STOPS_AT.get(level, 'stops at ' + level)}", "red"
 
 

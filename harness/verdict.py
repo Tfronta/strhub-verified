@@ -248,10 +248,23 @@ def _raised(diagnostics: dict[str, list[dict]] | None) -> str:
     return ""
 
 
+def _procedure_block(procedure: dict | None, gaps: list) -> dict | None:
+    """An amended procedure, or one we cannot feed, is not a result about the
+    tool — including when the gates came back green. Success does not confirm
+    a guess. See docs/PLAN-Unamended-Procedure.md."""
+    if not procedure or procedure.get("may_say_runs", True):
+        return None
+    return {"code": "undetermined", "title": TITLES["undetermined"],
+            "basis": procedure.get("basis") or "procedure",
+            "reason": procedure.get("reason")
+            or "STRhub did not attempt a run it could attribute to the tool.",
+            "readme_gaps": gaps}
+
+
 def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
             manual_verification: dict | None = None, recipe_proposal: dict | None = None,
             declared_compatibility: dict | None = None, fallback_used: bool = False,
-            strhub_fault: str | None = None) -> dict:
+            strhub_fault: str | None = None, procedure: dict | None = None) -> dict:
     """Return {code, title, reason, readme_gaps, basis}."""
     gates = gates or {}
     mv = manual_verification or {}
@@ -261,23 +274,48 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     # Output counts only from a run that finished. A tool that printed its usage
     # to the redirected output file and exited 1 left a non-empty file behind;
     # that file is the evidence it did NOT run, and counting it published a
-    # crash as "Runs as documented". The example gate is already conditioned on
-    # its own step's exit status (report.py), so it stands on its own.
+    # crash as "Runs as documented". The example leg is a separate claim: a
+    # file the repository's own example wrote does not satisfy the run on the
+    # reference sample.
     ran = bool(gates.get("runs")) and bool(gates.get("io"))
-    produced = ran or bool(gates.get("example"))
+    produced = ran
+
+    # Plan B does not rescue the commit. The image, when one was tried, is a
+    # different claim and must not flip this verdict to runs.
+    if fallback_used:
+        blocked = _procedure_block(procedure, gaps)
+        if blocked:
+            return blocked
+        return {"code": "fails", "title": TITLES["fails"], "basis": "gates",
+                "reason": "The build from the pinned commit failed. A published image "
+                          "was not counted as that commit running.",
+                "readme_gaps": gaps}
+
+    blocked = _procedure_block(procedure, gaps)
+    if blocked:
+        return blocked
+
+    # A proposed recipe that already knows it is incomplete did not test the
+    # tool, even if a file appeared. A guess confirmed by that file is how an
+    # invented input used to become "Runs".
+    auto = proposal.get("schema", "").startswith("strhub-verified/recipe-proposal")
+    if auto and not (proposal.get("readme") or {}).get("sufficient_to_attempt", True):
+        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "readme",
+                "reason": "STRhub could not work out how to install or run this tool from "
+                          "its repository. The README does not say enough for a stranger to "
+                          "run it; each missing item is listed below.",
+                "readme_gaps": gaps}
+    limits = [l for l in proposal.get("limitations", []) if l in LIMITATION_TEXT]
+    if auto and limits:
+        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "recipe",
+                "reason": "STRhub could not complete a way to run this tool: "
+                          + "; ".join(LIMITATION_TEXT[l] for l in limits) + ".",
+                "readme_gaps": gaps}
 
     if produced:
-        # Plan B ran: the pinned commit did not build, the published environment
-        # the README points at did. Still "Runs" — output came out — but the
-        # one sentence has to say which version that was, since it is not the
-        # commit the report names.
-        reason = ("The tool installed and its run produced its documented output."
-                  if not fallback_used else
-                  "The tool's run produced its documented output, on the published environment "
-                  "the README points at: the build from the pinned commit failed, so what ran is "
-                  "the version that environment holds.")
         return {"code": "runs", "title": TITLES["runs"], "basis": "gates",
-                "reason": reason, "readme_gaps": []}
+                "reason": "The tool installed and its run produced its documented output.",
+                "readme_gaps": []}
 
     # STRhub's own machinery broke before the tool had its turn: the reference
     # genome did not download, a registry refused the pull. That is not a fact
@@ -299,34 +337,6 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
                 "reason": "The tool needs something the automated runner cannot provide: "
                           + ", ".join(what) + ". A manual verification can cover it.",
                 "readme_gaps": []}
-
-    # A recipe proposed from the repository, incomplete: the run (if any) says
-    # nothing about the tool, because nobody knew how to run it.
-    auto = proposal.get("schema", "").startswith("strhub-verified/recipe-proposal")
-    if auto and not (proposal.get("readme") or {}).get("sufficient_to_attempt", True):
-        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "readme",
-                "reason": "STRhub could not work out how to install or run this tool from "
-                          "its repository. The README does not say enough for a stranger to "
-                          "run it; each missing item is listed below.",
-                "readme_gaps": gaps}
-
-    # A proposed recipe that knew it was incomplete (no command, no install
-    # method, a regions BED in a format STRhub cannot write) did not test the
-    # tool; it tested the proposal.
-    limits = [l for l in proposal.get("limitations", []) if l in LIMITATION_TEXT]
-    # A guessed regions format only counts against the proposal when the run
-    # did not get its output: if the plain BED worked, it worked.
-    if "regions_format_guessed" in limits and ran:
-        limits.remove("regions_format_guessed")
-    # Likewise a guessed input type: if the run produced output, the guess
-    # was right, and a right guess is not a limitation.
-    if "input_type_guessed" in limits and ran:
-        limits.remove("input_type_guessed")
-    if auto and limits:
-        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "recipe",
-                "reason": "STRhub could not complete a way to run this tool: "
-                          + "; ".join(LIMITATION_TEXT[l] for l in limits) + ".",
-                "readme_gaps": gaps}
 
     # It was run, and did not produce. If the recipe was auto-proposed and the
     # failure is one an author fixes by naming the right flag or file, the
@@ -363,10 +373,10 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
 def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
            manual_verification: dict | None = None, recipe_proposal: dict | None = None,
            declared_compatibility: dict | None = None, fallback_used: bool = False,
-           strhub_fault: str | None = None) -> dict:
+           strhub_fault: str | None = None, procedure: dict | None = None) -> dict:
     """The verdict, plus the blockers a reader can act on when it is not 'runs'."""
     v = _decide(gates, diagnostics, manual_verification, recipe_proposal, declared_compatibility,
-                fallback_used, strhub_fault)
+                fallback_used, strhub_fault, procedure)
     # No blockers for a fault of ours: every blocker carries an issue to open
     # on the author's tracker, and there is nothing to ask them.
     if v["code"] in ("runs", "out_of_scope") or v.get("basis") == "strhub":
