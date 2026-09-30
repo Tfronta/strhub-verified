@@ -304,8 +304,11 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
         # `--bams run1.bam,run2.bam,run3.bam,run4.bam` is a README showing the
         # flag takes a list; four copies of the same file is not what anyone
         # means, and HipSTR refuses it. One list becomes one file.
+        def _first_of_list(m: re.Match) -> str:
+            notes.append("A comma-separated input list in the documented command was reduced to its first file.")
+            return m.group(1).split(",")[0]
         new = re.sub(r"((?:[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?)(?:,[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?)+)",
-                     lambda m: m.group(1).split(",")[0], new, flags=re.I)
+                     _first_of_list, new, flags=re.I)
         new, n = INPUT_TOKEN.subn(f"/data/in/{canonical}", new)
         n2 = 0
         if n == 0:
@@ -607,6 +610,10 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     caveat_items += warnings
     if caveat_items:
         manifest["caveats"] = {"source": "detect_recipe", "items": [c[:300] for c in caveat_items[:8]]}
+    # Not a manifest field: the schema rejects anything it does not name, and
+    # this is a review of the proposal, not a step the container runs.
+    import procedure as procedure_lib
+    reviewed = procedure_lib.classify(proposal, manifest, limitations, caveat_items)
 
     header = ("# STRhub Verified recipe, PROPOSED from the repository by detect_recipe.\n"
               "# Nobody typed this: every choice is listed under `caveats`, and the report\n"
@@ -619,6 +626,7 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         "dockerfile_fallback": dockerfile_fallback_text,
         "limitations": limitations,
         "readme_gaps": (proposal.get("readme") or {}).get("gaps", []),
+        "procedure": reviewed,
     }
 
 
@@ -702,6 +710,7 @@ def main() -> int:
     # The limitations travel back into the proposal file so the report's verdict
     # can read them alongside the README gaps.
     proposal["limitations"] = r["limitations"]
+    proposal["procedure"] = r["procedure"]
     pathlib.Path(args.proposal).write_text(json.dumps(proposal, indent=2))
     if args.out_dir:
         d = pathlib.Path(args.out_dir)
