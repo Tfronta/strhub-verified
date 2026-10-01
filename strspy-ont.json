@@ -22,8 +22,8 @@
     ],
     "source": "generated"
   },
-  "generated": "2026-09-20T16:53:34+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524025014",
+  "generated": "2026-10-01T12:35:18+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862515244",
   "run": {
     "cmd": "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt",
     "cwd": "/opt/tool"
@@ -131,7 +131,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-20T16:53:34+00:00",
+    "checked": "2026-10-01T12:35:18+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "main",

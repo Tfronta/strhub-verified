@@ -46,9 +46,9 @@ bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt
 
 - Source: `https://github.com/unique379r/strspy` @ `dafdee7e7e5672c8dc732e8577dbe153f53a12f5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-20T16:53:34+00:00
+- Generated: 2026-10-01T12:35:18+00:00
 - Upstream: The verified commit is 14 commit(s) behind `main`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35524025014
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862515244
 
 ## Verification matrix
 
