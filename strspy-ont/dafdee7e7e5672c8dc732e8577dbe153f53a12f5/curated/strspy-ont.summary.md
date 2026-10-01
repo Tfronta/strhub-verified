@@ -62,9 +62,9 @@ bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /op
 
 - Source: `https://github.com/unique379r/strspy` @ `dafdee7e7e5672c8dc732e8577dbe153f53a12f5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-20T16:57:55+00:00
+- Generated: 2026-10-01T12:40:17+00:00
 - Upstream: The verified commit is 14 commit(s) behind `main`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35524008276
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862471881
 
 ## Output content (plausibility evidence)
 

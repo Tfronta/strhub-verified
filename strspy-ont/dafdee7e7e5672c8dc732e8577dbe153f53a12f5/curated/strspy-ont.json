@@ -22,8 +22,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-20T16:57:55+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524008276",
+  "generated": "2026-10-01T12:40:17+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862471881",
   "run": {
     "cmd": "bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /opt/strspy/db/STRspy2.0-DB -b /opt/strspy/db/STRspy2.0-DB -l /opt/strspy/db-v2/STRspy_v2.DB.sort.bed -k 0.4 -o /data/out -c /opt/strspy/config/ToolsConfig.txt -d 1"
   },
@@ -181,7 +181,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-20T16:57:56+00:00",
+    "checked": "2026-10-01T12:40:17+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "main",
