@@ -23,8 +23,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-20T16:52:29+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524008276",
+  "generated": "2026-10-01T12:34:17+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862471881",
   "run": {
     "cmd": "str8rzr -c /opt/strait-razor/ForenSeqv1.27.config /data/in/sample.fastq > /data/out/sample.allsequences.txt"
   },
@@ -1494,7 +1494,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-20T16:52:30+00:00",
+    "checked": "2026-10-01T12:34:18+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
