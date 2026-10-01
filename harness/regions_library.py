@@ -26,6 +26,8 @@ FORMATS = {
     "strsearch": {"columns": "11 columns with flanking sequences", "tools": ["STRsearch"]},
     "bed4": {"columns": "chrom start end name", "tools": []},
     "motif": {"columns": "chrom start end motif", "tools": ["LongTR", "straglr", "NanoRepeat", "strkit"]},
+    "eh_catalog": {"columns": "ExpansionHunter variant catalog (JSON)", "tools": ["ExpansionHunter"]},
+    "trgt": {"columns": "chrom start end ID=;MOTIFS=;STRUC=", "tools": ["TRGT"]},
 }
 
 #: Program names (lower-case) that identify a format outright.
@@ -42,7 +44,11 @@ TOOL_FORMATS = {
     "nanorepeat": "motif",
     "nanorepeat.py": "motif",
     "strkit": "motif",
+    "expansionhunter": "eh_catalog",
+    "trgt": "trgt",
 }
+#: Formats written as JSON rather than BED: staged as /data/in/regions.json.
+JSON_FORMATS = {"eh_catalog"}
 #: A README that lays the regions file out with the motif in column 4:
 #: "4 column BED format: chromosome start end repeat" (straglr), "CHROM |
 #: START | END | MOTIF" (LongTR), "contig start end [...] motif" (strkit).
@@ -99,6 +105,9 @@ def format_for_tool(tool_name: str = "", cmd: str = "", readme: str = "") -> tup
 
 def detect_format(bed_text: str) -> str | None:
     """Which library format a supplied file is in, from its data rows."""
+    head = bed_text.lstrip()[:2000]
+    if head.startswith("[") and "LocusStructure" in head:
+        return "eh_catalog"
     rows = []
     for ln in bed_text.splitlines():
         s = ln.strip()
@@ -122,6 +131,8 @@ def detect_format(bed_text: str) -> str | None:
         return "hipstr"
     if widths <= {4} and col(3, MOTIF_RE.match):
         return "motif"
+    if widths <= {4} and col(3, lambda v: "MOTIFS=" in v and "ID=" in v):
+        return "trgt"
     if widths <= {3, 4}:
         return "bed4"
     return None

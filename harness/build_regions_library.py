@@ -35,7 +35,13 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 HG38_DEFAULT = os.environ.get("STRHUB_HG38", str(pathlib.Path.home() / "genomes" / "hg38" / "hg38.fa"))
-FORMATS = ("hipstr", "gangstr", "strsearch", "bed4", "motif")
+FORMATS = ("hipstr", "gangstr", "strsearch", "bed4", "motif", "eh_catalog", "trgt")
+#: The file each format is written to; everything but the catalog is a BED.
+FILE_NAME = {"eh_catalog": "eh_catalog.json"}
+
+
+def file_name(fmt: str) -> str:
+    return FILE_NAME.get(fmt, f"{fmt}.bed")
 
 # STRsearch extraction window (see build_strsearch_bed.py for the measurement
 # behind it) and flank length.
@@ -81,8 +87,36 @@ def library_readme(dataset: str, n: int) -> str:
             "| gangstr.bed | chrom start end period motif | GangSTR `--regions` |\n"
             "| strsearch.bed | 11 columns with flanking sequences | STRsearch `--ref_bed` |\n"
             "| bed4.bed | chrom start end name | any BED-reading tool |\n"
-            "| motif.bed | chrom start end motif | LongTR `--regions`, straglr `--loci`, NanoRepeat `-b`, strkit `--loci` |\n\n"
+            "| motif.bed | chrom start end motif | LongTR `--regions`, straglr `--loci`, NanoRepeat `-b`, strkit `--loci` |\n"
+            "| eh_catalog.json | ExpansionHunter variant catalog (JSON) | ExpansionHunter `--variant-catalog` |\n"
+            "| trgt.bed | chrom start end ID=;MOTIFS=;STRUC= (0-based) | TRGT `--repeats` |\n\n"
             "The files carry no comment line on purpose: GangSTR and HipSTR reject or misread one.\n")
+
+
+def _hipstr_rows(hipstr_text: str) -> list[dict]:
+    rows = []
+    for ln in hipstr_text.splitlines():
+        f = ln.split("\t")
+        if len(f) >= 7:
+            rows.append({"chrom": f[0], "start": int(f[1]), "end": int(f[2]), "name": f[5], "motif_seq": f[6]})
+    return rows
+
+
+def eh_catalog_text(rows: list[dict]) -> str:
+    """ExpansionHunter's variant catalog for the panel. The library's
+    coordinates are HipSTR's (1-based, inclusive); a ReferenceRegion is
+    0-based at the start, so one comes off."""
+    import json as _json
+    catalog = [{"LocusId": c["name"], "LocusStructure": f"({c['motif_seq']})*",
+                "ReferenceRegion": f"{c['chrom']}:{c['start'] - 1}-{c['end']}", "VariantType": "Repeat"}
+               for c in rows]
+    return _json.dumps(catalog, indent=2) + "\n"
+
+
+def trgt_text(rows: list[dict]) -> str:
+    """TRGT's repeat definitions: a BED (0-based) with ID, MOTIFS and STRUC."""
+    return "".join(f"{c['chrom']}\t{c['start'] - 1}\t{c['end']}\tID={c['name']};MOTIFS={c['motif_seq']};"
+                   f"STRUC=({c['motif_seq']})n\n" for c in rows)
 
 
 def motif_from_hipstr(hipstr_text: str) -> str:
@@ -140,6 +174,10 @@ def build(dataset: str, hg38: str) -> dict[str, str]:
     # straglr --loci, NanoRepeat -b, strkit --loci). BED4 carries the locus
     # name there, which each of them reads as a motif and refuses.
     out["motif"] = hdr + "".join(f"{c['chrom']}\t{c['start']}\t{c['end']}\t{c['motif_seq']}\n" for c in rows)
+    # The loci as ExpansionHunter's variant catalog and TRGT's repeat
+    # definitions: what each takes where HipSTR takes a regions BED.
+    out["eh_catalog"] = eh_catalog_text(rows)
+    out["trgt"] = trgt_text(rows)
     ss_header = ("#Chr\tStart\tEnd\tPeriod\tReference allele\tMarker\tOfficial name\t"
                  "STR sequence structure\tStrand\t5' Flanking sequence\t3' Flanking sequence\n")
     out["strsearch"] = ss_header + "".join(
@@ -193,7 +231,17 @@ def derive(dataset: str) -> dict[str, str]:
         + "".join(ln + "\n" for ln in (sd / "loci.bed").read_text().splitlines()
                   if not ln.startswith("#") and inside(ln)))
     for fmt in FORMATS:
-        text = (sd / "regions" / f"{fmt}.bed").read_text()
+        text = (sd / "regions" / file_name(fmt)).read_text()
+        if fmt == "eh_catalog":
+            import json as _json
+            kept = []
+            for e in _json.loads(text):
+                chrom, span = e["ReferenceRegion"].split(":")
+                a, b = span.split("-")
+                if inside(f"{chrom}\t{int(a) + 1}\t{b}"):
+                    kept.append(e)
+            out[f"regions/{file_name(fmt)}"] = _json.dumps(kept, indent=2) + "\n"
+            continue
         lines = text.splitlines()
         if fmt == "strsearch":
             # Its window is padded by STRSEARCH_PAD on each side of the tract.
@@ -231,7 +279,9 @@ def main() -> int:
             rdir = ROOT / "datasets" / ds / "regions"
             hip = (rdir / "hipstr.bed").read_text()
             n = sum(1 for ln in hip.splitlines() if ln.strip())
-            for name, text in (("motif.bed", motif_from_hipstr(hip)), ("README.md", library_readme(ds, n))):
+            rows = _hipstr_rows(hip)
+            for name, text in (("motif.bed", motif_from_hipstr(hip)), ("eh_catalog.json", eh_catalog_text(rows)),
+                               ("trgt.bed", trgt_text(rows)), ("README.md", library_readme(ds, n))):
                 p = rdir / name
                 if args.check:
                     if not p.exists() or p.read_text() != text:
@@ -258,7 +308,7 @@ def main() -> int:
         outdir = ROOT / "datasets" / ds / "regions"
         outdir.mkdir(exist_ok=True)
         for fmt, text in files.items():
-            p = outdir / (fmt if fmt.endswith(".md") else f"{fmt}.bed")
+            p = outdir / (fmt if fmt.endswith(".md") else file_name(fmt))
             if args.check:
                 if not p.exists() or p.read_text() != text:
                     drift.append(str(p.relative_to(ROOT)))

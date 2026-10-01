@@ -100,7 +100,8 @@ def _tree_file(tree_paths: list[str], want: re.Pattern) -> str | None:
 
 def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str] | None,
                          canonical: str | None, ref_mount: str | None,
-                         has_regions: bool, binary_elsewhere: bool = False) -> tuple[str, list[str]]:
+                         has_regions: bool, binary_elsewhere: bool = False,
+                         catalog_from_library: bool = False) -> tuple[str, list[str]]:
     """The parts of a documented command that are not a command yet: usage
     brackets, `<descriptions>`, `path/to/` stand-ins, `a.bam,...` lists and a
     `./tool` that the build put elsewhere. Every change is a note."""
@@ -173,6 +174,11 @@ def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str]
             return ref_mount
         if kind == "regions" and has_regions:
             return "/data/in/regions.bed"
+        if kind == "catalog" and catalog_from_library:
+            # The loci to genotype, left to the user like a regions BED:
+            # STRhub's catalog of the panel it holds reads (the library's
+            # eh_catalog), not a catalog of loci the sample does not cover.
+            return "/data/in/regions.json"
         if kind == "catalog":
             found = _tree_file(list(tree), re.compile(r"(?:catalog|catalogue)[^/]*\.json$", re.I))
             if found:
@@ -276,7 +282,7 @@ BINARY_ELSEWHERE = {"cargo", "cmake", "go", "autotools", "release_binary", "bioc
 
 def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str] | None = None,
                        tree_paths: list[str] | None = None, build_method: str | None = None,
-                       docs_text: str = "") -> tuple[str, list[str]]:
+                       docs_text: str = "", library_format: str | None = None) -> tuple[str, list[str]]:
     """Point the documented command at STRhub's mounts. Returns (cmd, notes)."""
     ds = datasets_lib.resolve(input_type) if input_type else None
     notes: list[str] = []
@@ -287,8 +293,11 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
     ref_mount = (ds.get("reference_genome") or {}).get("mount_path", "/data/ref/hg38.fa") \
         if ds.get("reference_genome") else None
     has_regions = bool(ds.get("regions_library")) or input_type in REQUIRES_REGIONS
+    catalog_from_library = bool(library_format in regions_library.JSON_FORMATS
+                                and regions_library.library_path(input_type or "", library_format))
     cmd, notes0 = normalize_documented(cmd, input_type, tree_paths, canonical, ref_mount, has_regions,
-                                       binary_elsewhere=build_method in BINARY_ELSEWHERE)
+                                       binary_elsewhere=build_method in BINARY_ELSEWHERE,
+                                       catalog_from_library=catalog_from_library)
     # A reference BAM with no read group, and a tool that names samples by it
     # (HipSTR's family): its documented --bam-samps/--bam-libs name the sample
     # instead. The ONT slices carry no @RG; LongTR stops without one.
@@ -513,16 +522,17 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         limitations.append("no_command")
         run_cmd = "true  # no command found in the README; nothing to run"
     else:
+        lib_fmt = regions_library.format_for_tool(name, best, proposal.get("readme_text", ""))[0]
         rewritten, notes = rewrite_for_strhub(best, input_type, proposal.get("config_files"),
                                               proposal.get("tree_paths"), build_info.get("method"),
-                                              proposal.get("readme_text", ""))
+                                              proposal.get("readme_text", ""), lib_fmt)
         pre = commands[0].get("prerequisite")
         if pre:
             # The documented step that writes what this command reads runs
             # first, rewritten the same way, and the run stops if it fails.
             pre_cmd, pre_notes = rewrite_for_strhub(pre["cmd"], input_type, proposal.get("config_files"),
                                                     proposal.get("tree_paths"), build_info.get("method"),
-                                                    proposal.get("readme_text", ""))
+                                                    proposal.get("readme_text", ""), lib_fmt)
             rewritten = f"{pre_cmd} && {rewritten}"
             notes = [n for n in pre_notes if n not in notes] + notes
             notes.append(f"The documented step before it ({pre['file']}, line {pre['line']}) runs first: "
@@ -543,7 +553,7 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     if best and input_type and datasets_lib.resolve(input_type):
         limitations += check_documented_files(run_cmd, proposal, input_type, caveat_items)
     regions_block = None
-    takes_regions = "/data/in/regions.bed" in run_cmd
+    takes_regions = "/data/in/regions.bed" in run_cmd or "/data/in/regions.json" in run_cmd
     if input_type in REQUIRES_REGIONS or (takes_regions and datasets_lib.resolve(input_type or "")
                                           and (datasets_lib.resolve(input_type) or {}).get("regions_library")):
         # The tool needs a regions file. Pick the library format the tool is

@@ -102,7 +102,7 @@
               "additionalProperties": false,
               "description": "A ready-made regions file from STRhub's library for the dataset (datasets/<type>/regions/<format>.bed): the panel's loci in the format the tool reads. Provenance is STRhub; nobody wrote a file for this tool.",
               "properties": {
-                "library": { "type": "string", "enum": ["hipstr", "gangstr", "strsearch", "bed4", "motif"], "description": "Which format: HipSTR (7 columns), GangSTR (5), STRsearch (11 with flanks), plain chrom/start/end/name, or chrom/start/end/motif (LongTR, straglr, NanoRepeat, strkit)." }
+                "library": { "type": "string", "enum": ["hipstr", "gangstr", "strsearch", "bed4", "motif", "eh_catalog", "trgt"], "description": "Which format: HipSTR (7 columns), GangSTR (5), STRsearch (11 with flanks), plain chrom/start/end/name, chrom/start/end/motif (LongTR, straglr, NanoRepeat, strkit), ExpansionHunter's variant catalog (JSON, staged as /data/in/regions.json), or TRGT's repeat definitions." }
               }
             },
             {

@@ -40,7 +40,9 @@
         "gangstr": "datasets/ont-bam-hg38/regions/gangstr.bed",
         "strsearch": "datasets/ont-bam-hg38/regions/strsearch.bed",
         "bed4": "datasets/ont-bam-hg38/regions/bed4.bed",
-        "motif": "datasets/ont-bam-hg38/regions/motif.bed"
+        "motif": "datasets/ont-bam-hg38/regions/motif.bed",
+        "eh_catalog": "datasets/ont-bam-hg38/regions/eh_catalog.json",
+        "trgt": "datasets/ont-bam-hg38/regions/trgt.bed"
       },
       "read_groups": false,
       "sample": "HG00113"
@@ -73,7 +75,9 @@
         "gangstr": "datasets/illumina-bam-hg38/regions/gangstr.bed",
         "strsearch": "datasets/illumina-bam-hg38/regions/strsearch.bed",
         "bed4": "datasets/illumina-bam-hg38/regions/bed4.bed",
-        "motif": "datasets/illumina-bam-hg38/regions/motif.bed"
+        "motif": "datasets/illumina-bam-hg38/regions/motif.bed",
+        "eh_catalog": "datasets/illumina-bam-hg38/regions/eh_catalog.json",
+        "trgt": "datasets/illumina-bam-hg38/regions/trgt.bed"
       }
     },
     "illumina-bam-hg38-y": {
@@ -104,7 +108,9 @@
         "gangstr": "datasets/illumina-bam-hg38-y/regions/gangstr.bed",
         "strsearch": "datasets/illumina-bam-hg38-y/regions/strsearch.bed",
         "bed4": "datasets/illumina-bam-hg38-y/regions/bed4.bed",
-        "motif": "datasets/illumina-bam-hg38-y/regions/motif.bed"
+        "motif": "datasets/illumina-bam-hg38-y/regions/motif.bed",
+        "eh_catalog": "datasets/illumina-bam-hg38-y/regions/eh_catalog.json",
+        "trgt": "datasets/illumina-bam-hg38-y/regions/trgt.bed"
       }
     }
   },

@@ -1339,11 +1339,30 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
             "statements": statements}
 
 
-def detect_output(readme: str, commands: list[dict]) -> dict:
-    text = readme + "\n" + "\n".join(c["cmd"] for c in commands)
+#: Files a README names that are never what the tool writes.
+NOT_OUTPUT_FILES = re.compile(r"\b(?:requirements|CMakeLists|LICENSE|README|CHANGELOG|NEWS|INSTALL|"
+                              r"MANIFEST|environment|setup|package|tsconfig|version)\.(?:txt|json|csv|tsv)\b", re.I)
+#: Order among equals: the format the Content gate reads best first.
+OUTPUT_PRIORITY = {"vcf": 0, "tsv": 1, "csv": 2, "json": 3}
+
+
+def detect_output(readme: str, commands: list[dict], docs: list[dict] | None = None) -> dict:
+    """The output format the documentation describes: the README, the
+    documents it links (ExpansionHunter describes its VCF and JSON outputs in
+    docs/05_OutputJsonFiles.md and 06_OutputVcfFiles.md) and the commands. A
+    file a README names that is not an output (requirements.txt) is not a
+    vote for TSV; that is how ExpansionHunter's VCF was looked for as a table."""
+    text = readme + "\n" + "\n".join(d["text"] for d in docs or []) + "\n" + "\n".join(c["cmd"] for c in commands)
+    text = NOT_OUTPUT_FILES.sub(" ", text)
     scores = [(fmt, len(rx.findall(text))) for fmt, rx in OUTPUT_SIGNALS]
-    scores.sort(key=lambda x: -x[1])
+    scores.sort(key=lambda x: (-x[1], OUTPUT_PRIORITY.get(x[0], 9)))
     best = scores[0][0] if scores and scores[0][1] else None
+    # The command writes a file with an extension: that settles it.
+    if commands:
+        m = re.search(r"(?:--?(?:o|out|output|tr-vcf|str-vcf|vcf)\s+|>\s*)\S+\.(vcf|tsv|csv|json)(?:\.gz)?\b",
+                      commands[0]["cmd"], re.I)
+        if m:
+            best = m.group(1).lower()
     return {"format": best, "signals": dict(scores)}
 
 
@@ -1762,7 +1781,7 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
     commands = detect_commands(readme, names, docs, readme_name, pkg["executables"])
     input_type = detect_input_type(readme, examples, docs, commands[0]["cmd"] if commands else None)
     commands = attach_prerequisite(prefer_input_kind(commands, _kind_of_type(input_type.get("best"))), set(paths))
-    output = detect_output(readme, commands)
+    output = detect_output(readme, commands, docs)
     rd = readme_gaps(readme_name, build, commands, input_type, output, examples)
     known = author_known_issues(readme)
     # Each known-issue quote carries the URL of the line it was read from.
