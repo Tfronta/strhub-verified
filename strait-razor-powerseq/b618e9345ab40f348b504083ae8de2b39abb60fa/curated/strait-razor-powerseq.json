@@ -23,8 +23,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-20T16:52:36+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524008276",
+  "generated": "2026-10-01T12:34:09+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862471881",
   "run": {
     "cmd": "str8rzr -c /opt/strait-razor/PowerSeqv2.31.config /data/in/sample.fastq > /data/out/sample.allsequences.txt"
   },
@@ -437,7 +437,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-20T16:52:37+00:00",
+    "checked": "2026-10-01T12:34:09+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
