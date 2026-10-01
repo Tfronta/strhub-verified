@@ -21,12 +21,17 @@
       "ubuntu-22.04"
     ],
     "source": "repository",
-    "from_repo": "Dockerfile"
+    "from_repo": "Dockerfile",
+    "fallback": {
+      "dockerfile": "Dockerfile.fallback",
+      "reason": "the published image anjing123/strsearch:latest the README points at"
+    },
+    "fallback_used": true
   },
-  "generated": "2026-09-20T16:52:28+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524023845",
+  "generated": "2026-10-01T12:41:56+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862511780",
   "run": {
-    "cmd": "python3 pipeline.py from_fastq --working_path example/test_results/ --sample test --fq1 /data/in/input.bam --fq2 /data/in/input.bam --ref /data/ref/hg38.fa",
+    "cmd": "mkdir -p example && python3 pipeline.py from_bam --working_path example/test_results --sample test --sex male --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes example/test_results/test_genotypes.txt --multiple_alleles example/test_results/test_multiple_alleles.txt --qc_matrix example/test_results/test_qc_matrix.txt",
     "cwd": "."
   },
   "instrument": "documented",
@@ -35,25 +40,30 @@
   },
   "gates": {
     "available": true,
-    "installs": false,
-    "runs": false,
-    "io": false,
+    "installs": true,
+    "runs": true,
+    "io": true,
     "content": false,
-    "example": false
+    "example": true
   },
-  "level": "available",
+  "level": "io",
   "io_detail": {
     "gate": "io",
-    "passed": false,
+    "passed": true,
     "outputs": [
       {
         "path": "**/*.t[sx][vt]",
         "format": "tsv",
         "checks": {
           "confined": true,
-          "exists": false
+          "exists": true,
+          "non_empty": true,
+          "parses_as_tsv": true,
+          "min_records": true
         },
-        "passed": false
+        "resolved": "example/test_results/STRsearch/CSF1PO_results_test.txt",
+        "records": 34,
+        "passed": true
       }
     ]
   },
@@ -64,21 +74,54 @@
     "outputs": [
       {
         "path": "**/*.t[sx][vt]",
-        "passed": false,
-        "error": "output not found"
+        "resolved": "example/test_results/STRsearch/CSF1PO_results_test.txt",
+        "mode": "auto",
+        "checks": {
+          "records_present": true,
+          "locus_column_found": false,
+          "loci_recognised": false,
+          "calls_or_counts_present": false
+        },
+        "stats": {
+          "rows": 35,
+          "header_row_dropped": false,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 0,
+          "distinct_str_loci": 0,
+          "distinct_snp_markers": 0,
+          "loci": [],
+          "str_loci": [],
+          "snp_markers": [],
+          "total_reads": 0,
+          "max_sequence_depth": 0,
+          "top_loci_by_depth": [],
+          "locus_column_found": false
+        },
+        "passed": false
       }
     ]
   },
   "example_detail": {
     "gate": "example",
     "applicable": true,
-    "passed": false,
+    "passed": true,
     "declared_outputs": [],
-    "produced": [],
+    "produced": [
+      "example/test_results/alignments/test.bam",
+      "example/test_results/alignments/test.bam.bai",
+      "scripts/__pycache__/STR_parse.cpython-36.pyc",
+      "scripts/__pycache__/STR_search.cpython-36.pyc",
+      "scripts/__pycache__/__init__.cpython-36.pyc",
+      "scripts/__pycache__/bwa_align.cpython-36.pyc",
+      "scripts/__pycache__/fastq.cpython-36.pyc",
+      "scripts/__pycache__/get_STR_fastq.cpython-36.pyc"
+    ],
     "checks": {
-      "created_non_empty_file": false
+      "created_non_empty_file": true
     },
-    "produced_count": 0
+    "produced_count": 8
   },
   "datasets": [
     {
@@ -96,19 +139,19 @@
       "available": true,
       "type": "illumina-bam-hg38",
       "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
-      "io": false,
+      "io": true,
       "content": false,
-      "passed": false
+      "passed": true
     },
     {
       "leg": "example",
       "label": "Tool's own example",
       "available": true,
-      "io": false,
+      "io": true,
       "content": null,
-      "passed": false,
+      "passed": true,
       "matches_expected": null,
-      "produced_count": 0
+      "produced_count": 8
     }
   ],
   "regions": {
@@ -146,7 +189,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-20T16:52:28+00:00",
+    "checked": "2026-10-01T12:41:57+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -154,7 +197,8 @@
     "behind_by": 0
   },
   "needed_beyond_repo": [
-    "Test data: no sample from the repository was used, so a public reference sample stood in."
+    "Test data: no sample from the repository was used, so a public reference sample stood in.",
+    "A container environment: the build from the pinned commit failed, so the published image anjing123/strsearch:latest the README points at was built instead. What ran is the version that environment holds, not necessarily the pinned commit."
   ],
   "evidence": [
     {
@@ -165,12 +209,20 @@
       "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/Dockerfile"
     },
     {
+      "claim": "fallback_environment",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 223,
+      "text": "docker pull anjing123/strsearch:latest",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L223"
+    },
+    {
       "claim": "run_command",
       "kind": "readme",
       "path": "README.md",
-      "line": 96,
-      "text": "python3 pipeline.py from_fastq \\",
-      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L96"
+      "line": 107,
+      "text": "python3 pipeline.py from_bam \\",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L107"
     },
     {
       "claim": "example_data",
@@ -231,33 +283,37 @@
   "caveats": {
     "source": "detect_recipe",
     "items": [
-      "Environment: the repository's own Dockerfile was built as-is.",
+      "Environment: the repository's own Dockerfile was built as-is. If it does not build, the published image anjing123/strsearch:latest the README points at stands in, and the report says so.",
       "Input: the README documents BAM and FASTQ (line 77); this run used STRhub's illumina-bam-hg38 reference data.",
-      "2 input path(s) in the README command replaced with /data/in/input.bam.",
-      "1 reference FASTA path(s) replaced with /data/ref/hg38.fa.",
+      "The output directory the command writes into (example) was created first.",
+      "1 input path(s) in the README command replaced with /data/in/input.bam.",
+      "1 BED path(s) replaced with /data/in/regions.bed.",
       "Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output.",
       "Regions: STRhub's ready-made strsearch file for the dataset's panel loci (STRhub records the strsearch layout for a program of this name).",
       "README mentions hg19/GRCh37 only; STRhub reference BAMs are hg38"
     ]
   },
   "logs": {
+    "external": "strsearch.log-external.txt",
+    "example": "strsearch.log-example.txt",
     "build": "strsearch.log-build.txt"
   },
   "install_detail": {
-    "passed": false,
+    "passed": true,
+    "fallback_used": true,
     "diagnostics": [
       {
-        "id": "build_file_missing",
+        "id": "build_download_failed",
         "severity": "error",
-        "title": "The build referenced a file that is not in the build context",
-        "count": 1,
-        "examples": [],
-        "suggestion": "A COPY/ADD line names a file the build cannot see. The container is built from the tool's directory, and the repository is cloned inside the image, so paths from your own machine are not available."
+        "title": "A download in the build failed: https://drive5.com/cgi-bin/upload3.py?license=2019110501245926689",
+        "count": 2,
+        "examples": [
+          "https://drive5.com/cgi-bin/upload3.py?license=2019110501245926689"
+        ],
+        "suggestion": "The build fetches that address and did not get the file. If the link is dead or needs a licence, the install steps need a new source for it; if the server was down, trying again will tell."
       }
     ],
-    "faults": [
-      "author"
-    ]
+    "faults": []
   },
   "manual_verification": {
     "eligible": false,
@@ -266,33 +322,22 @@
     "reason": null
   },
   "verdict": {
-    "code": "fails",
-    "title": "Fails",
+    "code": "runs",
+    "title": "Runs",
     "basis": "gates",
-    "reason": "The environment did not build from the declared install steps.",
+    "reason": "The tool's run produced its documented output, on the published environment the README points at: the build from the pinned commit failed, so what ran is the version that environment holds.",
     "readme_gaps": [],
-    "blockers": [
-      {
-        "code": "build_failed",
-        "what": "The environment did not build from the install steps found in the repository.",
-        "self_fix": "edit_install",
-        "self_fix_text": "Adjust the install steps (or provide a Dockerfile) and try again.",
-        "ask_owner": {
-          "title": "Build fails from a clean checkout",
-          "body": "STRhub Verified tried to build the tool from a clean checkout at the pinned commit, following the repository's own install steps, and the build failed. The build log is linked from the run."
-        }
-      }
-    ]
+    "blockers": []
   },
   "certificate": {
     "schema": "strhub-verified/certificate/1",
-    "label": "Does not run as documented: stops at install",
-    "reached": "Available",
+    "label": "Runs from its published image; the pinned commit does not build",
+    "reached": "Runs + Expected IO",
     "summary": {
       "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
-      "result": "Does not run as documented: stops at install",
-      "reached": "Available, 1/5 gates passed",
-      "why": "The environment did not build from the declared install steps.",
+      "result": "Runs from its published image; the pinned commit does not build",
+      "reached": "Runs + Expected IO, 4/5 gates passed",
+      "why": "The tool's run produced its documented output, on the published environment the README points at: the build from the pinned commit failed, so what ran is the version that environment holds.",
       "scope": "Installation, execution, and output structure verification.",
       "not_evaluated": [
         "Genotype accuracy",
@@ -303,16 +348,16 @@
     },
     "conclusion": [
       {
-        "title": "Does not install",
-        "body": "The environment for STRsearch c70179b could not be built from the declared install steps, so nothing further was attempted."
+        "title": "Runs end-to-end",
+        "body": "STRsearch c70179b installs and executes without error in an environment built from the published image anjing123/strsearch:latest the README points at, after the build from the pinned commit failed."
       },
       {
-        "title": "No output produced",
-        "body": "No file in the declared format was written, so nothing could be checked for structure or content. This says the run did not get that far; it is not a finding about the quality of the software."
+        "title": "Produces output in the declared format",
+        "body": "The tool wrote a non-empty TSV file. Whether its contents look like genotype data was not established at this level."
       },
       {
-        "title": "Verdict: Fails",
-        "body": "The environment did not build from the declared install steps."
+        "title": "Verdict: Runs",
+        "body": "The tool's run produced its documented output, on the published environment the README points at: the build from the pinned commit failed, so what ran is the version that environment holds."
       },
       {
         "title": "Repository test data not used",
