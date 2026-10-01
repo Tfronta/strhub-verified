@@ -27,8 +27,8 @@
     },
     "fallback_used": true
   },
-  "generated": "2026-09-29T13:03:44+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36572064995",
+  "generated": "2026-10-01T12:37:47+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862501183",
   "run": {
     "cmd": "GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out outprefix",
     "cwd": "/opt/tool"
@@ -316,7 +316,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-29T13:03:45+00:00",
+    "checked": "2026-10-01T12:37:47+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -431,7 +431,7 @@
         "id": "autotools_aux_missing",
         "severity": "error",
         "title": "An autotools build is missing its auxiliary file: config.sub",
-        "count": 4,
+        "count": 2,
         "examples": [
           "config.sub",
           "config.guess"

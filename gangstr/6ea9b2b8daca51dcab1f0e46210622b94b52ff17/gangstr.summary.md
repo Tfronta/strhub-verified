@@ -32,7 +32,7 @@ What failed:
 
 | What happened | Times | Suggested fix |
 |---|---|---|
-| An autotools build is missing its auxiliary file: config.sub | 4 | The configure script needs 'config.sub', which `autoreconf -i` (or `automake --add-missing`) copies in from the automake package. The build runs autoconf without installing those files; running `autoreconf -fi` before `./configure` in that step fixes it. |
+| An autotools build is missing its auxiliary file: config.sub | 2 | The configure script needs 'config.sub', which `autoreconf -i` (or `automake --add-missing`) copies in from the automake package. The build runs autoconf without installing those files; running `autoreconf -fi` before `./configure` in that step fixes it. |
 
 Full build output: [`gangstr.log-build.txt`](gangstr.log-build.txt)
 
@@ -50,9 +50,9 @@ GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regi
 
 - Source: `https://github.com/gymreklab/gangstr` @ `6ea9b2b8daca51dcab1f0e46210622b94b52ff17`
 - Environment: ubuntu-22.04 (`Dockerfile`); plan B: the published image gymreklab/str-toolkit the README points at (`Dockerfile.fallback`), after the build from the pinned commit failed
-- Generated: 2026-09-29T13:03:44+00:00
+- Generated: 2026-10-01T12:37:47+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36572064995
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862501183
 
 ## Output content (plausibility evidence)
 
