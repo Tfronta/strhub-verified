@@ -44,6 +44,9 @@ TOOL_FORMATS = {
     "nanorepeat": "motif",
     "nanorepeat.py": "motif",
     "strkit": "motif",
+    # vamos -r: chrom, start, end, comma-separated motifs; the version and type
+    # columns of the published catalogs are optional (src/io.cpp, readRegionAndMotifs).
+    "vamos": "motif",
     "expansionhunter": "eh_catalog",
     "trgt": "trgt",
 }

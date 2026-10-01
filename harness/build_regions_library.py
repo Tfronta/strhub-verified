@@ -190,7 +190,9 @@ def build(dataset: str, hg38: str) -> dict[str, str]:
 #: filtering, not by reading the genome again: the ONT and PacBio HiFi slices
 #: are the CODIS loci ±10 kb, at the same hg38 coordinates as the Illumina panel.
 DERIVED = {"ont-bam-hg38": ("illumina-bam-hg38", "ont_slices/codis_pm10kb.bed"),
-           "pacbio-hifi-bam-hg38": ("illumina-bam-hg38", "pacbio_slices/codis_pm10kb.bed")}
+           "pacbio-hifi-bam-hg38": ("illumina-bam-hg38", "pacbio_slices/codis_pm10kb.bed"),
+           # The ONT FASTQ holds only the reads over the panel loci themselves.
+           "ont-fastq": ("illumina-bam-hg38", "ont_slices/codis_panel_windows.bed")}
 
 
 def _windows(path: pathlib.Path) -> list[tuple[str, int, int]]:

@@ -239,3 +239,18 @@ def test_hifi_reads_are_only_ever_handed_over_aligned():
     readme = "# Tool\n\nDesigned for PacBio HiFi data.\n\nThe input is a FASTQ file of reads.\n"
     r = dr.detect_input_type(readme, [])
     assert r["best"] is None and r["unsupported"] == {"kinds": ["fastq"], "platform": "pacbio"}
+
+
+def test_a_command_that_reads_alignments_or_calls_decides_the_input():
+    # tandem-genotypes reads LAST's MAF; its README's "the read sequences (in
+    # fastq or fasta)" is the input of the lastal step before it. Once STRhub
+    # held ONT FASTQ, that sentence handed it reads its command never opens.
+    readme = ("# tandem-genotypes\n\nFinds changes in length of tandem repeats from long DNA reads "
+              "(nanopore).\n\nThis uses 3 input files: the read sequences (in fastq or fasta format).\n")
+    r = dr.detect_input_type(readme, [], command="tandem-genotypes -g refGene.txt microsat.txt alignments.maf")
+    assert r["best"] is None and r["how"] == "command" and r["unsupported"]["kinds"] == ["maf"]
+    assert dr.kind_from_command("mergeSTR --vcfs a.vcf.gz,b.vcf.gz --out merged") == "vcf"
+    # A VCF the command writes is not what it reads.
+    assert dr.kind_from_command("tool --ref hg38.fa --out calls.vcf") is None
+    assert dr.kind_from_command("tool --ref hg38.fa --output-vcf calls.vcf.gz") is None
+    assert dr.kind_from_command("HipSTR --bams in.bam --str-vcf out.vcf.gz") == "bam"

@@ -1244,13 +1244,27 @@ def _stated_platform(statements: dict) -> str | None:
     return None
 
 
+#: An option, or a redirection, that names what a command WRITES.
+_WRITES = re.compile(r"^(?:>>?|--?(?:o|out|output|out[-_]?file|output[-_]?file|prefix|output[-_]?prefix|"
+                     r"(?:str|tr)[-_]?vcf|vcf[-_]?out|out(?:put)?[-_]?vcf))$", re.I)
+
+
 def kind_from_command(cmd: str) -> str | None:
-    """The reads a documented command visibly takes: a .bam/.cram or FASTQ
-    path, or a flag that names them."""
+    """What a documented command visibly takes: reads (a .bam/.cram or FASTQ
+    path, or a flag that names them) or, failing those, alignments or calls
+    it reads rather than writes (LAST's .maf, a .vcf)."""
     if re.search(r"\.(?:bam|cram)\b|--?(?:bams?|crams?)\b|\s-b\s+\S+\.(?:bam|cram)", cmd, re.I):
         return "bam"
     if re.search(r"\.f(?:ast)?q(?:\.gz)?\b|--(?:fastqs?|fq[12]?|reads[12]?)\b", cmd, re.I):
         return "fastq"
+    toks = cmd.split()
+    for i, t in enumerate(toks):
+        if i and _WRITES.match(toks[i - 1]):
+            continue
+        if re.search(r"\.maf(?:\.gz)?$", t, re.I):
+            return "maf"
+        if re.search(r"\.vcf(?:\.gz)?$", t, re.I):
+            return "vcf"
     return None
 
 
@@ -1291,7 +1305,19 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
     # vamos's own command takes `-b reads.bam`.
     cmd_kind = kind_from_command(command or "")
     only_aux = statements["determined"] and all(i["kind"] in ("vcf", "signal") for i in statements["inputs"])
-    if cmd_kind and (not statements["determined"] or only_aux):
+    not_reads = cmd_kind in ("maf", "vcf")
+    if not_reads:
+        # The command reads alignments or calls, whatever the README says
+        # about the reads upstream of it: tandem-genotypes reads LAST's MAF,
+        # and its README's "the read sequences (in fastq or fasta)" is the
+        # input of the lastal step before it. Handing it reads would stage a
+        # file its command never opens.
+        stated = _stated_platform(statements)
+        platform = stated or ("ont" if hits["ont"] > hits["illumina"] else "illumina")
+        platform_how = "stated" if stated else "counted"
+        ranked = []
+        how = "command"
+    elif cmd_kind and (not statements["determined"] or only_aux):
         stated = _stated_platform(statements)
         platform = stated or ("ont" if hits["ont"] > hits["illumina"] else "illumina")
         platform_how = "stated" if stated else "counted"
@@ -1334,7 +1360,9 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
     # What the documentation says the tool reads when STRhub holds nothing of
     # the kind: the reason a trial cannot run, in the tool's own terms.
     unsupported = None
-    if statements["determined"] and not ranked and how != "command":
+    if not_reads:
+        unsupported = {"kinds": [cmd_kind], "platform": platform}
+    elif statements["determined"] and not ranked and how != "command":
         unsupported = {"kinds": [i["kind"] for i in statements["inputs"]], "platform": platform}
     return {"best": ranked[0] if ranked else None, "candidates": ranked, "signals": hits,
             "warnings": warnings, "unsupported": unsupported, "statements_file": statements_file,

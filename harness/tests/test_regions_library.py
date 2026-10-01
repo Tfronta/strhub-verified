@@ -9,7 +9,9 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 REPOS = ROOT / "harness" / "testdata" / "repos"
 
 
-BAM_TYPES = ("illumina-bam-hg38", "illumina-bam-hg38-y", "ont-bam-hg38", "pacbio-hifi-bam-hg38")
+BAM_TYPES = ("illumina-bam-hg38", "illumina-bam-hg38-y", "ont-bam-hg38", "pacbio-hifi-bam-hg38",
+             # Not a BAM, but read by tools that align it to hg38 and take the same regions.
+             "ont-fastq")
 
 
 def test_every_bam_dataset_has_every_format():

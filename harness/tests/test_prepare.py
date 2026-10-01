@@ -96,3 +96,17 @@ def test_the_tools_own_command_comes_back_out_of_the_wrapper():
     assert prepare.unwrap_example(wrapped) == (cmd, "/opt/tool")
     # A committed manifest's command is not wrapped and comes back as it is.
     assert prepare.unwrap_example("  GangSTR --bam in.bam   --out out ") == ("GangSTR --bam in.bam --out out", None)
+
+
+def test_the_ont_fastq_is_handed_over_uncompressed(tmp_path):
+    # Committed gzipped to keep the repository small; staged as plain FASTQ,
+    # which every reader takes, under the name the run command uses.
+    sys.path.insert(0, str(ROOT / "harness"))
+    import prepare
+    staged, name = prepare.stage_external("ont-fastq", tmp_path)
+    assert staged and "HG00113" in name
+    fq = tmp_path / "input.fastq"
+    with fq.open() as f:
+        head = [next(f) for _ in range(4)]
+    assert head[0].startswith("@") and head[2].startswith("+") and len(head[1]) == len(head[3])
+    assert sum(1 for _ in fq.open()) == 4 * 864

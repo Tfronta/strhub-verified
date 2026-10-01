@@ -22,6 +22,7 @@ takes without each attempt landing on main and on the public catalogue.
 from __future__ import annotations
 import argparse
 import base64
+import gzip
 import json
 import os
 import pathlib
@@ -243,6 +244,11 @@ def stage_external(input_type, work_in: pathlib.Path) -> tuple[bool, str]:
                 idx_dest = work_in / expected_bai
                 if not idx_dest.exists():
                     shutil.copy2(idx_src, idx_dest)
+    elif data.suffix == ".gz" and canonical and not canonical.endswith(".gz"):
+        # Committed compressed, handed over uncompressed: every FASTQ reader
+        # takes plain text, not every one takes gzip.
+        with gzip.open(data, "rb") as src, open(work_in / canonical, "wb") as dst:
+            shutil.copyfileobj(src, dst)
     else:
         dest_name = canonical or data.name
         shutil.copy2(data, work_in / dest_name)
