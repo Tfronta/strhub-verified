@@ -1209,11 +1209,15 @@ def _kind_of_type(input_type: str | None) -> str | None:
 
 
 def _type_for(kind: str, platform: str, ystr: bool) -> str | None:
-    if kind in ("vcf", "signal") or platform == "pacbio":
-        # STRhub holds no genotype calls to post-process, no raw signal and
-        # no PacBio HiFi reads. A type that names what the tool reads, so the
-        # proposal can say that, instead of handing it Illumina reads.
+    if kind in ("vcf", "signal"):
+        # STRhub holds no genotype calls to post-process and no raw signal. A
+        # type that names what the tool reads, so the proposal can say that,
+        # instead of handing it Illumina reads.
         return None
+    if platform == "pacbio":
+        # STRhub's HiFi reads are aligned, in a BAM; there are no unaligned
+        # HiFi reads to hand a tool that takes FASTQ.
+        return "pacbio-hifi-bam-hg38" if kind == "bam" else None
     if kind == "fsa":
         return "ce-fsa"
     if kind == "bam":
@@ -1227,8 +1231,10 @@ def _type_for(kind: str, platform: str, ystr: bool) -> str | None:
 
 def _stated_platform(statements: dict) -> str | None:
     """The platform the documentation says the tool is FOR now. A current
-    statement beats a historical one; nanopore beats PacBio when both are
-    current (STRhub has nanopore data and no HiFi); long reads beat Illumina."""
+    statement beats a historical one; long reads beat Illumina. When a tool
+    states both nanopore and PacBio, either dataset is a faithful reading and
+    nanopore is kept first, so a tool already verified on nanopore reads is
+    not moved to another dataset by this."""
     plats = [p for p in statements["platform"] if p["platform"] in ("ont", "pacbio", "illumina")]
     current = [p["platform"] for p in plats if not p.get("historical")]
     pool = current or [p["platform"] for p in plats]
@@ -1293,8 +1299,7 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
         how = "command"
     elif statements["determined"]:
         # The platform the README states the tool is for; a count of platform
-        # words decides only when no sentence does, and PacBio has no STRhub
-        # dataset so it can only ever fall through to the next.
+        # words decides only when no sentence does.
         stated = _stated_platform(statements)
         if stated:
             platform, platform_how = stated, "stated"

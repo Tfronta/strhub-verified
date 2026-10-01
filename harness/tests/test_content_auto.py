@@ -36,7 +36,9 @@ PANEL = ROOT / "datasets" / "illumina-bam-hg38" / "loci.bed"
 
 
 def test_reads_regions_from_every_library_layout():
-    for fmt in ("hipstr", "strsearch", "bed4"):
+    # TRGT's layout names the locus inside its fourth column (ID=TH01;MOTIFS=...);
+    # a TRGT run on the HiFi slice once reported its loci by that whole string.
+    for fmt in ("hipstr", "strsearch", "bed4", "trgt"):
         regs = ca.read_regions(LIB / f"{fmt}.bed")
         assert len(regs) == 24, fmt
         assert {r[3] for r in regs} >= {"TH01", "TPOX", "vWA", "FGA"}, fmt

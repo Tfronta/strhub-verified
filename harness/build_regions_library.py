@@ -187,9 +187,10 @@ def build(dataset: str, hg38: str) -> dict[str, str]:
 
 
 #: A dataset whose slice is a subset of another's loci gets its regions by
-#: filtering, not by reading the genome again: the ONT slices are the CODIS
-#: loci ±10 kb, at the same hg38 coordinates as the Illumina panel.
-DERIVED = {"ont-bam-hg38": ("illumina-bam-hg38", "ont_slices/codis_pm10kb.bed")}
+#: filtering, not by reading the genome again: the ONT and PacBio HiFi slices
+#: are the CODIS loci ±10 kb, at the same hg38 coordinates as the Illumina panel.
+DERIVED = {"ont-bam-hg38": ("illumina-bam-hg38", "ont_slices/codis_pm10kb.bed"),
+           "pacbio-hifi-bam-hg38": ("illumina-bam-hg38", "pacbio_slices/codis_pm10kb.bed")}
 
 
 def _windows(path: pathlib.Path) -> list[tuple[str, int, int]]:

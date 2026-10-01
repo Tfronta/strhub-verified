@@ -218,3 +218,24 @@ def test_a_known_issue_quote_is_bounded_and_says_when_it_was_cut():
     out = dr.author_known_issues(long_readme)
     assert len(out) == 1 and out[0]["truncated"] is True and len(out[0]["text"]) == 600
     assert dr.author_known_issues("## Known issues\n\ntiny") == []  # too short to be a finding
+
+
+def test_a_tool_made_for_pacbio_hifi_gets_the_hifi_reads():
+    # TRGT's README: "Tandem repeat genotyping and visualization from PacBio
+    # HiFi data". Until STRhub held HiFi reads it got no dataset at all.
+    readme = ("# TRGT\n\nTandem repeat genotyping and visualization from PacBio HiFi data.\n\n"
+              "The input is a BAM file with aligned HiFi reads.\n")
+    r = dr.detect_input_type(readme, [])
+    assert r["platform"] == "pacbio" and r["best"] == "pacbio-hifi-bam-hg38"
+
+
+def test_a_tool_for_both_long_read_platforms_stays_on_nanopore():
+    # Either dataset is a faithful reading; the one it was verified on is kept.
+    readme = "# Tool\n\nWorks with PacBio HiFi and Oxford Nanopore data.\n\nThe input is an aligned BAM file.\n"
+    assert dr.detect_input_type(readme, [])["best"] == "ont-bam-hg38"
+
+
+def test_hifi_reads_are_only_ever_handed_over_aligned():
+    readme = "# Tool\n\nDesigned for PacBio HiFi data.\n\nThe input is a FASTQ file of reads.\n"
+    r = dr.detect_input_type(readme, [])
+    assert r["best"] is None and r["unsupported"] == {"kinds": ["fastq"], "platform": "pacbio"}

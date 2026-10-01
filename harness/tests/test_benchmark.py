@@ -11,7 +11,7 @@ import benchmark_recipes as br
 #: main before the work that added the benchmark scored, on the 18 tools it had
 #: never seen: install 10, input 12, program 3, clean 7, honest 15, viable 0.
 FLOOR = {
-    "new": {"install": 16, "input": 17, "program": 13, "clean": 13, "honest": 16, "viable": 7},
+    "new": {"install": 16, "input": 17, "program": 13, "clean": 13, "honest": 16, "viable": 8},
     "catalogue": {"install": 4, "input": 5, "program": 5, "clean": 5, "honest": 5, "viable": 4},
 }
 

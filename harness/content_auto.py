@@ -92,6 +92,11 @@ def read_regions(path: pathlib.Path | None) -> list[tuple[str, int, int, str]]:
                     and not re.match(r"^[ACGTN]+$", f[i], re.I):
                 name = f[i]
                 break
+        # TRGT's repeat definitions name the locus inside the fourth column:
+        # ID=TH01;MOTIFS=AATG;STRUC=(AATG)n.
+        trgt = re.match(r"^ID=([^;]+)(?:;|$)", name)
+        if trgt:
+            name = trgt.group(1)
         out.append((f[0], int(f[1]), int(f[2]), name or f"{f[0]}:{f[1]}"))
     return out
 

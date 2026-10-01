@@ -47,6 +47,38 @@
       "read_groups": false,
       "sample": "HG00113"
     },
+    "pacbio-hifi-bam-hg38": {
+      "dir": "datasets/pacbio-hifi-bam-hg38",
+      "data": "pacbio_slices/HG002.hifi.codis.bam",
+      "bam_index": "pacbio_slices/HG002.hifi.codis.bam.bai",
+      "format": "bam",
+      "canonical_input": "input.bam",
+      "reference": "hg38",
+      "reference_genome": {
+        "assembly": "GRCh38 / hg38",
+        "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
+        "filename": "hg38.fa",
+        "mount_path": "/data/ref/hg38.fa"
+      },
+      "name": "GIAB HG002 PacBio HiFi (Revio), hg38 CODIS slice",
+      "source": "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/",
+      "license": "Open access (GIAB / NIST). Research and educational use. STRhub is not the data provider.",
+      "chemistry": "PacBio Revio HiFi (CCS), ~48x",
+      "notes": "CODIS ±10 kb slice of GIAB's HG002 Revio HiFi BAM (pbmm2, GRCh38 GIABv3), kinetics tags dropped (~19 MB); every panel locus is overlapped by 19 to 73 HiFi reads. Pick this dataset for tools made for PacBio HiFi (TRGT). See datasets/pacbio-hifi-bam-hg38/SOURCE.txt.",
+      "chrom_naming": "chr",
+      "supported_loci": "datasets/pacbio-hifi-bam-hg38/loci.bed",
+      "regions_library": {
+        "hipstr": "datasets/pacbio-hifi-bam-hg38/regions/hipstr.bed",
+        "gangstr": "datasets/pacbio-hifi-bam-hg38/regions/gangstr.bed",
+        "strsearch": "datasets/pacbio-hifi-bam-hg38/regions/strsearch.bed",
+        "bed4": "datasets/pacbio-hifi-bam-hg38/regions/bed4.bed",
+        "motif": "datasets/pacbio-hifi-bam-hg38/regions/motif.bed",
+        "eh_catalog": "datasets/pacbio-hifi-bam-hg38/regions/eh_catalog.json",
+        "trgt": "datasets/pacbio-hifi-bam-hg38/regions/trgt.bed"
+      },
+      "read_groups": true,
+      "sample": "HG002"
+    },
     "illumina-bam-hg38": {
       "dir": "datasets/illumina-bam-hg38",
       "data": "illumina_slices/NA12878.autosomal.bam",
