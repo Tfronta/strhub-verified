@@ -32,9 +32,9 @@ Executed verbatim inside the container, at the pinned commit. Paths under /data 
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-20T16:54:52+00:00
+- Generated: 2026-10-01T12:36:53+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35524021289
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862504998
 
 ## Output content (plausibility evidence)
 
