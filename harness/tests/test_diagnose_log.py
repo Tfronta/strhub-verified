@@ -131,3 +131,19 @@ def test_a_download_that_fails_in_the_build_is_named_with_its_address():
     hit = next(i for i in issues if i["id"] == "build_download_failed")
     assert "drive5.com" in (hit.get("title") or "") + " ".join(map(str, hit.get("matches") or hit.get("examples") or []))
     assert d.fault_of("build_download_failed") is None
+
+
+def test_a_python_exception_the_tool_raised_is_named():
+    """NanoRepeat died on a numpy TypeError and the report said only that the
+    time limit was reached."""
+    log = ("  File \"/usr/local/lib/python3.11/site-packages/NanoRepeat/split_alleles.py\", line 184\n"
+           "TypeError: only 0-dimensional arrays can be converted to Python scalars\n")
+    ids = {i["id"]: i for i in d.diagnose(log)}
+    assert "python_exception" in ids
+    assert "TypeError: only 0-dimensional" in ids["python_exception"]["title"]
+    assert d.fault_of("python_exception") is None
+    # Covered by their own rules, not double-counted as generic exceptions.
+    ids = {i["id"] for i in d.diagnose("ModuleNotFoundError: No module named 'distutils'\n")}
+    assert ids == {"missing_module"}
+    # "Error: ..." alone is how many tools print, not a Python exception.
+    assert "python_exception" not in {i["id"] for i in d.diagnose("Error: could not open file x\n")}
