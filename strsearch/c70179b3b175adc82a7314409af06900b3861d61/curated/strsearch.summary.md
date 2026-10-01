@@ -41,9 +41,9 @@ python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_thre
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-20T16:53:08+00:00
+- Generated: 2026-10-01T12:34:37+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35524008276
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862471881
 
 ## Output content (plausibility evidence)
 
@@ -79,7 +79,8 @@ Score: **5/5**. Advisory only; does not affect the execution badge.
 
 What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.
 - Install method: [`Dockerfile`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/Dockerfile)
-- Run command: [`README.md` line 96](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L96): `python3 pipeline.py from_fastq \`
+- Fallback environment: [`README.md` line 223](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L223): `docker pull anjing123/strsearch:latest`
+- Run command: [`README.md` line 107](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L107): `python3 pipeline.py from_bam \`
 - Example data: [`example/ref_test.bed`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/ref_test.bed)
 - Example data: [`example/test_data/test.bam`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test.bam)
 - Example data: [`example/test_data/test_R1.fastq`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R1.fastq)
