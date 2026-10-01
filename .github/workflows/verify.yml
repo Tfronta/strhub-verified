@@ -591,6 +591,24 @@ jobs:
           printf '\n==== STRhub: the build above failed; building the fallback environment (%s) ====\n\n' "$DOCKER_FALLBACK" >> work/log_build.txt
           build "$DOCKER_FALLBACK" "$RECIPE_DIR" "$RECIPE_DIR" && echo "environment=fallback" >> "$GITHUB_OUTPUT"
 
+      # --- Starts: the installed program answers --help ----------------------
+      # Outside the ladder, like the example: the one fact a reviewer can use
+      # when the README says nothing runnable. Two minutes, the same isolation.
+      - id: starts
+        name: "Starts (the program answers --help)"
+        if: steps.installs.outcome == 'success' && steps.m.outputs.starts_cmd != ''
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          STARTS_CMD: ${{ steps.m.outputs.starts_cmd }}
+          ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
+          ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
+        run: |
+          rc=0
+          bash harness/run_container.sh strhub_starts 2 work/log_starts.txt \
+            $DOCKER_HARDENING $ENTRY toolimg:ci $ENTRY_ARGS "$STARTS_CMD" || rc=$?
+          python harness/check_starts.py --rc "$rc" --log work/log_starts.txt --json starts.json
+
       # --- Matrix leg: own data (the badge ladder uses THIS leg) -------------
       # No image, no run. Without the second condition on each run leg, a
       # failed build was followed by `docker run toolimg:ci`, whose "pull
@@ -893,6 +911,8 @@ jobs:
             --check-upstream \
             --mode "$MODE" \
             --infra-failure "$INFRA_FAILURE" \
+            --starts starts.json \
+            --log-starts work/log_starts.txt \
             --example-runs "$EXAMPLE_OUTCOME" \
             --example example.json \
             --log-example work/log_example.txt \
