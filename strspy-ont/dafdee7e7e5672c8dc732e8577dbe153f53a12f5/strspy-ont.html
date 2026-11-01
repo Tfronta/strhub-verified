@@ -33,23 +33,23 @@
 <nav><a href="index.html">← All tools</a></nav>
 <h1>STRhub Verified · STRspy</h1>
 <p><span class="badge">Does not run as documented: stops at run</span></p>
-<h2>As it is in the repository</h2><p><b>Verdict: Fails.</b> The tool exited with an error before producing its documented output.</p><p>Reached <b>Installs</b>: the environment builds from source.</p>
+<h2>As it is in the repository</h2><p><b>Verdict: Fails.</b> The tool exited with an error before producing its documented output. The installed program starts: it answers --help.</p><p>Reached <b>Installs</b>: the environment builds from source.</p>
 <h3>Gates</h3>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
-<tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="no">—</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="no">—</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="no">—</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr></tbody></table>
+<tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="no">—</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="no">—</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="no">—</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr><tr><td>Starts</td><td><span class="ok">PASS</span></td><td>the installed program answers --help in the built environment</td></tr></tbody></table>
 
 
 <h3>What the author documents as a known issue</h3><p>Quoted from the repository's README at the verified commit. STRhub did not establish any of this by running the tool; it is the author's own note about their own software.</p><p><b>Known bug</b> (README line 291)</p><blockquote>When using the wrapper (&#x27;STRspy_run_v1.0.sh&#x27;), One might run into an issue. The parallel version of **STRspy_Parallel_v2.0_Args.sh** is unable to properly connect with &quot;gnu parallel&quot; and exits the workflow without mapping or further analysis steps of the pipeline. Solution to this, the user can choose the Normal version to avoid any crash. ***Tip: Its good practice to use pre-aligned bams for quicker outcomes.***</blockquote>
 <h3>Command that ran</h3><p>Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub&#x27;s mounts: the input sample, the reference genome and the output directory.</p><pre><code>bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt</code></pre>
-<p style="font-size:.85rem">Log (external): <a href="strspy-ont.log-external.txt">strspy-ont.log-external.txt</a></p><p style="font-size:.85rem">Log (build): <a href="strspy-ont.log-build.txt">strspy-ont.log-build.txt</a></p>
+<p style="font-size:.85rem">Log (external): <a href="strspy-ont.log-external.txt">strspy-ont.log-external.txt</a></p><p style="font-size:.85rem">Log (starts): <a href="strspy-ont.log-starts.txt">strspy-ont.log-starts.txt</a></p><p style="font-size:.85rem">Log (build): <a href="strspy-ont.log-build.txt">strspy-ont.log-build.txt</a></p>
 <h2>Run details</h2>
 <ul class="meta">
   <li>Variant: <code>strspy-ont</code></li>
   <li>Source: <code>https://github.com/unique379r/strspy</code> @ <code>dafdee7e7e5672c8dc732e8577dbe153f53a12f5</code></li>
   <li>Environment: ubuntu-22.04 (<code>Dockerfile</code>)</li>
-  <li>Generated: 2026-10-01T12:35:18+00:00</li>
+  <li>Generated: 2026-11-01T12:48:24+00:00</li>
   <li>Upstream: The verified commit is 14 commit(s) behind `main`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.</li>
-  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/36862515244">CI run</a></li>
+  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/41308011428">CI run</a></li>
 </ul>
 
 <h2>Verification matrix</h2><table><thead><tr><th>Leg</th><th>Result</th><th>Errors reported</th><th>Dataset</th></tr></thead><tbody><tr><td>STRhub fixture</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr><tr><td>External data</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td>1000 Genomes ONT, hg38 CODIS slice (R10 SUP)</td></tr><tr><td>Tool&#x27;s own example</td><td><span class="no">N/A</span></td><td><span class="no">—</span></td><td>—</td></tr></tbody></table>

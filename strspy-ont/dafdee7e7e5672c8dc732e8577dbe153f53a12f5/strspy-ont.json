@@ -22,8 +22,8 @@
     ],
     "source": "generated"
   },
-  "generated": "2026-10-01T12:35:18+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862515244",
+  "generated": "2026-11-01T12:48:24+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41308011428",
   "run": {
     "cmd": "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt",
     "cwd": "/opt/tool"
@@ -37,7 +37,8 @@
     "installs": true,
     "runs": false,
     "io": false,
-    "content": false
+    "content": false,
+    "starts": true
   },
   "level": "installs",
   "io_detail": {
@@ -131,7 +132,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-10-01T12:35:18+00:00",
+    "checked": "2026-11-01T12:48:25+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "main",
@@ -233,6 +234,7 @@
   },
   "logs": {
     "external": "strspy-ont.log-external.txt",
+    "starts": "strspy-ont.log-starts.txt",
     "build": "strspy-ont.log-build.txt"
   },
   "manual_verification": {
@@ -245,7 +247,7 @@
     "code": "fails",
     "title": "Fails",
     "basis": "gates",
-    "reason": "The tool exited with an error before producing its documented output.",
+    "reason": "The tool exited with an error before producing its documented output. The installed program starts: it answers --help.",
     "readme_gaps": [],
     "blockers": [
       {
@@ -268,7 +270,7 @@
       "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
       "result": "Does not run as documented: stops at run",
       "reached": "Installs, 2/5 gates passed",
-      "why": "The tool exited with an error before producing its documented output.",
+      "why": "The tool exited with an error before producing its documented output. The installed program starts: it answers --help.",
       "scope": "Installation, execution, and output structure verification.",
       "not_evaluated": [
         "Genotype accuracy",
@@ -288,7 +290,7 @@
       },
       {
         "title": "Verdict: Fails",
-        "body": "The tool exited with an error before producing its documented output."
+        "body": "The tool exited with an error before producing its documented output. The installed program starts: it answers --help."
       },
       {
         "title": "Repository test data not used",

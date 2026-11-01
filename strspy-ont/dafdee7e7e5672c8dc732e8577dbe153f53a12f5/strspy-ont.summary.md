@@ -4,7 +4,7 @@
 
 ## As it is in the repository
 
-**Verdict: Fails.** The tool exited with an error before producing its documented output.
+**Verdict: Fails.** The tool exited with an error before producing its documented output. The installed program starts: it answers --help.
 
 What stopped it, and what can be done:
 
@@ -23,6 +23,7 @@ Reached **Installs**: the environment builds from source.
 | Runs | — | it executes end-to-end without crashing |
 | Runs + Expected IO | — | it produces a non-empty file in the declared format |
 | Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Starts | PASS | the installed program answers --help in the built environment |
 
 ### What the author documents as a known issue
 
@@ -40,15 +41,16 @@ Executed verbatim inside the container, at the pinned commit. Paths under /data 
 bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt
 ```
 - Log (external): [`strspy-ont.log-external.txt`](strspy-ont.log-external.txt)
+- Log (starts): [`strspy-ont.log-starts.txt`](strspy-ont.log-starts.txt)
 - Log (build): [`strspy-ont.log-build.txt`](strspy-ont.log-build.txt)
 
 ## Run details
 
 - Source: `https://github.com/unique379r/strspy` @ `dafdee7e7e5672c8dc732e8577dbe153f53a12f5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-10-01T12:35:18+00:00
+- Generated: 2026-11-01T12:48:24+00:00
 - Upstream: The verified commit is 14 commit(s) behind `main`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862515244
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/41308011428
 
 ## Verification matrix
 
