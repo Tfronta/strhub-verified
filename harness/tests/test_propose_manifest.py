@@ -255,3 +255,35 @@ def test_local_trial_never_fabricates_a_passed_run_without_docker(tmp_path):
     assert report["gates"]["installs"] is False
     assert report["verdict"]["code"] == "undetermined"
     assert report["verdict"]["basis"] == "strhub"
+
+
+def test_bare_output_directory_creates_dir_first():
+    cmd, notes = pm.normalize_documented("tool -i in.bam -o Results", "illumina-bam-hg38", [], "input.bam", "/data/ref/hg38.fa", False)
+    assert cmd.startswith("mkdir -p Results &&")
+    assert any("Results" in n and "created first" in n for n in notes)
+
+
+def test_file_output_does_not_create_dir():
+    cmd, notes = pm.normalize_documented("tool -i in.bam -o out.vcf", "illumina-bam-hg38", [], "input.bam", "/data/ref/hg38.fa", False)
+    assert "mkdir" not in cmd
+
+
+def test_input_directory_option_rewritten_to_data_in():
+    cmd, notes = pm.rewrite_for_strhub(
+        "tool -s my_reads -r yes -o Results",
+        "ont-bam-hg38",
+        docs_text="-s input read dir (either bam or fastq)",
+    )
+    assert "-s /data/in" in cmd
+    assert any("replaced with /data/in" in n for n in notes)
+
+
+def test_shipped_bed_is_not_replaced_with_panel_bed():
+    cmd, notes = pm.rewrite_for_strhub(
+        "tool -l db/loci.bed",
+        "ont-bam-hg38",
+        tree_paths=["db/loci.bed"],
+    )
+    assert "db/loci.bed" in cmd
+    assert "/data/in/regions.bed" not in cmd
+

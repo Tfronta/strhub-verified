@@ -86,6 +86,8 @@ def resolve_placeholders(cmd: str, config_files: list[str], kit: str | None) -> 
 #: `<BAM/CRAM file with aligned reads>`: what a documented placeholder stands
 #: for, read off its own words. Order matters: the first kind that matches wins.
 ANGLE_KINDS = [
+    ("indir", re.compile(r"\b(?:in(?:put)?|reads?|bams?|fastqs?)[ _-]?(?:dir(?:ectory)?|folder)\b|"
+                         r"\b(?:dir(?:ectory)?|folder)[ _-]?(?:in(?:put)?|reads?|bams?|fastqs?)\b", re.I)),
     ("input", re.compile(r"\b(?:bams?|crams?|fastqs?|fq|reads?|alignments?|aligned)\b", re.I)),
     ("reference", re.compile(r"\b(?:fasta|fa|reference(?! allele)|genome|ref)\b", re.I)),
     ("regions", re.compile(r"\b(?:bed|regions?|loci|locus|repeats?|targets?)\b", re.I)),
@@ -151,6 +153,8 @@ def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str]
             (m.end() == len(m.string) or m.string[m.end()] in " "))
         words = re.sub(r"[_\-]+", " ", name)
         kind = next((k for k, rx in ANGLE_KINDS if rx.search(words)), None)
+        if whole and kind == "indir":
+            return "/data/in"
         if whole and kind == "reference" and ref_mount:
             return ref_mount
         if whole and kind == "input" and canonical:
@@ -175,6 +179,8 @@ def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str]
         prev = before[-1] if before and before[-1].startswith("-") else ""
         text = re.sub(r"[_\-/.]+", " ", f"{prev} {words}")
         kind = next((k for k, rx in ANGLE_KINDS if rx.search(text)), None)
+        if kind == "indir":
+            return "/data/in"
         if kind == "input" and canonical:
             return f"/data/in/{canonical}"
         if kind == "reference" and ref_mount:
@@ -265,9 +271,23 @@ def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str]
         if re.match(r"^--?(?:o|out|output|outdir|out[-_]?dir|output[-_]?dir|output[-_]?prefix|prefix|"
                     r"working[-_]?path|tr-vcf|str-vcf|vcf)$", t, re.I):
             val = toks[i + 1]
-            d = val.rsplit("/", 1)[0] if "/" in val.strip("/") else ""
-            if d and not val.startswith(("/", "-", "$")) and d not in (".", "..") and d not in dirs:
+            if "/" in val.strip("/"):
+                # If it looks like a file with an extension, take its directory; else the whole path
+                if re.search(r"\.[a-zA-Z0-9]{1,5}(?:\.gz)?$", val):
+                    d = val.rsplit("/", 1)[0]
+                else:
+                    d = val.rstrip("/")
+            else:
+                is_dir_flag = bool(re.match(r"^--?(?:outdir|out[-_]?dir|output[-_]?dir|working[-_]?path)$", t, re.I))
+                has_file_ext = bool(re.search(r"\.[a-zA-Z0-9]{1,5}(?:\.gz)?$", val))
+                if is_dir_flag or not has_file_ext:
+                    d = val
+                else:
+                    d = ""
+            if d and not d.startswith(("/", "-", "$")) and d not in (".", "..") and d not in dirs:
                 dirs.append(d)
+    # Exclude directories that are already created by an earlier mkdir in the command
+    dirs = [d for d in dirs if not re.search(rf"\bmkdir\b[^\n;&]*\b{re.escape(d)}\b", new)]
     if dirs:
         new = f"mkdir -p {' '.join(dirs)} && {new}"
         notes.append(f"The output directory the command writes into ({', '.join(dirs)}) was created first.")
@@ -313,6 +333,29 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
     new, notes = resolve_placeholders(cmd, config_files or [], ds.get("kit"))
     notes = notes0 + notes
     if canonical:
+        # Input directory rewriting: when a flag or placeholder indicates a
+        # directory of reads/inputs rather than a single file, point it at
+        # /data/in (STRhub mounts the input files into /data/in).
+        is_s_dir = bool(re.search(r"-s\b[^\n]*(?:read|input|bam|fastq)[^\n]*(?:dir|folder)", docs_text, re.I)
+                        or re.search(r"-s\b[^\n]*(?:dir|folder)[^\n]*(?:read|input|bam|fastq)", docs_text, re.I))
+        toks = new.split()
+        replaced_dir = False
+        for i in range(len(toks) - 1):
+            flag = toks[i]
+            val = toks[i + 1]
+            flag_is_indir = bool(re.match(r"^--?(?:indir|in[-_]?dir|input[-_]?dir|reads[-_]?dir|bam[-_]?dir|"
+                                          r"fastq[-_]?dir|fastqs[-_]?dir|data[-_]?dir)$", flag, re.I)
+                                 or (flag == "-s" and is_s_dir))
+            val_is_indir = bool(re.match(r"^[<\[]?(?:\w*[-_])?(?:reads?|bams?|fastqs?|input)[-_]?(?:dir|directory|folder)[>\]]?/?$", val, re.I)
+                                or re.match(r"^[<\[]?(?:dir|directory|folder)[-_]?(?:reads?|bams?|fastqs?|input)\w*[>\]]?/?$", val, re.I))
+            if (flag_is_indir or val_is_indir) and not val.startswith("/data/in"):
+                toks[i + 1] = "/data/in"
+                replaced_dir = True
+                break
+        if replaced_dir:
+            new = " ".join(toks)
+            notes.append("Input directory path in the README command replaced with /data/in.")
+
         # `--bams run1.bam,run2.bam,run3.bam,run4.bam` is a README showing the
         # flag takes a list; four copies of the same file is not what anyone
         # means, and HipSTR refuses it. One list becomes one file.
@@ -334,9 +377,21 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
         if n:
             notes.append(f"{n} reference FASTA path(s) replaced with {mount}.")
     if input_type in REQUIRES_REGIONS or ds.get("supported_loci"):
-        new, n = BED_TOKEN.subn("/data/in/regions.bed", new)
-        if n:
-            notes.append(f"{n} BED path(s) replaced with /data/in/regions.bed.")
+        tree = set(tree_paths or [])
+        replaced_beds = []
+
+        def _bed_replace(m: re.Match) -> str:
+            path = m.group(0)
+            p = path.lstrip("./")
+            is_shipped_db = (p in tree and any(p.startswith(prefix) for prefix in ("db/", "db-", "database/", "models/")))
+            if is_shipped_db:
+                return path
+            replaced_beds.append(path)
+            return "/data/in/regions.bed"
+
+        new = BED_TOKEN.sub(_bed_replace, new)
+        if replaced_beds:
+            notes.append(f"{len(replaced_beds)} BED path(s) replaced with /data/in/regions.bed.")
     # The loci to genotype, from a file the documentation leaves to the user
     # (vamos's README fetches one from Zenodo), in a layout STRhub's library
     # writes for this tool. Which loci is the user's choice, as HipSTR's
