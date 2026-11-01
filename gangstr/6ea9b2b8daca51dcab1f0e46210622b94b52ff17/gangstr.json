@@ -27,8 +27,8 @@
     },
     "fallback_used": true
   },
-  "generated": "2026-10-01T12:37:47+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862501183",
+  "generated": "2026-11-01T12:50:13+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41308001752",
   "run": {
     "cmd": "GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out outprefix",
     "cwd": "/opt/tool"
@@ -42,7 +42,8 @@
     "installs": true,
     "runs": true,
     "io": true,
-    "content": true
+    "content": true,
+    "starts": true
   },
   "level": "content",
   "io_detail": {
@@ -316,7 +317,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-10-01T12:37:47+00:00",
+    "checked": "2026-11-01T12:50:13+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -421,6 +422,7 @@
   },
   "logs": {
     "external": "gangstr.log-external.txt",
+    "starts": "gangstr.log-starts.txt",
     "build": "gangstr.log-build.txt"
   },
   "install_detail": {

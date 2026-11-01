@@ -17,6 +17,7 @@ Reached **Runs + Plausible output**: its output looks like plausible genotype-be
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Starts | PASS | the installed program answers --help in the built environment |
 
 ### It did not build from source; the run used the README's ready-made environment
 
@@ -44,15 +45,16 @@ Executed verbatim inside the container, at the pinned commit. Paths under /data 
 GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out outprefix
 ```
 - Log (external): [`gangstr.log-external.txt`](gangstr.log-external.txt)
+- Log (starts): [`gangstr.log-starts.txt`](gangstr.log-starts.txt)
 - Log (build): [`gangstr.log-build.txt`](gangstr.log-build.txt)
 
 ## Run details
 
 - Source: `https://github.com/gymreklab/gangstr` @ `6ea9b2b8daca51dcab1f0e46210622b94b52ff17`
 - Environment: ubuntu-22.04 (`Dockerfile`); plan B: the published image gymreklab/str-toolkit the README points at (`Dockerfile.fallback`), after the build from the pinned commit failed
-- Generated: 2026-10-01T12:37:47+00:00
+- Generated: 2026-11-01T12:50:13+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862501183
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/41308001752
 
 ## Output content (plausibility evidence)
 
