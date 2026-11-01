@@ -218,3 +218,39 @@ def test_a_known_issue_quote_is_bounded_and_says_when_it_was_cut():
     out = dr.author_known_issues(long_readme)
     assert len(out) == 1 and out[0]["truncated"] is True and len(out[0]["text"]) == 600
     assert dr.author_known_issues("## Known issues\n\ntiny") == []  # too short to be a finding
+
+
+def test_a_tool_made_for_pacbio_hifi_gets_the_hifi_reads():
+    # TRGT's README: "Tandem repeat genotyping and visualization from PacBio
+    # HiFi data". Until STRhub held HiFi reads it got no dataset at all.
+    readme = ("# TRGT\n\nTandem repeat genotyping and visualization from PacBio HiFi data.\n\n"
+              "The input is a BAM file with aligned HiFi reads.\n")
+    r = dr.detect_input_type(readme, [])
+    assert r["platform"] == "pacbio" and r["best"] == "pacbio-hifi-bam-hg38"
+
+
+def test_a_tool_for_both_long_read_platforms_stays_on_nanopore():
+    # Either dataset is a faithful reading; the one it was verified on is kept.
+    readme = "# Tool\n\nWorks with PacBio HiFi and Oxford Nanopore data.\n\nThe input is an aligned BAM file.\n"
+    assert dr.detect_input_type(readme, [])["best"] == "ont-bam-hg38"
+
+
+def test_hifi_reads_are_only_ever_handed_over_aligned():
+    readme = "# Tool\n\nDesigned for PacBio HiFi data.\n\nThe input is a FASTQ file of reads.\n"
+    r = dr.detect_input_type(readme, [])
+    assert r["best"] is None and r["unsupported"] == {"kinds": ["fastq"], "platform": "pacbio"}
+
+
+def test_a_command_that_reads_alignments_or_calls_decides_the_input():
+    # tandem-genotypes reads LAST's MAF; its README's "the read sequences (in
+    # fastq or fasta)" is the input of the lastal step before it. Once STRhub
+    # held ONT FASTQ, that sentence handed it reads its command never opens.
+    readme = ("# tandem-genotypes\n\nFinds changes in length of tandem repeats from long DNA reads "
+              "(nanopore).\n\nThis uses 3 input files: the read sequences (in fastq or fasta format).\n")
+    r = dr.detect_input_type(readme, [], command="tandem-genotypes -g refGene.txt microsat.txt alignments.maf")
+    assert r["best"] is None and r["how"] == "command" and r["unsupported"]["kinds"] == ["maf"]
+    assert dr.kind_from_command("mergeSTR --vcfs a.vcf.gz,b.vcf.gz --out merged") == "vcf"
+    # A VCF the command writes is not what it reads.
+    assert dr.kind_from_command("tool --ref hg38.fa --out calls.vcf") is None
+    assert dr.kind_from_command("tool --ref hg38.fa --output-vcf calls.vcf.gz") is None
+    assert dr.kind_from_command("HipSTR --bams in.bam --str-vcf out.vcf.gz") == "bam"

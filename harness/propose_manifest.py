@@ -43,6 +43,11 @@ from prepare import example_wrapper  # noqa: E402
 INPUT_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b", re.I)
 REF_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:fa|fasta|fna)(?:\.gz)?\b", re.I)
 BED_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.bed\b", re.I)
+#: A file of loci the documentation leaves to the user, after the option that
+#: reads it: vamos's `-r vamos.effMotifs-0.1.GRCh38.tsv`, fetched from Zenodo.
+LOCI_FILE = re.compile(r"(?<!\S)(--?[\w-]+)(\s+|=)((?!/)[\w./-]*(?:motif|region|repeat|catalog|loci)[\w./-]*"
+                       r"\.(?:tsv|txt)(?:\.gz)?)(?![\w./-])", re.I)
+OUTPUT_FLAG = re.compile(r"^--?(?:o|out|output|outdir|out[-_]?dir|output[-_]?dir|output[-_]?prefix|prefix)$", re.I)
 OUTPUT_GLOB = {
     "vcf": ("**/*.vcf*", "vcf"),
     "tsv": ("**/*.t[sx][vt]", "tsv"),   # .tsv and .txt
@@ -55,7 +60,9 @@ OUTPUT_GLOB = {
 REQUIRES_REGIONS = {"illumina-bam-hg38", "illumina-bam-hg38-y"}
 
 
-PLACEHOLDER_INPUT = re.compile(r"(?<![\w/.-])[<\[]?\w*(?:fastq|fq|bam|reads|input)\w*[>\]]?(?![\w/.-])", re.I)
+PLACEHOLDER_INPUT = re.compile(
+    r"(?<![\w/.-])[<\[]?(?!\w*(?:list|fofn|manifest|dir|folder|table|index))\w*(?:fastq|fq|bam|reads|input)"
+    r"(?!\w*(?:list|fofn|manifest|dir|folder|table|index))\w*[>\]]?(?![\w/.-])", re.I)
 PLACEHOLDER_CONFIG = re.compile(r"(?<![\w/.-])[<\[]?\w*config\w*[>\]]?(?![\w/.-])", re.I)
 
 
@@ -100,7 +107,8 @@ def _tree_file(tree_paths: list[str], want: re.Pattern) -> str | None:
 
 def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str] | None,
                          canonical: str | None, ref_mount: str | None,
-                         has_regions: bool, binary_elsewhere: bool = False) -> tuple[str, list[str]]:
+                         has_regions: bool, binary_elsewhere: bool = False,
+                         catalog_from_library: bool = False) -> tuple[str, list[str]]:
     """The parts of a documented command that are not a command yet: usage
     brackets, `<descriptions>`, `path/to/` stand-ins, `a.bam,...` lists and a
     `./tool` that the build put elsewhere. Every change is a note."""
@@ -173,6 +181,11 @@ def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str]
             return ref_mount
         if kind == "regions" and has_regions:
             return "/data/in/regions.bed"
+        if kind == "catalog" and catalog_from_library:
+            # The loci to genotype, left to the user like a regions BED:
+            # STRhub's catalog of the panel it holds reads (the library's
+            # eh_catalog), not a catalog of loci the sample does not cover.
+            return "/data/in/regions.json"
         if kind == "catalog":
             found = _tree_file(list(tree), re.compile(r"(?:catalog|catalogue)[^/]*\.json$", re.I))
             if found:
@@ -203,6 +216,11 @@ def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str]
         if m:
             rest = m.group(1)
             base = rest.split("/")[-1]
+            prev = out[-1] if out and out[-1].startswith("-") else ""
+            if has_regions and re.match(r"^--?(?:loci|regions?|bed|repeats?|targets?|catalog|variant[-_]catalog)$", prev, re.I):
+                out.append("regions.bed")
+                i += 1
+                continue
             if "." not in base or base.endswith((".py", ".sh", ".pl")):
                 out.append(base)
                 i += 1
@@ -276,7 +294,7 @@ BINARY_ELSEWHERE = {"cargo", "cmake", "go", "autotools", "release_binary", "bioc
 
 def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str] | None = None,
                        tree_paths: list[str] | None = None, build_method: str | None = None,
-                       docs_text: str = "") -> tuple[str, list[str]]:
+                       docs_text: str = "", library_format: str | None = None) -> tuple[str, list[str]]:
     """Point the documented command at STRhub's mounts. Returns (cmd, notes)."""
     ds = datasets_lib.resolve(input_type) if input_type else None
     notes: list[str] = []
@@ -287,17 +305,11 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
     ref_mount = (ds.get("reference_genome") or {}).get("mount_path", "/data/ref/hg38.fa") \
         if ds.get("reference_genome") else None
     has_regions = bool(ds.get("regions_library")) or input_type in REQUIRES_REGIONS
+    catalog_from_library = bool(library_format in regions_library.JSON_FORMATS
+                                and regions_library.library_path(input_type or "", library_format))
     cmd, notes0 = normalize_documented(cmd, input_type, tree_paths, canonical, ref_mount, has_regions,
-                                       binary_elsewhere=build_method in BINARY_ELSEWHERE)
-    # A reference BAM with no read group, and a tool that names samples by it
-    # (HipSTR's family): its documented --bam-samps/--bam-libs name the sample
-    # instead. The ONT slices carry no @RG; LongTR stops without one.
-    if ds.get("read_groups") is False and docs_text and re.search(r"--bam-samps\b", docs_text) \
-            and "--bam-samps" not in cmd:
-        sm = ds.get("sample") or "sample"
-        cmd = f"{cmd} --bam-samps {sm} --bam-libs {sm}"
-        notes0.append(f"The reference BAM carries no read group, so the documented --bam-samps and "
-                      f"--bam-libs options name its sample ({sm}).")
+                                       binary_elsewhere=build_method in BINARY_ELSEWHERE,
+                                       catalog_from_library=catalog_from_library)
     new, notes = resolve_placeholders(cmd, config_files or [], ds.get("kit"))
     notes = notes0 + notes
     if canonical:
@@ -325,13 +337,32 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
         new, n = BED_TOKEN.subn("/data/in/regions.bed", new)
         if n:
             notes.append(f"{n} BED path(s) replaced with /data/in/regions.bed.")
+    # The loci to genotype, from a file the documentation leaves to the user
+    # (vamos's README fetches one from Zenodo), in a layout STRhub's library
+    # writes for this tool. Which loci is the user's choice, as HipSTR's
+    # regions BED is; STRhub's are the ones its reads cover. A file the
+    # repository ships is the tool's own and stays.
+    if library_format and library_format not in regions_library.JSON_FORMATS \
+            and regions_library.library_path(input_type or "", library_format):
+        tree = set(tree_paths or [])
+
+        def loci_file(m: re.Match) -> str:
+            flag, sep, path = m.groups()
+            if OUTPUT_FLAG.match(flag) or path.lstrip("./") in tree:
+                return m.group(0)
+            notes.append(f"{path} (after {flag}), a file of loci the documentation leaves to the user and the "
+                         f"repository does not ship, replaced with STRhub's {library_format} file of the panel "
+                         "loci (/data/in/regions.bed): which loci to genotype is the user's choice.")
+            return f"{flag}{sep}/data/in/regions.bed"
+        new = LOCI_FILE.sub(loci_file, new)
     return new, notes
 
 
 # Which input types add a suffix to a catalogue slug. The autosomal Illumina
 # BAM and the Illumina STR FASTQ are the canonical assays and add nothing; a
 # Y-STR or a nanopore run is a different claim about the same tool and gets
-# its own card. Unlisted types fall back to their last hyphen-segment. Kept
+# its own card, and so is a PacBio HiFi run. Unlisted types fall back to their
+# last hyphen-segment, which for pacbio-hifi-bam-hg38 would be "hg38". Kept
 # in step with TYPE_SLUG_SUFFIX in strhub-web/lib/verified/submission.ts.
 TYPE_SLUG_SUFFIX = {
     "illumina-bam-hg38": "",
@@ -339,6 +370,7 @@ TYPE_SLUG_SUFFIX = {
     "illumina-bam-hg38-y": "y",
     "ont-bam-hg38": "ont",
     "ont-fastq": "ont",
+    "pacbio-hifi-bam-hg38": "hifi",
     "illumina-snp-fastq": "snp",
     "capillary-fsa": "fsa",
 }
@@ -516,16 +548,20 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         limitations.append("no_command")
         run_cmd = "true  # no command found in the README; nothing to run"
     else:
+        all_docs_text = proposal.get("readme_text", "") + "\n" + proposal.get("docs_text", "")
+        lib_fmt = regions_library.format_for_tool(
+            name, best, all_docs_text,
+            proposal.get("shipped_loci_formats"))[0]
         rewritten, notes = rewrite_for_strhub(best, input_type, proposal.get("config_files"),
                                               proposal.get("tree_paths"), build_info.get("method"),
-                                              proposal.get("readme_text", ""))
+                                              proposal.get("readme_text", ""), lib_fmt)
         pre = commands[0].get("prerequisite")
         if pre:
             # The documented step that writes what this command reads runs
             # first, rewritten the same way, and the run stops if it fails.
             pre_cmd, pre_notes = rewrite_for_strhub(pre["cmd"], input_type, proposal.get("config_files"),
                                                     proposal.get("tree_paths"), build_info.get("method"),
-                                                    proposal.get("readme_text", ""))
+                                                    proposal.get("readme_text", ""), lib_fmt)
             rewritten = f"{pre_cmd} && {rewritten}"
             notes = [n for n in pre_notes if n not in notes] + notes
             notes.append(f"The documented step before it ({pre['file']}, line {pre['line']}) runs first: "
@@ -546,13 +582,16 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     if best and input_type and datasets_lib.resolve(input_type):
         limitations += check_documented_files(run_cmd, proposal, input_type, caveat_items)
     regions_block = None
-    takes_regions = "/data/in/regions.bed" in run_cmd
-    if input_type in REQUIRES_REGIONS or (takes_regions and datasets_lib.resolve(input_type or "")
-                                          and (datasets_lib.resolve(input_type) or {}).get("regions_library")):
-        # The tool needs a regions file. Pick the library format the tool is
+    takes_regions = "/data/in/regions.bed" in run_cmd or "/data/in/regions.json" in run_cmd
+    if takes_regions and datasets_lib.resolve(input_type or "") \
+            and (datasets_lib.resolve(input_type) or {}).get("regions_library"):
+        # The command takes a regions file. Pick the library format the tool is
         # known to read; failing that, plain BED, flagged so a failed run is
         # read as "the guess may be wrong", never as the tool's fault.
-        fmt, how = regions_library.format_for_tool(name, best, proposal.get("readme_text", ""))
+        all_docs_text = proposal.get("readme_text", "") + "\n" + proposal.get("docs_text", "")
+        fmt, how = regions_library.format_for_tool(
+            name, best, all_docs_text,
+            proposal.get("shipped_loci_formats"))
         if fmt is None:
             fmt, how = "bed4", "fallback"
             limitations.append("regions_format_guessed")
@@ -595,6 +634,12 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
                    if input_type else {}),
         "outputs": outputs,
     }
+    if not best:
+        # Nothing documented to run, but the packaging says what the program
+        # is called: ask it for --help, so the report can say whether it starts.
+        exes = (proposal.get("packaging") or {}).get("executables") or []
+        if exes:
+            manifest["starts"] = {"cmd": f"{exes[0]} --help", "cwd": cwd}
     ex = proposal.get("example")
     if ex and ex.get("cmd"):
         ex_cmd, ex_notes = from_the_path(ex["cmd"], set(proposal.get("tree_paths") or []),
@@ -659,8 +704,9 @@ def check_documented_files(run_cmd: str, proposal: dict, input_type: str,
     Two things make a run say nothing about the tool, and both are knowable
     before running: the loci it genotypes, from a file the repository ships,
     lie outside STRhub's sample (ExpansionHunter's catalog is 31 disease loci,
-    none of them forensic); or it reads a file nobody holds (vamos's motif
-    list, which its README says to download from Zenodo)."""
+    none of them forensic); or it reads a file nobody holds, and STRhub has
+    nothing in its place (vamos's Zenodo motif list was one, until STRhub
+    wrote its panel in vamos's layout)."""
     from prepare import unwrap_example
     cmd, _ = unwrap_example(run_cmd)
     tree = set(proposal.get("tree_paths") or [])

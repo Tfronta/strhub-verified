@@ -1,26 +1,60 @@
 {
   "_about": "Hand-checked against Illumina/ExpansionHunter at 9f5db1d4ab72016b2d93330b9792842d71582622 (tag v5.0.0) on 2026-09-29, from README.md, docs/01_Introduction.md, docs/02_Installation.md, docs/03_Usage.md, docs/04_VariantCatalogFiles.md, variant_catalog/*/variant_catalog.json, example/run.sh, tools/, the v5.0.0 GitHub release and api.anaconda.org.",
-  "program": {"value": "ExpansionHunter", "subcommand": null, "where": "docs/03_Usage.md:15"},
-  "command": {"value": "ExpansionHunter --reads <BAM/CRAM file with aligned reads> --reference <FASTA file with reference genome> --variant-catalog <JSON file specifying variants to genotype> --output-prefix <Prefix for the output files>",
-              "source": "repo_docs",
-              "where": "docs/03_Usage.md:15-18"},
-  "install": {"documented": "Download the compiled binary of the latest release from GitHub releases, or build from source with CMake (mkdir build && cd build && cmake .. && make; binary at build/install/bin/ExpansionHunter; the build downloads abseil, boost, googletest, htslib and spdlog, so it needs internet).",
-              "acceptable_methods": ["release_binary", "cmake"],
-              "where": "docs/02_Installation.md:3-6,8-40"},
-  "published": {"bioconda_documented": null,
-                "bioconda_available": {"package": "expansionhunter", "version_at_ref": "5.0.0"},
-                "image_documented": null,
-                "release_binary_documented": true,
-                "where": "docs/02_Installation.md:3-6; https://github.com/Illumina/ExpansionHunter/releases/tag/v5.0.0 (ExpansionHunter-v5.0.0-linux_x86_64.tar.gz, ExpansionHunter-v5.0.0-macOS.tar.gz); https://api.anaconda.org/package/bioconda/expansionhunter"},
-  "input": {"kinds": ["bam", "cram"], "platforms": ["illumina"],
-            "strhub_type": "illumina-bam-hg38",
-            "where": "docs/01_Introduction.md:9-12; docs/03_Usage.md:3-6,46-50"},
+  "program": {
+    "value": "ExpansionHunter",
+    "subcommand": null,
+    "where": "docs/03_Usage.md:15"
+  },
+  "command": {
+    "value": "ExpansionHunter --reads <BAM/CRAM file with aligned reads> --reference <FASTA file with reference genome> --variant-catalog <JSON file specifying variants to genotype> --output-prefix <Prefix for the output files>",
+    "source": "repo_docs",
+    "where": "docs/03_Usage.md:15-18"
+  },
+  "install": {
+    "documented": "Download the compiled binary of the latest release from GitHub releases, or build from source with CMake (mkdir build && cd build && cmake .. && make; binary at build/install/bin/ExpansionHunter; the build downloads abseil, boost, googletest, htslib and spdlog, so it needs internet).",
+    "acceptable_methods": [
+      "release_binary",
+      "cmake"
+    ],
+    "where": "docs/02_Installation.md:3-6,8-40"
+  },
+  "published": {
+    "bioconda_documented": null,
+    "bioconda_available": {
+      "package": "expansionhunter",
+      "version_at_ref": "5.0.0"
+    },
+    "image_documented": null,
+    "release_binary_documented": true,
+    "where": "docs/02_Installation.md:3-6; https://github.com/Illumina/ExpansionHunter/releases/tag/v5.0.0 (ExpansionHunter-v5.0.0-linux_x86_64.tar.gz, ExpansionHunter-v5.0.0-macOS.tar.gz); https://api.anaconda.org/package/bioconda/expansionhunter"
+  },
+  "input": {
+    "kinds": [
+      "bam",
+      "cram"
+    ],
+    "platforms": [
+      "illumina"
+    ],
+    "strhub_type": "illumina-bam-hg38",
+    "where": "docs/01_Introduction.md:9-12; docs/03_Usage.md:3-6,46-50"
+  },
   "extra_inputs": [
-    {"what": "Variant catalog JSON (one LocusId / LocusStructure / ReferenceRegion / VariantType record per locus) for the loci to genotype, in the reference's contig naming. The repository ships variant_catalog/hg38/variant_catalog.json, but it holds 31 disease loci (AFF2 ... TCF4), none inside the 24 forensic windows of the STRhub slice.",
-     "required": true, "strhub_has": false,
-     "where": "docs/03_Usage.md:3-6,17; docs/04_VariantCatalogFiles.md:5-9,19-65,152-157; variant_catalog/hg38/variant_catalog.json"}
+    {
+      "what": "Variant catalog JSON (one LocusId / LocusStructure / ReferenceRegion / VariantType record per locus) for the loci to genotype, in the reference's contig naming. The repository ships variant_catalog/hg38/variant_catalog.json, but it holds 31 disease loci (AFF2 ... TCF4), none inside the 24 forensic windows of the STRhub slice.",
+      "required": true,
+      "strhub_has": true,
+      "where": "docs/03_Usage.md:3-6,17; docs/04_VariantCatalogFiles.md:5-9,19-65,152-157; variant_catalog/hg38/variant_catalog.json",
+      "revised": "2026-09-29: STRhub now supplies an ExpansionHunter variant catalog of its panel loci (datasets/<type>/regions/eh_catalog.json, staged as /data/in/regions.json)."
+    }
   ],
-  "runnable_on_strhub_data": {"value": false,
-                              "why": "--variant-catalog is a required parameter and STRhub supplies only BED layouts (HipSTR, GangSTR, STRsearch, BED4), no ExpansionHunter catalog. The catalog shipped in the repository covers 31 disease loci that all lie outside the +/-1 kb forensic windows of illumina-bam-hg38, so a run with it would genotype none of the dataset's loci. A catalog for the 24 panel loci would have to be written first; STRhub does not hold one."},
+  "runnable_on_strhub_data": {
+    "value": true,
+    "why": "2026-09-29: STRhub now supplies an ExpansionHunter variant catalog of its panel loci (datasets/<type>/regions/eh_catalog.json, staged as /data/in/regions.json). The documented command leaves the catalog to the user (`--variant-catalog <JSON file specifying variants to genotype>`, docs/03_Usage.md:15-18), as HipSTR leaves its regions BED; STRhub's catalog lists the 24 forensic loci the NA12878 slice covers.",
+    "was": {
+      "value": false,
+      "why": "--variant-catalog is a required parameter and STRhub supplies only BED layouts (HipSTR, GangSTR, STRsearch, BED4), no ExpansionHunter catalog. The catalog shipped in the repository covers 31 disease loci that all lie outside the +/-1 kb forensic windows of illumina-bam-hg38, so a run with it would genotype none of the dataset's loci. A catalog for the 24 panel loci would have to be written first; STRhub does not hold one."
+    }
+  },
   "notes": "The README (README.md:26-29) only points to docs/; command, install and inputs are all in docs/01-04. Bioconda holds expansionhunter 5.0.0 but no document mentions it (available, not documented). tools/docker/debug/mallinfo2/Dockerfile is a developer debug build image ('Scripts and tooling related to ExpansionHunter development', tools/README.md:3), not an install route. The in-repo runnable example, example/run.sh:3-7, calls ../bin/ExpansionHunter on example/input/variants.bam, reference.fa and variants.json; ../bin is not where the documented CMake build puts the binary (build/install/bin/ExpansionHunter, docs/02_Installation.md:38-40). variant_catalog/ ships hg38 (chr-prefixed) and grch38 catalogs (31 disease loci) and hg19/grch37 ones (30); none contains a CODIS or other forensic locus. The default 'seeking' mode needs a sorted, indexed BAM (docs/03_Usage.md:46-50), which the dataset provides. Platform is inferred: the docs say PCR-free WGS short-read BAM/CRAM and reason in read and fragment lengths (docs/04_VariantCatalogFiles.md:74-78); they never name Illumina."
 }

@@ -24,9 +24,30 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import benchmark_recipes as br  # noqa: E402
+import certificate_text as ct  # noqa: E402
+import verdict as verdict_lib  # noqa: E402
 
 HOST = "127.0.0.1"
 PORT = 8765
+
+STEP1_ES = {
+    "runs": ("Paso 1: lista para ejecutar tal como está documentada",
+             "El commit declara la instalación, el comando, la entrada y la salida. El contenedor empaqueta esa instalación sin enmiendas. Si la corrida termina y aparece el archivo nombrado, dirá: «Así como está documentado, corre».",
+             "tool"),
+    "cannot_tell": ("Así como está documentado, un tercero no puede saber cómo correrla",
+                    "No se ejecutó nada. Eso no significa que la herramienta no funcione: en este primer paso falta en el commit alguno de los cuatro bloques que pide la guía.",
+                    "unstated"),
+    "ours": ("STRhub no pudo intentar la corrida documentada (limitación nuestra)",
+             "No se ejecutó nada, y la limitación es nuestra (no tenemos ese tipo de muestra o el procedimiento requeriría una enmienda). Nada acá es un hallazgo sobre la herramienta.",
+             "ours"),
+}
+
+BLOCK_NAMES_ES = {
+    "install": "1. Instalación copiable",
+    "command": "2. Un comando (sin corchetes de sinopsis)",
+    "input": "3. La entrada declarada",
+    "output": "4. La salida declarada",
+}
 
 LEAD = {
     "ready": ("Se puede correr",
@@ -89,16 +110,21 @@ def _load() -> list[dict]:
         name = spec["name"]
         expected = json.loads((br.BENCH / name / "expected.json").read_text())
         try:
-            _proposal, recipe = br.propose(name)
+            proposal, recipe = br.propose(name)
             review = recipe["procedure"]
+            gates = {"available": True, "installs": True, "runs": True, "io": True, "content": True}
+            v = verdict_lib.decide(gates, recipe_proposal={**proposal, "limitations": recipe["limitations"]},
+                                   procedure=review)
+            step1 = ct.step1_says({"verdict": v, "procedure_review": review})
             error = ""
         except Exception as exc:  # noqa: BLE001
             review = {"blocker": "validator_error", "amendments": [], "install_method": "",
                       "input_type": "", "may_say_runs": False, "reason": str(exc),
                       "citable_install": False, "output_glob": ""}
+            step1 = {"code": "error", "headline": "Error del validador", "body": str(exc), "missing": []}
             error = f"{type(exc).__name__}: {exc}"
         rows.append({"name": name, "set": spec["set"], "repo": spec["repo"], "sha": spec["sha"],
-                     "review": review, "error": error,
+                     "review": review, "step1": step1, "error": error,
                      "expected_runnable": bool(expected["runnable_on_strhub_data"]["value"]),
                      "expected_type": expected["input"].get("strhub_type"),
                      "expected_methods": expected["install"]["acceptable_methods"],
@@ -115,28 +141,40 @@ def _page(rows: list[dict]) -> str:
     body = []
     for row in rows:
         review = row["review"]
+        step1 = row["step1"]
         blocker = review.get("blocker") or "validator_error"
         if row["error"]:
             title, sentence, kind = ("Error del validador", row["error"], "error")
+            s1_title, s1_body = ("Error del validador", row["error"])
         else:
             title, sentence, kind = LEAD.get(blocker, ("Sin clasificar", review.get("reason") or "", "error"))
+            s1_code = step1.get("code") or "cannot_tell"
+            s1_title, s1_body, kind = STEP1_ES.get(s1_code, (title, sentence, kind))
         counts[kind] = counts.get(kind, 0) + 1
         amends = "".join(f"<li>{_esc(a.get('what'))}</li>" for a in review.get("amendments") or [])
+        missing_blocks = [BLOCK_NAMES_ES.get(m, m) for m in (step1.get("missing") or [])]
+        missing_html = (
+            f"<p class=\"missing\"><b>Bloque faltante según GUIA-PASO-1.md:</b> "
+            f"{_esc(', '.join(missing_blocks))}</p>"
+            if missing_blocks else ""
+        )
         disagree = ""
         if not row["error"] and row["expected_runnable"] and blocker != "ready":
             disagree = ("<p class=\"warn\">La lectura a mano del benchmark dice que esta herramienta sí se puede "
                         "correr con los datos de STRhub. Esta ficha dice que no. Esa diferencia es del lector "
                         "automático, no un fallo de la herramienta.</p>")
         elif not row["error"] and not row["expected_runnable"] and blocker == "ready":
-            disagree = ("<p class=\"warn\">Esta ficha dice que se puede intentar, y la lectura a mano dice que "
-                        "los datos de STRhub no alcanzan. No correr: el desacuerdo se resuelve antes de Docker.</p>")
+            disagree = ("<p class=\"warn\">Esta ficha dice que el Paso 1 se puede intentar, mientras que el "
+                        "benchmark manual anota que el análisis completo (p. ej. cohorte en EHdn) excede una sola muestra.</p>")
         body.append(f"""
         <article class="{_esc(kind)}" id="{_esc(row['name'])}">
           <header>
             <h2>{_esc(row['name'])}</h2>
-            <p class="tag">{_esc(title)}</p>
+            <p class="tag">{_esc(s1_title)}</p>
           </header>
-          <p>{_esc(sentence)}</p>
+          <p>{_esc(s1_body)}</p>
+          <p class="detail"><b>Detalle del clasificador (<code>{_esc(blocker)}</code>):</b> {_esc(sentence)}</p>
+          {missing_html}
           {disagree}
           <dl>
             <dt>Repositorio</dt><dd><code>{_esc(row['repo'])}</code> @ <code>{_esc(row['sha'][:12])}</code></dd>
@@ -167,22 +205,22 @@ def _page(rows: list[dict]) -> str:
   .ours .tag {{ color: #9a3412; }}
   .unstated .tag {{ color: #57534e; }}
   .error .tag {{ color: #991b1b; }}
+  .detail {{ color: #57534e; font-size: 0.92rem; }}
+  .missing {{ background: #f5f5f4; padding: 0.45rem 0.7rem; border-radius: 6px; font-size: 0.92rem; }}
   .warn {{ background: #fff7ed; padding: 0.5rem 0.7rem; border-radius: 6px; }}
   dl {{ display: grid; grid-template-columns: 16rem 1fr; gap: 0.2rem 1rem; }}
   dt {{ color: #57534e; }}
   dd {{ margin: 0; }}
   code {{ font-size: 0.9em; }}
 </style></head><body>
-<h1>Prueba local: ¿se puede correr con lo que hay?</h1>
-<p class="note">Esto no construye imágenes y no publica nada. Verde: el repo trae cómo
-instalarse y STRhub tiene la muestra, así que esa corrida entra. Naranja o gris: no
-podemos armar el entorno con lo que hay en el repo, o no tenemos la muestra (por ejemplo
-slices de otras coordenadas). Eso es lo que se le diría a quien mantiene la herramienta,
-con la limitación concreta, para que documente el README o suba un ejemplo.</p>
+<h1>Prueba local: Paso 1 y clasificación antes de Docker</h1>
+<p class="note">Esto no construye imágenes y no publica nada. Muestra la frase del Paso 1 que recibiría
+cada herramienta del benchmark antes de correr Docker y, cuando falta algo en el commit, cuál de los
+cuatro bloques de <code>docs/GUIA-PASO-1.md</code> falta.</p>
 <ul class="counts">
-  <li>Se puede correr: {counts.get("tool", 0)}</li>
-  <li>No podemos, y el motivo es nuestro: {counts.get("ours", 0)}</li>
-  <li>Falta documentación para empezar: {counts.get("unstated", 0)}</li>
+  <li>Listas para correr (Paso 1): {counts.get("tool", 0)}</li>
+  <li>No podemos, y la limitación es nuestra: {counts.get("ours", 0)}</li>
+  <li>Falta un bloque en el commit (GUIA-PASO-1): {counts.get("unstated", 0)}</li>
   <li>Error del validador: {counts.get("error", 0)}</li>
 </ul>
 {"".join(body)}

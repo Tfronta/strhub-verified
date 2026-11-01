@@ -1,0 +1,19 @@
+# Typed reference dataset — pacbio-hifi-bam-hg38
+# Matched against a manifest's `inputs.type: pacbio-hifi-bam-hg38` for the
+# external verification leg. The BAM slice lives in pacbio_slices/ (pre-built, committed).
+
+type: "pacbio-hifi-bam-hg38"
+data: "pacbio_slices/HG002.hifi.codis.bam"
+bam_index: "pacbio_slices/HG002.hifi.codis.bam.bai"
+format: "bam"
+reference: "hg38"
+
+name: "GIAB HG002 PacBio HiFi (Revio), hg38 CODIS slice"
+source: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/"
+license: >
+  Open access (GIAB / NIST). Research and educational use. STRhub is not the
+  data provider.
+chemistry: "PacBio Revio HiFi (CCS), ~48x"
+notes: >
+  Pre-built CODIS ±10 kb slice in pacbio_slices/ (~19 MB). See SOURCE.txt for
+  the upstream file, its checksum and the exact slicing commands.

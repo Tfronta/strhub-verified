@@ -60,8 +60,26 @@ def read_regions(path: pathlib.Path | None) -> list[tuple[str, int, int, str]]:
     when it is not numeric, else the 6th column for HipSTR, else chrom:start)."""
     if not path or not path.is_file():
         return []
+    text = path.read_text(errors="replace")
+    if text.lstrip().startswith("["):
+        # ExpansionHunter's variant catalog: the same loci, as JSON, with a
+        # 0-based ReferenceRegion (the library's BEDs are 1-based starts).
+        import json as _json
+        try:
+            entries = _json.loads(text)
+        except ValueError:
+            return []
+        out = []
+        for e in entries if isinstance(entries, list) else []:
+            regions = e.get("ReferenceRegion")
+            for region in (regions if isinstance(regions, list) else [regions]):
+                m = re.match(r"^([^:]+):(\d+)-(\d+)$", str(region or ""))
+                if m:
+                    out.append((m.group(1), int(m.group(2)) + 1, int(m.group(3)),
+                                str(e.get("LocusId") or f"{m.group(1)}:{m.group(2)}")))
+        return out
     out = []
-    for ln in path.read_text(errors="replace").splitlines():
+    for ln in text.splitlines():
         s = ln.strip()
         if not s or s.startswith(("#", "track", "browser")):
             continue
@@ -74,6 +92,11 @@ def read_regions(path: pathlib.Path | None) -> list[tuple[str, int, int, str]]:
                     and not re.match(r"^[ACGTN]+$", f[i], re.I):
                 name = f[i]
                 break
+        # TRGT's repeat definitions name the locus inside the fourth column:
+        # ID=TH01;MOTIFS=AATG;STRUC=(AATG)n.
+        trgt = re.match(r"^ID=([^;]+)(?:;|$)", name)
+        if trgt:
+            name = trgt.group(1)
         out.append((f[0], int(f[1]), int(f[2]), name or f"{f[0]}:{f[1]}"))
     return out
 

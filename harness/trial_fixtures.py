@@ -250,6 +250,8 @@ def disagreements() -> list[str]:
 
 
 def main() -> None:
+    import yaml
+    import report as report_mod
     out = pathlib.Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else OUT
     wrong = disagreements()
     if wrong:
@@ -258,11 +260,58 @@ def main() -> None:
             print("  " + line)
         raise SystemExit(1)
     out.mkdir(parents=True, exist_ok=True)
+    root = pathlib.Path(__file__).resolve().parent.parent
+    reports_dir = root / "reports"
+    reports_dir.mkdir(exist_ok=True)
     for s in SCENARIOS:
         report = _build(s)
+        slug = s["id"]
+        report["scope"] = report_mod.SCOPE
+        if s["run"]:
+            report["run"] = {"cmd": s["run"]}
         d = out / s["id"]
         d.mkdir(exist_ok=True)
         (d / "report.json").write_text(json.dumps(report, indent=2))
+        (d / "summary.md").write_text(report_mod._summary_md(report, slug))
+        (d / "report.html").write_text(report_mod._summary_html(report, slug))
+        manifest_obj = {
+            "tool": {"name": s["tool"], "version": s["version"], "contact": f"{s['repo']}/issues"},
+            "submission": {"by": "third_party"},
+            "source": {"repo": s["repo"], "ref": s["sha"]},
+            "recipe": {"origin": "proposed"},
+            "report": {"slug": slug},
+            "environment": {"dockerfile": "Dockerfile", "os": ["ubuntu-22.04"], "source": "generated"},
+            "run": {"cmd": s["run"] or "true", "timeout_minutes": 20},
+            "inputs": {"type": "illumina-bam-hg38"},
+            "outputs": [{"path": s["outputs"], "format": "text", "min_records": 1}],
+        }
+        manifest_yml = yaml.safe_dump(manifest_obj, sort_keys=False)
+        dockerfile_txt = f"# Proposed environment ({s['build']})\nFROM ubuntu:22.04\nWORKDIR /opt/tool\n"
+        (d / "recipe.json").write_text(json.dumps({
+            "schema": "strhub-verified/recipe/1",
+            "slug": slug,
+            "manifest_yml": manifest_yml,
+            "dockerfile": dockerfile_txt,
+        }, indent=2))
+        try:
+            import generate_pdf
+            import tempfile
+            with tempfile.TemporaryDirectory() as tmp:
+                mp = pathlib.Path(tmp) / "manifest.yml"
+                mp.write_text(manifest_yml)
+                (reports_dir / f"{slug}.json").write_text(json.dumps(report, indent=2))
+                cfg = generate_pdf.load_config(str(mp), str(root / "datasets" / "index.json"), publishable=False)
+                doc = generate_pdf.SimpleDocTemplate(
+                    str(d / "report.pdf"), pagesize=generate_pdf.A4,
+                    leftMargin=generate_pdf.ML, rightMargin=generate_pdf.MR,
+                    topMargin=generate_pdf.MT, bottomMargin=generate_pdf.MB + 8 * generate_pdf.mm,
+                    title=f"STRhub Verified — {cfg['tool_display']}",
+                )
+                story = generate_pdf.build_cover(cfg) + [generate_pdf.PageBreak()] + generate_pdf.build_body(cfg)
+                doc.build(story, canvasmaker=generate_pdf._make_canvas_class(cfg))
+                (reports_dir / f"{slug}.json").unlink(missing_ok=True)
+        except Exception:
+            pass
         step1 = report["step1"]
         print(f"{step1['code']:14s} {s['id']:30s} {step1['headline']}")
         if step1.get("missing_text"):

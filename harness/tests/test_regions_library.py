@@ -9,12 +9,14 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 REPOS = ROOT / "harness" / "testdata" / "repos"
 
 
-BAM_TYPES = ("illumina-bam-hg38", "illumina-bam-hg38-y", "ont-bam-hg38")
+BAM_TYPES = ("illumina-bam-hg38", "illumina-bam-hg38-y", "ont-bam-hg38", "pacbio-hifi-bam-hg38",
+             # Not a BAM, but read by tools that align it to hg38 and take the same regions.
+             "ont-fastq")
 
 
 def test_every_bam_dataset_has_every_format():
     for t in BAM_TYPES:
-        assert rl.available(t) == ["bed4", "gangstr", "hipstr", "motif", "strsearch"], t
+        assert rl.available(t) == ["bed4", "eh_catalog", "gangstr", "hipstr", "motif", "strsearch", "trgt"], t
         for fmt in rl.available(t):
             assert rl.library_path(t, fmt) is not None
 
@@ -81,6 +83,16 @@ def test_the_ont_panel_is_the_codis_loci_inside_its_slices():
     assert len(names) == 20 and {"TH01", "vWA", "FGA", "D21S11", "TPOX"} <= set(names)
 
 
+def test_the_hifi_slice_has_the_same_windows_and_so_the_same_panel_as_ont():
+    """The PacBio HiFi slice was cut with the ONT windows; the two derived
+    libraries differ only in the file they name."""
+    assert (ROOT / "pacbio_slices" / "codis_pm10kb.bed").read_text() == \
+        (ROOT / "ont_slices" / "codis_pm10kb.bed").read_text()
+    for fmt in rl.available("ont-bam-hg38"):
+        assert rl.library_path("pacbio-hifi-bam-hg38", fmt).read_text() == \
+            rl.library_path("ont-bam-hg38", fmt).read_text(), fmt
+
+
 def test_the_manifest_schema_accepts_every_library_format():
     """A format added to the library and not to the schema published nothing:
     report.py rejected every trial that used it (motif, on 29 September)."""
@@ -93,3 +105,32 @@ def test_the_manifest_schema_accepts_every_library_format():
     for t in BAM_TYPES:
         for fmt in rl.available(t):
             assert all(fmt in e for e in enums), (fmt, enums)
+
+
+def test_expansionhunter_gets_a_catalog_of_the_panel_and_trgt_its_repeat_definitions():
+    """The loci to genotype, in the shape each tool takes them: HipSTR a
+    regions BED, ExpansionHunter a JSON variant catalog, TRGT a BED of
+    repeat definitions. Same loci, same coordinates (0-based where the format
+    is), recognised back by detect_format."""
+    import json
+    assert rl.format_for_tool("ExpansionHunter", "ExpansionHunter --reads x")[0] == "eh_catalog"
+    assert rl.format_for_tool("trgt", "trgt genotype")[0] == "trgt"
+    for t in BAM_TYPES:
+        hip = [ln.split("\t") for ln in rl.library_path(t, "hipstr").read_text().splitlines() if ln.strip()]
+        cat = json.loads(rl.library_path(t, "eh_catalog").read_text())
+        assert [c["LocusId"] for c in cat] == [h[5] for h in hip], t
+        for c, h in zip(cat, hip):
+            assert c["ReferenceRegion"] == f"{h[0]}:{int(h[1]) - 1}-{h[2]}"
+            assert c["LocusStructure"] == f"({h[6]})*"
+        assert rl.detect_format(rl.library_path(t, "eh_catalog").read_text()) == "eh_catalog"
+        trgt = rl.library_path(t, "trgt").read_text().splitlines()
+        assert len(trgt) == len(hip) and all("MOTIFS=" in ln and "STRUC=" in ln for ln in trgt)
+
+
+def test_a_json_catalog_is_staged_as_regions_json(tmp_path):
+    import prepare
+    legs = [tmp_path / "in_own", tmp_path / "in_external"]
+    src = prepare.stage_regions({"library": "eh_catalog"}, legs, "illumina-bam-hg38")
+    assert src == "strhub"
+    for leg in legs:
+        assert (leg / "regions.json").is_file() and not (leg / "regions.bed").exists()

@@ -1,0 +1,18 @@
+# Typed reference dataset — ont-fastq
+# Matched against a manifest's `inputs.type: ont-fastq` for the external
+# verification leg. The FASTQ lives in ont_slices/ (pre-built, committed).
+
+type: "ont-fastq"
+data: "ont_slices/HG00113.codis.panel.fastq.gz"
+format: "fastq"
+
+name: "1000 Genomes ONT, HG00113 reads over the CODIS panel loci (FASTQ)"
+source: "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/"
+license: >
+  Open access (1000 Genomes / Human Pangenome Reference Consortium). Research
+  and educational use. STRhub is not the data provider.
+chemistry: "Oxford Nanopore R10, basecalling model SUP"
+notes: >
+  The primary reads of ont_slices/HG00113.codis.bam that cover the 20 panel
+  loci, written back as FASTQ (16.5 MB gzipped, staged uncompressed). See
+  SOURCE.txt.

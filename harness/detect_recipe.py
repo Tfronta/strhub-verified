@@ -132,6 +132,8 @@ def _get(url: str, token: str | None = None, binary: bool = False) -> bytes | st
         with urllib.request.urlopen(req, timeout=30) as r:  # noqa: S310 (fixed public hosts)
             data = r.read()
     except urllib.error.HTTPError as e:
+        if token and e.code in (401, 403):
+            return _get(url, token=None, binary=binary)
         if e.code == 404:
             return None
         raise
@@ -902,7 +904,7 @@ IN_FLAG = re.compile(r"--?(?:bams?|crams?|fastqs?|inputs?|in|reads|i|fq|fq1|fq2|
                      r"(?:[-_](?:file|files|dir|bam|bams|fastq))?(?![\w-])"
                      r"|\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b"
                      r"|(?<![\w-])[<\[]?\w*(?:fastq|fq|bam|cram|reads|input)\w*[>\]]?(?![\w-])", re.I)
-OUT_FLAG = re.compile(r"--?(?:out(?:put)?(?:[-_]?\w+)?|o|str-vcf|tr-vcf|prefix|vcf-out|working_path)(?![\w])"
+OUT_FLAG = re.compile(r"--?(?:out(?:put)?(?:[-_]?\w+)?|o|str-vcf|tr-vcf|vcf|json|prefix|vcf-out|working_path)(?![\w])"
                       r"|\s>\s", re.I)
 
 
@@ -991,16 +993,28 @@ def detect_commands(readme: str, names: list[str], docs: list[dict] | None = Non
                               or bool(SYNOPSIS_CHOICES.search(text)) or bool(HELPER_NAME.search(prog))
                               or bool(INSTALLER.match(prog))),
                 "main_verb": sub in MAIN_VERBS,
+                # A usage synopsis (`tool <in> [--opt1 X] [--opt2 Y] ...`) is not
+                # a worked example command: when the documentation also shows a
+                # concrete invocation without optional-argument brackets, that
+                # worked example comes first.
+                "synopsis": bool(re.search(r"\[\s*--?\w", text)),
                 # `zcat x.fq.gz | tool ...` documents a compressed-input variant;
                 # the plain invocation is the one to rewrite for STRhub's data.
                 "piped": len(segments) > 1,
+                # An example command that requires an external file not in the
+                # repository or STRhub's mounts (e.g. a dbSNP VCF or a genome-scan
+                # exclusion list) is ranked below an equally valid example that
+                # runs on reads, reference and loci alone.
+                "needs_external_aux": bool(re.search(r"--(?:incorporate-snvs|snv|exclude)\b", text, re.I)),
                 "source_rank": rank,
                 "rst": rst,
             })
     # Best first: the tool's own program; not a help, drawing or conversion
-    # command; the analysis verb when the tool has subcommands; an invocation
-    # that names an input and an output; direct rather than behind a pipe;
-    # and the README before the documents it links. Ties keep document order.
+    # command; the analysis verb when the tool has subcommands; a concrete
+    # command before a bracketed usage synopsis; an invocation that names an
+    # input and an output; direct rather than behind a pipe; self-contained
+    # before needing external auxiliary files; and the README before the
+    # documents it links. Ties keep document order.
     # Input and output used to come first, and straglr got a bedtools pipeline
     # and tandem-genotypes its merge helper.
     cands.sort(key=lambda c: (not (c["named_in_tree"] or c["entry_point"]), c["help_only"],
@@ -1008,8 +1022,10 @@ def detect_commands(readme: str, names: list[str], docs: list[dict] | None = Non
                               # STRhub verifies STR genotyping: a tool's STR
                               # mode before its SNP mode (lusSTR strs / snps).
                               bool(re.search(r"snps?", c.get("subcommand") or "", re.I)),
+                              c["synopsis"],
                               not (c["has_input_flag"] and c["has_output_flag"]),
-                              not c["has_input_flag"], c["piped"], c["source_rank"]))
+                              not c["has_input_flag"], c["piped"],
+                              c["needs_external_aux"], c["source_rank"]))
     seen, uniq = set(), []
     for c in cands:
         if c["cmd"] not in seen:
@@ -1092,7 +1108,7 @@ def prefer_input_kind(commands: list[dict], kind: str | None) -> list[dict]:
 # `--bam` and `.fastq` all count as the kind they name.
 _W = r"(?<![A-Za-z0-9])(?:{})(?![A-Za-z0-9])"
 KIND_WORDS = {
-    "bam": re.compile(_W.format(r"bams?|crams?|aligned reads|alignments?|pre-aligned"), re.I),
+    "bam": re.compile(_W.format(r"bams?|crams?|aligned reads|pre-aligned"), re.I),
     "fastq": re.compile(_W.format(r"fastqs?|fqs?|raw reads"), re.I),
     "fsa": re.compile(_W.format(r"fsa|hid|electropherograms?"), re.I),
     # Inputs STRhub holds no sample of: genotype calls to post-process, and
@@ -1209,11 +1225,15 @@ def _kind_of_type(input_type: str | None) -> str | None:
 
 
 def _type_for(kind: str, platform: str, ystr: bool) -> str | None:
-    if kind in ("vcf", "signal") or platform == "pacbio":
-        # STRhub holds no genotype calls to post-process, no raw signal and
-        # no PacBio HiFi reads. A type that names what the tool reads, so the
-        # proposal can say that, instead of handing it Illumina reads.
+    if kind in ("vcf", "signal"):
+        # STRhub holds no genotype calls to post-process and no raw signal. A
+        # type that names what the tool reads, so the proposal can say that,
+        # instead of handing it Illumina reads.
         return None
+    if platform == "pacbio":
+        # STRhub's HiFi reads are aligned, in a BAM; there are no unaligned
+        # HiFi reads to hand a tool that takes FASTQ.
+        return "pacbio-hifi-bam-hg38" if kind == "bam" else None
     if kind == "fsa":
         return "ce-fsa"
     if kind == "bam":
@@ -1227,8 +1247,10 @@ def _type_for(kind: str, platform: str, ystr: bool) -> str | None:
 
 def _stated_platform(statements: dict) -> str | None:
     """The platform the documentation says the tool is FOR now. A current
-    statement beats a historical one; nanopore beats PacBio when both are
-    current (STRhub has nanopore data and no HiFi); long reads beat Illumina."""
+    statement beats a historical one; long reads beat Illumina. When a tool
+    states both nanopore and PacBio, either dataset is a faithful reading and
+    nanopore is kept first, so a tool already verified on nanopore reads is
+    not moved to another dataset by this."""
     plats = [p for p in statements["platform"] if p["platform"] in ("ont", "pacbio", "illumina")]
     current = [p["platform"] for p in plats if not p.get("historical")]
     pool = current or [p["platform"] for p in plats]
@@ -1238,13 +1260,27 @@ def _stated_platform(statements: dict) -> str | None:
     return None
 
 
+#: An option, or a redirection, that names what a command WRITES.
+_WRITES = re.compile(r"^(?:>>?|--?(?:o|out|output|out[-_]?file|output[-_]?file|prefix|output[-_]?prefix|"
+                     r"(?:str|tr)[-_]?vcf|vcf[-_]?out|out(?:put)?[-_]?vcf))$", re.I)
+
+
 def kind_from_command(cmd: str) -> str | None:
-    """The reads a documented command visibly takes: a .bam/.cram or FASTQ
-    path, or a flag that names them."""
+    """What a documented command visibly takes: reads (a .bam/.cram or FASTQ
+    path, or a flag that names them) or, failing those, alignments or calls
+    it reads rather than writes (LAST's .maf, a .vcf)."""
     if re.search(r"\.(?:bam|cram)\b|--?(?:bams?|crams?)\b|\s-b\s+\S+\.(?:bam|cram)", cmd, re.I):
         return "bam"
     if re.search(r"\.f(?:ast)?q(?:\.gz)?\b|--(?:fastqs?|fq[12]?|reads[12]?)\b", cmd, re.I):
         return "fastq"
+    toks = cmd.split()
+    for i, t in enumerate(toks):
+        if i and _WRITES.match(toks[i - 1]):
+            continue
+        if re.search(r"\.maf(?:\.gz)?$", t, re.I):
+            return "maf"
+        if re.search(r"\.vcf(?:\.gz)?$", t, re.I):
+            return "vcf"
     return None
 
 
@@ -1285,7 +1321,19 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
     # vamos's own command takes `-b reads.bam`.
     cmd_kind = kind_from_command(command or "")
     only_aux = statements["determined"] and all(i["kind"] in ("vcf", "signal") for i in statements["inputs"])
-    if cmd_kind and (not statements["determined"] or only_aux):
+    not_reads = cmd_kind in ("maf", "vcf")
+    if not_reads:
+        # The command reads alignments or calls, whatever the README says
+        # about the reads upstream of it: tandem-genotypes reads LAST's MAF,
+        # and its README's "the read sequences (in fastq or fasta)" is the
+        # input of the lastal step before it. Handing it reads would stage a
+        # file its command never opens.
+        stated = _stated_platform(statements)
+        platform = stated or ("ont" if hits["ont"] > hits["illumina"] else "illumina")
+        platform_how = "stated" if stated else "counted"
+        ranked = []
+        how = "command"
+    elif cmd_kind and (not statements["determined"] or only_aux):
         stated = _stated_platform(statements)
         platform = stated or ("ont" if hits["ont"] > hits["illumina"] else "illumina")
         platform_how = "stated" if stated else "counted"
@@ -1293,8 +1341,7 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
         how = "command"
     elif statements["determined"]:
         # The platform the README states the tool is for; a count of platform
-        # words decides only when no sentence does, and PacBio has no STRhub
-        # dataset so it can only ever fall through to the next.
+        # words decides only when no sentence does.
         stated = _stated_platform(statements)
         if stated:
             platform, platform_how = stated, "stated"
@@ -1329,7 +1376,9 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
     # What the documentation says the tool reads when STRhub holds nothing of
     # the kind: the reason a trial cannot run, in the tool's own terms.
     unsupported = None
-    if statements["determined"] and not ranked and how != "command":
+    if not_reads:
+        unsupported = {"kinds": [cmd_kind], "platform": platform}
+    elif statements["determined"] and not ranked and how != "command":
         unsupported = {"kinds": [i["kind"] for i in statements["inputs"]], "platform": platform}
     return {"best": ranked[0] if ranked else None, "candidates": ranked, "signals": hits,
             "warnings": warnings, "unsupported": unsupported, "statements_file": statements_file,
@@ -1339,11 +1388,33 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
             "statements": statements}
 
 
-def detect_output(readme: str, commands: list[dict]) -> dict:
-    text = readme + "\n" + "\n".join(c["cmd"] for c in commands)
+#: Files a README names that are never what the tool writes.
+NOT_OUTPUT_FILES = re.compile(r"\b(?:requirements|CMakeLists|LICENSE|README|CHANGELOG|NEWS|INSTALL|"
+                              r"MANIFEST|environment|setup|package|tsconfig|version)\.(?:txt|json|csv|tsv)\b", re.I)
+#: Order among equals: the format the Content gate reads best first.
+OUTPUT_PRIORITY = {"vcf": 0, "tsv": 1, "csv": 2, "json": 3}
+
+
+def detect_output(readme: str, commands: list[dict], docs: list[dict] | None = None) -> dict:
+    """The output format the documentation describes: the README, the
+    documents it links (ExpansionHunter describes its VCF and JSON outputs in
+    docs/05_OutputJsonFiles.md and 06_OutputVcfFiles.md) and the commands. A
+    file a README names that is not an output (requirements.txt) is not a
+    vote for TSV; that is how ExpansionHunter's VCF was looked for as a table."""
+    text = readme + "\n" + "\n".join(d["text"] for d in docs or []) + "\n" + "\n".join(c["cmd"] for c in commands)
+    text = NOT_OUTPUT_FILES.sub(" ", text)
     scores = [(fmt, len(rx.findall(text))) for fmt, rx in OUTPUT_SIGNALS]
-    scores.sort(key=lambda x: -x[1])
+    scores.sort(key=lambda x: (-x[1], OUTPUT_PRIORITY.get(x[0], 9)))
     best = scores[0][0] if scores and scores[0][1] else None
+    # The command writes a file with an extension, or the documentation states
+    # an explicit output glob (`logbam/RepBAM_*.log`): that settles it.
+    if commands:
+        m = re.search(r"(?:--?(?:o|out|output|tr-vcf|str-vcf|vcf)\s+|>\s*)\S+\.(vcf|tsv|csv|json)(?:\.gz)?\b",
+                      commands[0]["cmd"], re.I)
+        if m:
+            best = m.group(1).lower()
+    if best is None and re.search(r"[\w./-]+/[\w.*-]*\*[\w.-]*\.(?:log|txt|tsv)\b", text, re.I):
+        best = "tsv"
     return {"format": best, "signals": dict(scores)}
 
 
@@ -1762,7 +1833,7 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
     commands = detect_commands(readme, names, docs, readme_name, pkg["executables"])
     input_type = detect_input_type(readme, examples, docs, commands[0]["cmd"] if commands else None)
     commands = attach_prerequisite(prefer_input_kind(commands, _kind_of_type(input_type.get("best"))), set(paths))
-    output = detect_output(readme, commands)
+    output = detect_output(readme, commands, docs)
     rd = readme_gaps(readme_name, build, commands, input_type, output, examples)
     known = author_known_issues(readme)
     # Each known-issue quote carries the URL of the line it was read from.
@@ -1783,8 +1854,13 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         # names a registry knows the tool by.
         "packaging": pkg,
         # The coordinates in the loci files the repository ships, so the
-        # proposal can tell whether a catalog's loci are in STRhub's sample.
+        # proposal can tell whether a catalog's loci are in STRhub's sample,
+        # and the column format of each shipped file for tools not in STRhub's table.
         "shipped_loci": shipped_loci(files, loci_file_paths(tree)),
+        "shipped_loci_formats": {
+            p: fmt for p in loci_file_paths(tree)
+            if files.get(p) and (fmt := __import__("regions_library").detect_format(files[p]))
+        },
         # What is published outside the repository, documented or not: ten of
         # seventeen STR tools are on Bioconda at the exact release, and only
         # two READMEs say so. A fact for the report and for a recipe STRhub
@@ -1802,9 +1878,10 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         "input_type": input_type,
         "output": output,
         "readme": rd,
-        # The first part of the README travels with the proposal so the regions
-        # library can read how the tool describes its regions file. Bounded.
+        # The first part of the README and linked docs travel with the proposal
+        # so the regions library can read how the tool describes its regions file.
         "readme_text": readme[:20_000],
+        "docs_text": docs_text[:30_000],
         # What the author already wrote down as wrong or incomplete. Quoted, so
         # the report carries the author's own words rather than an inference.
         "known_issues": known,

@@ -1,0 +1,49 @@
+Fixture provenance — ont-fastq (1000 Genomes ONT reads over the CODIS panel loci, as FASTQ)
+===========================================================================================
+
+STRhub Verified does NOT host or redistribute full genomes. The FASTQ file in
+`ont_slices/` holds only the reads of one pre-built ONT slice that cover
+STRhub's panel loci, written back as FASTQ, so a tool that aligns its own
+reads gets the same nanopore data as the BAM leg. Smoke-test input only.
+
+Upstream
+--------
+The reads are those of `ont_slices/HG00113.codis.bam`, the default sample of
+the `ont-bam-hg38` dataset (see datasets/ont-bam-hg38/SOURCE.txt): 1000
+Genomes ONT, sample HG00113, R10 flow cell, dorado SUP basecalls, minimap2
+alignment to hg38. Same licence and use scope as that dataset.
+
+How the file was built (2026-09-29)
+-----------------------------------
+Selection BED: `ont_slices/codis_panel_windows.bed` — the 20 windows of the
+`ont-bam-hg38` panel (datasets/ont-bam-hg38/loci.bed, columns 1-4).
+
+  samtools 1.21 (quay.io/biocontainers/samtools:1.21--h50ea8bc_0):
+
+  samtools view -b -F 0x900 -L codis_panel_windows.bed -o panel.bam ont_slices/HG00113.codis.bam
+  samtools fastq -n panel.bam | gzip -9 > HG00113.codis.panel.fastq.gz
+
+-F 0x900 keeps each read once (its primary alignment, no secondary or
+supplementary records); samtools fastq writes reverse-strand reads back in
+their sequenced orientation, with their base qualities. Alignment tags,
+including the methylation calls, are not carried into the FASTQ.
+
+Result: ont_slices/HG00113.codis.panel.fastq.gz, 16.5 MB gzipped, 864 reads,
+23.9 Mb of bases (mean read length 27.7 kb). STRhub stages it uncompressed as
+/data/in/input.fastq.
+
+Panel
+-----
+datasets/ont-fastq/loci.bed and regions/ are DERIVED from the
+illumina-bam-hg38 panel by harness/build_regions_library.py: the same 20
+autosomal CODIS loci as ont-bam-hg38, at hg38 coordinates for a tool that
+aligns the reads to /data/ref/hg38.fa.
+
+Memory
+------
+The run container has 6 GB. A tool that aligns these reads to the whole of
+hg38 itself needs more: NanoRepeat's documented FASTQ mode (-t fastq, which
+runs minimap2 against /data/ref/hg38.fa) was stopped at that limit in an
+unpublished trial on 2026-09-29, and its verdict was out of scope (oom), not
+a failure. A tool that aligns to a small reference of its own, or takes the
+reads without aligning them, is not affected.

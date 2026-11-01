@@ -1,0 +1,25 @@
+# STRhub Verified: supported-loci panel for `ont-fastq`
+# Derived by harness/build_regions_library.py from datasets/illumina-bam-hg38/loci.bed: the loci whose
+# window falls inside the slice windows of ont_slices/codis_panel_windows.bed. DO NOT EDIT BY HAND.
+# The window and score columns are those of the illumina-bam-hg38 panel, not measured on this data.
+# columns: chrom  start  end  name  score
+chr1	230768616	230770683	D1S1656	114
+chr2	1488653	1490684	TPOX	129
+chr2	68010947	68012994	D2S441	115
+chr2	218013859	218015950	D2S1338	55
+chr3	45539739	45541802	D3S1358	248
+chr4	154586736	154588823	FGA	240
+chr5	123774556	123776599	D5S818	248
+chr5	150075324	150077375	CSF1PO	97
+chr7	84159226	84161277	D7S820	140
+chr8	124893865	124895916	D8S1179	70
+chr10	129293244	129295295	D10S1248	211
+chr11	2170088	2172115	TH01	130
+chr12	5982969	5985044	vWA	131
+chr12	12296020	12298095	D12S391	106
+chr13	82147025	82149068	D13S317	217
+chr16	86351702	86353745	D16S539	197
+chr18	63280667	63282738	D18S51	140
+chr19	29925235	29927298	D19S433	105
+chr21	19180973	19183099	D21S11	212
+chr22	37139287	37141337	D22S1045	111

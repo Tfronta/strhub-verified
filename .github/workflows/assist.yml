@@ -1,0 +1,117 @@
+name: Recipe agent
+
+# What it takes to run a tool whose documented run does not: STRhub's recipe
+# agent (harness/assist.py) reads the repository, proposes recipes, runs each
+# one as an unpublished trial of verify.yml, and reads what happened, up to
+# max_attempts. If a recipe runs, it is opened as a pull request under
+# tools/<slug>/ with origin "curated" and every departure from the
+# documentation listed in recipe.workarounds: a person reviews it before the
+# monthly refresh publishes it, as a note under the documented result, never
+# the badge. Dispatched by hand: every attempt costs model tokens and a trial.
+#
+# Needs the repository secret ANTHROPIC_API_KEY.
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: "Public GitHub repository of the tool (https://github.com/owner/name)"
+        required: true
+        type: string
+      ref:
+        description: "The commit to make run (40-character SHA)"
+        required: true
+        type: string
+      tag:
+        description: "The release tag that commit was resolved from, if any"
+        required: false
+        type: string
+        default: ""
+      max_attempts:
+        description: "How many recipes the agent may run as trials (each takes several minutes)"
+        required: false
+        type: string
+        default: "4"
+      open_pr:
+        description: "Open a pull request with the recipe that ran"
+        required: false
+        type: boolean
+        default: true
+
+permissions: {}
+
+jobs:
+  assist:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 350
+    permissions:
+      contents: write        # the branch with the recipe
+      actions: write         # dispatches the trials
+      pull-requests: write   # opens the pull request
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install -q pyyaml jsonschema anthropic
+
+      - name: Check the inputs and the credential
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          REPO: ${{ inputs.repo }}
+          REF: ${{ inputs.ref }}
+          MAX_ATTEMPTS: ${{ inputs.max_attempts }}
+        run: |
+          [ -n "$ANTHROPIC_API_KEY" ] || { echo "::error::Add ANTHROPIC_API_KEY to this repository's Actions secrets."; exit 1; }
+          [[ "$REPO" =~ ^https://github\.com/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+/?$ ]] || { echo "::error::repo must be https://github.com/owner/name"; exit 1; }
+          [[ "$REF" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::ref must be a 40-character commit SHA"; exit 1; }
+          [[ "$MAX_ATTEMPTS" =~ ^[1-8]$ ]] || { echo "::error::max_attempts must be 1 to 8"; exit 1; }
+
+      - name: Run the agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ inputs.repo }}
+          REF: ${{ inputs.ref }}
+          TAG: ${{ inputs.tag }}
+          MAX_ATTEMPTS: ${{ inputs.max_attempts }}
+        run: |
+          python harness/assist.py --repo "$REPO" --ref "$REF" --tag "$TAG" \
+            --max-attempts "$MAX_ATTEMPTS" --engine-ref "$GITHUB_REF_NAME" --out work/assist
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: assist-result
+          path: work/assist
+          retention-days: 30
+
+      - name: Say what happened
+        if: always()
+        run: python harness/assist_report.py work/assist/result.json >> "$GITHUB_STEP_SUMMARY" || true
+
+      # GitHub runs no workflow on a pull request opened with its own token, so
+      # the PR's check does not start by itself; the trial that ran this exact
+      # recipe is linked in the body, and closing and reopening the PR runs it.
+      - name: Open a pull request with the recipe that ran
+        if: inputs.open_pr && hashFiles('work/assist/tools/*/manifest.yml') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF: ${{ inputs.ref }}
+        run: |
+          set -e
+          slug=$(ls work/assist/tools | head -1)
+          branch="assist/${slug}-${REF:0:7}-${GITHUB_RUN_ID}"
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          mkdir -p "tools/$slug"
+          cp work/assist/tools/"$slug"/* "tools/$slug/"
+          git add "tools/$slug"
+          git commit -q -m "Recipe agent: what it took to run $slug at ${REF:0:7} (run ${GITHUB_RUN_ID})"
+          git push -q "$remote" "$branch"
+          python harness/assist_report.py work/assist/result.json --pr > pr_body.md
+          gh pr create --base main --head "$branch" \
+            --title "Recipe agent: what it took to run $slug at ${REF:0:7}" --body-file pr_body.md

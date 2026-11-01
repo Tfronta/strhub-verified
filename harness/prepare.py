@@ -22,6 +22,7 @@ takes without each attempt landing on main and on the public catalogue.
 from __future__ import annotations
 import argparse
 import base64
+import gzip
 import json
 import os
 import pathlib
@@ -42,6 +43,8 @@ RAW = "https://raw.githubusercontent.com"
 # Coordinate-based tools read /data/in/regions.bed; the author's BED (whatever its
 # original name) is staged under this canonical name so one run cmd fits both legs.
 REGIONS_CANONICAL = "regions.bed"
+#: A catalog in JSON (ExpansionHunter's) is staged under its own extension.
+REGIONS_JSON = "regions.json"
 
 
 def _bam_sidecar(bam: pathlib.Path) -> pathlib.Path:
@@ -150,9 +153,10 @@ def stage_regions(regions, legs: list[pathlib.Path], input_type: str | None = No
       "none"   — no regions BED anywhere.
     """
     def _fan_out(src: pathlib.Path) -> bool:
+        name = REGIONS_JSON if src.suffix.lower() == ".json" else REGIONS_CANONICAL
         for leg in legs:
             leg.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, leg / REGIONS_CANONICAL)
+            shutil.copy2(src, leg / name)
         return True
 
     if isinstance(regions, dict) and "path" in regions and "repo" not in regions:
@@ -240,6 +244,11 @@ def stage_external(input_type, work_in: pathlib.Path) -> tuple[bool, str]:
                 idx_dest = work_in / expected_bai
                 if not idx_dest.exists():
                     shutil.copy2(idx_src, idx_dest)
+    elif data.suffix == ".gz" and canonical and not canonical.endswith(".gz"):
+        # Committed compressed, handed over uncompressed: every FASTQ reader
+        # takes plain text, not every one takes gzip.
+        with gzip.open(data, "rb") as src, open(work_in / canonical, "wb") as dst:
+            shutil.copyfileobj(src, dst)
     else:
         dest_name = canonical or data.name
         shutil.copy2(data, work_in / dest_name)
@@ -323,6 +332,47 @@ def unwrap_example(cmd: str) -> tuple[str, str | None]:
     return m.group("cmd"), m.group("cwd").strip("'")
 
 
+#: What may run the program without being it: an interpreter and its script.
+_RUNNERS = {"python", "python3", "python2", "bash", "sh", "perl", "Rscript", "julia", "java"}
+_NOT_THE_TOOL = {"mkdir", "cd", "export", "true", "echo", "touch", "cp", "mv", "rm", "ln", "gunzip", "zcat"}
+
+
+def is_placeholder_command(run_cmd: str) -> bool:
+    """The run command a proposal writes when the README documents none."""
+    cmd, _ = unwrap_example(run_cmd)
+    return re.sub(r"(?:^|\s)#.*$", "", cmd).strip() in ("", "true")
+
+
+def starts_command(run_cmd: str, cwd: str | None = None) -> str:
+    """`<program> --help`, from the run command: the first segment of a chain
+    that is not STRhub's plumbing (mkdir, cd), and the interpreter with its
+    script when there is one (`python straglr.py`, `bash ./run.sh`). Empty
+    when there is no program to ask (`true  # no command found`)."""
+    cmd, wcwd = unwrap_example(run_cmd)
+    cwd = cwd or wcwd or ""
+    # A comment is not a command, whatever punctuation it holds.
+    cmd = re.sub(r"(?:^|\s)#.*$", "", cmd)
+    for seg in re.split(r"\s*(?:&&|;|\|\|)\s*", cmd):
+        if seg.split()[:1] == ["true"]:
+            return ""
+        toks = seg.split()
+        while toks and re.match(r"^\w+=", toks[0]):
+            toks.pop(0)
+        if not toks or toks[0].split("/")[-1] in _NOT_THE_TOOL:
+            continue
+        prog = toks[:1]
+        if toks[0].split("/")[-1] in _RUNNERS:
+            if toks[0].split("/")[-1] == "java" and len(toks) > 2 and toks[1] == "-jar":
+                prog = toks[:3]
+            elif len(toks) > 1:
+                prog = toks[:2]
+        head = " ".join(prog).split("|")[0].strip()
+        if not head or head.startswith(("-", "<", ">")):
+            return ""
+        return (f"cd {cwd!r} && " if cwd else "") + f"{head} --help"
+    return ""
+
+
 def _output_value(value) -> str:
     """One $GITHUB_OUTPUT value. Newlines are the delimiter of that file, so a
     manifest value carrying one could inject further keys (own_ready=1, ...)."""
@@ -335,6 +385,8 @@ def main() -> int:
     ap.add_argument("--work", default="work")
     ap.add_argument("--recipe-b64", default=os.environ.get("RECIPE_B64", ""),
                     help="trial run: the recipe as base64 JSON instead of tools/<tool>/")
+    ap.add_argument("--proposal", default="",
+                    help="path to recipe_proposal.json when the recipe was proposed in this run")
     args = ap.parse_args()
 
     work = pathlib.Path(args.work)
@@ -369,6 +421,35 @@ def main() -> int:
         own_ready = stage_own(fixture, work / "in_own", canonical)
         fixture_source = "tool" if isinstance(fixture, dict) else "strhub"
     external_ready, dataset_name = stage_external(input_type, work / "in_external")
+    # No documented command: the proposal's placeholder is `true`, and running
+    # it "passed" Runs for FDSTools, whose README documents no command at all.
+    # Nothing is run; the legs are N/A and the ladder stops at Installs (the
+    # Starts check still asks the packaged program for --help).
+    if is_placeholder_command(m["run"]["cmd"]):
+        own_ready = False
+        external_ready = False
+
+    # Step 1 procedure check: when the recipe was proposed from the repository
+    # and the classifier says the procedure is incomplete or amended
+    # (procedure.may_say_runs is False), we do not run the forensic legs. If
+    # the commit lacks a copyable install procedure altogether, we do not build
+    # a template image either (docs/PLAN-Paso-1.md, Tanda 3).
+    procedure_ready = True
+    install_ready = True
+    prop_path = pathlib.Path(args.proposal) if args.proposal else (ROOT / "recipe_proposal.json")
+    if prop_path.is_file():
+        try:
+            prop_data = json.loads(prop_path.read_text())
+            proc = prop_data.get("procedure") or {}
+            if proc:
+                procedure_ready = bool(proc.get("may_say_runs", True))
+                if proc.get("blocker") == "no_install_procedure":
+                    install_ready = False
+        except Exception:  # noqa: BLE001
+            pass
+    if not procedure_ready:
+        own_ready = False
+        external_ready = False
 
     # Stage tool-specific assets into both legs. A legacy per-tool regions.bed
     # lives here; an explicit inputs.regions (staged next) overrides it.
@@ -441,8 +522,19 @@ def main() -> int:
               file=sys.stderr)
         fallback = ""
 
+    if not procedure_ready:
+        example_ready = False
+        ref_genome_url = ""
+        ref_genome_filename = ""
+
     values = {
         "ref": m["source"]["ref"],
+        "procedure_ready": "1" if procedure_ready else "0",
+        "install_ready": "1" if install_ready else "0",
+        # Whether the installed program starts at all: its --help, in the
+        # built image, before anything is asked of it (the Starts check).
+        "starts_cmd": ((f"cd {m['starts'].get('cwd', '/opt/tool')!r} && " + m["starts"]["cmd"])
+                       if m.get("starts") else starts_command(m["run"]["cmd"])),
         "example_ready": "1" if example_ready else "0",
         "example_cmd": example_wrapper(example.get("cmd", ""), example_cwd) if example_ready else "",
         "cmd": m["run"]["cmd"],

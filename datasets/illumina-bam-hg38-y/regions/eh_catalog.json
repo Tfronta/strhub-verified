@@ -1,0 +1,104 @@
+[
+  {
+    "LocusId": "DYS393",
+    "LocusStructure": "(AGAT)*",
+    "ReferenceRegion": "chrY:3263110-3263158",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS456",
+    "LocusStructure": "(AGAT)*",
+    "ReferenceRegion": "chrY:4402918-4402978",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS458",
+    "LocusStructure": "(GAAA)*",
+    "ReferenceRegion": "chrY:7999838-7999902",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS19/DYS394",
+    "LocusStructure": "(TCTA)*",
+    "ReferenceRegion": "chrY:9684379-9684443",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS391",
+    "LocusStructure": "(TCTA)*",
+    "ReferenceRegion": "chrY:11982088-11982132",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS635",
+    "LocusStructure": "(TAGA)*",
+    "ReferenceRegion": "chrY:12258859-12258951",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS389I",
+    "LocusStructure": "(TAGA)*",
+    "ReferenceRegion": "chrY:12500447-12500495",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS389II.1",
+    "LocusStructure": "(AGAT)*",
+    "ReferenceRegion": "chrY:12500447-12500516",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS389II.2",
+    "LocusStructure": "(TAGA)*",
+    "ReferenceRegion": "chrY:12500563-12500611",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS438",
+    "LocusStructure": "(TTTTC)*",
+    "ReferenceRegion": "chrY:12825898-12825948",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS390",
+    "LocusStructure": "(TAGA)*",
+    "ReferenceRegion": "chrY:15163066-15163162",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "Y-GATA-A10",
+    "LocusStructure": "(TCTA)*",
+    "ReferenceRegion": "chrY:16607008-16607060",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "Y-GATA-H4",
+    "LocusStructure": "(TCTA)*",
+    "ReferenceRegion": "chrY:16631634-16631756",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS385_2",
+    "LocusStructure": "(GAAA)*",
+    "ReferenceRegion": "chrY:18680512-18680687",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS392",
+    "LocusStructure": "(ATA)*",
+    "ReferenceRegion": "chrY:20471986-20472025",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS448.1",
+    "LocusStructure": "(AGAGAT)*",
+    "ReferenceRegion": "chrY:22218922-22218996",
+    "VariantType": "Repeat"
+  },
+  {
+    "LocusId": "DYS448.2",
+    "LocusStructure": "(AGAGAT)*",
+    "ReferenceRegion": "chrY:22219030-22219078",
+    "VariantType": "Repeat"
+  }
+]

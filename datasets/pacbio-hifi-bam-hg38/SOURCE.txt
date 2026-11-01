@@ -1,0 +1,57 @@
+Fixture provenance — pacbio-hifi-bam-hg38 (GIAB HG002, PacBio HiFi Revio, hg38 CODIS slice)
+==========================================================================================
+
+STRhub Verified does NOT host or redistribute full genomes. The BAM file in
+`pacbio_slices/` is a **small, pre-built slice** over forensic STR regions,
+derived from publicly available Genome in a Bottle (GIAB) PacBio HiFi data. It
+is used only as a smoke-test input for the external verification leg.
+
+Upstream (open access)
+----------------------
+Project  : Genome in a Bottle (NIST), Ashkenazi trio son HG002 / NA24385
+Directory: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/
+File     : HG002_PacBio-HiFi-Revio_20231031_48x_GRCh38-GIABv3.bam (+ .bai)
+MD5      : 72721742ea4a90a8301e1086496d82c1 (from that directory's checksums.md5)
+Platform : PacBio Revio, HiFi (CCS) reads, ~48x; two SMRT cells
+           (m84039_230928_213653_s3, m84039_231005_222902_s1), both SM:HG002
+Aligner  : pbmm2 1.10.0, preset HIFI, against GRCh38_GIABv3_no_alt_analysis_set
+           (chr naming; same coordinates as UCSC hg38 on the primary chromosomes)
+           Haplotagged by HiPhase 0.10.2 (HP/PS tags), CpG methylation tags (MM/ML) kept.
+
+License / use scope
+-------------------
+Open-access reference data from NIST / GIAB. STRhub adds no restriction and
+claims no ownership; the file is third-party material used for reproducible-
+execution smoke tests only, not for donor identification, database searching
+or casework claims.
+
+How the slice was built (2026-09-29)
+------------------------------------
+Region BED: `pacbio_slices/codis_pm10kb.bed` (a copy of `ont_slices/codis_pm10kb.bed`:
+            the CODIS core and common forensic STR loci, ±10 kb, hg38).
+
+  samtools 1.21 (quay.io/biocontainers/samtools:1.21--h50ea8bc_0), reading the
+  upstream file over HTTPS through its index:
+
+  samtools view -b -M -L codis_pm10kb.bed -X \
+      -x fi -x fp -x ri -x rp -x ip -x pw -x sn \
+      -o raw.bam <upstream .bam URL> <upstream .bai URL>
+  samtools sort -o HG002.hifi.codis.bam raw.bam
+  samtools index HG002.hifi.codis.bam
+
+The -x options drop the per-base kinetics (fi/fp/ri/rp/ip/pw) and the
+signal-to-noise tag (sn), which no STR genotyper reads and which would double
+the file. Nothing else is changed: sequences, qualities, alignments, read
+groups, haplotags and methylation tags are as distributed.
+
+Result: pacbio_slices/HG002.hifi.codis.bam, 19.4 MB, 2,396 primary alignments
+plus 43 supplementary; mean read length 17.3 kb; 26 windows on 18 contigs
+(chrX and chrY included: HG002 is male).
+
+Panel
+-----
+datasets/pacbio-hifi-bam-hg38/loci.bed and regions/ are DERIVED from the
+illumina-bam-hg38 panel by harness/build_regions_library.py (the loci whose
+window falls inside the slice windows): 20 autosomal CODIS loci. Measured on
+this slice on 2026-09-29, every one of them is overlapped by 19 to 73 primary
+HiFi reads (TH01 lowest, D8S1179 highest).

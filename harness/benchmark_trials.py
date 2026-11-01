@@ -64,10 +64,14 @@ def collect(tag: str) -> list[dict]:
         row = {"name": name, "run": run["databaseId"], "status": run["status"], "job": run["conclusion"]}
         if run["status"] == "completed":
             with tempfile.TemporaryDirectory() as d:
-                subprocess.run(["gh", "run", "download", str(run["databaseId"]), "-D", d],
-                               capture_output=True, text=True)
-                reports = [p for p in pathlib.Path(d).rglob("*.json")
-                           if not p.name.endswith((".badge.json", ".recipe.json"))]
+                reports = []
+                for _ in range(2):  # a download can fail transiently
+                    subprocess.run(["gh", "run", "download", str(run["databaseId"]), "-D", d],
+                                   capture_output=True, text=True)
+                    reports = [p for p in pathlib.Path(d).rglob("*.json")
+                               if not p.name.endswith((".badge.json", ".recipe.json"))]
+                    if reports:
+                        break
                 if reports:
                     rep = json.loads(reports[0].read_text())
                     g = rep.get("gates") or {}

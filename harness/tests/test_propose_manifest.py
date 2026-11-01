@@ -123,11 +123,12 @@ def test_strspy_runs_on_the_input_type_strhub_has_data_for(tmp_path):
 
 def test_nothing_to_run_on_is_a_limitation_not_a_failure(tmp_path):
     proposal = _proposal("strspy")
-    proposal["input_type"] = {"best": "ont-fastq", "candidates": ["ont-fastq"], "signals": {}, "warnings": []}
+    proposal["input_type"] = {"best": "illumina-snp-fastq", "candidates": ["illumina-snp-fastq"],
+                              "signals": {}, "warnings": []}
     proposal["example"] = None
     r = pm.build(proposal, "strspy-trial")
     m = _valid(r["manifest_yml"], tmp_path)
-    assert m["inputs"] == {"type": "ont-fastq"}
+    assert m["inputs"] == {"type": "illumina-snp-fastq"}
     assert "no_reference_dataset" in r["limitations"]
 
 
@@ -189,6 +190,8 @@ def test_catalogue_slug_adds_a_suffix_only_for_a_non_canonical_assay():
     assert pm.catalogue_slug("HipSTR", "illumina-bam-hg38") == "hipstr"
     assert pm.catalogue_slug("HipSTR", "illumina-bam-hg38-y") == "hipstr-y"
     assert pm.catalogue_slug("STRspy", "ont-bam-hg38") == "strspy-ont"
+    # Not the last hyphen-segment, which would file a HiFi run as "trgt-hg38".
+    assert pm.catalogue_slug("TRGT", "pacbio-hifi-bam-hg38") == "trgt-hifi"
     assert pm.catalogue_slug("STRait Razor", "illumina-str-fastq") == "strait-razor"
     # Unlisted types fall back to their last segment; no type, no suffix.
     assert pm.catalogue_slug("Tool", "some-new-assay") == "tool-assay"
@@ -209,3 +212,20 @@ def test_the_version_is_the_release_the_ref_came_from_else_the_short_sha(tmp_pat
     # through when it found nothing better) is not a version.
     m = _valid(pm.build(p, "t", ref_label=sha)["manifest_yml"], tmp_path)
     assert m["tool"]["version"] == sha[:7]
+
+
+def test_a_loci_catalog_the_docs_download_becomes_the_panel_file():
+    # vamos's README fetches vamos.effMotifs-0.1.GRCh38.tsv from Zenodo for -r.
+    # Which loci to annotate is the user's choice, as HipSTR's regions BED is.
+    cmd = "vamos --read -b demo.aln.bam -r vamos.effMotifs-0.1.GRCh38.tsv -s S1 -o reads.vcf -t 8"
+    new, notes = pm.rewrite_for_strhub(cmd, "ont-bam-hg38", library_format="motif", tree_paths=["README.md"])
+    assert "-r /data/in/regions.bed" in new and "-o reads.vcf" in new
+    assert any("vamos.effMotifs-0.1.GRCh38.tsv (after -r)" in n and "user's choice" in n for n in notes)
+    # A catalog the repository ships is the tool's own, and an output is an output.
+    kept, _ = pm.rewrite_for_strhub("vamos --read -b x.bam -r example/region_motifs.tsv -o motifs.tsv",
+                                    "ont-bam-hg38", library_format="motif",
+                                    tree_paths=["example/region_motifs.tsv"])
+    assert "-r example/region_motifs.tsv" in kept and "-o motifs.tsv" in kept
+    # No layout STRhub writes for the tool: nothing to put in its place.
+    none, _ = pm.rewrite_for_strhub(cmd, "ont-bam-hg38", library_format=None)
+    assert "vamos.effMotifs-0.1.GRCh38.tsv" in none

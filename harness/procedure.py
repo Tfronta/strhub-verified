@@ -116,11 +116,17 @@ def classify(proposal: dict, manifest: dict, limitations: list[str],
                            "what": "No sentence states what the tool reads, so the sample was chosen "
                                    "from mentions alone."})
     tool_cmd = _tool_text(rewritten)
+    if any("could not resolve" in n for n in notes):
+        amendments.append({"code": "synopsis_trimmed",
+                           "what": "The command contains placeholders that neither the repository nor "
+                                   "STRhub's substitution table can fill in."})
+    has_shipped_example = bool((manifest.get("example") or {}).get("cmd") or (proposal.get("example") or {}).get("cmd"))
     # A data file that is still the path from the README was not pointed at
-    # STRhub's sample. Running that command tests the repository's own example,
-    # and a failure there is "file not found" of our staging, not the tool.
-    if cited and re.search(r"\.(?:bam|cram|sam|fastq|fq|fasta|fa|bed|vcf)(?:\.gz)?\b", tool_cmd, re.I) \
-            and "/data/in/" not in tool_cmd and "/data/ref/" not in tool_cmd:
+    # STRhub's sample, and if the repository does not ship those files either,
+    # running that command would fail with "file not found" of our staging.
+    if cited and not has_shipped_example \
+            and re.search(r"\.(?:bam|cram|sam|fastq|fq|fasta|fa|bed|vcf)(?:\.gz)?\b|\b(?:bam|fastq|read|sample)[_-]?list\b", tool_cmd, re.I) \
+            and "/data/in" not in tool_cmd and "/data/ref" not in tool_cmd:
         amendments.append({"code": "input_not_substituted",
                            "what": "The command still names the repository's own file paths, not STRhub's "
                                    "sample. Running it would not be the reference-sample test."})

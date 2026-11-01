@@ -13,14 +13,17 @@
                 "release_binary_documented": true,
                 "where": "README.md:25; https://github.com/PacificBiosciences/trgt/releases/tag/v5.1.0 (trgt-v5.1.0-x86_64-unknown-linux-gnu.tar.gz); https://api.anaconda.org/package/bioconda/trgt"},
   "input": {"kinds": ["bam"], "platforms": ["pacbio"],
-            "strhub_type": null,
+            "strhub_type": "pacbio-hifi-bam-hg38",
+            "revised": "2026-09-29: STRhub now holds PacBio HiFi reads: pacbio-hifi-bam-hg38, a CODIS ±10 kb slice of GIAB's HG002 Revio HiFi BAM (pacbio_slices/HG002.hifi.codis.bam), with a TRGT repeat-definition file of its 20 panel loci (datasets/pacbio-hifi-bam-hg38/regions/trgt.bed, ID/MOTIFS/STRUC layout).", "was_strhub_type": null,
             "where": "README.md:5-7; docs/cli.md:35-38; docs/tutorial.md:17-21"},
   "extra_inputs": [
     {"what": "Repeat definition BED in TRGT layout: chrom, start, end and a fourth column 'ID=<unique id>;MOTIFS=<motif[,motif...]>;STRUC=<TR>'. The README points to STRchive, the Adotto catalog and the Broad tandem-repeat-catalog; repeats/pathogenic_repeats.hg38.bed in the repo is deprecated.",
-     "required": true, "strhub_has": false,
+     "required": true, "strhub_has": true,
+     "revised": "2026-09-29: STRhub now holds PacBio HiFi reads: pacbio-hifi-bam-hg38, a CODIS ±10 kb slice of GIAB's HG002 Revio HiFi BAM (pacbio_slices/HG002.hifi.codis.bam), with a TRGT repeat-definition file of its 20 panel loci (datasets/pacbio-hifi-bam-hg38/regions/trgt.bed, ID/MOTIFS/STRUC layout).",
      "where": "docs/repeat_files.md:3-21; docs/cli.md:38; README.md:27-36"}
   ],
-  "runnable_on_strhub_data": {"value": false,
-                              "why": "TRGT genotypes aligned PacBio HiFi reads ('BAM file with aligned HiFi reads', docs/cli.md:36); STRhub holds no HiFi dataset (its only long-read set is ONT R10). It also needs a repeat definition BED in TRGT's ID/MOTIFS/STRUC layout, which is not one of STRhub's region layouts."},
+  "runnable_on_strhub_data": {"value": true,
+                              "why": "2026-09-29: STRhub now holds PacBio HiFi reads: pacbio-hifi-bam-hg38, a CODIS ±10 kb slice of GIAB's HG002 Revio HiFi BAM (pacbio_slices/HG002.hifi.codis.bam), with a TRGT repeat-definition file of its 20 panel loci (datasets/pacbio-hifi-bam-hg38/regions/trgt.bed, ID/MOTIFS/STRUC layout). The documented command (docs/tutorial.md:39-42) then has everything it needs: --genome hg38, --repeats the library file, --reads the HiFi BAM. Run locally on 2026-09-29 with the released v5.1.0 binary, it wrote sample.vcf.gz with all 20 loci genotyped.",
+                              "was": {"value": false, "why": "TRGT genotypes aligned PacBio HiFi reads ('BAM file with aligned HiFi reads', docs/cli.md:36); STRhub holds no HiFi dataset (its only long-read set is ONT R10). It also needs a repeat definition BED in TRGT's ID/MOTIFS/STRUC layout, which is not one of STRhub's region layouts."}},
   "notes": "Bioconda holds trgt 5.1.0 but no document mentions it. Cargo.toml and build.rs are present but no source build is documented, so cargo is not a faithful reading. docs/puretarget.md:64-70 documents a second genotype form for PacBio PureTarget data (--preset targeted, --fail-reads ...), still HiFi. Genotyping writes unsorted <prefix>.vcf.gz and <prefix>.spanning.bam (docs/cli.md:39); the tutorial lists samtools and bcftools as separate prerequisites to sort and index them (docs/tutorial.md:10,73-90). Default karyotype is XX (docs/cli.md:40). The tutorial prints the example repeat as starting at 10000 (docs/tutorial.md:28) while example/repeat.bed holds 10001. The README itself has no command; it links the tutorial and CLI reference (README.md:47-63)."
 }

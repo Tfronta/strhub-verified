@@ -36,7 +36,9 @@ PANEL = ROOT / "datasets" / "illumina-bam-hg38" / "loci.bed"
 
 
 def test_reads_regions_from_every_library_layout():
-    for fmt in ("hipstr", "strsearch", "bed4"):
+    # TRGT's layout names the locus inside its fourth column (ID=TH01;MOTIFS=...);
+    # a TRGT run on the HiFi slice once reported its loci by that whole string.
+    for fmt in ("hipstr", "strsearch", "bed4", "trgt"):
         regs = ca.read_regions(LIB / f"{fmt}.bed")
         assert len(regs) == 24, fmt
         assert {r[3] for r in regs} >= {"TH01", "TPOX", "vWA", "FGA"}, fmt
@@ -157,3 +159,14 @@ def test_real_hipstr_and_gangstr_vcfs_reach_content():
     gan = ca.analyze_vcf(REAL / "gangstr.output.vcf", ca.name_regions(ca.read_regions(LIB / "gangstr.bed"), PANEL))
     assert gan["regions_hit"] >= 20 and "TH01" in gan["str_loci"]
     assert all(ca.judge(gan, "vcf", 24).values())
+
+
+def test_a_json_catalog_names_the_loci_like_a_regions_bed(tmp_path):
+    """ExpansionHunter is given the panel as a JSON catalog; the content check
+    must recognise the same loci in its VCF as it would from a BED."""
+    import json
+    import content_auto as ca
+    cat = tmp_path / "regions.json"
+    cat.write_text(json.dumps([{"LocusId": "TH01", "LocusStructure": "(AATG)*",
+                                "ReferenceRegion": "chr11:2171087-2171115", "VariantType": "Repeat"}]))
+    assert ca.read_regions(cat) == [("chr11", 2171088, 2171115, "TH01")]
