@@ -60,7 +60,9 @@ OUTPUT_GLOB = {
 REQUIRES_REGIONS = {"illumina-bam-hg38", "illumina-bam-hg38-y"}
 
 
-PLACEHOLDER_INPUT = re.compile(r"(?<![\w/.-])[<\[]?\w*(?:fastq|fq|bam|reads|input)\w*[>\]]?(?![\w/.-])", re.I)
+PLACEHOLDER_INPUT = re.compile(
+    r"(?<![\w/.-])[<\[]?(?!\w*(?:list|fofn|manifest|dir|folder|table|index))\w*(?:fastq|fq|bam|reads|input)"
+    r"(?!\w*(?:list|fofn|manifest|dir|folder|table|index))\w*[>\]]?(?![\w/.-])", re.I)
 PLACEHOLDER_CONFIG = re.compile(r"(?<![\w/.-])[<\[]?\w*config\w*[>\]]?(?![\w/.-])", re.I)
 
 
@@ -214,6 +216,11 @@ def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str]
         if m:
             rest = m.group(1)
             base = rest.split("/")[-1]
+            prev = out[-1] if out and out[-1].startswith("-") else ""
+            if has_regions and re.match(r"^--?(?:loci|regions?|bed|repeats?|targets?|catalog|variant[-_]catalog)$", prev, re.I):
+                out.append("regions.bed")
+                i += 1
+                continue
             if "." not in base or base.endswith((".py", ".sh", ".pl")):
                 out.append(base)
                 i += 1
@@ -303,23 +310,17 @@ def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str]
     cmd, notes0 = normalize_documented(cmd, input_type, tree_paths, canonical, ref_mount, has_regions,
                                        binary_elsewhere=build_method in BINARY_ELSEWHERE,
                                        catalog_from_library=catalog_from_library)
-    # A reference BAM with no read group, and a tool that names samples by it
-    # (HipSTR's family): its documented --bam-samps/--bam-libs name the sample
-    # instead. The ONT slices carry no @RG; LongTR stops without one.
-    if ds.get("read_groups") is False and docs_text and re.search(r"--bam-samps\b", docs_text) \
-            and "--bam-samps" not in cmd:
-        sm = ds.get("sample") or "sample"
-        cmd = f"{cmd} --bam-samps {sm} --bam-libs {sm}"
-        notes0.append(f"The reference BAM carries no read group, so the documented --bam-samps and "
-                      f"--bam-libs options name its sample ({sm}).")
     new, notes = resolve_placeholders(cmd, config_files or [], ds.get("kit"))
     notes = notes0 + notes
     if canonical:
         # `--bams run1.bam,run2.bam,run3.bam,run4.bam` is a README showing the
         # flag takes a list; four copies of the same file is not what anyone
         # means, and HipSTR refuses it. One list becomes one file.
+        def _first_of_list(m: re.Match) -> str:
+            notes.append("A comma-separated input list in the documented command was reduced to its first file.")
+            return m.group(1).split(",")[0]
         new = re.sub(r"((?:[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?)(?:,[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?)+)",
-                     lambda m: m.group(1).split(",")[0], new, flags=re.I)
+                     _first_of_list, new, flags=re.I)
         new, n = INPUT_TOKEN.subn(f"/data/in/{canonical}", new)
         n2 = 0
         if n == 0:
@@ -547,7 +548,10 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         limitations.append("no_command")
         run_cmd = "true  # no command found in the README; nothing to run"
     else:
-        lib_fmt = regions_library.format_for_tool(name, best, proposal.get("readme_text", ""))[0]
+        all_docs_text = proposal.get("readme_text", "") + "\n" + proposal.get("docs_text", "")
+        lib_fmt = regions_library.format_for_tool(
+            name, best, all_docs_text,
+            proposal.get("shipped_loci_formats"))[0]
         rewritten, notes = rewrite_for_strhub(best, input_type, proposal.get("config_files"),
                                               proposal.get("tree_paths"), build_info.get("method"),
                                               proposal.get("readme_text", ""), lib_fmt)
@@ -579,12 +583,15 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         limitations += check_documented_files(run_cmd, proposal, input_type, caveat_items)
     regions_block = None
     takes_regions = "/data/in/regions.bed" in run_cmd or "/data/in/regions.json" in run_cmd
-    if input_type in REQUIRES_REGIONS or (takes_regions and datasets_lib.resolve(input_type or "")
-                                          and (datasets_lib.resolve(input_type) or {}).get("regions_library")):
-        # The tool needs a regions file. Pick the library format the tool is
+    if takes_regions and datasets_lib.resolve(input_type or "") \
+            and (datasets_lib.resolve(input_type) or {}).get("regions_library"):
+        # The command takes a regions file. Pick the library format the tool is
         # known to read; failing that, plain BED, flagged so a failed run is
         # read as "the guess may be wrong", never as the tool's fault.
-        fmt, how = regions_library.format_for_tool(name, best, proposal.get("readme_text", ""))
+        all_docs_text = proposal.get("readme_text", "") + "\n" + proposal.get("docs_text", "")
+        fmt, how = regions_library.format_for_tool(
+            name, best, all_docs_text,
+            proposal.get("shipped_loci_formats"))
         if fmt is None:
             fmt, how = "bed4", "fallback"
             limitations.append("regions_format_guessed")
@@ -648,6 +655,10 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     caveat_items += warnings
     if caveat_items:
         manifest["caveats"] = {"source": "detect_recipe", "items": [c[:300] for c in caveat_items[:8]]}
+    # Not a manifest field: the schema rejects anything it does not name, and
+    # this is a review of the proposal, not a step the container runs.
+    import procedure as procedure_lib
+    reviewed = procedure_lib.classify(proposal, manifest, limitations, caveat_items)
 
     header = ("# STRhub Verified recipe, PROPOSED from the repository by detect_recipe.\n"
               "# Nobody typed this: every choice is listed under `caveats`, and the report\n"
@@ -660,6 +671,7 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         "dockerfile_fallback": dockerfile_fallback_text,
         "limitations": limitations,
         "readme_gaps": (proposal.get("readme") or {}).get("gaps", []),
+        "procedure": reviewed,
     }
 
 
@@ -744,6 +756,7 @@ def main() -> int:
     # The limitations travel back into the proposal file so the report's verdict
     # can read them alongside the README gaps.
     proposal["limitations"] = r["limitations"]
+    proposal["procedure"] = r["procedure"]
     pathlib.Path(args.proposal).write_text(json.dumps(proposal, indent=2))
     if args.out_dir:
         d = pathlib.Path(args.out_dir)

@@ -44,7 +44,7 @@
         "eh_catalog": "datasets/ont-bam-hg38/regions/eh_catalog.json",
         "trgt": "datasets/ont-bam-hg38/regions/trgt.bed"
       },
-      "read_groups": false,
+      "read_groups": true,
       "sample": "HG00113"
     },
     "pacbio-hifi-bam-hg38": {

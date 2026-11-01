@@ -512,8 +512,9 @@ jobs:
       # --- Gate: Installs (docker build) -------------------------------------
       - id: installs
         name: "Gate · Installs"
-        # Nothing to build from a ref the repository does not hold.
-        if: steps.available.outcome == 'success'
+        # Nothing to build from a ref the repository does not hold, or when the
+        # commit states no install procedure at all.
+        if: steps.available.outcome == 'success' && steps.m.outputs.install_ready != '0'
         continue-on-error: true
         env:
           TOOL_REF: ${{ steps.m.outputs.ref }}
@@ -521,9 +522,6 @@ jobs:
           DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
           DOCKER_FILE: ${{ steps.m.outputs.dockerfile }}
           DOCKER_FROM_REPO: ${{ steps.m.outputs.dockerfile_from_repo }}
-          # Plan B (manifest environment.fallback): built only if the first
-          # Dockerfile fails. Empty when none is declared.
-          DOCKER_FALLBACK: ${{ steps.m.outputs.dockerfile_fallback }}
         run: |
           # pipefail, or `tee` would swallow docker's exit status and a failed
           # build would be recorded as a passed gate — the one bug this step
@@ -531,9 +529,6 @@ jobs:
           set -o pipefail
           mkdir -p work
           : > work/log_build.txt
-          # The recipe's own directory: where a generated Dockerfile and the
-          # plan B live, whatever the primary build's context turns out to be.
-          RECIPE_DIR="$DOCKER_DIR"
           CONTEXT="$DOCKER_DIR"
           if [ -n "$DOCKER_FROM_REPO" ]; then
             # The repository ships its own Dockerfile: build THAT, at the pinned
@@ -581,15 +576,7 @@ jobs:
             echo "environment=primary" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          [ -n "$DOCKER_FALLBACK" ] || exit 1
-          # The pinned commit did not build. The published environment the
-          # README points at stands in, so a toolchain we guessed wrong does not
-          # end the run here — but the report must say which one ran, and keep
-          # the log of the build that failed: both are in the same file, split
-          # by the marker line report.py looks for.
-          echo "::warning::the build from the pinned commit failed; building the fallback environment ($DOCKER_FALLBACK)"
-          printf '\n==== STRhub: the build above failed; building the fallback environment (%s) ====\n\n' "$DOCKER_FALLBACK" >> work/log_build.txt
-          build "$DOCKER_FALLBACK" "$RECIPE_DIR" "$RECIPE_DIR" && echo "environment=fallback" >> "$GITHUB_OUTPUT"
+          exit 1
 
       # --- Starts: the installed program answers --help ----------------------
       # Outside the ladder, like the example: the one fact a reviewer can use

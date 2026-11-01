@@ -491,6 +491,29 @@ def build_body(cfg):
     els.append(et)
 
     sec = 2
+    # Step 1: the documented run, in the three sentences a maintainer or
+    # reviewer is owed, plus the missing block of docs/GUIA-PASO-1.md when one
+    # is missing.
+    step1 = cfg.get("step1") or {}
+    if step1.get("headline") and not curated:
+        s1_els = [
+            Paragraph(f"<b>{esc(step1['headline'])}</b>", ST["tbl_cell"]),
+            vspace(2),
+            Paragraph(esc(step1.get("body", "")), ST["body"]),
+        ]
+        if step1.get("missing_text"):
+            s1_els.append(vspace(2))
+            s1_els.append(Paragraph(
+                f"Missing from the commit ({esc(step1.get('guide', 'docs/GUIA-PASO-1.md'))}):",
+                ST["meta_label"]))
+            for mb in step1["missing_text"]:
+                s1_els.append(Paragraph(
+                    f'<font color="#9ca3af">–</font>  {esc(mb)}',
+                    S("s1m", fontSize=8.5, textColor=INK, leading=14, leftIndent=10, spaceAfter=1)))
+        els.append(section_num(str(sec), "Step 1: The Documented Run"))
+        sec += 1
+        els.append(boxed(s1_els))
+
     # What STRhub had to do to run this tool. The opening chapter of a run of
     # a recipe STRhub wrote, before the run itself: each item a departure a
     # first-time user would have to discover, and a recommendation; and the
@@ -1217,6 +1240,7 @@ def load_config(manifest_path: str, datasets_path: str | None = None,
         # The one sentence the web leads with. A certificate that omits it can
         # read as a pass while the report it renders says "Fails".
         "verdict":        report.get("verdict") or {},
+        "step1":          report.get("step1") or {},
         # Whether the repository ships example data, when a run actually read
         # the tree to find out. Absent means nobody looked.
         "repo_test_data": report.get("repo_test_data") or {},

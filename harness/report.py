@@ -27,6 +27,7 @@ from certificate_text import (  # noqa: E402
     AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, FULL_RUN_HEADING, COLOR_HEX,
     certificate_for, display_name, LIMITATIONS, OUT_OF_SCOPE,
     INSTRUMENT_LINE, BADGE_INSTRUMENTS, CURATED_HEADING, CURATED_LEAD, CURATED_NEEDED,
+    step1_says,
 )
 import verdict as verdict_lib  # noqa: E402
 import upstream  # noqa: E402
@@ -130,11 +131,24 @@ MEANING.setdefault("starts", "the installed program answers --help in the built 
 AUX_GATES = ("starts", "example")
 
 
+def _step1_md(report: dict) -> list[str]:
+    """Step 1 opens the summary, in its own words. The forensic pipeline is a
+    later section and never changes this sentence (docs/PLAN-Paso-1.md)."""
+    s = report.get("step1") or {}
+    if not s.get("headline"):
+        return []
+    lines = ["", f"**Step 1, the documented run: {s['headline']}** {s['body']}"]
+    if s.get("missing_text"):
+        lines += ["", f"Missing from the commit, by the blocks {s['guide']} asks for:", ""]
+        lines += [f"- {block}" for block in s["missing_text"]]
+    return lines
+
+
 def _verdict_md(report: dict) -> list[str]:
     v = report.get("verdict")
     if not v:
         return []
-    lines = ["", f"**Verdict: {v['title']}.** {v['reason']}"]
+    lines = _step1_md(report) + ["", f"**Verdict: {v['title']}.** {v['reason']}"]
     if v.get("blockers"):
         lines += ["", "What stopped it, and what can be done:", ""]
         for b in v["blockers"]:
@@ -509,9 +523,22 @@ def _summary_html(report: dict, slug: str) -> str:
 
     # The verdict the page leads with. A copy that omits it can read as a pass
     # while the page it mirrors says "Fails".
+    s1 = report.get("step1") or {}
+    step1_block = ""
+    if s1.get("headline"):
+        missing_html = ""
+        if s1.get("missing_text"):
+            mitems = "".join(f"<li>{esc(b)}</li>" for b in s1["missing_text"])
+            missing_html = (f"<p>Missing from the commit, by the blocks "
+                            f"<code>{esc(s1.get('guide', 'docs/GUIA-PASO-1.md'))}</code> asks for:</p>"
+                            f"<ul class='stats'>{mitems}</ul>")
+        step1_block = (f"<p><b>Step 1, the documented run: {esc(s1['headline'])}</b> "
+                       f"{esc(s1.get('body', ''))}</p>{missing_html}")
     v = report.get("verdict") or {}
-    verdict_block = (f"<p><b>Verdict: {esc(v['title'])}.</b> {esc(v['reason'])}</p>"
-                     if v.get("title") and v.get("reason") else "")
+    verdict_block = step1_block + (
+        f"<p><b>Verdict: {esc(v['title'])}.</b> {esc(v['reason'])}</p>"
+        if v.get("title") and v.get("reason") else ""
+    )
 
     # The command the gates ran — the certificate's "Exact Run Command".
     run = report.get("run") or {}
@@ -1258,11 +1285,21 @@ def main() -> int:
             & diagnose_log.STRHUB_FIXABLE
         if ours:
             strhub_fault = ", ".join(sorted(ours))
+    procedure = (proposal or {}).get("procedure")
+    if procedure:
+        report["procedure_review"] = procedure
     report["verdict"] = verdict_lib.decide(
         gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
         fallback_used=args.environment_built == "fallback",
         strhub_fault=strhub_fault,
+        procedure=procedure,
     )
+
+    # Step 1 in the three sentences a maintainer is owed, with the block of
+    # docs/GUIA-PASO-1.md that is missing when one is. Derived from the
+    # classifier's blocker, not from check_readme's word search: searching a
+    # README for "install" never ran anything (docs/PLAN-Paso-1.md).
+    report["step1"] = step1_says(report)
 
     # The certificate's own words, as data: what the PDF prints in its
     # executive summary, its closing lists and its conclusion, so the page can

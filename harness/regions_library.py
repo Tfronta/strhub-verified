@@ -57,8 +57,13 @@ JSON_FORMATS = {"eh_catalog"}
 #: START | END | MOTIF" (LongTR), "contig start end [...] motif" (strkit).
 MOTIF_LAYOUT = re.compile(
     r"(?:\b4|\bfour)[- ](?:required )?columns?[^.\n]{0,90}\b(?:motif|repeat)"
-    r"|\bchrom\w*\W{1,6}(?:0-based )?start\w*\W{1,6}end\w*\W{1,6}(?:\[[^\]]*\]\W{1,6})?(?:motif|repeat[_ ]?unit|repeat)\b"
+    r"|\bchrom\w*\W{1,30}(?:0-based |1-based )?start\w*\W{1,30}end\w*\W{1,30}(?:\[[^\]]*\]\W{1,30})?(?:motif|repeat[_ ]?unit|repeat)\b"
     r"|(?:\bfourth|\b4th) column[^.\n]{0,40}\b(?:motif|repeat)", re.I)
+GANGSTR_LAYOUT = re.compile(
+    r"\bchrom\w*\W{1,30}start\w*\W{1,30}end\w*\W{1,30}(?:motif[_ ]?len|period)\w*\W{1,30}(?:motif|repeat[_ ]?unit)\b"
+    r"|(?:\b5|\bfive)[- ](?:required )?columns?[^.\n]{0,90}\bperiod\b[^.\n]{0,90}\bmotif\b", re.I)
+TRGT_LAYOUT = re.compile(r"\bID\s*=[^;\n]+;\s*MOTIFS\s*=[^;\n]+;\s*STRUC\s*=", re.I)
+EH_LAYOUT = re.compile(r"\bLocusStructure\b[\s\S]{0,200}\bReferenceRegion\b", re.I)
 
 MOTIF_RE = re.compile(r"^[ACGTN]{1,12}$", re.I)
 INT_RE = re.compile(r"^\d+$")
@@ -82,9 +87,11 @@ def available(input_type: str) -> list[str]:
     return sorted((index["datasets"].get(input_type) or {}).get("regions_library", {}).keys())
 
 
-def format_for_tool(tool_name: str = "", cmd: str = "", readme: str = "") -> tuple[str | None, str]:
+def format_for_tool(tool_name: str = "", cmd: str = "", readme: str = "",
+                    shipped_formats: dict[str, str] | None = None) -> tuple[str | None, str]:
     """(format, how). `how` is 'tool' when the program name settles it,
-    'readme' when the README describes the columns, '' when nothing does."""
+    'readme' when the documentation or a shipped loci file describes the
+    columns, '' when nothing does."""
     names = {tool_name.lower()}
     for tok in re.split(r"[\s|;&()]+", cmd.lower()):
         names.add(tok.split("/")[-1])
@@ -92,17 +99,32 @@ def format_for_tool(tool_name: str = "", cmd: str = "", readme: str = "") -> tup
         if n in TOOL_FORMATS:
             return TOOL_FORMATS[n], "tool"
     text = readme.lower()
-    # A column layout the README spells out is more specific than a name it
-    # mentions: LongTR is a modified HipSTR and says so, and its regions file
-    # carries the motif in column 4, which HipSTR's does not.
+    # A column layout the documentation spells out is more specific than a
+    # tool name it mentions in passing: LongTR is a modified HipSTR and says
+    # so, and its regions file carries the motif in column 4.
+    if TRGT_LAYOUT.search(readme):
+        return "trgt", "readme"
+    if EH_LAYOUT.search(readme):
+        return "eh_catalog", "readme"
     if MOTIF_LAYOUT.search(readme):
         return "motif", "readme"
+    if GANGSTR_LAYOUT.search(readme):
+        return "gangstr", "readme"
+    if re.search(r"5['′]?\s*flank", text) and re.search(r"3['′]?\s*flank", text):
+        return "strsearch", "readme"
+    if shipped_formats:
+        # If the command itself names a shipped file, its columns settle the format.
+        for path, fmt in shipped_formats.items():
+            if path in cmd or path.split("/")[-1] in cmd:
+                return fmt, "readme"
+        # Otherwise, if all shipped loci files in the repository share one format.
+        unique = list(dict.fromkeys(shipped_formats.values()))
+        if len(unique) == 1:
+            return unique[0], "readme"
     if "hipstr" in text and re.search(r"\bregions?\b", text):
         return "hipstr", "readme"
     if "gangstr" in text and re.search(r"\bregions?\b", text):
         return "gangstr", "readme"
-    if re.search(r"5['′]?\s*flank", text) and re.search(r"3['′]?\s*flank", text):
-        return "strsearch", "readme"
     return None, ""
 
 

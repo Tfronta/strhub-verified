@@ -3,3 +3,5 @@
 __pycache__/
 harness/__pycache__/
 *.pyc
+# Trials on disk for the site's development fixture reader (harness/trial_fixtures.py).
+.trial-fixtures/

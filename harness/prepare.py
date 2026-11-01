@@ -385,6 +385,8 @@ def main() -> int:
     ap.add_argument("--work", default="work")
     ap.add_argument("--recipe-b64", default=os.environ.get("RECIPE_B64", ""),
                     help="trial run: the recipe as base64 JSON instead of tools/<tool>/")
+    ap.add_argument("--proposal", default="",
+                    help="path to recipe_proposal.json when the recipe was proposed in this run")
     args = ap.parse_args()
 
     work = pathlib.Path(args.work)
@@ -424,6 +426,28 @@ def main() -> int:
     # Nothing is run; the legs are N/A and the ladder stops at Installs (the
     # Starts check still asks the packaged program for --help).
     if is_placeholder_command(m["run"]["cmd"]):
+        own_ready = False
+        external_ready = False
+
+    # Step 1 procedure check: when the recipe was proposed from the repository
+    # and the classifier says the procedure is incomplete or amended
+    # (procedure.may_say_runs is False), we do not run the forensic legs. If
+    # the commit lacks a copyable install procedure altogether, we do not build
+    # a template image either (docs/PLAN-Paso-1.md, Tanda 3).
+    procedure_ready = True
+    install_ready = True
+    prop_path = pathlib.Path(args.proposal) if args.proposal else (ROOT / "recipe_proposal.json")
+    if prop_path.is_file():
+        try:
+            prop_data = json.loads(prop_path.read_text())
+            proc = prop_data.get("procedure") or {}
+            if proc:
+                procedure_ready = bool(proc.get("may_say_runs", True))
+                if proc.get("blocker") == "no_install_procedure":
+                    install_ready = False
+        except Exception:  # noqa: BLE001
+            pass
+    if not procedure_ready:
         own_ready = False
         external_ready = False
 
@@ -498,8 +522,15 @@ def main() -> int:
               file=sys.stderr)
         fallback = ""
 
+    if not procedure_ready:
+        example_ready = False
+        ref_genome_url = ""
+        ref_genome_filename = ""
+
     values = {
         "ref": m["source"]["ref"],
+        "procedure_ready": "1" if procedure_ready else "0",
+        "install_ready": "1" if install_ready else "0",
         # Whether the installed program starts at all: its --help, in the
         # built image, before anything is asked of it (the Starts check).
         "starts_cmd": ((f"cd {m['starts'].get('cwd', '/opt/tool')!r} && " + m["starts"]["cmd"])

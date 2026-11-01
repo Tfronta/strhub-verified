@@ -15,9 +15,12 @@ def test_output_produced_is_runs_whatever_the_log_said():
     assert v["code"] == "runs"
 
 
-def test_example_output_alone_is_runs():
+def test_example_output_alone_is_not_the_reference_run():
+    # The repository's own example is a separate claim. A file it wrote does
+    # not make the reference-sample run a pass.
     v = verdict.decide({**G_NO_OUTPUT, "example": True})
-    assert v["code"] == "runs"
+    assert v["code"] == "fails"
+    assert "no output" in v["reason"]
 
 
 def test_gpu_in_log_is_out_of_scope():
@@ -94,11 +97,12 @@ def test_readme_gaps_become_blockers_without_duplicates():
     assert [b["code"] for b in v["blockers"]] == ["no_command", "build_failed"]
 
 
-def test_output_on_plan_b_is_still_runs_but_says_which_version_ran():
+def test_a_published_image_does_not_make_the_commit_a_run():
     v = verdict.decide(G_OK, fallback_used=True)
-    assert v["code"] == "runs" and v["blockers"] == []
-    assert "pinned commit failed" in v["reason"] and "published environment" in v["reason"]
-    assert "pinned" not in verdict.decide(G_OK)["reason"]
+    assert v["code"] == "fails"
+    assert "pinned commit failed" in v["reason"]
+    assert "not counted" in v["reason"]
+    assert verdict.decide(G_OK)["code"] == "runs"
 
 
 def test_nothing_executed_is_undetermined_with_an_ask_for_example_data():
