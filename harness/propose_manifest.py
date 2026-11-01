@@ -42,7 +42,7 @@ from prepare import example_wrapper  # noqa: E402
 
 INPUT_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b", re.I)
 REF_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:fa|fasta|fna)(?:\.gz)?\b", re.I)
-BED_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.bed\b", re.I)
+BED_TOKEN = re.compile(r"(?<![\w/])(?!all_STRs_in_genome\.bed\b)[\w./-]+\.bed\b", re.I)
 #: A file of loci the documentation leaves to the user, after the option that
 #: reads it: vamos's `-r vamos.effMotifs-0.1.GRCh38.tsv`, fetched from Zenodo.
 LOCI_FILE = re.compile(r"(?<!\S)(--?[\w-]+)(\s+|=)((?!/)[\w./-]*(?:motif|region|repeat|catalog|loci)[\w./-]*"
@@ -644,7 +644,8 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     if ex and ex.get("cmd"):
         ex_cmd, ex_notes = from_the_path(ex["cmd"], set(proposal.get("tree_paths") or []),
                                          build_info.get("method") in BINARY_ELSEWHERE)
-        manifest["example"] = {"cmd": ex_cmd, "cwd": cwd, "source": "detected"}
+        ex_cwd = "." if from_repo else (ex.get("cwd") or cwd)
+        manifest["example"] = {"cmd": ex_cmd, "cwd": ex_cwd, "source": "detected"}
         caveat_items += [f"Example: {n}" for n in ex_notes]
     # Nothing to run on at all: no STRhub data for the input type and no
     # example in the repository. Every run leg is then N/A, and a verdict read
@@ -736,6 +737,14 @@ def check_documented_files(run_cmd: str, proposal: dict, input_type: str,
             caveats.append(f"File: the documented command reads {t} (after {prev}), which is neither in "
                            "the repository nor among STRhub's data.")
             out.append("documented_file_missing")
+        elif "=" in path and not path.startswith("-"):
+            k, v = path.split("=", 1)
+            v_clean = v.strip("'\"").lstrip("./")
+            if (INPUT_FILE_FLAG.match(f"--{k.split('_')[-1]}") and DATA_FILE.search(v_clean)
+                    and not v.startswith("/data/") and v_clean not in tree and "*" not in v_clean):
+                caveats.append(f"File: the documented command reads {v} (in {t}), which is neither in "
+                               "the repository nor among STRhub's data.")
+                out.append("documented_file_missing")
     return list(dict.fromkeys(out))
 
 

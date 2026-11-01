@@ -181,8 +181,17 @@ def _find_benchmark_snapshot(slug: str) -> pathlib.Path | None:
     return None
 
 
+def _parse_kv_output(text: str) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for line in text.splitlines():
+        if "=" in line:
+            k, v = line.split("=", 1)
+            out[k.strip()] = v.strip()
+    return out
+
+
 def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.Path,
-                      prefer_offline: bool = False) -> dict:
+                      prefer_offline: bool = False, run_docker: bool = False) -> dict:
     slug = dr.repo_slug(repo_url)
     token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
     snap = _find_benchmark_snapshot(slug)
@@ -224,6 +233,20 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         proposal_json = tmp_path / "recipe_proposal.json"
         proposal_json.write_text(json.dumps(proposal, indent=2))
 
+        # --- Step 1: Pre-flight (prepare.py) ---
+        import base64
+        recipe_payload = {"manifest_yml": built["manifest_yml"], "dockerfile": built["dockerfile"]}
+        if built.get("dockerfile_fallback"):
+            recipe_payload["dockerfile_fallback"] = built["dockerfile_fallback"]
+        recipe_b64 = base64.b64encode(json.dumps(recipe_payload).encode()).decode()
+        work_dir = tmp_path / "work"
+        prep_env = {**os.environ, "RECIPE_B64": recipe_b64}
+        prep_res = subprocess.run(
+            [sys.executable, str(ROOT / "harness" / "prepare.py"), run_slug, "--work", str(work_dir)],
+            cwd=str(ROOT), env=prep_env, capture_output=True, text=True, check=True,
+        )
+        preflight = _parse_kv_output(prep_res.stdout)
+
         proc = built["procedure"]
         may_run = bool(proc.get("may_say_runs"))
 
@@ -231,18 +254,98 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         log_build = tmp_path / "log_build.txt"
         io_json = tmp_path / "io_external.json"
         content_json = tmp_path / "content_external.json"
+        example_json = tmp_path / "no-example.json"
 
         avail_flag = "pass"
         installs_flag = "fail"
         runs_flag = "fail"
         infra_failure = ""
-        if not may_run:
+        if not may_run and not (run_docker and preflight.get("example_ready") == "1"):
             log_build.write_text(
                 f"==== STRhub Verified local evaluation ====\n"
                 f"Repository: https://github.com/{slug} @ {ref}\n"
                 f"Procedure classifier blocker: {proc.get('blocker')}\n"
                 f"Reason: {proc.get('reason')}\n"
             )
+        elif run_docker:
+            d_info = subprocess.run(["docker", "info"], capture_output=True, text=True, check=False)
+            if d_info.returncode != 0:
+                infra_failure = "Docker daemon is not running or reachable on this machine"
+                print(f"[local_trial] {infra_failure}; open Docker Desktop and retry.", file=sys.stderr)
+                log_build.write_text((d_info.stdout or "") + "\n" + (d_info.stderr or ""))
+            else:
+                img_tag = f"strhub-trial:{run_slug}"
+                print(f"[local_trial] [1/3] Pre-flight ready (dataset={preflight.get('input_type')}, "
+                      f"external_ready={preflight.get('external_ready')}, example_ready={preflight.get('example_ready')})",
+                      file=sys.stderr)
+                print(f"[local_trial] [2/3] Building image {img_tag}...", file=sys.stderr)
+                build_cmd = [
+                    "docker", "build",
+                    "--build-arg", f"STRAITRAZOR_REF={ref}",
+                    "--build-arg", f"TOOL_REF={ref}",
+                    "-f", str(dockerfile_path),
+                    "-t", img_tag,
+                    str(prop_dir),
+                ]
+                b_res = subprocess.run(build_cmd, cwd=str(ROOT), capture_output=True, text=True)
+                log_build.write_text((b_res.stdout or "") + ("\n" + b_res.stderr if b_res.stderr else ""))
+                if b_res.returncode == 0:
+                    installs_flag = "pass"
+                    hardening = [
+                        "--network", "none",
+                        "--memory", "6g", "--memory-swap", "6g",
+                        "--cpus", "2", "--pids-limit", "512",
+                        "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
+                    ]
+                    timeout_min = str(preflight.get("timeout") or "20")
+                    if preflight.get("external_ready") == "1":
+                        print("[local_trial] [3/3] Running container (--network none) on STRhub reference dataset...",
+                              file=sys.stderr)
+                        out_ext = work_dir / "out_external"
+                        out_ext.mkdir(parents=True, exist_ok=True)
+                        out_ext.chmod(0o777)
+                        run_cmd = [
+                            "bash", str(ROOT / "harness" / "run_container.sh"),
+                            f"{run_slug}_ext", timeout_min, str(log_ext),
+                            *hardening,
+                            "-v", f"{work_dir / 'in_external'}:/data/in:ro",
+                            "-v", f"{out_ext}:/data/out",
+                            img_tag, preflight.get("cmd", built["manifest"]["run"]["cmd"]),
+                        ]
+                        r_res = subprocess.run(run_cmd, cwd=str(ROOT), capture_output=True, text=True)
+                        if r_res.returncode == 0:
+                            runs_flag = "pass"
+                        subprocess.run([
+                            sys.executable, str(ROOT / "harness" / "check_io.py"),
+                            str(manifest_path), str(out_ext), "--json", str(io_json),
+                        ], cwd=str(ROOT), check=False, capture_output=True, text=True)
+                        reg_path = work_dir / "in_external" / "regions.bed"
+                        if not reg_path.is_file():
+                            reg_path = work_dir / "in_external" / "regions.json"
+                        subprocess.run([
+                            sys.executable, str(ROOT / "harness" / "check_content.py"),
+                            str(manifest_path), str(out_ext), "--json", str(content_json),
+                            "--regions", str(reg_path),
+                            "--panel", preflight.get("supported_loci", ""),
+                        ], cwd=str(ROOT), check=False, capture_output=True, text=True)
+                    if preflight.get("example_ready") == "1":
+                        print("[local_trial] Running repository's own example (--network none)...", file=sys.stderr)
+                        out_ex = work_dir / "out_example"
+                        out_ex.mkdir(parents=True, exist_ok=True)
+                        out_ex.chmod(0o777)
+                        log_ex = tmp_path / "log_example.txt"
+                        example_json = tmp_path / "example.json"
+                        subprocess.run([
+                            "bash", str(ROOT / "harness" / "run_container.sh"),
+                            f"{run_slug}_ex", timeout_min, str(log_ex),
+                            *hardening,
+                            "-v", f"{out_ex}:/data/out",
+                            img_tag, preflight.get("example_cmd", ""),
+                        ], cwd=str(ROOT), check=False, capture_output=True, text=True)
+                        subprocess.run([
+                            sys.executable, str(ROOT / "harness" / "check_example.py"),
+                            str(manifest_path), str(out_ex), "--json", str(example_json),
+                        ], cwd=str(ROOT), check=False, capture_output=True, text=True)
         else:
             infra_failure = "local preview mode (no container was built or executed on this machine)"
             log_build.write_text(
@@ -266,7 +369,7 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
             "--content", str(content_json),
             "--matrix", str(tmp_path / "no-matrix.json"),
             "--readme", str(tmp_path / "no-readme.json"),
-            "--example", str(tmp_path / "no-example.json"),
+            "--example", str(example_json),
             "--regions-validation", str(tmp_path / "no-regions.json"),
             "--log-build", str(log_build),
             "--log-external", str(log_ext),
@@ -283,14 +386,18 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         ], cwd=str(ROOT), check=True, capture_output=True, text=True)
 
         out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "preflight.json").write_text(json.dumps(preflight, indent=2))
         pdf_out = out_dir / "report.pdf"
-        subprocess.run([
+        pdf_res = subprocess.run([
             sys.executable, str(ROOT / "harness" / "generate_pdf.py"),
             "--manifest", str(manifest_path),
             "--datasets", str(ROOT / "datasets" / "index.json"),
             "--publishable", "false",
             "--out", str(pdf_out),
         ], cwd=str(ROOT), check=False, capture_output=True, text=True)
+        if pdf_res.returncode != 0 and run_docker:
+            print(f"[local_trial] PDF warning: {pdf_res.stderr.strip().splitlines()[-1] if pdf_res.stderr else 'failed'}",
+                  file=sys.stderr)
 
         shutil.copy2(reports_dir / f"{cat_slug}.json", out_dir / "report.json")
         shutil.copy2(reports_dir / f"{cat_slug}.recipe.json", out_dir / "recipe.json")
@@ -314,6 +421,8 @@ def main() -> int:
     ap.add_argument("--ref-label", default="")
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--prefer-offline", action="store_true")
+    ap.add_argument("--docker", action="store_true",
+                    help="build the Docker image and run the container with --network none")
     ap.add_argument("--resolve-only", action="store_true")
     args = ap.parse_args()
     slug = dr.repo_slug(args.repo)
@@ -322,7 +431,7 @@ def main() -> int:
         print(json.dumps({"ok": True, "sha": sha, "label": label, "how": how}))
         return 0
     report = build_local_trial(args.repo, args.ref, args.ref_label, pathlib.Path(args.out_dir),
-                               prefer_offline=args.prefer_offline)
+                               prefer_offline=args.prefer_offline, run_docker=args.docker)
     print(json.dumps({
         "ok": True,
         "slug": (report.get("report") or {}).get("slug") or report["tool"]["name"],

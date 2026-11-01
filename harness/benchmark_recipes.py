@@ -88,7 +88,8 @@ def score(name: str, expected: dict) -> dict:
         prog_ok = not top
     if prog_ok and exp_prog.get("subcommand"):
         after = top["cmd"].split(top["invokes"], 1)[-1].split()
-        prog_ok = any(tok == exp_prog["subcommand"] for tok in after[:3])
+        prog_ok = (top.get("subcommand") == exp_prog["subcommand"]
+                   or any(tok == exp_prog["subcommand"] for tok in after[:3]))
     clean = (bool(top) and not LEFTOVER.search(run_cmd.replace(" > ", " ").replace(" < ", " "))) \
         if exp_prog.get("value") else not top
     blocked = bool(limits & BLOCKING) or not got_type

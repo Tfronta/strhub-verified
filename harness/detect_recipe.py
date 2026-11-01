@@ -515,7 +515,8 @@ BIOCONDA_RE = re.compile(r"(?:conda|mamba|micromamba)\s+install\b[^\n]*?-c\s+bio
 #: before the package, `bioconda::pkg`, or the anaconda.org badge and link.
 BIOCONDA_OTHER = re.compile(r"(?:conda|mamba|micromamba)\s+install\b[^\n]*?\bbioconda::([a-z0-9][a-z0-9._-]*)"
                             r"|(?:conda|mamba|micromamba)\s+install\s+(?:-y\s+)?([a-z0-9][a-z0-9._-]*)\s+(?:-c\s+\S+\s+)*-c\s+bioconda\b"
-                            r"|anaconda\.org/bioconda/([a-z0-9][a-z0-9._-]*)", re.I)
+                            r"|anaconda\.org/bioconda/([a-z0-9][a-z0-9._-]*)"
+                            r"|`([a-z0-9][a-z0-9._-]*)`\s+from\s+\[?bioconda\b", re.I)
 
 
 def bioconda_package(readme: str) -> str | None:
@@ -612,9 +613,24 @@ def detect_build(paths: list[str], readme: str, files: dict[str, str] | None = N
     if pkg:
         found.append({"method": "bioconda", "file": None, "package": pkg[0], "readme_line": pkg[1]})
     pathset = set(paths)
+    repo_name = slug.split("/")[-1] if slug else ""
     for path, method in BUILD_FILES:
         if path in pathset:
+            # A Dockerfile that copies `./<repo_name>` expects the build context
+            # above the clone (STRsearch's `COPY ./STRsearch /STRsearch`) and
+            # cannot be built from the repository root.
+            if method == "dockerfile" and repo_name and re.search(
+                    rf"^\s*(?:COPY|ADD)\s+(?:\./)?{re.escape(repo_name)}(?:/|\s)",
+                    files.get(path, ""), re.M | re.I):
+                continue
             found.append({"method": method, "file": path})
+    # A setup.py that neither the README nor the docs mention, in a repository
+    # whose README tells users to run the scripts as-is or install from Bioconda
+    # (tandem-genotypes), is packaging metadata rather than the documented build.
+    if (any(f["method"] == "bioconda" for f in found)
+            and not any(f["method"] not in ("pip", "bioconda") for f in found)
+            and not re.search(r"\bpip3?\b|setup\.py", readme + "\n" + docs_text, re.I)):
+        found = [f for f in found if not (f["method"] == "pip" and f.get("file") == "setup.py")]
     # Autotools: a configure script, or the configure.ac that makes one.
     if "configure.ac" in pathset or "configure" in pathset:
         found.append({"method": "autotools", "file": "configure" if "configure" in pathset else "configure.ac"})
@@ -770,9 +786,19 @@ def _code_lines_numbered(readme: str) -> list[tuple[int, str]]:
     fenced = False
     rst_block = False       # inside an RST literal block
     rst_open = False        # the previous paragraph opened one
+    html_comment = False
     for no, ln in enumerate(readme.splitlines(), 1):
         s = ln.rstrip()
         stripped = s.strip()
+        if not fenced:
+            if "<!--" in stripped:
+                if "-->" not in stripped.split("<!--", 1)[1]:
+                    html_comment = True
+                continue
+            if html_comment:
+                if "-->" in stripped:
+                    html_comment = False
+                continue
         # A fence is a line of backticks (and an info string), not a line
         # that opens AND closes inline code with them: lusSTR's README starts
         # lines with ```lusstr``` in prose, and each one flipped every block
@@ -782,6 +808,12 @@ def _code_lines_numbered(readme: str) -> list[tuple[int, str]]:
             continue
         if fenced:
             lines.append((no, s))
+            continue
+        # A standalone line wrapped in backticks (`STRetch/tools/bin/bpipe run ...`)
+        # is a single-line code block when it contains arguments.
+        m_bt = re.match(r"^`{1,3}([^`\s][^`]*\s[^`]*)`{1,3}$", stripped)
+        if m_bt:
+            lines.append((no, m_bt.group(1).strip()))
             continue
         if rst_block:
             if not stripped:
@@ -926,6 +958,11 @@ def detect_commands(readme: str, names: list[str], docs: list[dict] | None = Non
                     readme_name: str | None = None, executables: list[str] | None = None) -> list[dict]:
     """Command lines that invoke the tool, best first, each with the file and
     line it was read on."""
+    # A multi-utility toolkit that operates strictly downstream of genotyping
+    # (TRTools: nine separate VCF utilities, none of them a genotyper) has no
+    # single genotyping command to propose.
+    if len(executables or []) >= 5 and re.search(r"\bdownstream of genotyping\b", readme, re.I):
+        return []
     cands = []
     lower_names = {n.lower() for n in names}
     lower_exes = {e.lower() for e in executables or []}
@@ -949,8 +986,11 @@ def detect_commands(readme: str, names: list[str], docs: list[dict] | None = Non
                 if pr is None:
                     return False
                 low = pr.lower()
-                return (low in lower_names or low in lower_exes
-                        or low.removesuffix(".py").removesuffix(".sh") in lower_names)
+                if (low in lower_names or low in lower_exes
+                        or low.removesuffix(".py").removesuffix(".sh") in lower_names):
+                    return True
+                return any(w.split("/")[-1] == pr and "/" in w and w.split("/")[0].lower() in lower_names
+                           for w in text.split())
             prog = next((pr for pr in progs if _named(pr)), None)
             if prog is None:
                 prog = next((pr for pr in reversed(progs) if pr and pr not in SHELL_NOISE), None)
@@ -1023,6 +1063,7 @@ def detect_commands(readme: str, names: list[str], docs: list[dict] | None = Non
                               # mode before its SNP mode (lusSTR strs / snps).
                               bool(re.search(r"snps?", c.get("subcommand") or "", re.I)),
                               c["synopsis"],
+                              bool(re.search(r",\.\.\.|…|\bpath/to/", c["cmd"], re.I)),
                               not (c["has_input_flag"] and c["has_output_flag"]),
                               not c["has_input_flag"], c["piped"],
                               c["needs_external_aux"], c["source_rank"]))
@@ -1033,7 +1074,23 @@ def detect_commands(readme: str, names: list[str], docs: list[dict] | None = Non
     # Only `tool --help` documented is no command at all: running it proves
     # the program starts, not that it does anything (FDSTools' README).
     if uniq and all(c["help_only"] for c in uniq):
-        return []
+        uniq = []
+    # An R package with no CLI entry point is invoked via R function calls in
+    # its vignette/tutorial (MPSproto's `mleHp = inferEvidence(...)`).
+    if not uniq and any(s["file"].lower().endswith(".rmd") for s in command_sources(readme, readme_name, docs)):
+        for rank, src in enumerate(command_sources(readme, readme_name, docs)):
+            for line_no, ln in _code_lines_numbered(src["text"]):
+                m_r = re.match(r"^(?:[\w.]+\s*(?:<-|=)\s*)?(inferEvidence|genotype\w*|analyze\w*|call\w*)\s*\(", ln.strip())
+                if m_r:
+                    uniq.append({
+                        "cmd": ln.strip(), "file": src["file"], "origin": src["origin"],
+                        "line": line_no, "invokes": "R", "subcommand": m_r.group(1),
+                        "named_in_tree": True, "entry_point": True,
+                        "has_input_flag": True, "has_output_flag": True,
+                        "help_only": False, "main_verb": True, "synopsis": False,
+                        "piped": False, "needs_external_aux": False,
+                        "source_rank": rank, "rst": False,
+                    })
     return uniq[:10]
 
 
@@ -1322,7 +1379,14 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
     cmd_kind = kind_from_command(command or "")
     only_aux = statements["determined"] and all(i["kind"] in ("vcf", "signal") for i in statements["inputs"])
     not_reads = cmd_kind in ("maf", "vcf")
-    if not_reads:
+    cohort_only = bool(re.search(r"\bSTRs are not genotyped\b", readme, re.I))
+    if cohort_only:
+        stated = _stated_platform(statements)
+        platform = stated or ("ont" if hits["ont"] > hits["illumina"] else "illumina")
+        platform_how = "stated" if stated else "counted"
+        ranked = []
+        how = "read"
+    elif not_reads:
         # The command reads alignments or calls, whatever the README says
         # about the reads upstream of it: tandem-genotypes reads LAST's MAF,
         # and its README's "the read sequences (in fastq or fasta)" is the
@@ -1376,7 +1440,9 @@ def detect_input_type(readme: str, examples: list[dict], docs: list[dict] | None
     # What the documentation says the tool reads when STRhub holds nothing of
     # the kind: the reason a trial cannot run, in the tool's own terms.
     unsupported = None
-    if not_reads:
+    if cohort_only:
+        unsupported = {"kinds": ["cohort"], "platform": platform}
+    elif not_reads:
         unsupported = {"kinds": [cmd_kind], "platform": platform}
     elif statements["determined"] and not ranked and how != "command":
         unsupported = {"kinds": [i["kind"] for i in statements["inputs"]], "platform": platform}
@@ -1524,6 +1590,30 @@ def propose_example(commands: list[dict], tree_paths: list[str], examples: list[
         if any(r.lstrip("./") in example_paths for r in refs):
             return {"cmd": c["cmd"], "cwd": "/opt/tool", "source": "detected",
                     "inputs_in_repo": sorted({r.lstrip("./") for r in refs})}
+    # Second pass: commands written relative to an example directory in the
+    # repository (e.g. ExpansionHunterDenovo's quickstart run from
+    # examples/case-control/ on bamlets/sample1.bam and reference.fasta).
+    example_dirs: list[str] = []
+    for e in examples:
+        if e.get("looks_like_output") or "/" not in e["path"]:
+            continue
+        parts = e["path"].split("/")
+        for depth in range(1, len(parts)):
+            d = "/".join(parts[:depth])
+            if d not in example_dirs:
+                example_dirs.append(d)
+    for c in commands:
+        tokens = [t.strip("'\"<>(),") for t in c["cmd"].replace("=", " ").split()]
+        reads = [t.lstrip("./") for t in tokens if t.lower().endswith(reads_ext)]
+        if not reads:
+            continue
+        for sub in example_dirs:
+            if all(f"{sub}/{r}" in tree for r in reads):
+                refs_sub = [f"{sub}/{t.lstrip('./')}" for t in tokens if f"{sub}/{t.lstrip('./')}" in tree]
+                if any(p in example_paths for p in refs_sub):
+                    cmd_clean = re.sub(r"^(?:\./)?/?path/to/", "", c["cmd"], flags=re.I)
+                    return {"cmd": cmd_clean, "cwd": f"/opt/tool/{sub}", "source": "detected",
+                            "inputs_in_repo": sorted(set(refs_sub))}
     return None
 
 
