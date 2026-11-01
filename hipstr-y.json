@@ -23,8 +23,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-09-20T16:54:38+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/35524008276",
+  "generated": "2026-11-01T12:49:32+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41307968157",
   "run": {
     "cmd": "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250"
   },
@@ -48,7 +48,8 @@
     "installs": true,
     "runs": true,
     "io": true,
-    "content": true
+    "content": true,
+    "starts": true
   },
   "level": "content",
   "io_detail": {
@@ -257,7 +258,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-09-20T16:54:38+00:00",
+    "checked": "2026-11-01T12:49:33+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -334,6 +335,7 @@
   "logs": {
     "own": "hipstr-y.log-own.txt",
     "external": "hipstr-y.log-external.txt",
+    "starts": "hipstr-y.log-starts.txt",
     "build": "hipstr-y.log-build.txt"
   },
   "diagnostics": {

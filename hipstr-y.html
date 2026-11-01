@@ -36,20 +36,20 @@
 <h2>What STRhub had to do to run this tool</h2><p>STRhub wrote its own recipe for this tool, an environment and a command of its own rather than the repository&#x27;s instructions, and ran that. Each item below is something a first-time user following the README would have to work out for themselves, and so a recommendation to the author. This run does not change the tool&#x27;s label: the label is what happens as it is in the repository.</p><ul class='stats'><li>Runs HipSTR with flags tuned to STRhub&#x27;s reference slice (--min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250). Instead of: The README&#x27;s command, which has none of them. On a BAM slice around the panel loci most mates fall outside the slice and read quality trims most reads; without these flags nearly every locus is skipped.</li><li>Supplies the Y-STR regions BED from STRhub&#x27;s library. Instead of: A regions file the README leaves to the user.</li></ul><p>With those changes, the run reached <b>Runs + Plausible output</b>: its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).</p><p><b>Verdict: Runs.</b> The tool installed and its run produced its documented output.</p><h2>This run, in full</h2>
 <h3>Gates</h3>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
-<tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="ok">PASS</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="ok">PASS</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="ok">PASS</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr></tbody></table>
+<tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="ok">PASS</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="ok">PASS</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="ok">PASS</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr><tr><td>Starts</td><td><span class="ok">PASS</span></td><td>the installed program answers --help in the built environment</td></tr></tbody></table>
 
 
 
 <h3>Command that ran</h3><p>Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub&#x27;s mounts: the input sample, the reference genome and the output directory.</p><pre><code>HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250</code></pre>
-<p style="font-size:.85rem">Log (own): <a href="hipstr-y.log-own.txt">hipstr-y.log-own.txt</a></p><p style="font-size:.85rem">Log (external): <a href="hipstr-y.log-external.txt">hipstr-y.log-external.txt</a></p><p style="font-size:.85rem">Log (build): <a href="hipstr-y.log-build.txt">hipstr-y.log-build.txt</a></p>
+<p style="font-size:.85rem">Log (own): <a href="hipstr-y.log-own.txt">hipstr-y.log-own.txt</a></p><p style="font-size:.85rem">Log (external): <a href="hipstr-y.log-external.txt">hipstr-y.log-external.txt</a></p><p style="font-size:.85rem">Log (starts): <a href="hipstr-y.log-starts.txt">hipstr-y.log-starts.txt</a></p><p style="font-size:.85rem">Log (build): <a href="hipstr-y.log-build.txt">hipstr-y.log-build.txt</a></p>
 <h2>Run details</h2>
 <ul class="meta">
   <li>Variant: <code>hipstr-y</code></li>
   <li>Source: <code>https://github.com/tfwillems/HipSTR</code> @ <code>b2033bfbb5cf55496b776463bdf2993fa763a4be</code></li>
   <li>Environment: ubuntu-22.04 (<code>Dockerfile</code>)</li>
-  <li>Generated: 2026-09-20T16:54:38+00:00</li>
+  <li>Generated: 2026-11-01T12:49:32+00:00</li>
   <li>Upstream: The verified commit is the head of `master`.</li>
-  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/35524008276">CI run</a></li>
+  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/41307968157">CI run</a></li>
 </ul>
 
     <h2>Output content (plausibility evidence)</h2>

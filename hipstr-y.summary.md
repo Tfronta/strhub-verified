@@ -24,6 +24,7 @@ With those changes, the run reached **Runs + Plausible output**: its output look
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Starts | PASS | the installed program answers --help in the built environment |
 
 ### Command that ran
 
@@ -34,15 +35,16 @@ HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/re
 ```
 - Log (own): [`hipstr-y.log-own.txt`](hipstr-y.log-own.txt)
 - Log (external): [`hipstr-y.log-external.txt`](hipstr-y.log-external.txt)
+- Log (starts): [`hipstr-y.log-starts.txt`](hipstr-y.log-starts.txt)
 - Log (build): [`hipstr-y.log-build.txt`](hipstr-y.log-build.txt)
 
 ## Run details
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-09-20T16:54:38+00:00
+- Generated: 2026-11-01T12:49:32+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/35524008276
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/41307968157
 
 ## Output content (plausibility evidence)
 
