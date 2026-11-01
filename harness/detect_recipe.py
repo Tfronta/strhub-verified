@@ -356,8 +356,20 @@ def bioconda_versions(package: str) -> list[str] | None:
         return None
 
 
-def release_assets(slug: str, tag: str, token: str | None) -> dict | None:
+def release_assets(slug: str, tag: str, token: str | None, ref: str = "") -> dict | None:
     """The assets attached to the release for `tag`, or None."""
+    if not tag and ref:
+        try:
+            raw_latest = _get(f"{API}/repos/{slug}/releases/latest", token)
+            latest = json.loads(raw_latest) if isinstance(raw_latest, str) else {}
+            cand_tag = latest.get("tag_name") or ""
+            if cand_tag:
+                raw_commit = _get(f"{API}/repos/{slug}/commits/{urllib.parse.quote(cand_tag)}", token)
+                commit_sha = (json.loads(raw_commit) if isinstance(raw_commit, str) else {}).get("sha", "")
+                if commit_sha and (commit_sha == ref or commit_sha.startswith(ref) or ref.startswith(commit_sha)):
+                    tag = cand_tag
+        except Exception:  # noqa: BLE001
+            pass
     if not tag:
         return None
     try:
@@ -447,9 +459,12 @@ def gather(slug: str, ref: str, tag: str = "", token: str | None = None) -> dict
     bioconda = {}
     for name in bioconda_candidates(slug, files):
         bioconda[name] = bioconda_versions(name)
+    rel = release_assets(slug, tag, token, ref=ref)
+    if not tag and rel and rel.get("tag"):
+        tag = rel["tag"]
     return {"tree_resp": tree_resp, "readme": readme, "readme_name": readme_name,
             "files": files, "docs": docs,
-            "published": {"bioconda": bioconda, "release": release_assets(slug, tag, token)},
+            "published": {"bioconda": bioconda, "release": rel},
             "tag": tag}
 
 

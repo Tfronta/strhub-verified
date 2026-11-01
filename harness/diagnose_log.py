@@ -381,6 +381,14 @@ _rule(
 )
 
 _rule(
+    r"CMake Error: Problem extracting tar:\s*(\S+)",
+    "error", "build_download_failed",
+    "A download in the build failed: {0}",
+    "CMake fetched an external dependency archive that could not be extracted "
+    "(often because the upstream download URL in CMakeLists.txt is dead or redirected to an HTML page).",
+)
+
+_rule(
     # Docker Hub's anonymous pull quota is shared by every job on a runner IP.
     # Hitting it says nothing about the image or the tool.
     r"(?:toomanyrequests|You have reached your (?:unauthenticated )?pull rate limit)",
