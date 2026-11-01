@@ -41,9 +41,9 @@ str8rzr -c ForenSeqv1.27.config /data/in/sample.fastq > allsequences.txt
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-11-01T12:46:16+00:00
+- Generated: 2026-11-01T12:47:00+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/41307968157
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/41308007092
 
 ## Output content (plausibility evidence)
 
