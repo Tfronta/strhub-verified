@@ -26,6 +26,7 @@ With those changes, the run reached **Runs + Expected IO**: it produces a non-em
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Starts | PASS | the installed program answers --help in the built environment |
 
 ### Errors reported during the run
 
@@ -56,15 +57,16 @@ Executed verbatim inside the container, at the pinned commit. Paths under /data 
 bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /opt/strspy/db/STRspy2.0-DB -b /opt/strspy/db/STRspy2.0-DB -l /opt/strspy/db-v2/STRspy_v2.DB.sort.bed -k 0.4 -o /data/out -c /opt/strspy/config/ToolsConfig.txt -d 1
 ```
 - Log (external): [`strspy-ont.log-external.txt`](strspy-ont.log-external.txt)
+- Log (starts): [`strspy-ont.log-starts.txt`](strspy-ont.log-starts.txt)
 - Log (build): [`strspy-ont.log-build.txt`](strspy-ont.log-build.txt)
 
 ## Run details
 
 - Source: `https://github.com/unique379r/strspy` @ `dafdee7e7e5672c8dc732e8577dbe153f53a12f5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-10-01T12:40:17+00:00
+- Generated: 2026-11-01T12:52:35+00:00
 - Upstream: The verified commit is 14 commit(s) behind `main`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862471881
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/41307968157
 
 ## Output content (plausibility evidence)
 
