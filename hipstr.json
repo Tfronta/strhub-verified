@@ -22,8 +22,8 @@
     ],
     "source": "generated"
   },
-  "generated": "2026-10-01T12:36:53+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862504998",
+  "generated": "2026-11-01T12:49:51+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41308004549",
   "run": {
     "cmd": "./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf str_calls.vcf.gz",
     "cwd": "/opt/tool"
@@ -37,7 +37,8 @@
     "installs": true,
     "runs": true,
     "io": true,
-    "content": true
+    "content": true,
+    "starts": true
   },
   "level": "content",
   "io_detail": {
@@ -293,7 +294,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-10-01T12:36:54+00:00",
+    "checked": "2026-11-01T12:49:52+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -382,6 +383,7 @@
   },
   "logs": {
     "external": "hipstr.log-external.txt",
+    "starts": "hipstr.log-starts.txt",
     "build": "hipstr.log-build.txt"
   },
   "diagnostics": {

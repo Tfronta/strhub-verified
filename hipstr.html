@@ -36,20 +36,20 @@
 <h2>As it is in the repository</h2><p><b>Verdict: Runs.</b> The tool installed and its run produced its documented output.</p><p>Reached <b>Runs + Plausible output</b>: its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).</p>
 <h3>Gates</h3>
 <table><thead><tr><th>Gate</th><th>Status</th><th>Meaning</th></tr></thead>
-<tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="ok">PASS</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="ok">PASS</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="ok">PASS</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr></tbody></table>
+<tbody><tr><td>Available</td><td><span class="ok">PASS</span></td><td>the pinned public source exists</td></tr><tr><td>Installs</td><td><span class="ok">PASS</span></td><td>the environment builds from source</td></tr><tr><td>Runs</td><td><span class="ok">PASS</span></td><td>it executes end-to-end without crashing</td></tr><tr><td>Runs + Expected IO</td><td><span class="ok">PASS</span></td><td>it produces a non-empty file in the declared format</td></tr><tr><td>Runs + Plausible output</td><td><span class="ok">PASS</span></td><td>its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci)</td></tr><tr><td>Starts</td><td><span class="ok">PASS</span></td><td>the installed program answers --help in the built environment</td></tr></tbody></table>
 
 
 
 <h3>Command that ran</h3><p>Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub&#x27;s mounts: the input sample, the reference genome and the output directory.</p><pre><code>./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf str_calls.vcf.gz</code></pre>
-<p style="font-size:.85rem">Log (external): <a href="hipstr.log-external.txt">hipstr.log-external.txt</a></p><p style="font-size:.85rem">Log (build): <a href="hipstr.log-build.txt">hipstr.log-build.txt</a></p>
+<p style="font-size:.85rem">Log (external): <a href="hipstr.log-external.txt">hipstr.log-external.txt</a></p><p style="font-size:.85rem">Log (starts): <a href="hipstr.log-starts.txt">hipstr.log-starts.txt</a></p><p style="font-size:.85rem">Log (build): <a href="hipstr.log-build.txt">hipstr.log-build.txt</a></p>
 <h2>Run details</h2>
 <ul class="meta">
   <li>Variant: <code>hipstr</code></li>
   <li>Source: <code>https://github.com/tfwillems/HipSTR</code> @ <code>b2033bfbb5cf55496b776463bdf2993fa763a4be</code></li>
   <li>Environment: ubuntu-22.04 (<code>Dockerfile</code>)</li>
-  <li>Generated: 2026-10-01T12:36:53+00:00</li>
+  <li>Generated: 2026-11-01T12:49:51+00:00</li>
   <li>Upstream: The verified commit is the head of `master`.</li>
-  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/36862504998">CI run</a></li>
+  <li><a href="https://github.com/Tfronta/strhub-verified/actions/runs/41308004549">CI run</a></li>
 </ul>
 
     <h2>Output content (plausibility evidence)</h2>
