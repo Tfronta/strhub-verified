@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-11-01T12:46:19+00:00",
+  "generated": "2026-11-01T12:46:37+00:00",
   "count": 8,
   "tools": [
     {
@@ -214,10 +214,10 @@
       "verdict": "runs",
       "errors_reported": false,
       "fallback_used": false,
-      "generated": "2026-10-01T12:34:17+00:00",
+      "generated": "2026-11-01T12:46:33+00:00",
       "source_repo": "https://github.com/Ahhgust/STRaitRazor",
       "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862471881",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41307968157",
       "distinct_str_loci": 63,
       "distinct_snp_markers": 157,
       "total_reads": 3967,
@@ -237,13 +237,13 @@
           "version": "v3",
           "variant": "ForenSeq",
           "committed": "2025-08-18T20:48:51Z",
-          "generated": "2026-10-01T12:34:17+00:00",
+          "generated": "2026-11-01T12:46:33+00:00",
           "level": "content",
           "label": "Not verified as documented",
           "verdict": "runs",
           "errors_reported": false,
           "fallback_used": false,
-          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862471881",
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41307968157",
           "report": "strait-razor-forenseq/b618e9345ab40f348b504083ae8de2b39abb60fa/curated/strait-razor-forenseq.json",
           "page": "strait-razor-forenseq/b618e9345ab40f348b504083ae8de2b39abb60fa/curated/strait-razor-forenseq.html",
           "pdf": "strait-razor-forenseq/b618e9345ab40f348b504083ae8de2b39abb60fa/curated/strait-razor-forenseq.pdf"

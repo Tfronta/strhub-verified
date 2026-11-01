@@ -23,8 +23,8 @@
       "ubuntu-22.04"
     ]
   },
-  "generated": "2026-10-01T12:34:17+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862471881",
+  "generated": "2026-11-01T12:46:33+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41307968157",
   "run": {
     "cmd": "str8rzr -c /opt/strait-razor/ForenSeqv1.27.config /data/in/sample.fastq > /data/out/sample.allsequences.txt"
   },
@@ -47,7 +47,8 @@
     "installs": true,
     "runs": true,
     "io": true,
-    "content": true
+    "content": true,
+    "starts": true
   },
   "level": "content",
   "io_detail": {
@@ -1494,7 +1495,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-10-01T12:34:18+00:00",
+    "checked": "2026-11-01T12:46:34+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -1553,6 +1554,7 @@
     "examples": []
   },
   "logs": {
+    "starts": "strait-razor-forenseq.log-starts.txt",
     "build": "strait-razor-forenseq.log-build.txt"
   },
   "manual_verification": {
