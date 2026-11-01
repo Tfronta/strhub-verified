@@ -28,8 +28,8 @@
     },
     "fallback_used": true
   },
-  "generated": "2026-10-01T12:41:56+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/36862511780",
+  "generated": "2026-11-01T12:53:44+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41308009228",
   "run": {
     "cmd": "mkdir -p example && python3 pipeline.py from_bam --working_path example/test_results --sample test --sex male --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes example/test_results/test_genotypes.txt --multiple_alleles example/test_results/test_multiple_alleles.txt --qc_matrix example/test_results/test_qc_matrix.txt",
     "cwd": "."
@@ -44,6 +44,7 @@
     "runs": true,
     "io": true,
     "content": false,
+    "starts": true,
     "example": true
   },
   "level": "io",
@@ -189,7 +190,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-10-01T12:41:57+00:00",
+    "checked": "2026-11-01T12:53:45+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "master",
@@ -296,6 +297,7 @@
   "logs": {
     "external": "strsearch.log-external.txt",
     "example": "strsearch.log-example.txt",
+    "starts": "strsearch.log-starts.txt",
     "build": "strsearch.log-build.txt"
   },
   "install_detail": {

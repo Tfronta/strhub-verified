@@ -17,6 +17,7 @@ Reached **Runs + Expected IO**: it produces a non-empty file in the declared for
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Starts | PASS | the installed program answers --help in the built environment |
 | Reproduces own example | PASS | the README's own command produced its documented output on the repository's own data |
 
 ### It did not build from source; the run used the README's ready-made environment
@@ -46,15 +47,16 @@ mkdir -p example && python3 pipeline.py from_bam --working_path example/test_res
 ```
 - Log (external): [`strsearch.log-external.txt`](strsearch.log-external.txt)
 - Log (example): [`strsearch.log-example.txt`](strsearch.log-example.txt)
+- Log (starts): [`strsearch.log-starts.txt`](strsearch.log-starts.txt)
 - Log (build): [`strsearch.log-build.txt`](strsearch.log-build.txt)
 
 ## Run details
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`); plan B: the published image anjing123/strsearch:latest the README points at (`Dockerfile.fallback`), after the build from the pinned commit failed
-- Generated: 2026-10-01T12:41:56+00:00
+- Generated: 2026-11-01T12:53:44+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862511780
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/41308009228
 
 ## Output content (plausibility evidence)
 
