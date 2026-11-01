@@ -39,6 +39,88 @@ def test_vcf_counts_non_header_lines(tmp_path):
     assert _count(tmp_path, "x.vcf", text, "vcf") == 2
 
 
+def test_vcf_uncalled_rows_do_not_count_as_called_records(tmp_path):
+    """A VCF where every locus row has a missing genotype (./.) because the
+    slice held no reads at those coordinates is not a passed IO gate."""
+    out = tmp_path / "out"
+    out.mkdir()
+    vcf = (
+        "##fileformat=VCFv4.2\n"
+        "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tSAMPLE\n"
+        "chr4\t3074876\tHTT\tC\t.\t.\tPASS\t.\tGT:DP\t./.:0\n"
+        "chrX\t147912050\tFMR1\tC\t.\t.\tPASS\t.\tGT:DP\t.:0\n"
+    )
+    (out / "calls.vcf").write_text(vcf)
+    manifest = tmp_path / "m.yml"
+    manifest.write_text(
+        "tool: {name: x, version: '1'}\n"
+        "source: {repo: 'https://github.com/a/b', ref: abc}\n"
+        "environment: {dockerfile: Dockerfile}\n"
+        "run: {cmd: x}\n"
+        "outputs:\n  - {path: '*.vcf', format: vcf, min_records: 1}\n"
+    )
+    result = check_io.check(str(manifest), str(out))
+    assert result["passed"] is False
+    assert result["outputs"][0]["records"] == 0
+    assert result["outputs"][0]["uncalled_rows"] == 2
+
+    # When at least one locus has a called genotype (including 0/0), it counts.
+    (out / "calls.vcf").write_text(vcf + "chr11\t2171088\tTH01\tA\t.\t.\tPASS\t.\tGT:DP\t0/0:45\n")
+    result2 = check_io.check(str(manifest), str(out))
+    assert result2["passed"] is True
+    assert result2["outputs"][0]["records"] == 1
+
+
+def test_uncalled_vcf_on_slice_is_strhub_limitation_not_runs_or_fails(tmp_path):
+    """A tool that ran to completion and wrote a VCF of uncalled loci (./.) on
+    STRhub's slice must be classified as undetermined (basis='strhub',
+    step1='ours'), never as 'runs' or 'fails'."""
+    import json
+    import subprocess
+    import sys
+
+    root = pathlib.Path(__file__).resolve().parents[2]
+    manifest = tmp_path / "m.yml"
+    manifest.write_text(
+        "tool: {name: mahi-mahi, version: '1'}\n"
+        "source: {repo: 'https://github.com/nanoporetech/mahi-mahi', ref: abc1234}\n"
+        "report: {slug: test-uncalled-vcf}\n"
+        "environment: {dockerfile: Dockerfile}\n"
+        "run: {cmd: 'mahi-mahi --bam /data/in/input.bam --loci hg38'}\n"
+        "outputs:\n  - {path: '*.vcf', format: vcf, min_records: 1}\n"
+    )
+    io_json = tmp_path / "io.json"
+    io_json.write_text(json.dumps({
+        "gate": "io",
+        "passed": False,
+        "outputs": [{"path": "*.vcf", "format": "vcf", "records": 0, "uncalled_rows": 99,
+                     "checks": {"confined": True, "exists": True, "non_empty": True,
+                                "parses_as_vcf": True, "min_records": False}, "passed": False}],
+    }))
+    try:
+        res = subprocess.run([
+            sys.executable, str(root / "harness" / "report.py"),
+            "--manifest", str(manifest),
+            "--available", "pass",
+            "--installs", "pass",
+            "--runs", "pass",
+            "--io", str(io_json),
+            "--content", str(tmp_path / "no-content.json"),
+            "--matrix", str(tmp_path / "no-matrix.json"),
+            "--readme", str(tmp_path / "no-readme.json"),
+            "--example", str(tmp_path / "no-example.json"),
+            "--regions-validation", str(tmp_path / "no-regions.json"),
+            "--mode", "trial",
+        ], cwd=str(root), check=True, capture_output=True, text=True)
+        report = json.loads(res.stdout)
+        assert report["verdict"]["code"] == "undetermined"
+        assert report["verdict"]["basis"] == "strhub"
+        assert report["step1"]["code"] == "ours"
+    finally:
+        for p in (root / "reports").glob("test-uncalled-vcf.*"):
+            p.unlink(missing_ok=True)
+
+
 def test_gate_refuses_escaping_pattern(tmp_path, monkeypatch):
     out = tmp_path / "out"
     out.mkdir()

@@ -227,68 +227,30 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         proc = built["procedure"]
         may_run = bool(proc.get("may_say_runs"))
 
-        repo_low = slug.lower()
         log_ext = tmp_path / "log_external.txt"
         log_build = tmp_path / "log_build.txt"
         io_json = tmp_path / "io_external.json"
         content_json = tmp_path / "content_external.json"
 
+        avail_flag = "pass"
+        installs_flag = "fail"
+        runs_flag = "fail"
+        infra_failure = ""
         if not may_run:
-            avail_flag = "pass"
-            installs_flag = "fail" if proc.get("blocker") == "no_install_procedure" else "pass"
-            runs_flag = "fail"
             log_build.write_text(
                 f"==== STRhub Verified local evaluation ====\n"
                 f"Repository: https://github.com/{slug} @ {ref}\n"
                 f"Procedure classifier blocker: {proc.get('blocker')}\n"
                 f"Reason: {proc.get('reason')}\n"
             )
-        elif "strspy" in repo_low:
-            avail_flag, installs_flag, runs_flag = "pass", "pass", "fail"
-            log_build.write_text("Step 1/6 : FROM mambaorg/micromamba:1.5.8\nSuccessfully built toolimg:ci\n")
-            log_ext.write_text(
-                "cat: '/opt/tool/output/Countings/*.txt': No such file or directory\n"
-                "Error: cannot open file vWA\nError: cannot open file TPOX\n"
-            )
-        elif "nanorepeat" in repo_low:
-            avail_flag, installs_flag, runs_flag = "pass", "pass", "fail"
-            log_build.write_text("Step 1/6 : FROM python:3.11-slim\nSuccessfully built toolimg:ci\n")
-            log_ext.write_text(
-                "Traceback (most recent call last):\n"
-                "TypeError: only 0-dimensional arrays can be converted to Python scalars\n"
-                "==== STRhub: container stopped after reaching the 20-minute time limit ====\n"
-            )
         else:
-            is_known_benchmark = snap is not None
-            avail_flag, installs_flag, runs_flag = "pass", "pass", "pass"
+            infra_failure = "local preview mode (no container was built or executed on this machine)"
             log_build.write_text(
-                f"==== STRhub Verified recipe build ({proc.get('install_method')}) ====\n"
+                f"==== STRhub Verified recipe evaluation ({proc.get('install_method')}) ====\n"
                 f"Repository: https://github.com/{slug} @ {ref}\n"
                 f"Procedure classifier: ready (all 4 blocks of GUIA-PASO-1.md present).\n"
+                f"Note: Docker container execution was not run in local preview mode.\n"
             )
-            log_ext.write_text(
-                f"==== STRhub Verified command evaluation ====\n"
-                f"Command: {built['manifest']['run']['cmd']}\n"
-                + ("Benchmark tool verified.\n" if is_known_benchmark
-                   else "Local preview mode: recipe and command verified as ready to run (Docker container execution skipped in fast local preview).\n")
-            )
-            out_spec = (built["manifest"].get("outputs") or [{"path": "output.vcf", "format": "vcf"}])[0]
-            io_json.write_text(json.dumps({
-                "passed": True,
-                "outputs": [{"path": out_spec.get("path"), "resolved": "output." + out_spec.get("format", "txt"),
-                             "format": out_spec.get("format", "text"), "exists": True, "non_empty": True, "records": 1}],
-            }))
-            if is_known_benchmark:
-                content_json.write_text(json.dumps({
-                    "passed": True,
-                    "outputs": [{"path": out_spec.get("path"), "resolved": "output." + out_spec.get("format", "txt"),
-                                 "passed": True,
-                                 "stats": {"rows": 20, "malformed_rows": 0, "distinct_loci": 20, "distinct_str_loci": 20,
-                                           "distinct_snp_markers": 0, "total_reads": 1420, "max_sequence_depth": 95,
-                                           "str_loci": ["CSF1PO", "D13S317", "D16S539", "D18S51", "D21S11", "D3S1358",
-                                                        "D5S818", "D7S820", "D8S1179", "FGA", "TH01", "TPOX", "vWA"],
-                                           "top_loci_by_depth": [["TH01", 95], ["vWA", 88], ["FGA", 82], ["TPOX", 79]]}}],
-                }))
 
         cat_slug = built["manifest"]["report"]["slug"]
         reports_dir = ROOT / "reports"
@@ -310,6 +272,7 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
             "--log-external", str(log_ext),
             "--ref", ref,
             "--mode", "trial",
+            "--infra-failure", infra_failure,
             "--recipe-proposal", str(proposal_json),
         ]
         subprocess.run(cmd, cwd=str(ROOT), check=True, capture_output=True, text=True)
@@ -327,7 +290,7 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
             "--datasets", str(ROOT / "datasets" / "index.json"),
             "--publishable", "false",
             "--out", str(pdf_out),
-        ], cwd=str(ROOT), check=True, capture_output=True, text=True)
+        ], cwd=str(ROOT), check=False, capture_output=True, text=True)
 
         shutil.copy2(reports_dir / f"{cat_slug}.json", out_dir / "report.json")
         shutil.copy2(reports_dir / f"{cat_slug}.recipe.json", out_dir / "recipe.json")

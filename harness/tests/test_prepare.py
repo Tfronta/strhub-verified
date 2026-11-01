@@ -110,3 +110,32 @@ def test_the_ont_fastq_is_handed_over_uncompressed(tmp_path):
         head = [next(f) for _ in range(4)]
     assert head[0].startswith("@") and head[2].startswith("+") and len(head[1]) == len(head[3])
     assert sum(1 for _ in fq.open()) == 4 * 864
+
+
+def test_shipped_example_still_runs_when_strhub_sample_is_not_ready(tmp_path):
+    """When the repository ships its own example (example.cmd) and states how to
+    install, a STRhub reference-sample limitation (such as loci_outside_panel)
+    must only disable the external leg, never the repository's own example leg."""
+    src = ROOT / "tools" / "strsearch"
+    manifest = src.joinpath("manifest.yml").read_text()
+    manifest += "\nexample:\n  cmd: python3 STRsearch.py -i example/test_data/ -c example/STR.configuration.txt -o out/\n  cwd: /opt/tool\n"
+    recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text()}
+    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
+    proposal = tmp_path / "proposal.json"
+    proposal.write_text(json.dumps({
+        "procedure": {"may_say_runs": False, "blocker": "loci_outside_panel"}
+    }))
+    rc, kv, err = _run(["strsearch", "--work", str(tmp_path), "--recipe-b64", b64, "--proposal", str(proposal)])
+    assert rc == 0, err
+    assert kv["external_ready"] == "0"
+    assert kv["install_ready"] == "1"
+    assert kv["example_ready"] == "1"
+
+    # When no install procedure exists at all, nothing builds so example_ready is 0.
+    proposal.write_text(json.dumps({
+        "procedure": {"may_say_runs": False, "blocker": "no_install_procedure"}
+    }))
+    rc2, kv2, err2 = _run(["strsearch", "--work", str(tmp_path), "--recipe-b64", b64, "--proposal", str(proposal)])
+    assert rc2 == 0, err2
+    assert kv2["install_ready"] == "0"
+    assert kv2["example_ready"] == "0"

@@ -66,10 +66,10 @@ on:
       # a case that would replace a curated result at the same commit with
       # the README-command run of it: both are true, one is the catalogue's.
       publish:
-        description: "Trial from URL: 'false' keeps the result out of the catalogue whatever the verdict"
+        description: "Trial from URL: 'true' publishes the result to the catalogue when the verdict is the tool's; 'false' (default) keeps a trial private"
         type: string
         required: false
-        default: "true"
+        default: "false"
   pull_request:
     paths:
       - "tools/**"
@@ -860,7 +860,7 @@ jobs:
           # the only kind of trial that may publish. Same test as the propose
           # step's condition.
           URL_TRIAL: ${{ github.event.inputs.mode == 'trial' && github.event.inputs.recipe == '' && github.event.inputs.repo != '' }}
-          TRIAL_PUBLISH: ${{ github.event.inputs.publish || 'true' }}
+          TRIAL_PUBLISH: ${{ github.event.inputs.publish == 'true' && 'true' || 'false' }}
           # A pull request's run is a check, never a publication, whatever it
           # finds — so its PDF must not carry a permalink either.
           EVENT_NAME: ${{ github.event_name }}

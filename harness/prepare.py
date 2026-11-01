@@ -522,8 +522,9 @@ def main() -> int:
               file=sys.stderr)
         fallback = ""
 
-    if not procedure_ready:
+    if not install_ready:
         example_ready = False
+    if not procedure_ready:
         ref_genome_url = ""
         ref_genome_filename = ""
 

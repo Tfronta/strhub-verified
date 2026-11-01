@@ -229,3 +229,29 @@ def test_a_loci_catalog_the_docs_download_becomes_the_panel_file():
     # No layout STRhub writes for the tool: nothing to put in its place.
     none, _ = pm.rewrite_for_strhub(cmd, "ont-bam-hg38", library_format=None)
     assert "vamos.effMotifs-0.1.GRCh38.tsv" in none
+
+
+def test_short_loci_keyword_outside_panel_flags_loci_outside_panel():
+    """mahi-mahi passes `--loci hg38` (a short keyword, not a path) that resolves
+    to shipped loci coordinates outside STRhub's CODIS slice."""
+    caveats = []
+    proposal = {
+        "tree_paths": ["mahi_mahi/data/hg38_loci.bed"],
+        "shipped_loci": {"mahi_mahi/data/hg38_loci.bed": [["chr4", 3074876, 3074933]]},
+    }
+    cmd = "mahi-mahi --bam /data/in/input.bam --ref /data/ref/hg38.fa --loci hg38 --out-dir out"
+    lims = pm.check_documented_files(cmd, proposal, "ont-bam-hg38", caveats)
+    assert "loci_outside_panel" in lims
+
+
+def test_local_trial_never_fabricates_a_passed_run_without_docker(tmp_path):
+    """local_trial.py without container execution must never mark a tool as
+    running (`runs`) or failing (`fails`); it is an undetermined preview."""
+    import local_trial
+    report = local_trial.build_local_trial(
+        "https://github.com/tfwillems/HipSTR", "", "", tmp_path / "trial_out", prefer_offline=True
+    )
+    assert report["gates"]["runs"] is False
+    assert report["gates"]["installs"] is False
+    assert report["verdict"]["code"] == "undetermined"
+    assert report["verdict"]["basis"] == "strhub"

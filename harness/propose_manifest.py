@@ -680,6 +680,7 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
 INPUT_FILE_FLAG = re.compile(r"^--?(?:r|ref|reference|genome|motifs?|catalog|variant[-_]catalog|loci|regions?|"
                              r"repeats?|db|database|model|library|lib|config|conf|in|input|i|b|bams?|bed|"
                              r"annotation|table|rmsk|microsat)$", re.I)
+LOCI_KEYWORD_FLAG = re.compile(r"^--?(?:loci|regions?|repeats?|catalog|variant[-_]catalog|targets?)$", re.I)
 DATA_FILE = re.compile(r"\.(?:tsv|txt|json|bed|csv|pa|model|pkl|tab|gz|ini|cfg|conf|config|fa|fasta)$", re.I)
 
 
@@ -716,13 +717,20 @@ def check_documented_files(run_cmd: str, proposal: dict, input_type: str,
     toks = cmd.split()
     for i, t in enumerate(toks):
         path = t.strip("'\"").lstrip("./")
+        prev = toks[i - 1] if i else ""
         if path in shipped and windows:
             inside = any(c == w[0] and s < w[2] and e > w[1] for c, s, e in shipped[path] for w in windows)
             if not inside:
                 caveats.append(f"Loci: {path}, which the command genotypes, lists {len(shipped[path])} "
                                "locus coordinate(s), none inside STRhub's reference sample.")
                 out.append("loci_outside_panel")
-        prev = toks[i - 1] if i else ""
+        elif LOCI_KEYWORD_FLAG.match(prev) and not t.startswith(("/data/", "-")) and shipped and windows:
+            matching = [sp for sp in shipped if path.lower() in sp.lower()] or list(shipped)
+            coords = [pt for sp in matching for pt in shipped[sp]]
+            if coords and not any(c == w[0] and s < w[2] and e > w[1] for c, s, e in coords for w in windows):
+                caveats.append(f"Loci: {prev} {path} resolves to repository loci ({', '.join(matching[:2])}) "
+                               f"with {len(coords)} coordinate(s), none inside STRhub's reference sample.")
+                out.append("loci_outside_panel")
         if (INPUT_FILE_FLAG.match(prev) and DATA_FILE.search(path) and not t.startswith(("/data/", "-"))
                 and path not in tree and "*" not in path):
             caveats.append(f"File: the documented command reads {t} (after {prev}), which is neither in "

@@ -384,6 +384,8 @@ def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     if v["code"] in ("undetermined", "fails") and g.get("installs") and not g.get("runs") and "starts" in g:
         v["reason"] += (" The installed program starts: it answers --help." if g["starts"]
                         else " The installed program does not start: --help fails.")
+    if v["code"] == "undetermined" and g.get("example"):
+        v["reason"] += " The repository's own documented example ran and produced its output."
     # No blockers for a fault of ours: every blocker carries an issue to open
     # on the author's tracker, and there is nothing to ask them.
     if v["code"] in ("runs", "out_of_scope") or v.get("basis") == "strhub":

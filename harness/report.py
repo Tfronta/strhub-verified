@@ -1285,6 +1285,11 @@ def main() -> int:
             & diagnose_log.STRHUB_FIXABLE
         if ours:
             strhub_fault = ", ".join(sorted(ours))
+    if not strhub_fault and gates["runs"] and not gates["io"]:
+        uncalled = sum(int(o.get("uncalled_rows") or 0) for o in (io_detail or {}).get("outputs") or [])
+        if uncalled > 0:
+            strhub_fault = (f"the output VCF contained {uncalled} uncalled locus row(s) (./.) and 0 called "
+                            "genotypes, because STRhub's reference slice carries no reads at the target coordinates")
     procedure = (proposal or {}).get("procedure")
     if procedure:
         report["procedure_review"] = procedure

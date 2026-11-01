@@ -28,10 +28,43 @@ def _read_text(path: pathlib.Path) -> str:
     return path.read_text(errors="replace")
 
 
+def _count_vcf_rows(text: str) -> tuple[int, int]:
+    """Return (called_or_site_records, uncalled_rows) for a VCF text.
+
+    A VCF row with a FORMAT column containing GT where every sample has a
+    missing genotype ('.', './.', '.|.') is an uncalled template row (for
+    example, a tool echoing its locus catalog with './.' when the input BAM
+    slice holds no reads at those coordinates), not a called record. Rows
+    without a GT column (such as sites-only VCFs) count as records as before.
+    """
+    records = 0
+    uncalled = 0
+    for ln in text.splitlines():
+        if not ln.strip() or ln.startswith("#"):
+            continue
+        f = ln.split("\t")
+        if len(f) >= 10 and "GT" in f[8].split(":"):
+            gi = f[8].split(":").index("GT")
+            has_call = False
+            for sample in f[9:]:
+                sp = sample.split(":")
+                gt = sp[gi].strip() if gi < len(sp) else "."
+                if gt and gt not in (".", "./.", ".|."):
+                    has_call = True
+                    break
+            if has_call:
+                records += 1
+            else:
+                uncalled += 1
+        else:
+            records += 1
+    return records, uncalled
+
+
 def _count_records(path: pathlib.Path, fmt: str) -> int:
     text = _read_text(path)
     if fmt == "vcf":
-        return sum(1 for ln in text.splitlines() if ln and not ln.startswith("#"))
+        return _count_vcf_rows(text)[0]
     if fmt == "json":
         obj = json.loads(text)
         return len(obj) if isinstance(obj, (list, dict)) else 1
@@ -110,14 +143,20 @@ def check(manifest_path: str, out_dir: str) -> dict:
         nonempty = f.stat().st_size > 0
         entry["checks"]["non_empty"] = nonempty
 
+        uncalled = 0
         try:
-            n = _count_records(f, spec["format"])
+            if spec["format"] == "vcf":
+                n, uncalled = _count_vcf_rows(_read_text(f))
+            else:
+                n = _count_records(f, spec["format"])
             parses = True
         except Exception as exc:  # noqa: BLE001
             n, parses = 0, False
             entry["parse_error"] = str(exc)
         entry["checks"]["parses_as_" + spec["format"]] = parses
         entry["records"] = n
+        if uncalled > 0:
+            entry["uncalled_rows"] = uncalled
         entry["checks"]["min_records"] = n >= spec.get("min_records", 1)
 
         if spec.get("must_contain"):
