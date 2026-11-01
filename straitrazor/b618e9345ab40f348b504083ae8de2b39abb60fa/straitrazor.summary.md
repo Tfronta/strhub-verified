@@ -17,6 +17,7 @@ Reached **Runs + Plausible output**: its output looks like plausible genotype-be
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Starts | PASS | the installed program answers --help in the built environment |
 
 ### What the author documents as a known issue
 
@@ -33,15 +34,16 @@ Executed verbatim inside the container, at the pinned commit. Paths under /data 
 ```
 str8rzr -c ForenSeqv1.27.config /data/in/sample.fastq > allsequences.txt
 ```
+- Log (starts): [`straitrazor.log-starts.txt`](straitrazor.log-starts.txt)
 - Log (build): [`straitrazor.log-build.txt`](straitrazor.log-build.txt)
 
 ## Run details
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-10-01T12:34:41+00:00
+- Generated: 2026-11-01T12:46:16+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862508223
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/41307968157
 
 ## Output content (plausibility evidence)
 
