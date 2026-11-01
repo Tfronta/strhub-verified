@@ -24,6 +24,7 @@ With those changes, the run reached **Runs + Plausible output**: its output look
 | Runs | PASS | it executes end-to-end without crashing |
 | Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
 | Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Starts | PASS | the installed program answers --help in the built environment |
 
 ### What the author documents as a known issue
 
@@ -40,15 +41,16 @@ Executed verbatim inside the container, at the pinned commit. Paths under /data 
 ```
 str8rzr -c /opt/strait-razor/PowerSeqv2.31.config /data/in/sample.fastq > /data/out/sample.allsequences.txt
 ```
+- Log (starts): [`strait-razor-powerseq.log-starts.txt`](strait-razor-powerseq.log-starts.txt)
 - Log (build): [`strait-razor-powerseq.log-build.txt`](strait-razor-powerseq.log-build.txt)
 
 ## Run details
 
 - Source: `https://github.com/Ahhgust/STRaitRazor` @ `b618e9345ab40f348b504083ae8de2b39abb60fa`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-10-01T12:34:09+00:00
+- Generated: 2026-11-01T12:46:39+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/36862471881
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/41307968157
 
 ## Output content (plausibility evidence)
 
