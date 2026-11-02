@@ -312,3 +312,34 @@ def test_a_forensic_tool_is_never_moved_to_the_medical_slice():
     assert pm.medical_panel_for(cmd, proposal, "illumina-bam-hg38") is None
     # Nothing shipped to read: nothing to decide on.
     assert pm.medical_panel_for(cmd, {}, "illumina-bam-hg38") is None
+
+
+def test_medical_slice_routing_does_not_flag_input_swapped():
+    """Routing to a medical slice of the same platform is panel routing, not
+    substituting an input kind for lack of sample."""
+    proposal = {
+        "repo": "Illumina/ExpansionHunter",
+        "ref": "9f5db1d4ab72016b2d93330b9792842d71582622",
+        "build": {"method": "release_binary"},
+        "output": {"format": "vcf"},
+        "tree_paths": ["catalog.json"],
+        "input_type": {
+            "best": "illumina-bam-hg38",
+            "how": "read",
+            "candidates": ["illumina-bam-hg38"],
+            "statements": {"inputs": [{"kind": "bam", "line": 15}]},
+        },
+        "commands": [{
+            "cmd": "ExpansionHunter --reads input.bam --reference hg38.fa --variant-catalog catalog.json --output-prefix out",
+            "origin": "readme",
+            "file": "README.md",
+            "line": 15,
+        }],
+        "shipped_loci": {"catalog.json": [["chr4", 3074876, 3074933]]},
+    }
+    r = pm.build(proposal, "eh-test")
+    assert r["manifest"]["inputs"]["type"] == "illumina-bam-hg38-med"
+    caveats = r["manifest"]["caveats"]["items"]
+    assert not any("holds no reference sample" in c for c in caveats)
+    assert not any("other documented kind was used" in c for c in caveats)
+    assert r["procedure"]["may_say_runs"] is True

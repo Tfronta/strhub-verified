@@ -505,7 +505,7 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     limitations: list[str] = []
     it = proposal.get("input_type") or {}
     stmts = it.get("statements") or {}
-    input_type_asked = input_type
+    input_type_unresolved = input_type if (input_type and not datasets_lib.resolve(input_type)) else None
     if input_type and not datasets_lib.resolve(input_type):
         with_data = next((c for c in it.get("candidates", []) if datasets_lib.resolve(c)), None)
         if with_data:
@@ -545,8 +545,8 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
                 quote = re.sub(r"[*_`]+", "", rec["text"])[:90]
                 input_note += (f" The author recommends {rec['kind'].upper()} "
                                f"(line {rec['line']}: \"{quote}\").")
-            if input_type_asked and input_type_asked != input_type:
-                input_note += (f" STRhub holds no reference sample as {input_type_asked}, "
+            if input_type_unresolved and input_type_unresolved != input_type:
+                input_note += (f" STRhub holds no reference sample as {input_type_unresolved}, "
                                "so the other documented kind was used.")
         else:
             input_note = (f"Input: no sentence in the README says what the tool takes; "
