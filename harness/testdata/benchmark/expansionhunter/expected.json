@@ -36,8 +36,10 @@
     "platforms": [
       "illumina"
     ],
-    "strhub_type": "illumina-bam-hg38",
-    "where": "docs/01_Introduction.md:9-12; docs/03_Usage.md:3-6,46-50"
+    "strhub_type": "illumina-bam-hg38-med",
+    "where": "docs/01_Introduction.md:9-12; docs/03_Usage.md:3-6,46-50",
+    "revised": "2026-11-02: STRhub now holds a medical STR slice of the same NA12878 300x sample: illumina-bam-hg38-med (illumina_slices/NA12878.medical.bam), the 51 disease-associated STRchive loci that at least 3 of 4 tool catalogs ship, all 31 of ExpansionHunter's among them. The catalog the repository ships (variant_catalog/hg38/variant_catalog.json) is disease loci, none forensic, so a faithful run genotypes disease loci: the medical slice, with its eh_catalog.json staged as /data/in/regions.json.",
+    "was_strhub_type": "illumina-bam-hg38"
   },
   "extra_inputs": [
     {

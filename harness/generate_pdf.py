@@ -106,6 +106,8 @@ PANEL_MAP = {
     "illumina-bam-hg38-y": "Y-STR",
     "ont-bam-hg38":        "Autosomal STR (ONT)",
     "pacbio-hifi-bam-hg38": "Autosomal STR (PacBio HiFi)",
+    "illumina-bam-hg38-med": "Medical STR",
+    "pacbio-hifi-bam-hg38-med": "Medical STR (PacBio HiFi)",
     "illumina-str-fastq":  "STR / SNP panel",
 }
 
@@ -798,7 +800,9 @@ def build_body(cfg):
     # the narrow locus list below look like a shortcoming of the tool.
     panel_size = cfg.get("regions", {}).get("panel_size")
     if panel_size:
-        intro += (f" That dataset is a slice around {panel_size} forensic STR loci, "
+        # Reports from before the medical panel carry no label; all ran on forensic loci.
+        label = cfg.get("regions", {}).get("panel_label") or "forensic STR loci"
+        intro += (f" That dataset is a slice around {panel_size} {label}, "
                   "not a whole genome: it carries reads only at the loci listed below.")
     # Last, so the sentence above stays next to the dataset it refers to. The
     # recommendation leads with what a test file gives the tool's own users,
@@ -835,6 +839,10 @@ def build_body(cfg):
         covered, total = rg.get("covered_loci"), rg.get("panel_size")
         detail = (f" (covers {covered} of {total} supported loci)"
                   if covered and total else "")
+        # Intervals the slice has no reads for are allowed and never assessed.
+        outside = rg.get("outside_panel")
+        if outside:
+            detail += f"; {outside} interval{'s' if outside != 1 else ''} outside the slice, not assessed"
         # Never "the tool's author" — see report.py::_regions_note.
         ds_rows.append(("Regions BED", f"Provided with the submission{detail}"))
     elif rg.get("source") == "strhub":

@@ -371,10 +371,12 @@ jobs:
             --run-url "$RUN_URL"
           exit 1
 
-      # --- Pre-flight: author-supplied regions BED must fit the slice's panel --
-      # NOT a gate. STRhub's reference BAMs are slices; a BED targeting loci the
-      # slice doesn't cover would make a healthy tool look broken. So an invalid
-      # BED is a REJECTED SUBMISSION: this step has no continue-on-error, so it
+      # --- Pre-flight: author-supplied regions BED must reach the slice's panel -
+      # NOT a gate. STRhub's reference BAMs are slices; a BED reaching fewer than
+      # min_loci of the panel loci would make a healthy tool look broken. Intervals
+      # outside the panel are allowed (a shipped catalog may list more loci than the
+      # slice holds) and the report states them as not assessed. A BED below the
+      # minimum is a REJECTED SUBMISSION: this step has no continue-on-error, so it
       # ABORTS the run — no gates, no report, no badge. Only author-provided BEDs
       # (regions_source == 'tool') are checked; STRhub-committed BEDs are trusted.
       #

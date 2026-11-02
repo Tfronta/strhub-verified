@@ -28,10 +28,19 @@ See each subdirectory's `SOURCE.txt` for provenance, chemistry, and rebuild note
 | `ont-fastq` | FASTQ | `ont_slices/HG00113.codis.panel.fastq.gz` (the ONT reads over the panel loci) | [1000 Genomes ONT on AWS](https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/) |
 | `pacbio-hifi-bam-hg38` | BAM (hg38) | `pacbio_slices/HG002.hifi.codis.bam` | [GIAB HG002 PacBio HiFi Revio](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/) |
 | `illumina-bam-hg38` | BAM (hg38) | `illumina_slices/*.codis.bam` | [1000 Genomes 30x Illumina](https://www.internationalgenome.org/data-portal/data-collection/30x-grch38) |
+| `illumina-bam-hg38-med` | BAM (hg38) | `illumina_slices/NA12878.medical.bam` (disease-associated STR loci) | [GIAB NA12878 300x](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/) |
+| `pacbio-hifi-bam-hg38-med` | BAM (hg38) | `pacbio_slices/HG002.hifi.medical.bam` (disease-associated STR loci) | [GIAB HG002 PacBio HiFi Revio](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/) |
 
 **Scope:** reference datasets cover **STR assays only** (Illumina STR FASTQ,
-Illumina BAM, ONT CODIS BAM and FASTQ, and PacBio HiFi CODIS BAM). No SNP panels or
-capillary FSA/HID reference data.
+Illumina BAM, ONT CODIS BAM and FASTQ, PacBio HiFi CODIS BAM, and the medical STR
+slices). No SNP panels or capillary FSA/HID reference data.
+
+**Medical STR slices:** the `-med` types hold the disease-associated STR loci that
+at least 3 of 4 medical tool catalogs ship (ExpansionHunter, TRGT, STRipy,
+str-analysis), at STRchive's hg38 coordinates
+(`harness/build_medical_candidates.py`, `datasets/illumina-bam-hg38-med/catalog_crosswalk.tsv`).
+They let a tool that genotypes disease loci run with the catalog it ships. A run there
+proves reproducible execution only: it is **not** a clinical or diagnostic validation.
 
 Machine-readable index: `datasets/index.json`. The workflow resolves
 `manifest.inputs.type` → compatible dataset (or **N/A** if none).

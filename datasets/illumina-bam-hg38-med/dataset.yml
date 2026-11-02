@@ -1,0 +1,37 @@
+# Typed reference dataset — illumina-bam-hg38-med (disease-associated STR loci)
+# Matched against a manifest's `inputs.type: illumina-bam-hg38-med` for the external
+# verification leg, and chosen by a proposal whose shipped catalog genotypes disease
+# loci (harness/propose_manifest.py::medical_panel_for). BAM slice in illumina_slices/.
+
+type: "illumina-bam-hg38-med"
+data: "illumina_slices/NA12878.medical.bam"
+bam_index: "illumina_slices/NA12878.medical.bam.bai"
+format: "bam"
+reference: "hg38"
+
+# Supported-loci panel: the contract with tool authors. A regions BED must reach
+# at least min_loci of these windows; intervals outside them are reported as not
+# assessed. Generated + verified from the BAM by harness/build_panel.py.
+supported_loci: "loci.bed"
+min_loci: 5
+
+reference_genome:
+  assembly: "GRCh38 / hg38"
+  url: "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz"
+  filename: "hg38.fa"
+  mount_path: "/data/ref/hg38.fa"
+
+name: "Illumina BAM (hg38), NA12878, medical STR slice (female)"
+source: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/"
+license: >
+  Open access (GIAB / NIST). Research and educational use.
+  STRhub is not the data provider.
+sequencer: "Illumina HiSeq 2500 (GIAB 300x)"
+notes: >
+  The same GIAB NA12878/HG001 300x WGS as illumina-bam-hg38, sliced ±1000 bp around
+  the disease-associated STR loci that at least 3 of 4 medical tool catalogs ship
+  (ExpansionHunter, TRGT, STRipy, str-analysis), at STRchive's hg38 coordinates.
+  See catalog_crosswalk.tsv for every STRchive locus and SOURCE.txt for the build.
+
+  Running here proves reproducible execution only. It is not a clinical or
+  diagnostic validation, and NA12878 carries no known pathogenic expansion.

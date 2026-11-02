@@ -57,7 +57,13 @@ OUTPUT_GLOB = {
 #: Types with a STRhub dataset, and which of them need a regions BED the
 #: tool understands (a per-tool format STRhub cannot yet generate for a
 #: stranger's tool; see the datasets library plan).
-REQUIRES_REGIONS = {"illumina-bam-hg38", "illumina-bam-hg38-y"}
+REQUIRES_REGIONS = {"illumina-bam-hg38", "illumina-bam-hg38-y", "illumina-bam-hg38-med"}
+
+#: The disease-locus slice of the same sample and platform. A tool whose shipped
+#: catalog genotypes medical repeat loci (ExpansionHunter's 31, TRGT's pathogenic
+#: repeats) has nothing to genotype in the forensic slice; in this one it does.
+MEDICAL_VARIANT = {"illumina-bam-hg38": "illumina-bam-hg38-med",
+                   "pacbio-hifi-bam-hg38": "pacbio-hifi-bam-hg38-med"}
 
 
 PLACEHOLDER_INPUT = re.compile(
@@ -426,6 +432,8 @@ TYPE_SLUG_SUFFIX = {
     "ont-bam-hg38": "ont",
     "ont-fastq": "ont",
     "pacbio-hifi-bam-hg38": "hifi",
+    "illumina-bam-hg38-med": "med",
+    "pacbio-hifi-bam-hg38-med": "hifi-med",
     "illumina-snp-fastq": "snp",
     "capillary-fsa": "fsa",
 }
@@ -502,6 +510,16 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         with_data = next((c for c in it.get("candidates", []) if datasets_lib.resolve(c)), None)
         if with_data:
             input_type = with_data
+    # Read off the documented command as written, before any path in it is
+    # rewritten to STRhub's mounts: which loci the tool ships decides which
+    # slice of the sample has reads for them.
+    panel_note = None
+    med = medical_panel_for(commands[0]["cmd"] if commands else "", proposal, input_type)
+    if med:
+        panel_note = (f"Panel: the loci file the documented command reads, shipped in the repository, lists "
+                      f"coordinates inside STRhub's medical STR slice and none inside the forensic one; this "
+                      f"run used the medical slice of the same sample ({med}).")
+        input_type = med
     # The input caveat quotes what the README says and states what this run
     # did. Nothing in it is inferred: the kinds, the recommendation and the
     # lines come from read_input_statements, and when nothing was there to
@@ -599,6 +617,8 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     best = commands[0]["cmd"] if commands else ""
     if input_note:
         caveat_items.append(input_note)
+    if panel_note:
+        caveat_items.append(panel_note)
     if not best:
         limitations.append("no_command")
         run_cmd = "true  # no command found in the README; nothing to run"
@@ -752,6 +772,40 @@ def _panel_windows(input_type: str) -> list[tuple[str, int, int]]:
         if len(f) >= 3 and not ln.startswith("#"):
             out.append((f[0], int(f[1]), int(f[2])))
     return out
+
+
+def _command_loci(cmd: str, shipped: dict) -> list:
+    """Coordinates of the repository loci files a command names, outright or
+    after a loci flag (the same reading check_documented_files makes)."""
+    coords = []
+    toks = cmd.split()
+    for i, t in enumerate(toks):
+        path = t.strip("'\"").lstrip("./")
+        prev = toks[i - 1] if i else ""
+        if path in shipped:
+            coords += shipped[path]
+        elif LOCI_KEYWORD_FLAG.match(prev) and not t.startswith(("/data/", "-")) and shipped:
+            matching = [sp for sp in shipped if path.lower() in sp.lower()] or list(shipped)
+            coords += [pt for sp in matching for pt in shipped[sp]]
+    return coords
+
+
+def _reaches_panel(coords: list, input_type: str) -> bool:
+    windows = _panel_windows(input_type)
+    return any(c == w[0] and s < w[2] and e > w[1] for c, s, e in coords for w in windows)
+
+
+def medical_panel_for(cmd: str, proposal: dict, input_type: str | None) -> str | None:
+    """The medical slice to run on instead of input_type's forensic one: only
+    when the shipped loci the command genotypes miss the forensic panel and
+    reach the medical one, so a forensic tool is never moved."""
+    med = MEDICAL_VARIANT.get(input_type or "")
+    if not med or not datasets_lib.resolve(med):
+        return None
+    coords = _command_loci(cmd, proposal.get("shipped_loci") or {})
+    if coords and not _reaches_panel(coords, input_type) and _reaches_panel(coords, med):
+        return med
+    return None
 
 
 def check_documented_files(run_cmd: str, proposal: dict, input_type: str,

@@ -85,6 +85,35 @@ def _status(flag: str) -> bool:
     return str(flag).lower() in ("pass", "true", "ok", "1", "success")
 
 
+def panel_label(rg: dict) -> str:
+    """What the slice's loci are, in words. Reports written before the medical
+    panel existed carry no label, and every one of them ran on forensic loci."""
+    return rg.get("panel_label") or "forensic STR loci"
+
+
+def outside_note(rg: dict) -> str:
+    """The BED's intervals the slice has no reads for. They do not reject a BED
+    (a tool's shipped catalog may list loci beyond the panel), so the report has
+    to say the tool was not assessed there, in place of any result."""
+    n = rg.get("outside_panel")
+    if not n:
+        return ""
+    return (f" {n} of its intervals {'lies' if n == 1 else 'lie'} outside the slice and "
+            f"{'was' if n == 1 else 'were'} not assessed.")
+
+
+def _panel_label_for(supported_loci: str) -> str | None:
+    """The panel label datasets/index.json gives the dataset whose panel this is."""
+    try:
+        index = json.loads((ROOT / "datasets" / "index.json").read_text())
+    except Exception:  # noqa: BLE001
+        return None
+    for entry in index.get("datasets", {}).values():
+        if entry.get("supported_loci") == supported_loci:
+            return entry.get("panel_label")
+    return None
+
+
 def _regions_note(rg: dict) -> str:
     """One sentence on where the target regions came from, and that the data is a slice.
 
@@ -98,7 +127,7 @@ def _regions_note(rg: dict) -> str:
     """
     total = rg.get("panel_size")
     slice_note = (
-        f" The reference dataset is a slice around {total} forensic STR loci, not a "
+        f" The reference dataset is a slice around {total} {panel_label(rg)}, not a "
         "whole genome: it carries reads only at those loci."
         if total else ""
     )
@@ -106,7 +135,7 @@ def _regions_note(rg: dict) -> str:
         covered = rg.get("covered_loci")
         detail = (f", covering {covered} of {total} supported loci"
                   if covered and total else "")
-        return f"The submission supplied the regions BED{detail}.{slice_note}"
+        return f"The submission supplied the regions BED{detail}.{outside_note(rg)}{slice_note}"
     if rg.get("source") == "strhub":
         return f"STRhub supplied the regions BED.{slice_note}"
     return ""
@@ -963,8 +992,14 @@ def main() -> int:
                 v = json.loads(vp.read_text())
                 regions["covered_loci"] = v.get("covered_count")
                 regions["panel_size"] = v.get("panel_size")
+                if v.get("out_of_panel"):
+                    regions["outside_panel"] = len(v["out_of_panel"])
             except Exception:  # noqa: BLE001
                 pass
+        # Only the medical panel carries a label; a forensic report stays as it was.
+        label = _panel_label_for(args.supported_loci) if args.supported_loci else None
+        if label:
+            regions["panel_label"] = label
         # Only author-supplied BEDs are pre-flighted, so a STRhub-supplied one has
         # no validation file. Count the panel directly — the "this is a slice"
         # caveat is true either way and the reader needs it either way.

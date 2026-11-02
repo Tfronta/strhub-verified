@@ -1,0 +1,46 @@
+Fixture provenance — pacbio-hifi-bam-hg38-med (GIAB HG002, PacBio HiFi Revio, hg38 medical STR slice)
+=====================================================================================================
+
+STRhub Verified does NOT host or redistribute full genomes. The BAM file in
+`pacbio_slices/` is a **small, pre-built slice** over disease-associated STR
+loci, derived from publicly available Genome in a Bottle (GIAB) PacBio HiFi data.
+It is used only as a smoke-test input for the external verification leg.
+
+A run on this slice proves reproducible execution only. It is NOT a clinical or
+diagnostic validation.
+
+Upstream (open access)
+----------------------
+The same source BAM as pacbio-hifi-bam-hg38 (see datasets/pacbio-hifi-bam-hg38/SOURCE.txt):
+Project  : Genome in a Bottle (NIST), Ashkenazi trio son HG002 / NA24385
+File     : HG002_PacBio-HiFi-Revio_20231031_48x_GRCh38-GIABv3.bam (+ .bai)
+Platform : PacBio Revio, HiFi (CCS) reads, ~48x
+Male sample: one X, so AR, ARX, AFF2, FMR1 and SOX3 are hemizygous.
+
+Which loci
+----------
+The loci of illumina-bam-hg38-med (see its SOURCE.txt and catalog_crosswalk.tsv),
+±10 kb: pacbio_slices/medical_pm10kb.bed, written by
+harness/build_medical_candidates.py. The panel (loci.bed) is derived from the
+illumina-bam-hg38-med panel by harness/build_regions_library.py.
+
+How the slice was built
+-----------------------
+download_medical.sh, the same recipe as HG002.hifi.codis.bam:
+
+  samtools view -b -M -L medical_pm10kb.bed -X \
+      -x fi -x fp -x ri -x rp -x ip -x pw -x sn \
+      -o raw.bam <upstream .bam URL> <upstream .bai URL>
+  samtools sort -o HG002.hifi.medical.bam raw.bam
+  samtools index HG002.hifi.medical.bam
+
+The -x options drop the per-base kinetics and signal-to-noise tags, which no STR
+genotyper reads. Sequences, qualities, alignments, read groups, haplotags and
+methylation tags are as distributed. samtools 1.21 / htslib 1.22.
+
+License / use scope
+-------------------
+Open-access reference data from NIST / GIAB. STRhub adds no restriction and
+claims no ownership; the file is third-party material used for reproducible-
+execution smoke tests only, not for donor identification, database searching,
+casework, clinical or diagnostic claims.
