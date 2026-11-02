@@ -49,13 +49,13 @@
   },
   {
     "LocusId": "ZIC2",
-    "LocusStructure": "(GCN)*",
+    "LocusStructure": "(GCG)*",
     "ReferenceRegion": "chr13:99985448-99985494",
     "VariantType": "Repeat"
   },
   {
     "LocusId": "PABPN1",
-    "LocusStructure": "(GCN)*",
+    "LocusStructure": "(GCG)*",
     "ReferenceRegion": "chr14:23321472-23321503",
     "VariantType": "Repeat"
   },
@@ -139,7 +139,7 @@
   },
   {
     "LocusId": "HOXD13",
-    "LocusStructure": "(GCN)*",
+    "LocusStructure": "(GCG)*",
     "ReferenceRegion": "chr2:176093058-176093103",
     "VariantType": "Repeat"
   },
@@ -181,7 +181,7 @@
   },
   {
     "LocusId": "FOXL2",
-    "LocusStructure": "(GCN)*",
+    "LocusStructure": "(GCT)*",
     "ReferenceRegion": "chr3:138946019-138946062",
     "VariantType": "Repeat"
   },
@@ -205,7 +205,7 @@
   },
   {
     "LocusId": "PHOX2B",
-    "LocusStructure": "(GCN)*",
+    "LocusStructure": "(GCC)*",
     "ReferenceRegion": "chr4:41745972-41746032",
     "VariantType": "Repeat"
   },
@@ -235,7 +235,7 @@
   },
   {
     "LocusId": "RUNX2",
-    "LocusStructure": "(GCN)*",
+    "LocusStructure": "(GCG)*",
     "ReferenceRegion": "chr6:45422750-45422801",
     "VariantType": "Repeat"
   },
@@ -247,7 +247,7 @@
   },
   {
     "LocusId": "HOXA13",
-    "LocusStructure": "(GCN)*",
+    "LocusStructure": "(GCC)*",
     "ReferenceRegion": "chr7:27199825-27199861",
     "VariantType": "Repeat"
   },
@@ -277,7 +277,7 @@
   },
   {
     "LocusId": "ARX",
-    "LocusStructure": "(GCN)*",
+    "LocusStructure": "(GCC)*",
     "ReferenceRegion": "chrX:25013649-25013697",
     "VariantType": "Repeat"
   },
@@ -289,7 +289,7 @@
   },
   {
     "LocusId": "SOX3",
-    "LocusStructure": "(GCN)*",
+    "LocusStructure": "(GGC)*",
     "ReferenceRegion": "chrX:140504316-140504361",
     "VariantType": "Repeat"
   },

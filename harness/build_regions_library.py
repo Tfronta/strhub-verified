@@ -159,7 +159,12 @@ def build(dataset: str, hg38: str) -> dict[str, str]:
 
     for c in rows:
         tract = faidx(hg38, f"{c['chrom']}:{c['start']}-{c['end']}")
-        c["motif_seq"] = dominant_motif(tract, c["period"]) if c["motif"] in ("N/A", "") else c["motif"]
+        # Ambiguous IUPAC motifs (e.g. GCN in polyalanine repeat loci from STRchive)
+        # break tools like GangSTR, HipSTR, TRGT, and LongTR that require standard
+        # ACGT nucleotide sequences. When a motif is missing or contains non-ACGT bases,
+        # resolve it to the dominant ACGT k-mer in the reference tract.
+        is_ambiguous = any(ch not in "ACGTacgt" for ch in c["motif"])
+        c["motif_seq"] = dominant_motif(tract, c["period"]) if (c["motif"] in ("N/A", "") or is_ambiguous) else c["motif"]
         c["left"] = faidx(hg38, f"{c['chrom']}:{c['start'] - FLANK}-{c['start'] - 1}")
         c["right"] = faidx(hg38, f"{c['chrom']}:{c['end'] + 1}-{c['end'] + FLANK}")
 
@@ -282,6 +287,8 @@ def main() -> int:
     args = ap.parse_args()
     index = json.loads((ROOT / "datasets" / "index.json").read_text())
     types = args.type or [k for k, v in index["datasets"].items() if v.get("supported_loci")]
+    # Build base datasets before derived datasets so that derive() reads current files.
+    types = [t for t in types if t not in DERIVED] + [t for t in types if t in DERIVED]
     drift = []
     if args.derived_only:
         for ds, v in index["datasets"].items():
