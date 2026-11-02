@@ -63,7 +63,8 @@ REQUIRES_REGIONS = {"illumina-bam-hg38", "illumina-bam-hg38-y", "illumina-bam-hg
 #: catalog genotypes medical repeat loci (ExpansionHunter's 31, TRGT's pathogenic
 #: repeats) has nothing to genotype in the forensic slice; in this one it does.
 MEDICAL_VARIANT = {"illumina-bam-hg38": "illumina-bam-hg38-med",
-                   "pacbio-hifi-bam-hg38": "pacbio-hifi-bam-hg38-med"}
+                   "pacbio-hifi-bam-hg38": "pacbio-hifi-bam-hg38-med",
+                   "ont-bam-hg38": "ont-bam-hg38-med"}
 
 
 PLACEHOLDER_INPUT = re.compile(
@@ -430,6 +431,7 @@ TYPE_SLUG_SUFFIX = {
     "illumina-str-fastq": "",
     "illumina-bam-hg38-y": "y",
     "ont-bam-hg38": "ont",
+    "ont-bam-hg38-med": "ont-med",
     "ont-fastq": "ont",
     "pacbio-hifi-bam-hg38": "hifi",
     "illumina-bam-hg38-med": "med",

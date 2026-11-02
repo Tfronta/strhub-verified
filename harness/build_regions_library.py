@@ -201,6 +201,7 @@ def build(dataset: str, hg38: str) -> dict[str, str]:
 #: filtering, not by reading the genome again: the ONT and PacBio HiFi slices
 #: are the CODIS loci ±10 kb, at the same hg38 coordinates as the Illumina panel.
 DERIVED = {"ont-bam-hg38": ("illumina-bam-hg38", "ont_slices/codis_pm10kb.bed"),
+           "ont-bam-hg38-med": ("illumina-bam-hg38-med", "ont_slices/medical_pm1kb.bed"),
            "pacbio-hifi-bam-hg38": ("illumina-bam-hg38", "pacbio_slices/codis_pm10kb.bed"),
            # The disease-associated loci ±10 kb, at the medical Illumina panel's coordinates.
            "pacbio-hifi-bam-hg38-med": ("illumina-bam-hg38-med", "pacbio_slices/medical_pm10kb.bed"),

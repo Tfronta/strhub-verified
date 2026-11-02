@@ -139,3 +139,33 @@ def test_shipped_example_still_runs_when_strhub_sample_is_not_ready(tmp_path):
     assert rc2 == 0, err2
     assert kv2["install_ready"] == "0"
     assert kv2["example_ready"] == "0"
+
+
+def test_forensic_bam_run_stages_medical_fallback_and_promote_updates_manifest(tmp_path):
+    """A forensic BAM trial with STRhub library regions stages in_external_med
+    so the workflow can fall back to the medical STR slice when the forensic
+    slice produces no called records."""
+    src = ROOT / "tools" / "hipstr"
+    manifest = src.joinpath("manifest.yml").read_text()
+    manifest = manifest.replace(
+        '  type: "illumina-bam-hg38"\n',
+        '  type: "illumina-bam-hg38"\n  regions:\n    library: "hipstr"\n',
+        1,
+    )
+    recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text()}
+    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
+    rc, kv, err = _run(["hipstr", "--work", str(tmp_path), "--recipe-b64", b64])
+    assert rc == 0, err
+    assert kv["med_fallback_ready"] == "1"
+    assert kv["med_input_type"] == "illumina-bam-hg38-med"
+    assert kv["med_supported_loci"] == "datasets/illumina-bam-hg38-med/loci.bed"
+    assert (tmp_path / "in_external_med" / "input.bam").is_file()
+    assert (tmp_path / "in_external_med" / "regions.bed").is_file()
+
+    # Promoting the manifest updates inputs.type and appends the panel caveat.
+    mf_path = tmp_path / "recipe" / "hipstr" / "manifest.yml"
+    rc_prom, _, err_prom = _run(["--promote-medical", str(mf_path), "illumina-bam-hg38-med"])
+    assert rc_prom == 0, err_prom
+    updated = mf_path.read_text()
+    assert "illumina-bam-hg38-med" in updated
+    assert "medical STR slice" in updated

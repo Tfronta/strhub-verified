@@ -1,0 +1,49 @@
+Fixture provenance — ont-bam-hg38-med (1000 Genomes ONT HG00113, hg38 medical STR slice)
+========================================================================================
+
+STRhub Verified does NOT host or redistribute full genomes. The BAM file in
+`ont_slices/` is a **small, pre-built slice** over disease-associated STR
+loci, derived from publicly available 1000 Genomes Oxford Nanopore data.
+It is used only as a smoke-test input for the external verification leg.
+
+A run on this slice proves reproducible execution only. It is NOT a clinical or
+diagnostic validation.
+
+Upstream (open access)
+----------------------
+The same source BAM as ont-bam-hg38 (see datasets/ont-bam-hg38/SOURCE.txt):
+Project  : 1000 Genomes — Oxford Nanopore Technology (ONT) data
+Sample   : HG00113 (GBR, male)
+File     : HG00113-ONT-hg38-R10-LSK114-dorado090_sup_5mCG_5hmCG_v500.phased.bam (+ .bai)
+Reference: GRCh38 / hg38 (minimap2-aligned BAM)
+Chemistry: ONT R10 flow cells, basecalling model SUP
+Male sample: one X, so AR, ARX, AFF2, FMR1 and SOX3 are hemizygous.
+
+Which loci
+----------
+The 51 disease-associated STR loci of illumina-bam-hg38-med (see its SOURCE.txt
+and catalog_crosswalk.tsv), ±1 kb capture windows: ont_slices/medical_pm1kb.bed,
+written by harness/build_medical_candidates.py. Because samtools view -L retains
+each overlapping long read in full (20–70 kb), ±1 kb capture windows retain all
+reads spanning the repeat tracts while keeping the slice below GitHub's 50 MiB
+file warning. The panel (loci.bed) is derived from the illumina-bam-hg38-med
+panel by harness/build_regions_library.py.
+
+How the slice was built
+-----------------------
+download_medical.sh, the same recipe as HG00113.codis.bam:
+
+  samtools view -b -M -L ont_slices/medical_pm1kb.bed -X \
+      -o raw.bam <upstream .bam URL> <upstream .bai URL>
+  samtools sort raw.bam \
+    | samtools addreplacerg -r $'@RG\tID:HG00113\tSM:HG00113\tLB:1000G-ONT\tPL:ONT' \
+        -o ont_slices/HG00113.medical.bam -
+  samtools index ont_slices/HG00113.medical.bam
+
+License / use scope
+-------------------
+Open-access research data from the 1000 Genomes / Human Pangenome Reference
+Consortium ecosystem. STRhub adds no additional restrictions and claims no
+ownership; the file is third-party material used for reproducible-execution
+smoke tests only, not for donor identification, database searching, casework,
+clinical or diagnostic claims.

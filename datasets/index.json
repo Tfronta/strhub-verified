@@ -47,6 +47,39 @@
       "read_groups": true,
       "sample": "HG00113"
     },
+    "ont-bam-hg38-med": {
+      "dir": "datasets/ont-bam-hg38-med",
+      "data": "ont_slices/HG00113.medical.bam",
+      "bam_index": "ont_slices/HG00113.medical.bam.bai",
+      "format": "bam",
+      "canonical_input": "input.bam",
+      "reference": "hg38",
+      "reference_genome": {
+        "assembly": "GRCh38 / hg38",
+        "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
+        "filename": "hg38.fa",
+        "mount_path": "/data/ref/hg38.fa"
+      },
+      "name": "1000 Genomes ONT, hg38 medical STR slice (R10 SUP)",
+      "source": "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/",
+      "license": "Open access (1000 Genomes / HPRC). Research use. STRhub is not the data provider.",
+      "chemistry": "ONT R10, basecalling model SUP",
+      "notes": "±1 kb capture slice of 1000 Genomes ONT HG00113 R10 SUP BAM around the 51 disease-associated STR loci of illumina-bam-hg38-med (~40 MB; full-length ONT reads overlapping each window retained). Every panel locus is overlapped by 12 (SOX3) to 49 primary ONT reads. Male sample: AR, ARX, AFF2, FMR1 and SOX3 are hemizygous. Pick this dataset for medical repeat tools made for Oxford Nanopore (straglr, NanoRepeat, strkit). Execution only, not a clinical validation. See datasets/ont-bam-hg38-med/SOURCE.txt.",
+      "chrom_naming": "chr",
+      "supported_loci": "datasets/ont-bam-hg38-med/loci.bed",
+      "panel_label": "disease-associated STR loci",
+      "regions_library": {
+        "hipstr": "datasets/ont-bam-hg38-med/regions/hipstr.bed",
+        "gangstr": "datasets/ont-bam-hg38-med/regions/gangstr.bed",
+        "strsearch": "datasets/ont-bam-hg38-med/regions/strsearch.bed",
+        "bed4": "datasets/ont-bam-hg38-med/regions/bed4.bed",
+        "motif": "datasets/ont-bam-hg38-med/regions/motif.bed",
+        "eh_catalog": "datasets/ont-bam-hg38-med/regions/eh_catalog.json",
+        "trgt": "datasets/ont-bam-hg38-med/regions/trgt.bed"
+      },
+      "read_groups": true,
+      "sample": "HG00113"
+    },
     "pacbio-hifi-bam-hg38": {
       "dir": "datasets/pacbio-hifi-bam-hg38",
       "data": "pacbio_slices/HG002.hifi.codis.bam",

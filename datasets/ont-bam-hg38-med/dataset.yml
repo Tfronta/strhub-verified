@@ -1,0 +1,26 @@
+# Typed reference dataset — ont-bam-hg38-med (disease-associated STR loci)
+# Matched against a manifest's `inputs.type: ont-bam-hg38-med` for the
+# external verification leg, and chosen by a proposal whose shipped catalog
+# genotypes disease loci (harness/propose_manifest.py::medical_panel_for).
+# The BAM slice lives in ont_slices/ (pre-built, committed).
+
+type: "ont-bam-hg38-med"
+data: "ont_slices/HG00113.medical.bam"
+bam_index: "ont_slices/HG00113.medical.bam.bai"
+format: "bam"
+reference: "hg38"
+
+name: "1000 Genomes ONT, hg38 medical STR slice (R10 SUP)"
+source: "https://s3.amazonaws.com/1000g-ont/index.html?prefix=PROCESSED_DATA/ALIGNED_TO_HG38/MINIMAP2_ALIGNED_BAMS/"
+license: >
+  Open access (1000 Genomes / Human Pangenome Reference Consortium). Research
+  and educational use. STRhub is not the data provider.
+chemistry: "Oxford Nanopore R10, basecalling model SUP"
+notes: >
+  The same 1000 Genomes ONT HG00113 R10 SUP BAM as ont-bam-hg38, sliced ±1 kb
+  around the 51 disease-associated STR loci of illumina-bam-hg38-med
+  (ont_slices/medical_pm1kb.bed; full-length long reads overlapping each window
+  are retained, ~40 MB). Male sample: one X, so the X-linked loci (AR, ARX, AFF2,
+  FMR1, SOX3) are hemizygous. Every panel locus is overlapped by 12 (SOX3) to 49
+  primary ONT reads. Running here proves reproducible execution only, not a
+  clinical or diagnostic validation. See SOURCE.txt.

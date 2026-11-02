@@ -23,7 +23,8 @@ coordinates both undercount.
 Writes, under datasets/illumina-bam-hg38-med/:
   catalog_crosswalk.tsv   every STRchive locus with its catalog membership
   str_candidates.bed      the selected loci, HipSTR layout (input to build_panel.py)
-and pacbio_slices/medical_pm10kb.bed, the ±10 kb long-read slice windows.
+pacbio_slices/medical_pm10kb.bed, the ±10 kb PacBio HiFi slice windows,
+and ont_slices/medical_pm1kb.bed, the ±1 kb ONT slice capture windows.
 
 Usage:  python harness/build_medical_candidates.py [--check]
 """
@@ -39,10 +40,12 @@ import urllib.request
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATASET = ROOT / "datasets" / "illumina-bam-hg38-med"
 LONG_READ_WINDOWS = ROOT / "pacbio_slices" / "medical_pm10kb.bed"
+ONT_WINDOWS = ROOT / "ont_slices" / "medical_pm1kb.bed"
 
 MIN_CATALOGS = 3
 TOL = 25
 LONG_READ_FLANK = 10_000
+ONT_FLANK = 1_000
 
 STRCHIVE = ("dashnowlab/STRchive", "e964fa88df3b2189ee478cbd6eaad15bb28e3a0a", "data/STRchive-loci.json")
 CATALOGS = {
@@ -145,6 +148,7 @@ def build() -> dict[pathlib.Path, str]:
         "# which make the panel (loci.bed).\n"
     ]
     windows = []
+    ont_windows = []
     for e in sorted(selected, key=lambda e: (e["chrom"], e["start_hg38"])):
         motif = (e["reference_motif_reference_orientation"] or ["N/A"])[0]
         period = e["motif_len"] or len(motif)
@@ -158,11 +162,14 @@ def build() -> dict[pathlib.Path, str]:
                      f"{e['gene']}\t{motif}\n")
         windows.append(f"{e['chrom']}\t{max(0, e['start_hg38'] - LONG_READ_FLANK)}\t"
                        f"{e['stop_hg38'] + LONG_READ_FLANK}\t{e['gene']}\n")
+        ont_windows.append(f"{e['chrom']}\t{max(0, e['start_hg38'] - ONT_FLANK)}\t"
+                           f"{e['stop_hg38'] + ONT_FLANK}\t{e['gene']}\n")
 
     return {
         DATASET / "catalog_crosswalk.tsv": "".join(cross),
         DATASET / "str_candidates.bed": "".join(cands),
         LONG_READ_WINDOWS: "".join(windows),
+        ONT_WINDOWS: "".join(ont_windows),
     }
 
 

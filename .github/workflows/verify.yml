@@ -720,6 +720,9 @@ jobs:
           RUN_MINUTES: ${{ steps.m.outputs.timeout }}
           ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
           ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
+          MANIFEST: ${{ steps.m.outputs.manifest }}
+          MED_FALLBACK_READY: ${{ steps.m.outputs.med_fallback_ready }}
+          MED_INPUT_TYPE: ${{ steps.m.outputs.med_input_type }}
         run: |
           set -o pipefail
           mkdir -p work/out_external
@@ -730,13 +733,43 @@ jobs:
           chmod 0777 work/out_external
           REF_MOUNT=""
           [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
+          rc=0
           bash harness/run_container.sh strhub_external "$RUN_MINUTES" work/log_external.txt \
             $DOCKER_HARDENING $ENTRY \
             -v "$PWD/work/in_external:/data/in:ro" \
             -v "$PWD/work/out_external:/data/out" \
             $REF_MOUNT \
             toolimg:ci \
-            $ENTRY_ARGS "$TOOL_CMD"
+            $ENTRY_ARGS "$TOOL_CMD" || rc=$?
+          # Forensic -> Medical slice fallback: if a tool's target loci could not be
+          # pre-read and the forensic slice produced no called records, retry the
+          # identical command on the medical STR slice of the same platform.
+          io_ok=0
+          if [ "$rc" -eq 0 ] && python harness/check_io.py "$MANIFEST" work/out_external --json work/io_forensic_probe.json >/dev/null 2>&1; then
+            io_ok=1
+          fi
+          if [ "$io_ok" -eq 0 ] && [ "${MED_FALLBACK_READY:-0}" = "1" ] && [ -d work/in_external_med ]; then
+            echo "Forensic slice produced no called records (rc=$rc); retrying identical command on medical STR slice ($MED_INPUT_TYPE)..."
+            mkdir -p work/out_external_med
+            chmod 0777 work/out_external_med
+            rc_med=0
+            bash harness/run_container.sh strhub_external_med "$RUN_MINUTES" work/log_external_med.txt \
+              $DOCKER_HARDENING $ENTRY \
+              -v "$PWD/work/in_external_med:/data/in:ro" \
+              -v "$PWD/work/out_external_med:/data/out" \
+              $REF_MOUNT \
+              toolimg:ci \
+              $ENTRY_ARGS "$TOOL_CMD" || rc_med=$?
+            if [ "$rc_med" -eq 0 ] && python harness/check_io.py "$MANIFEST" work/out_external_med --json work/io_med_probe.json >/dev/null 2>&1; then
+              rm -rf work/out_external && mv work/out_external_med work/out_external
+              mv work/log_external_med.txt work/log_external.txt
+              rm -rf work/in_external && mv work/in_external_med work/in_external
+              python harness/prepare.py --promote-medical "$MANIFEST" "$MED_INPUT_TYPE"
+              echo "med_used=1" >> "$GITHUB_OUTPUT"
+              rc=0
+            fi
+          fi
+          exit "$rc"
 
       - id: io_ext
         name: "Expected IO (external)"
@@ -752,7 +785,7 @@ jobs:
         continue-on-error: true
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
-          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
+          SUPPORTED_LOCI: ${{ steps.runs_ext.outputs.med_used == '1' && steps.m.outputs.med_supported_loci || steps.m.outputs.supported_loci }}
         # The loci this leg was given: a regions BED, or a JSON catalog
         # (ExpansionHunter's) staged as regions.json.
         run: |
@@ -784,8 +817,8 @@ jobs:
           OWN_READY: ${{ steps.m.outputs.own_ready }}
           EXT_READY: ${{ steps.m.outputs.external_ready }}
           EXAMPLE_READY: ${{ steps.m.outputs.example_ready }}
-          INPUT_TYPE: ${{ steps.m.outputs.input_type }}
-          DATASET_NAME: ${{ steps.m.outputs.dataset_name }}
+          INPUT_TYPE: ${{ steps.runs_ext.outputs.med_used == '1' && steps.m.outputs.med_input_type || steps.m.outputs.input_type }}
+          DATASET_NAME: ${{ steps.runs_ext.outputs.med_used == '1' && steps.m.outputs.med_dataset_name || steps.m.outputs.dataset_name }}
           FIXTURE_SOURCE: ${{ steps.m.outputs.fixture_source }}
         run: |
           python - <<'PY'
@@ -841,7 +874,7 @@ jobs:
           TOOL_REF: ${{ steps.m.outputs.ref }}
           OWN_READY: ${{ steps.m.outputs.own_ready }}
           REGIONS_SOURCE: ${{ steps.m.outputs.regions_source }}
-          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
+          SUPPORTED_LOCI: ${{ steps.runs_ext.outputs.med_used == '1' && steps.m.outputs.med_supported_loci || steps.m.outputs.supported_loci }}
           # Step outcomes come from GitHub, not the manifest, so they are a closed
           # vocabulary (success/failure/cancelled/skipped) rather than author input.
           AVAILABLE_OUTCOME: ${{ steps.available.outcome }}

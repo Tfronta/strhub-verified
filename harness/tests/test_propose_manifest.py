@@ -301,9 +301,9 @@ def test_a_shipped_disease_catalog_moves_the_run_to_the_medical_slice():
            "--variant-catalog variant_catalog/hg38/variant_catalog.json --output-prefix out")
     assert pm.medical_panel_for(cmd, proposal, "illumina-bam-hg38") == "illumina-bam-hg38-med"
     assert pm.medical_panel_for(cmd, proposal, "pacbio-hifi-bam-hg38") == "pacbio-hifi-bam-hg38-med"
-    # No medical slice of that platform yet: the forensic one stays, and the
-    # loci-outside-panel limitation says why the run has nothing to genotype.
-    assert pm.medical_panel_for(cmd, proposal, "ont-bam-hg38") is None
+    assert pm.medical_panel_for(cmd, proposal, "ont-bam-hg38") == "ont-bam-hg38-med"
+    # No medical slice of a Y-STR or FASTQ assay: the original type stays.
+    assert pm.medical_panel_for(cmd, proposal, "illumina-bam-hg38-y") is None
 
 
 def test_a_forensic_tool_is_never_moved_to_the_medical_slice():
