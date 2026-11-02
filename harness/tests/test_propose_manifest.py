@@ -192,6 +192,8 @@ def test_catalogue_slug_adds_a_suffix_only_for_a_non_canonical_assay():
     assert pm.catalogue_slug("STRspy", "ont-bam-hg38") == "strspy-ont"
     # Not the last hyphen-segment, which would file a HiFi run as "trgt-hg38".
     assert pm.catalogue_slug("TRGT", "pacbio-hifi-bam-hg38") == "trgt-hifi"
+    assert pm.catalogue_slug("ExpansionHunter", "illumina-bam-hg38-med") == "expansionhunter-med"
+    assert pm.catalogue_slug("TRGT", "pacbio-hifi-bam-hg38-med") == "trgt-hifi-med"
     assert pm.catalogue_slug("STRait Razor", "illumina-str-fastq") == "strait-razor"
     # Unlisted types fall back to their last segment; no type, no suffix.
     assert pm.catalogue_slug("Tool", "some-new-assay") == "tool-assay"
@@ -287,3 +289,26 @@ def test_shipped_bed_is_not_replaced_with_panel_bed():
     assert "db/loci.bed" in cmd
     assert "/data/in/regions.bed" not in cmd
 
+
+
+def test_a_shipped_disease_catalog_moves_the_run_to_the_medical_slice():
+    """ExpansionHunter's catalog is 31 disease loci, none forensic: on the
+    forensic slice it would have nothing to genotype, on the medical one it does.
+    The catalog is the tool's own and stays as documented."""
+    proposal = {"shipped_loci": {"variant_catalog/hg38/variant_catalog.json": [
+        ["chr4", 3074876, 3074933], ["chrX", 147912050, 147912111]]}}
+    cmd = ("ExpansionHunter --reads input.bam --reference hg38.fa "
+           "--variant-catalog variant_catalog/hg38/variant_catalog.json --output-prefix out")
+    assert pm.medical_panel_for(cmd, proposal, "illumina-bam-hg38") == "illumina-bam-hg38-med"
+    assert pm.medical_panel_for(cmd, proposal, "pacbio-hifi-bam-hg38") == "pacbio-hifi-bam-hg38-med"
+    # No medical slice of that platform yet: the forensic one stays, and the
+    # loci-outside-panel limitation says why the run has nothing to genotype.
+    assert pm.medical_panel_for(cmd, proposal, "ont-bam-hg38") is None
+
+
+def test_a_forensic_tool_is_never_moved_to_the_medical_slice():
+    proposal = {"shipped_loci": {"regions/codis.bed": [["chr18", 63281666, 63281739]]}}  # D18S51
+    cmd = "HipSTR --bams input.bam --fasta hg38.fa --regions regions/codis.bed --str-vcf out.vcf.gz"
+    assert pm.medical_panel_for(cmd, proposal, "illumina-bam-hg38") is None
+    # Nothing shipped to read: nothing to decide on.
+    assert pm.medical_panel_for(cmd, {}, "illumina-bam-hg38") is None

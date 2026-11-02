@@ -79,6 +79,39 @@
       "read_groups": true,
       "sample": "HG002"
     },
+    "pacbio-hifi-bam-hg38-med": {
+      "dir": "datasets/pacbio-hifi-bam-hg38-med",
+      "data": "pacbio_slices/HG002.hifi.medical.bam",
+      "bam_index": "pacbio_slices/HG002.hifi.medical.bam.bai",
+      "format": "bam",
+      "canonical_input": "input.bam",
+      "reference": "hg38",
+      "reference_genome": {
+        "assembly": "GRCh38 / hg38",
+        "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
+        "filename": "hg38.fa",
+        "mount_path": "/data/ref/hg38.fa"
+      },
+      "name": "GIAB HG002 PacBio HiFi (Revio), hg38 medical STR slice",
+      "source": "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/",
+      "license": "Open access (GIAB / NIST). Research and educational use. STRhub is not the data provider.",
+      "chemistry": "PacBio Revio HiFi (CCS), ~48x",
+      "notes": "±10 kb slice of GIAB's HG002 Revio HiFi BAM around the 51 disease-associated STR loci of illumina-bam-hg38-med, kinetics tags dropped (~40 MB). Every panel locus is overlapped by 17 (NOTCH2NLC) to 75 primary HiFi reads. Male sample: AR, ARX, AFF2, FMR1 and SOX3 are hemizygous. Pick this dataset for medical repeat tools made for PacBio HiFi (TRGT). Execution only, not a clinical validation. See datasets/pacbio-hifi-bam-hg38-med/SOURCE.txt.",
+      "chrom_naming": "chr",
+      "supported_loci": "datasets/pacbio-hifi-bam-hg38-med/loci.bed",
+      "panel_label": "disease-associated STR loci",
+      "regions_library": {
+        "hipstr": "datasets/pacbio-hifi-bam-hg38-med/regions/hipstr.bed",
+        "gangstr": "datasets/pacbio-hifi-bam-hg38-med/regions/gangstr.bed",
+        "strsearch": "datasets/pacbio-hifi-bam-hg38-med/regions/strsearch.bed",
+        "bed4": "datasets/pacbio-hifi-bam-hg38-med/regions/bed4.bed",
+        "motif": "datasets/pacbio-hifi-bam-hg38-med/regions/motif.bed",
+        "eh_catalog": "datasets/pacbio-hifi-bam-hg38-med/regions/eh_catalog.json",
+        "trgt": "datasets/pacbio-hifi-bam-hg38-med/regions/trgt.bed"
+      },
+      "read_groups": true,
+      "sample": "HG002"
+    },
     "ont-fastq": {
       "dir": "datasets/ont-fastq",
       "data": "ont_slices/HG00113.codis.panel.fastq.gz",
@@ -140,6 +173,40 @@
         "motif": "datasets/illumina-bam-hg38/regions/motif.bed",
         "eh_catalog": "datasets/illumina-bam-hg38/regions/eh_catalog.json",
         "trgt": "datasets/illumina-bam-hg38/regions/trgt.bed"
+      }
+    },
+    "illumina-bam-hg38-med": {
+      "dir": "datasets/illumina-bam-hg38-med",
+      "data": "illumina_slices/NA12878.medical.bam",
+      "bam_index": "illumina_slices/NA12878.medical.bam.bai",
+      "format": "bam",
+      "canonical_input": "input.bam",
+      "reference": "hg38",
+      "reference_genome": {
+        "assembly": "GRCh38 / hg38",
+        "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz",
+        "filename": "hg38.fa",
+        "mount_path": "/data/ref/hg38.fa"
+      },
+      "supported_loci": "datasets/illumina-bam-hg38-med/loci.bed",
+      "loci_count": 51,
+      "min_loci": 5,
+      "panel_label": "disease-associated STR loci",
+      "name": "Illumina BAM (hg38), NA12878, medical STR slice (female)",
+      "source": "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/NIST_NA12878_HG001_HiSeq_300x/",
+      "license": "Open access (GIAB / NIST). Research and educational use. STRhub is not the data provider.",
+      "sequencer": "Illumina HiSeq 2500 (GIAB 300x)",
+      "notes": "GIAB NA12878/HG001 300x, GRCh38, sliced ±1000 bp around 51 disease-associated STR loci: the STRchive loci that at least 3 of 4 medical tool catalogs ship (ExpansionHunter, TRGT, STRipy, str-analysis). Pick this dataset for medical repeat tools; a proposal whose shipped catalog genotypes disease loci is routed here. Panel (loci.bed) guarantees every locus at >=10x window-wide; observed floor 33x (DMPK). Execution only, not a clinical validation. See datasets/illumina-bam-hg38-med/SOURCE.txt and catalog_crosswalk.tsv.",
+      "chrom_naming": "chr",
+      "read_length": 148,
+      "regions_library": {
+        "hipstr": "datasets/illumina-bam-hg38-med/regions/hipstr.bed",
+        "gangstr": "datasets/illumina-bam-hg38-med/regions/gangstr.bed",
+        "strsearch": "datasets/illumina-bam-hg38-med/regions/strsearch.bed",
+        "bed4": "datasets/illumina-bam-hg38-med/regions/bed4.bed",
+        "motif": "datasets/illumina-bam-hg38-med/regions/motif.bed",
+        "eh_catalog": "datasets/illumina-bam-hg38-med/regions/eh_catalog.json",
+        "trgt": "datasets/illumina-bam-hg38-med/regions/trgt.bed"
       }
     },
     "illumina-bam-hg38-y": {

@@ -1,0 +1,47 @@
+Fixture provenance — illumina-bam-hg38-med (GIAB NA12878/HG001 300x, hg38 medical STR slice)
+==========================================================================================
+
+STRhub Verified does NOT host or redistribute full genomes. The BAM file in
+`illumina_slices/` is a **small, pre-built slice** over disease-associated STR
+loci, derived from publicly available GIAB high-coverage data. It is used only as
+a smoke-test input for the external verification leg.
+
+A run on this slice proves reproducible execution only. It is NOT a clinical or
+diagnostic validation, and NA12878 carries no known pathogenic expansion.
+
+Upstream (open access)
+----------------------
+The same source BAM as illumina-bam-hg38 (see datasets/illumina-bam-hg38/SOURCE.txt):
+Project   : Genome in a Bottle (GIAB) / NIST — NA12878 (HG001) 300x Illumina WGS
+Source BAM: NHGRI_Illumina300X_novoalign_bams/HG001.GRCh38_full_plus_hs38d1_analysis_set_minus_alts.300x.bam
+Reference : GRCh38 (chr-prefixed; primary chromosomes identical to UCSC hg38.fa)
+Sequencer : Illumina HiSeq 2500 (novoalign-aligned)
+
+Which loci
+----------
+The STRchive loci that at least 3 of 4 medical tool catalogs ship, each pinned to
+a commit (harness/build_medical_candidates.py):
+
+  STRchive      dashnowlab/STRchive @ e964fa88df  data/STRchive-loci.json
+  EH            Illumina/ExpansionHunter @ 7ff9aa5335  variant_catalog/hg38/variant_catalog.json
+  TRGT          PacificBiosciences/trgt @ 3d10c759ba  repeats/pathogenic_repeats.hg38.bed
+  STRipy        andreassh/stripy-pipeline (GitLab) @ e8265c5a22  catalog.json
+  str-analysis  broadinstitute/str-analysis @ 57a6ac8cf9  variant_catalog_without_offtargets.GRCh38.json
+
+Coordinates, motif (reference orientation) and reference copy number are
+STRchive's; the locus name is its gene symbol. Every STRchive locus, with the
+catalogs that ship it, is in catalog_crosswalk.tsv. STRchive is MIT-licensed.
+
+Slice preparation
+-----------------
+download_medical.sh: the candidate tracts ±1000 bp, streamed with `samtools view`
+over HTTPS through the source index, coordinate-sorted, tagged with one read
+group (@RG ID:NA12878 SM:NA12878 LB:GIAB300x PL:ILLUMINA; the source BAM has
+none and HipSTR requires one), and indexed. samtools 1.21 / htslib 1.22.
+
+License / use scope
+-------------------
+Open-access GIAB/NIST reference data. STRhub adds no additional restrictions
+beyond documenting that this file is third-party material used for
+reproducible-execution smoke tests only — not for donor identification,
+database searching, casework, clinical or diagnostic claims.

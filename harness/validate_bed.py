@@ -1,10 +1,16 @@
 """Validate an author-supplied regions BED against a dataset's supported-loci panel.
 
-STRhub Verified ships SLICES, not whole genomes. A regions BED whose intervals
-fall outside the slice's supported loci is a REJECTED SUBMISSION, not a failed
-tool: the tool would find no reads there and the author would wrongly conclude it
+STRhub Verified ships SLICES, not whole genomes. A regions BED that reaches too
+few of the slice's supported loci is a REJECTED SUBMISSION, not a failed tool:
+the tool would find almost no reads and the author would wrongly conclude it
 broke. So this runs as a PRE-FLIGHT check before any gate — a failure aborts the
 run and produces no report or badge (see .github/workflows/verify.yml).
+
+Intervals outside the panel do not reject the BED. A medical repeat tool runs
+with the catalog it ships (dozens of disease loci), and asking its author to cut
+that catalog down to the slice would be amending the documented procedure. Those
+intervals are listed instead, and the report states them as not covered by the
+slice: the tool is never judged on loci the sample has no reads for.
 
 Format-agnostic by design: only the chromosome and its two coordinate columns are
 read, so any tool's BED layout — HipSTR (7 cols), GangSTR (5), plain BED3 — is
@@ -12,9 +18,12 @@ accepted. A header row is skipped and the coordinate columns are located rather
 than assumed, so a file that merely arranges them differently still works.
 
 Rules:
-  - every BED interval must OVERLAP a supported window (permissive: partial overlap
-    is fine, the run's output gate catches a BED that overlaps but is useless);
-  - the BED must cover at least `min_loci` distinct supported loci.
+  - a supported locus is covered when a BED interval OVERLAPS its window (permissive:
+    partial overlap is fine, the run's output gate catches a BED that overlaps but is
+    useless);
+  - the BED must cover at least `min_loci` distinct supported loci;
+  - intervals that overlap no supported window are reported (`out_of_panel`), never
+    a reason to reject.
 
 Keep in lockstep with the web mirror `strhub-web/lib/verified/validate-regions.ts`;
 a shared fixture guards divergence.
@@ -174,17 +183,18 @@ def validate(bed_rows: list[dict], panel: list[dict], min_loci: int) -> dict:
             out_of_panel.append(row)
 
     reasons = []
-    if out_of_panel:
-        preview = ", ".join(f"{r['chrom']}:{r['start']}-{r['end']}" for r in out_of_panel[:5])
-        more = f" (+{len(out_of_panel) - 5} more)" if len(out_of_panel) > 5 else ""
-        reasons.append(
-            f"{len(out_of_panel)} interval(s) fall outside the supported panel: {preview}{more}. "
-            f"This slice is not a whole genome — target only the supported loci."
-        )
     if len(covered) < min_loci:
         reasons.append(
             f"covers {len(covered)} supported loci, need at least {min_loci}."
         )
+        # Only worth naming when they are why so little is covered.
+        if out_of_panel:
+            preview = ", ".join(f"{r['chrom']}:{r['start']}-{r['end']}" for r in out_of_panel[:5])
+            more = f" (+{len(out_of_panel) - 5} more)" if len(out_of_panel) > 5 else ""
+            reasons.append(
+                f"{len(out_of_panel)} interval(s) fall outside the supported panel: {preview}{more}. "
+                f"This slice is not a whole genome: it carries reads only at the supported loci."
+            )
 
     return {
         "pass": not reasons,
@@ -231,6 +241,9 @@ def main() -> int:
     if result["pass"]:
         print(f"regions OK — {result['covered_count']}/{result['panel_size']} supported loci covered: "
               f"{', '.join(result['covered_loci'])}")
+        if result["out_of_panel"]:
+            print(f"{len(result['out_of_panel'])} interval(s) outside the slice, reported as not covered: "
+                  f"{', '.join(result['out_of_panel'][:10])}")
         return 0
 
     print(f"::error::regions BED rejected — {result['reason']}", file=sys.stderr)

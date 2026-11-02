@@ -10,6 +10,7 @@ REPOS = ROOT / "harness" / "testdata" / "repos"
 
 
 BAM_TYPES = ("illumina-bam-hg38", "illumina-bam-hg38-y", "ont-bam-hg38", "pacbio-hifi-bam-hg38",
+             "illumina-bam-hg38-med", "pacbio-hifi-bam-hg38-med",
              # Not a BAM, but read by tools that align it to hg38 and take the same regions.
              "ont-fastq")
 

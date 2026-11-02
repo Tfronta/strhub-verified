@@ -1,0 +1,25 @@
+# Typed reference dataset — pacbio-hifi-bam-hg38-med (disease-associated STR loci)
+# Matched against a manifest's `inputs.type: pacbio-hifi-bam-hg38-med` for the
+# external verification leg, and chosen by a proposal whose shipped catalog
+# genotypes disease loci (harness/propose_manifest.py::medical_panel_for).
+# The BAM slice lives in pacbio_slices/ (pre-built, committed).
+
+type: "pacbio-hifi-bam-hg38-med"
+data: "pacbio_slices/HG002.hifi.medical.bam"
+bam_index: "pacbio_slices/HG002.hifi.medical.bam.bai"
+format: "bam"
+reference: "hg38"
+
+name: "GIAB HG002 PacBio HiFi (Revio), hg38 medical STR slice"
+source: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/HG002_NA24385_son/PacBio_HiFi-Revio_20231031/"
+license: >
+  Open access (GIAB / NIST). Research and educational use. STRhub is not the
+  data provider.
+chemistry: "PacBio Revio HiFi (CCS), ~48x"
+notes: >
+  The same GIAB HG002 Revio BAM as pacbio-hifi-bam-hg38, sliced ±10 kb around the
+  disease-associated STR loci of illumina-bam-hg38-med (pacbio_slices/medical_pm10kb.bed).
+  Male sample: one X, so the X-linked loci (AR, ARX, AFF2, FMR1, SOX3) are hemizygous.
+  Every panel locus is overlapped by 17 (NOTCH2NLC) to 75 primary HiFi reads.
+  Running here proves reproducible execution only, not a clinical or diagnostic
+  validation. See SOURCE.txt.

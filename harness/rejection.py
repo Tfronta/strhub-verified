@@ -56,13 +56,14 @@ REASONS: dict[str, dict[str, str]] = {
     },
     "regions_outside_panel": {
         "fault": "author",
-        "title": "The regions BED targets coordinates the reference slice does not cover",
+        "title": "The regions BED reaches too few of the loci the reference slice covers",
         "next_step": (
-            "STRhub's reference BAM is a slice over forensic STR loci, not a whole "
-            "genome, so a tool aimed outside it would find no reads and look broken "
-            "through no fault of its own. Download the supported-loci panel for your "
-            "input type and rebuild your BED within those windows, then re-submit. "
-            "Re-verification is free."
+            "STRhub's reference BAM is a slice over a panel of STR loci, not a whole "
+            "genome, so a tool aimed almost entirely outside it would find no reads and "
+            "look broken through no fault of its own. Intervals outside the panel are "
+            "allowed and reported as not assessed, but the BED has to reach the minimum "
+            "number of supported loci. Download the supported-loci panel for your input "
+            "type, add loci within those windows, then re-submit. Re-verification is free."
         ),
     },
 }
