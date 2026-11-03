@@ -1,7 +1,7 @@
 # Panel de STRs médicos
 
-> **ESTADO (2026-11-02):** piloto Illumina NA12878 + PacBio HiFi HG002, rama
-> `feat/medical-panel` en los dos repos. ONT queda para después.
+> **ESTADO (2026-11-03):** completo en `main` en los dos repos para las tres
+> plataformas: Illumina (`NA12878`), PacBio HiFi (`HG002`) y ONT (`HG00113`).
 
 **Objetivo:** que una herramienta que no genotipa STRs forenses (ExpansionHunter,
 TRGT, STRipy, LongTR, Straglr...) pueda verificarse corriendo el catálogo que trae,
@@ -47,17 +47,24 @@ cambia.
 |---|---|---|
 | `illumina-bam-hg38-med` | `illumina_slices/NA12878.medical.bam` (±1 kb) | medido con `build_panel.py` |
 | `pacbio-hifi-bam-hg38-med` | `pacbio_slices/HG002.hifi.medical.bam` (±10 kb) | derivado del de Illumina |
+| `ont-bam-hg38-med` | `ont_slices/HG00113.medical.bam` (±1 kb) | derivado del de Illumina |
 
 Mismas muestras y fuentes que los slices forenses: nada nuevo que licenciar. Tipos
 aparte, no BAM ampliados, para que los reportes ya publicados sigan apuntando a los
 mismos datos. `download_medical.sh` los reconstruye.
 
-## Ruteo automático
+## Ruteo automático y fallback en ejecución
 
-`propose_manifest.medical_panel_for`: si los loci del archivo que el comando
-documentado lee (del repositorio) no tocan el panel forense pero sí el médico, la
-propuesta usa el slice médico de la misma muestra y lo dice en una advertencia.
-Una herramienta forense nunca se mueve.
+1. **En la propuesta (`propose_manifest.medical_panel_for`):** si los loci del archivo
+   que el comando documentado lee (del repositorio) no tocan el panel forense pero sí el
+   médico, la propuesta usa directamente el slice `-med` de la misma plataforma.
+2. **En la corrida (`prepare.py` + `verify.yml`):** si una herramienta no expone un
+   archivo de catálogo legible estáticamente y entra con un BAM forense
+   (`illumina-bam-hg38`, `pacbio-hifi-bam-hg38` u `ont-bam-hg38`), `prepare.py` prepara
+   también `work/in_external_med`. Si el comando documentado falla o devuelve 0 registros
+   sobre el BAM forense, `verify.yml` reintenta exactamente el mismo comando sobre el
+   slice `-med` y lo promueve si produce salida válida. Una herramienta forense nunca se
+   mueve.
 
 ## Qué no se hace
 
