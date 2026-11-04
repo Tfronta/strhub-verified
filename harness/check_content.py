@@ -111,19 +111,13 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
                     except ValueError:
                         ok_counts = False
         elif len(f) > 9 and ":" in f[8]:
-            # VCF output without count_columns (e.g. HipSTR, GangSTR): derive read
-            # depth from the per-sample DP sub-field of the FORMAT column (cols 9+),
-            # so genotypers report real coverage instead of 0.
+            # VCF output without count_columns (e.g. HipSTR, GangSTR, ExpansionHunter,
+            # TRGT): derive read depth from the per-sample FORMAT column (cols 9+)
+            # or INFO/DP, so genotypers report real coverage instead of 0.
             fmt = f[8].split(":")
-            if "DP" in fmt:
-                di = fmt.index("DP")
-                for sample in f[9:]:
-                    sp = sample.split(":")
-                    if di < len(sp):
-                        try:
-                            depth += int(sp[di])
-                        except ValueError:
-                            pass
+            samples = [s.split(":") for s in f[9:]]
+            info = f[7] if len(f) > 7 else ""
+            depth += content_auto.vcf_record_depth(fmt, samples, info)
         if not ok_counts:
             counts_bad += 1
         if locus_col is not None and locus_col < len(f):

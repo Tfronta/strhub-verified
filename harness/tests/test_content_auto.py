@@ -170,3 +170,36 @@ def test_a_json_catalog_names_the_loci_like_a_regions_bed(tmp_path):
     cat.write_text(json.dumps([{"LocusId": "TH01", "LocusStructure": "(AATG)*",
                                 "ReferenceRegion": "chr11:2171087-2171115", "VariantType": "Repeat"}]))
     assert ca.read_regions(cat) == [("chr11", 2171088, 2171115, "TH01")]
+
+
+def test_expansionhunter_and_trgt_vcf_depths_are_extracted(tmp_path):
+    """ExpansionHunter reports ADSP:ADFL:ADIR:LC instead of DP, and TRGT reports SD.
+    Both must produce real non-zero read depths per locus."""
+    regions = [
+        ("chr1", 57367044, 57367119, "DAB1"),
+        ("chr9", 69037287, 69037304, "FXN"),
+        ("chr4", 3074877, 3074933, "HTT"),
+    ]
+    vcf = tmp_path / "eh_trgt.vcf"
+    vcf.write_text(
+        VCF_HEADER
+        + "chr1\t57367044\t.\tG\t<STR15>,<STR18>\t.\tPASS\tVARID=DAB1;REPID=DAB1\t"
+          "GT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t1/2:SPANNING/SPANNING:15/18:15-15/18-18:19/15:3/6:0/0:41.2\n"
+        + "chr9\t69037287\t.\tG\t<STR9>\t.\tPASS\tTRID=FXN\t"
+          "GT:AL:ALLR:SD:MC\t0/1:27,30:27-27,30-30:14,16:9,10\n"
+        + "chr4\t3074877\t.\tC\t<STR17>\t.\tPASS\tVARID=HTT;REPID=HTT\t"
+          "GT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t1/1:SPANNING/SPANNING:17/17:17-17/17-17:0/0:0/0:0/0:38.6\n"
+    )
+    st = ca.analyze_vcf(vcf, regions)
+    assert st["called_genotypes"] == 3
+    assert st["regions_hit"] == 3
+    depth_by_locus = dict(st["top_loci_by_depth"])
+    # DAB1: ADSP (19+15) + ADFL (3+6) + ADIR (0+0) = 43
+    assert depth_by_locus["DAB1"] == 43
+    # FXN: TRGT SD (14+16) = 30
+    assert depth_by_locus["FXN"] == 30
+    # HTT: ADSP/ADFL/ADIR all 0 -> falls back to round(LC=38.6) = 39
+    assert depth_by_locus["HTT"] == 39
+    assert st["total_reads"] == 43 + 30 + 39
+    assert st["max_sequence_depth"] == 43
+

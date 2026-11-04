@@ -125,6 +125,85 @@ def _empty_stats() -> dict:
             "total_reads": 0, "max_sequence_depth": 0, "top_loci_by_depth": []}
 
 
+def _sum_int_tokens(val: str) -> tuple[int, bool]:
+    """Sum integer tokens in a slash- or comma-separated VCF sub-field (e.g. '19/15' or '15,14')."""
+    if not val or val in (".", "./.", ".|."):
+        return 0, False
+    parts = [p.strip() for p in re.split(r"[,/]", val) if p.strip()]
+    nums = [int(p) for p in parts if INT_RE.match(p)]
+    if not nums:
+        return 0, False
+    return sum(nums), True
+
+
+def vcf_record_depth(fmt: list[str], samples: list[list[str]], info: str = "") -> int:
+    """Derive read depth for a VCF record across STR caller conventions.
+
+    Checks per-sample FORMAT tags in priority order:
+      1. DP — standard VCF read depth (HipSTR, GangSTR, LongTR, etc.)
+      2. ADSP / ADFL / ADIR (or AD_SP / AD_FL / AD_IR) — ExpansionHunter / DRAGEN-STR
+         spanning, flanking, and in-repeat read counts (slash- or comma-separated per allele)
+      3. SD — TRGT supporting depth per allele (comma-separated, e.g. '15,14')
+      4. AD — standard Allele Depth (comma-separated, e.g. '10,25')
+      5. SR / NR / NV — supporting or total read counts
+      6. LC — ExpansionHunter Locus Coverage (float/int, rounded to nearest int)
+      7. INFO/DP — fallback when depth is recorded only in the INFO column.
+    """
+    depth = 0
+    found = False
+
+    if "DP" in fmt:
+        di = fmt.index("DP")
+        for sp in samples:
+            if di < len(sp):
+                v, ok = _sum_int_tokens(sp[di])
+                if ok:
+                    depth += v
+                    found = True
+
+    if not found:
+        eh_tags = [t for t in ("ADSP", "ADFL", "ADIR", "AD_SP", "AD_FL", "AD_IR") if t in fmt]
+        if eh_tags:
+            for sp in samples:
+                for tag in eh_tags:
+                    ti = fmt.index(tag)
+                    if ti < len(sp):
+                        v, ok = _sum_int_tokens(sp[ti])
+                        if ok:
+                            depth += v
+                            found = True
+
+    if not found:
+        for tag in ("SD", "AD", "SR", "NR", "NV"):
+            if tag in fmt:
+                ti = fmt.index(tag)
+                for sp in samples:
+                    if ti < len(sp):
+                        v, ok = _sum_int_tokens(sp[ti])
+                        if ok:
+                            depth += v
+                            found = True
+                if found:
+                    break
+
+    if (not found or depth == 0) and "LC" in fmt:
+        li = fmt.index("LC")
+        for sp in samples:
+            if li < len(sp):
+                try:
+                    depth += int(round(float(sp[li])))
+                    found = True
+                except ValueError:
+                    pass
+
+    if not found and info:
+        m = re.search(r"(?:^|;)DP=(\d+)", info)
+        if m:
+            depth = int(m.group(1))
+
+    return depth
+
+
 def analyze_vcf(path: pathlib.Path, regions: list[tuple[str, int, int, str]]) -> dict:
     """VCF records, called genotypes, and which of the given regions they land on."""
     rows = 0
@@ -149,23 +228,22 @@ def analyze_vcf(path: pathlib.Path, regions: list[tuple[str, int, int, str]]) ->
             continue
         rows += 1
         chrom, pos, vid, ref = f[0], f[1], f[2], f[3]
+        info = f[7] if len(f) >= 8 else ""
         if not INT_RE.match(pos) or not DNA_RE.match(ref) and not re.match(r"^[ACGTN]+$", ref, re.I):
             bad += 1
         depth = 0
         gt_called = False
         if len(f) >= 10 and f[8]:
             fmt = f[8].split(":")
-            sample = f[9].split(":")
+            samples = [s.split(":") for s in f[9:]]
+            sample = samples[0]
             if "GT" in fmt:
                 gi = fmt.index("GT")
                 gt = sample[gi] if gi < len(sample) else "."
                 gt_called = bool(gt) and gt not in (".", "./.", ".|.")
-            if "DP" in fmt:
-                di = fmt.index("DP")
-                try:
-                    depth = int(sample[di]) if di < len(sample) else 0
-                except ValueError:
-                    depth = 0
+            depth = vcf_record_depth(fmt, samples, info)
+        elif info:
+            depth = vcf_record_depth([], [], info)
         if gt_called:
             called += 1
         depth_total += depth
@@ -181,6 +259,10 @@ def analyze_vcf(path: pathlib.Path, regions: list[tuple[str, int, int, str]]) ->
                     break
         if locus is None and vid not in (".", ""):
             locus = vid
+        if locus is None and info:
+            m = re.search(r"(?:^|;)(?:VARID|REPID|TRID|LOCUS)=([^;\s]+)", info)
+            if m:
+                locus = m.group(1)
         if locus:
             hits[locus] = hits.get(locus, 0) + 1
             hit_depth[locus] += depth
