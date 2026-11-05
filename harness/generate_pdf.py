@@ -1000,37 +1000,24 @@ def build_appendix(cfg):
         return []
 
     # ReportLab cannot split a single table row across pages, and the appendix
-    # renders the loci as one two-column row. A large panel (e.g. ForenSeq's
-    # ~220 STR+SNP markers) would overflow one page and raise LayoutError, so
-    # cap it to the deepest markers; the full counts remain in the report JSON.
-    CAP = 60
+    # renders the loci as a two-column layout. A single A4 page frame has a
+    # printable height of 693.8 pt; with header/title taking ~100 pt, a single
+    # page comfortably holds at most 20 rows per column (40 loci per page)
+    # without exceeding the frame and raising LayoutError.
+    # We paginate across multiple pages in chunks of 40 (up to CAP=120 loci).
+    PER_PAGE = 40
+    CAP = 120
     total_loci = len(loci_data)
     truncated = total_loci > CAP
     loci_data = loci_data[:CAP]
 
-    els = []
-    els.append(build_header_inner(cfg))
-    els.append(HR(TEAL, thickness=1.2, spaceB=4, spaceA=8))
-    els.append(Paragraph("Appendix: Detected Markers with Read Depth",
-                          ST["appendix_title"]))
-    subtitle = f"{cfg['tool_display']} · verified {cfg['ver_date']}"
-    if truncated:
-        subtitle += (f" · showing the {CAP} deepest of {total_loci} detected "
-                     "markers by read depth")
-    els.append(Paragraph(
-        subtitle,
-        S("as2", fontSize=8, textColor=GRAY, leading=12, spaceAfter=10)))
-
     MAX = max((d for _, d in loci_data), default=1) or 1
 
-    # Two-column layout: split loci in half so all fit on one page.
     col_gap = 5 * mm
     col_w   = (CW - col_gap) / 2
     locus_w = 26 * mm
     depth_w = 20 * mm
     bar_w   = col_w - locus_w - depth_w
-    half    = (len(loci_data) + 1) // 2        # ceil — left col gets the extra row
-    chunks  = [loci_data[:half], loci_data[half:]]
 
     def _loci_table(subset):
         header = [Paragraph("LOCUS", ST["tbl_header"]),
@@ -1055,8 +1042,8 @@ def build_appendix(cfg):
             ("VALIGN",        (0,0),(-1,-1), "MIDDLE"),
             ("LEFTPADDING",   (0,0),(-1,-1), 8),
             ("RIGHTPADDING",  (0,0),(-1,-1), 6),
-            ("TOPPADDING",    (0,0),(-1,-1), 4),
-            ("BOTTOMPADDING", (0,0),(-1,-1), 4),
+            ("TOPPADDING",    (0,0),(-1,-1), 3),
+            ("BOTTOMPADDING", (0,0),(-1,-1), 3),
             ("BACKGROUND",    (0,0),(-1,0),  GRAY_LIGHT),
             ("ROWBACKGROUNDS",(0,1),(-1,-1), [WHITE, GRAY_LIGHT]),
             ("LINEBELOW",     (0,0),(-1,0),  0.8, BORDER),
@@ -1071,20 +1058,42 @@ def build_appendix(cfg):
         tbl.setStyle(TableStyle(styles))
         return tbl
 
-    left_tbl  = _loci_table(chunks[0])
-    right_tbl = _loci_table(chunks[1]) if chunks[1] else Spacer(col_w, 1)
+    els = []
+    pages = [loci_data[i:i + PER_PAGE] for i in range(0, len(loci_data), PER_PAGE)]
+    for page_idx, page_loci in enumerate(pages):
+        if page_idx > 0:
+            els.append(PageBreak())
+        els.append(build_header_inner(cfg))
+        els.append(HR(TEAL, thickness=1.2, spaceB=4, spaceA=8))
+        title = "Appendix: Detected Markers with Read Depth"
+        if len(pages) > 1:
+            title += f" ({page_idx + 1}/{len(pages)})"
+        els.append(Paragraph(title, ST["appendix_title"]))
+        subtitle = f"{cfg['tool_display']} · verified {cfg['ver_date']}"
+        if truncated:
+            subtitle += (f" · showing the {CAP} deepest of {total_loci} detected "
+                         "markers by read depth")
+        els.append(Paragraph(
+            subtitle,
+            S("as2", fontSize=8, textColor=GRAY, leading=12, spaceAfter=10)))
 
-    outer = Table([[left_tbl, right_tbl]], colWidths=[col_w, col_w],
-                  hAlign="LEFT", spaceAfter=0)
-    outer.setStyle(TableStyle([
-        ("VALIGN",       (0,0),(-1,-1), "TOP"),
-        ("LEFTPADDING",  (0,0),(-1,-1), 0),
-        ("RIGHTPADDING", (0,0),(0,-1),  col_gap),
-        ("RIGHTPADDING", (1,0),(1,-1),  0),
-        ("TOPPADDING",   (0,0),(-1,-1), 0),
-        ("BOTTOMPADDING",(0,0),(-1,-1), 0),
-    ]))
-    els.append(outer)
+        half = (len(page_loci) + 1) // 2
+        left_tbl  = _loci_table(page_loci[:half])
+        right_tbl = _loci_table(page_loci[half:]) if page_loci[half:] else Spacer(col_w, 1)
+
+        outer = Table([[left_tbl, right_tbl]], colWidths=[col_w, col_w],
+                      hAlign="LEFT", spaceAfter=0)
+        outer.setStyle(TableStyle([
+            ("VALIGN",       (0,0),(-1,-1), "TOP"),
+            ("LEFTPADDING",  (0,0),(-1,-1), 0),
+            ("RIGHTPADDING", (0,0),(0,-1),  col_gap),
+            ("RIGHTPADDING", (1,0),(1,-1),  0),
+            ("TOPPADDING",   (0,0),(-1,-1), 0),
+            ("BOTTOMPADDING",(0,0),(-1,-1), 0),
+        ]))
+        els.append(outer)
+
+    return els
     return els
 
 # ── Config loader ─────────────────────────────────────────────────────────────

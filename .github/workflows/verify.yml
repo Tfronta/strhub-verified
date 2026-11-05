@@ -987,6 +987,7 @@ jobs:
 
       - name: Generate PDF report
         if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        continue-on-error: true
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
           # The PDF marks a result that will not be published and links one
