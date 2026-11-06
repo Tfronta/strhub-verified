@@ -79,8 +79,6 @@ on:
       # neither used to run this workflow at all.
       - "schema/**"
       - ".github/workflows/verify.yml"
-  schedule:
-    - cron: "0 6 1 * *"   # monthly re-verification so badges never go stale
 
 # Permissions are granted per job below, not here. The token is scoped to the
 # least each job needs: `resolve` only reads, and only `verify` may write.
