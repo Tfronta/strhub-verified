@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-11-06T16:33:49+00:00",
-  "count": 6,
+  "generated": "2026-11-06T16:37:48+00:00",
+  "count": 7,
   "tools": [
     {
       "slug": "expansionhunter-med",
@@ -49,6 +49,55 @@
           "report": "expansionhunter-med/9f5db1d4ab72016b2d93330b9792842d71582622/expansionhunter-med.json",
           "page": "expansionhunter-med/9f5db1d4ab72016b2d93330b9792842d71582622/expansionhunter-med.html",
           "pdf": "expansionhunter-med/9f5db1d4ab72016b2d93330b9792842d71582622/expansionhunter-med.pdf"
+        }
+      ]
+    },
+    {
+      "slug": "gangstr",
+      "name": "GangSTR",
+      "version": "v2.5",
+      "variant": null,
+      "sha": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+      "committed": "2021-04-19T19:30:11Z",
+      "instrument": "curated",
+      "level": "content",
+      "label": "Not verified as documented",
+      "verdict": "runs",
+      "errors_reported": false,
+      "fallback_used": false,
+      "generated": "2026-11-06T16:37:44+00:00",
+      "source_repo": "https://github.com/gymreklab/gangstr",
+      "source_ref": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42253585030",
+      "distinct_str_loci": 24,
+      "distinct_snp_markers": 0,
+      "total_reads": 10738,
+      "own_state": "pass",
+      "external_state": "pass",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-bam-hg38"
+      ],
+      "report": "gangstr.json",
+      "page": "gangstr.html",
+      "versions": [
+        {
+          "sha": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+          "instrument": "curated",
+          "version": "v2.5",
+          "variant": null,
+          "committed": "2021-04-19T19:30:11Z",
+          "generated": "2026-11-06T16:37:44+00:00",
+          "level": "content",
+          "label": "Not verified as documented",
+          "verdict": "runs",
+          "errors_reported": false,
+          "fallback_used": false,
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42253585030",
+          "report": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.json",
+          "page": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.html",
+          "pdf": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.pdf"
         }
       ]
     },
