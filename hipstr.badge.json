@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "STRhub Verified",
-  "message": "Not verified as documented",
-  "color": "lightgrey"
+  "message": "Runs as documented",
+  "color": "green"
 }

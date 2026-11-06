@@ -1,21 +1,14 @@
-# STRhub Verified: hipstr (hipstr)
+# STRhub Verified: HipSTR (hipstr)
 
-**Not verified as documented.**
+**Runs as documented.**
 
-## What STRhub had to do to run this tool
-
-STRhub wrote its own recipe for this tool, an environment and a command of its own rather than the repository's instructions, and ran that. Each item below is something a first-time user following the README would have to work out for themselves, and so a recommendation to the author. This run does not change the tool's label: the label is what happens as it is in the repository.
-
-- Runs HipSTR with flags tuned to STRhub's reference slice (--min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250). Instead of: The README's command, which has none of them. On a BAM slice around the panel loci most mates fall outside the slice and read quality trims most reads; without these flags nearly every locus is skipped.
-- Supplies the regions BED from STRhub's library. Instead of: A regions file the README leaves to the user.
-
-With those changes, the run reached **Runs + Plausible output**: its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+## As it is in the repository
 
 **Step 1, the documented run: As documented, it runs.** A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.
 
 **Verdict: Runs.** The tool installed and its run produced its documented output.
 
-## This run, in full
+Reached **Runs + Plausible output**: its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
 
 ### Gates
 
@@ -33,9 +26,8 @@ With those changes, the run reached **Runs + Plausible output**: its output look
 Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
 
 ```
-HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250
+./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf str_calls.vcf.gz
 ```
-- Log (own): [`hipstr.log-own.txt`](hipstr.log-own.txt)
 - Log (external): [`hipstr.log-external.txt`](hipstr.log-external.txt)
 - Log (starts): [`hipstr.log-starts.txt`](hipstr.log-starts.txt)
 - Log (build): [`hipstr.log-build.txt`](hipstr.log-build.txt)
@@ -44,22 +36,23 @@ HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/re
 
 - Source: `https://github.com/tfwillems/HipSTR` @ `b2033bfbb5cf55496b776463bdf2993fa763a4be`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-11-06T14:39:39+00:00
+- Generated: 2026-11-06T20:39:35+00:00
 - Upstream: The verified commit is the head of `master`.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/42235249876
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/42289582063
 
 ## Output content (plausibility evidence)
 
-- Sequence records: **23** (malformed: 0)
-- STR loci detected: **23**
-- Total reads across calls: **8230** (deepest single sequence: 523)
-- STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA, PentaD …
-- Top markers by read depth: D18S51 (523), FGA (475), vWA (465), PentaD (444), D2S441 (433), D3S1358 (423)
+- Sequence records: **21** (malformed: 0)
+- STR loci detected: **21**
+- Total reads across calls: **7851** (deepest single sequence: 517)
+- STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D22S1045, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA, PentaD, PentaE …
+- Top markers by read depth: D18S51 (517), FGA (477), vWA (456), PentaD (431), D2S441 (428), D3S1358 (419)
 
 ## Verification matrix
 
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
+| STRhub fixture | N/A | N/A | — | — |
 | External data | yes | PASS | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
 | Tool's own example | N/A | N/A | — | — |
 
@@ -92,7 +85,21 @@ What this run's configuration rests on, each item at the verified commit. Open a
 
 The result above describes a run configured as follows. Anyone repeating it needs the same things.
 
-- A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under "What STRhub had to do to run this tool".
+- Test data: no sample from the repository was used, so a public reference sample stood in.
+- A container environment, built from the tool's declared install steps rather than from a recipe the repository ships.
+
+## Notes from reading the repository
+
+Recorded automatically from the tool's public files when this run was configured. **Not verified by execution**, and not part of the gates above. Useful for what to check by hand.
+
+- Environment: generated by STRhub from the repository's Makefile (make), at the pinned commit.
+- Input: the README documents BAM (line 69); this run used STRhub's illumina-bam-hg38 reference data.
+- A comma-separated input list in the documented command was reduced to its first file.
+- 1 input path(s) in the README command replaced with /data/in/input.bam.
+- 1 reference FASTA path(s) replaced with /data/ref/hg38.fa.
+- 1 BED path(s) replaced with /data/in/regions.bed.
+- Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output.
+- Regions: STRhub's ready-made hipstr file for the dataset's panel loci (STRhub records the hipstr layout for a program of this name).
 
 ## Out of scope
 
