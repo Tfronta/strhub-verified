@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-11-06T14:39:42+00:00",
-  "count": 1,
+  "generated": "2026-11-06T16:14:28+00:00",
+  "count": 2,
   "tools": [
     {
       "slug": "hipstr",
@@ -49,6 +49,55 @@
           "report": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.json",
           "page": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.html",
           "pdf": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.pdf"
+        }
+      ]
+    },
+    {
+      "slug": "trgt-hifi-med",
+      "name": "TRGT",
+      "version": "v5.1.0",
+      "variant": null,
+      "sha": "b21c6217eeaef9a080205932fe29f730dc00e31f",
+      "committed": "2026-06-10T09:38:26Z",
+      "instrument": "documented",
+      "level": "content",
+      "label": "Runs as documented",
+      "verdict": "runs",
+      "errors_reported": false,
+      "fallback_used": false,
+      "generated": "2026-11-06T16:14:18+00:00",
+      "source_repo": "https://github.com/PacificBiosciences/trgt",
+      "source_ref": "b21c6217eeaef9a080205932fe29f730dc00e31f",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42250070770",
+      "distinct_str_loci": 51,
+      "distinct_snp_markers": 0,
+      "total_reads": 2143,
+      "own_state": "na",
+      "external_state": "pass",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "pacbio-hifi-bam-hg38-med"
+      ],
+      "report": "trgt-hifi-med.json",
+      "page": "trgt-hifi-med.html",
+      "versions": [
+        {
+          "sha": "b21c6217eeaef9a080205932fe29f730dc00e31f",
+          "instrument": "documented",
+          "version": "v5.1.0",
+          "variant": null,
+          "committed": "2026-06-10T09:38:26Z",
+          "generated": "2026-11-06T16:14:18+00:00",
+          "level": "content",
+          "label": "Runs as documented",
+          "verdict": "runs",
+          "errors_reported": false,
+          "fallback_used": false,
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42250070770",
+          "report": "trgt-hifi-med/b21c6217eeaef9a080205932fe29f730dc00e31f/trgt-hifi-med.json",
+          "page": "trgt-hifi-med/b21c6217eeaef9a080205932fe29f730dc00e31f/trgt-hifi-med.html",
+          "pdf": "trgt-hifi-med/b21c6217eeaef9a080205932fe29f730dc00e31f/trgt-hifi-med.pdf"
         }
       ]
     }

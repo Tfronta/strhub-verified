@@ -1,0 +1,698 @@
+{
+  "schema": "strhub-verified/1",
+  "mode": "trial",
+  "tool": {
+    "name": "TRGT",
+    "version": "v5.1.0",
+    "contact": "https://github.com/PacificBiosciences/trgt/issues"
+  },
+  "submission": {
+    "by": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/PacificBiosciences/trgt",
+    "ref": "b21c6217eeaef9a080205932fe29f730dc00e31f",
+    "ref_resolved": "b21c6217eeaef9a080205932fe29f730dc00e31f",
+    "committed": "2026-06-10T09:38:26Z"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ],
+    "source": "generated"
+  },
+  "generated": "2026-11-06T16:14:18+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42250070770",
+  "run": {
+    "cmd": "mkdir -p sample && trgt genotype --genome /data/ref/hg38.fa --repeats /data/in/regions.bed --reads /data/in/input.bam --output-prefix sample",
+    "cwd": "/opt/tool"
+  },
+  "instrument": "documented",
+  "recipe": {
+    "origin": "proposed"
+  },
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": true,
+    "io": true,
+    "content": true,
+    "starts": true,
+    "example": true
+  },
+  "level": "content",
+  "io_detail": {
+    "gate": "io",
+    "passed": true,
+    "outputs": [
+      {
+        "path": "**/*.vcf*",
+        "format": "vcf",
+        "checks": {
+          "confined": true,
+          "exists": true,
+          "non_empty": true,
+          "parses_as_vcf": true,
+          "min_records": true
+        },
+        "resolved": "sample.vcf.gz",
+        "records": 51,
+        "passed": true
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": true,
+    "outputs": [
+      {
+        "path": "**/*.vcf*",
+        "resolved": "sample.vcf.gz",
+        "mode": "auto",
+        "checks": {
+          "records_present": true,
+          "genotypes_called": true,
+          "given_loci_recognised": true
+        },
+        "stats": {
+          "rows": 51,
+          "header_row_dropped": false,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 51,
+          "distinct_str_loci": 51,
+          "distinct_snp_markers": 0,
+          "loci": [
+            "AFF2",
+            "AFF3",
+            "AR",
+            "ARX",
+            "ATN1",
+            "ATXN1",
+            "ATXN10",
+            "ATXN2",
+            "ATXN3",
+            "ATXN7",
+            "ATXN8OS",
+            "BEAN1",
+            "C9orf72",
+            "CACNA1A",
+            "CBL",
+            "CNBP",
+            "COMP",
+            "CSTB",
+            "DAB1",
+            "DIP2B",
+            "DMPK",
+            "FMR1",
+            "FOXL2",
+            "FXN",
+            "GIPC1",
+            "GLS",
+            "HOXA13",
+            "HOXD13",
+            "HTT",
+            "JPH3",
+            "LRP12",
+            "MARCHF6",
+            "NIPA1",
+            "NOP56",
+            "NOTCH2NLC",
+            "NUTM2B-AS1",
+            "PABPN1",
+            "PHOX2B",
+            "PPP2R2B",
+            "RAPGEF2",
+            "RFC1",
+            "RUNX2",
+            "SAMD12",
+            "SOX3",
+            "STARD7",
+            "TBP",
+            "TCF4",
+            "TNRC6A",
+            "XYLT1",
+            "YEATS2",
+            "ZIC2"
+          ],
+          "str_loci": [
+            "AFF2",
+            "AFF3",
+            "AR",
+            "ARX",
+            "ATN1",
+            "ATXN1",
+            "ATXN10",
+            "ATXN2",
+            "ATXN3",
+            "ATXN7",
+            "ATXN8OS",
+            "BEAN1",
+            "C9orf72",
+            "CACNA1A",
+            "CBL",
+            "CNBP",
+            "COMP",
+            "CSTB",
+            "DAB1",
+            "DIP2B",
+            "DMPK",
+            "FMR1",
+            "FOXL2",
+            "FXN",
+            "GIPC1",
+            "GLS",
+            "HOXA13",
+            "HOXD13",
+            "HTT",
+            "JPH3",
+            "LRP12",
+            "MARCHF6",
+            "NIPA1",
+            "NOP56",
+            "NOTCH2NLC",
+            "NUTM2B-AS1",
+            "PABPN1",
+            "PHOX2B",
+            "PPP2R2B",
+            "RAPGEF2",
+            "RFC1",
+            "RUNX2",
+            "SAMD12",
+            "SOX3",
+            "STARD7",
+            "TBP",
+            "TCF4",
+            "TNRC6A",
+            "XYLT1",
+            "YEATS2",
+            "ZIC2"
+          ],
+          "snp_markers": [],
+          "total_reads": 2143,
+          "max_sequence_depth": 73,
+          "top_loci_by_depth": [
+            [
+              "NUTM2B-AS1",
+              73
+            ],
+            [
+              "RAPGEF2",
+              67
+            ],
+            [
+              "STARD7",
+              60
+            ],
+            [
+              "AFF3",
+              60
+            ],
+            [
+              "DAB1",
+              58
+            ],
+            [
+              "SAMD12",
+              56
+            ],
+            [
+              "TCF4",
+              54
+            ],
+            [
+              "ATXN10",
+              54
+            ],
+            [
+              "FOXL2",
+              54
+            ],
+            [
+              "PPP2R2B",
+              54
+            ],
+            [
+              "HOXA13",
+              54
+            ],
+            [
+              "C9orf72",
+              54
+            ],
+            [
+              "CNBP",
+              53
+            ],
+            [
+              "LRP12",
+              53
+            ],
+            [
+              "ATXN8OS",
+              50
+            ],
+            [
+              "PHOX2B",
+              50
+            ],
+            [
+              "ATXN1",
+              50
+            ],
+            [
+              "TBP",
+              50
+            ],
+            [
+              "DIP2B",
+              46
+            ],
+            [
+              "RFC1",
+              46
+            ],
+            [
+              "TNRC6A",
+              45
+            ],
+            [
+              "RUNX2",
+              45
+            ],
+            [
+              "HTT",
+              44
+            ],
+            [
+              "PABPN1",
+              43
+            ],
+            [
+              "BEAN1",
+              43
+            ],
+            [
+              "GLS",
+              43
+            ],
+            [
+              "ZIC2",
+              42
+            ],
+            [
+              "CBL",
+              40
+            ],
+            [
+              "NOP56",
+              39
+            ],
+            [
+              "ATXN2",
+              38
+            ],
+            [
+              "ATXN7",
+              38
+            ],
+            [
+              "ATXN3",
+              37
+            ],
+            [
+              "NIPA1",
+              37
+            ],
+            [
+              "JPH3",
+              37
+            ],
+            [
+              "MARCHF6",
+              37
+            ],
+            [
+              "DMPK",
+              34
+            ],
+            [
+              "GIPC1",
+              33
+            ],
+            [
+              "COMP",
+              33
+            ],
+            [
+              "HOXD13",
+              33
+            ],
+            [
+              "FMR1",
+              33
+            ],
+            [
+              "ATN1",
+              31
+            ],
+            [
+              "CSTB",
+              31
+            ],
+            [
+              "XYLT1",
+              29
+            ],
+            [
+              "AR",
+              29
+            ],
+            [
+              "AFF2",
+              26
+            ],
+            [
+              "CACNA1A",
+              23
+            ],
+            [
+              "YEATS2",
+              23
+            ],
+            [
+              "FXN",
+              23
+            ],
+            [
+              "SOX3",
+              23
+            ],
+            [
+              "ARX",
+              19
+            ],
+            [
+              "NOTCH2NLC",
+              16
+            ]
+          ],
+          "called_genotypes": 51,
+          "regions_given": 51,
+          "regions_hit": 51
+        },
+        "passed": true
+      }
+    ]
+  },
+  "example_detail": {
+    "gate": "example",
+    "applicable": true,
+    "passed": true,
+    "declared_outputs": [],
+    "produced": [
+      "sample.spanning.bam",
+      "sample.vcf.gz"
+    ],
+    "checks": {
+      "created_non_empty_file": true
+    },
+    "produced_count": 2
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "pacbio-hifi-bam-hg38-med",
+      "dataset": "GIAB HG002 PacBio HiFi (Revio), hg38 medical STR slice",
+      "io": true,
+      "content": true,
+      "passed": true
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": true,
+      "io": true,
+      "content": null,
+      "passed": true,
+      "matches_expected": null,
+      "produced_count": 2
+    }
+  ],
+  "regions": {
+    "source": "strhub",
+    "panel_label": "disease-associated STR loci",
+    "panel_size": 51
+  },
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\bmake\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\bcommand\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bversions?\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "upstream": {
+    "checked": "2026-11-06T16:14:19+00:00",
+    "repo_exists": true,
+    "ref_exists": true,
+    "default_branch": "main",
+    "status": "identical",
+    "behind_by": 0
+  },
+  "needed_beyond_repo": [
+    "Test data: no sample from the repository was used, so a public reference sample stood in.",
+    "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships."
+  ],
+  "author_known_issues": [
+    {
+      "heading": "Active development warning",
+      "line": 18,
+      "text": "Please note that TRGT is still under active development. We anticipate some changes to the input and output file formats of TRGT.",
+      "truncated": false,
+      "url": "https://github.com/PacificBiosciences/trgt/blob/b21c6217eeaef9a080205932fe29f730dc00e31f/README.md#L18"
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "run_command",
+      "kind": "doc",
+      "path": "docs/tutorial.md",
+      "line": 39,
+      "text": "./trgt genotype --genome example/reference.fasta \\",
+      "url": "https://github.com/PacificBiosciences/trgt/blob/b21c6217eeaef9a080205932fe29f730dc00e31f/docs/tutorial.md#L39"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/repeat.bed",
+      "text": "bed",
+      "url": "https://github.com/PacificBiosciences/trgt/blob/b21c6217eeaef9a080205932fe29f730dc00e31f/example/repeat.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/reference.fasta",
+      "text": "fasta",
+      "url": "https://github.com/PacificBiosciences/trgt/blob/b21c6217eeaef9a080205932fe29f730dc00e31f/example/reference.fasta"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/sample.bam",
+      "text": "bam",
+      "url": "https://github.com/PacificBiosciences/trgt/blob/b21c6217eeaef9a080205932fe29f730dc00e31f/example/sample.bam"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "repeats/pathogenic_repeats.hg38.bed",
+      "text": "bed",
+      "url": "https://github.com/PacificBiosciences/trgt/blob/b21c6217eeaef9a080205932fe29f730dc00e31f/repeats/pathogenic_repeats.hg38.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "repeats/repeat_catalog.hg38.bed",
+      "text": "bed",
+      "url": "https://github.com/PacificBiosciences/trgt/blob/b21c6217eeaef9a080205932fe29f730dc00e31f/repeats/repeat_catalog.hg38.bed"
+    },
+    {
+      "claim": "known_issue",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 18,
+      "text": "Active development warning",
+      "url": "https://github.com/PacificBiosciences/trgt/blob/b21c6217eeaef9a080205932fe29f730dc00e31f/README.md#L18"
+    },
+    {
+      "claim": "documented_input",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 9,
+      "text": "It is now possible to add a fail reads BAM as a separate aligned BAM in addition to the primary `--reads` BAM.",
+      "url": "https://github.com/PacificBiosciences/trgt/blob/b21c6217eeaef9a080205932fe29f730dc00e31f/README.md#L9"
+    }
+  ],
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 5,
+    "examples": [
+      "example/repeat.bed",
+      "example/reference.fasta",
+      "example/sample.bam",
+      "repeats/pathogenic_repeats.hg38.bed",
+      "repeats/repeat_catalog.hg38.bed"
+    ]
+  },
+  "caveats": {
+    "source": "detect_recipe",
+    "items": [
+      "Environment: generated by STRhub from the repository's install instructions (release_binary), at the pinned commit.",
+      "Input: the README documents BAM (line 9); this run used STRhub's pacbio-hifi-bam-hg38-med reference data.",
+      "Panel: the loci file the documented command reads, shipped in the repository, lists coordinates inside STRhub's medical STR slice and none inside the forensic one; this run used the medical slice of the same sample (pacbio-hifi-bam-hg38-med).",
+      "'./trgt' run as 'trgt' from the PATH: the build puts it there, not in the directory the documentation runs it from.",
+      "The output directory the command writes into (sample) was created first.",
+      "1 input path(s) in the README command replaced with /data/in/input.bam.",
+      "1 reference FASTA path(s) replaced with /data/ref/hg38.fa.",
+      "1 BED path(s) replaced with /data/in/regions.bed."
+    ]
+  },
+  "logs": {
+    "example": "trgt-hifi-med.log-example.txt",
+    "starts": "trgt-hifi-med.log-starts.txt",
+    "build": "trgt-hifi-med.log-build.txt"
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  },
+  "procedure_review": {
+    "may_say_runs": true,
+    "basis": "gates",
+    "attribution": "tool",
+    "blocker": "ready",
+    "reason": "The repository states how to install (release_binary) and STRhub holds the sample. The container is that install, packaged. If the documented command then fails, the failure is that command's.",
+    "amendments": [],
+    "install_method": "release_binary",
+    "citable_install": true,
+    "input_type": "pacbio-hifi-bam-hg38-med",
+    "output_glob": "**/*.vcf*"
+  },
+  "verdict": {
+    "code": "runs",
+    "title": "Runs",
+    "basis": "gates",
+    "reason": "The tool installed and its run produced its documented output.",
+    "readme_gaps": [],
+    "blockers": []
+  },
+  "step1": {
+    "code": "runs",
+    "headline": "As documented, it runs.",
+    "body": "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.",
+    "missing": [],
+    "missing_text": [],
+    "guide": "docs/GUIA-PASO-1.md"
+  },
+  "certificate": {
+    "schema": "strhub-verified/certificate/1",
+    "label": "Runs as documented",
+    "reached": "Runs + Plausible output",
+    "summary": {
+      "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
+      "result": "Runs as documented",
+      "reached": "Runs + Plausible output, 5/5 gates passed",
+      "why": "The tool installed and its run produced its documented output.",
+      "scope": "Installation, execution, and output structure verification.",
+      "not_evaluated": [
+        "Genotype accuracy",
+        "Concordance",
+        "Forensic validity",
+        "Regulatory compliance"
+      ]
+    },
+    "conclusion": [
+      {
+        "title": "Runs end-to-end",
+        "body": "TRGT v5.1.0 installs and executes without error in a clean ubuntu-22.04 environment at the pinned commit."
+      },
+      {
+        "title": "Produces plausible output",
+        "body": "The tool generated a structurally valid VCF output file with genotype calls across 51 target forensic STR loci, with a maximum read depth of 73 at NUTM2B-AS1."
+      },
+      {
+        "title": "Verdict: Runs",
+        "body": "The tool installed and its run produced its documented output."
+      },
+      {
+        "title": "Repository test data not used",
+        "body": "The repository ships example data (5 file(s)), which this run did not use: the gates above ran on STRhub's reference dataset. STRhub Verified supplied GIAB HG002 PacBio HiFi (Revio), hg38 medical STR slice as the reference input for this verification run. Users replicating this result should use the same or equivalent publicly available reference material."
+      },
+      {
+        "title": "Reproducibility statement",
+        "body": "The exact command reported in Section 3, executed at the pinned commit in the described environment, is sufficient to reproduce this verification result independently."
+      }
+    ],
+    "out_of_scope": [
+      "Genotype correctness or accuracy",
+      "Concordance against known truth sets",
+      "Sensitivity, specificity, or stutter performance",
+      "Allele calling accuracy or forensic casework suitability",
+      "Regulatory compliance or ISO accreditation",
+      "Multi-laboratory or multi-dataset reproducibility"
+    ],
+    "limitations": [
+      "Single reference dataset per input type",
+      "Single containerized environment (Docker / ubuntu-22.04)",
+      "No truth-set comparison or ground-truth genotypes",
+      "No accuracy or concordance assessment",
+      "No forensic validation of results",
+      "Short-read limitations apply (very long STR alleles may not span reads)"
+    ],
+    "scope": {
+      "statement": "Independent automated verification of reproducible execution. It confirms the tool installs, runs end-to-end, and produces structurally valid output in a standardized environment.",
+      "not": "This is not an analytical validation. Genotype accuracy, concordance, forensic suitability, and regulatory compliance are out of scope.",
+      "disclaimer": "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub does not store tool source code."
+    }
+  }
+}

@@ -1,0 +1,26 @@
+trgt 5.1.0-ec66463
+Egor Dolzhenko <edolzhenko@pacificbiosciences.com>
+Guilherme De Sena Brandine <gbrandine@pacificbiosciences.com>
+Tom Mokveld <tmokveld@pacificbiosciences.com>
+
+Usage:
+    trgt [OPTIONS] <COMMAND>
+
+Commands:
+  genotype  Tandem Repeat Genotyper
+  plot      Tandem Repeat Plotter
+  validate  Tandem Repeat Catalog Validator
+  merge     Tandem Repeat VCF Merger
+  deepdive  Locus-specific Deep Dive
+
+Options:
+  -v, --verbose...  Specify multiple times to increase verbosity level (e.g., -vv for more verbosity)
+  -h, --help        Print help
+  -V, --version     Print version
+
+Advanced:
+      --color <COLOR>  Enable or disable color output in logging [default: auto] [possible values: always, auto, never]
+
+Copyright (C) 2004-2026     Pacific Biosciences of California, Inc.
+This program comes with ABSOLUTELY NO WARRANTY; it is intended for
+Research Use Only and not for use in diagnostic procedures.
