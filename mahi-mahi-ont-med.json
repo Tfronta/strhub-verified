@@ -1,0 +1,996 @@
+{
+  "schema": "strhub-verified/1",
+  "mode": "trial",
+  "tool": {
+    "name": "mahi-mahi",
+    "version": "v1.0.0",
+    "contact": "https://github.com/nanoporetech/mahi-mahi/issues"
+  },
+  "submission": {
+    "by": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/nanoporetech/mahi-mahi",
+    "ref": "861ea09ab44e88424c45b04d8018f3948a8fefbb",
+    "ref_resolved": "861ea09ab44e88424c45b04d8018f3948a8fefbb",
+    "committed": "2026-10-13T13:00:00Z"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ],
+    "source": "generated"
+  },
+  "generated": "2026-11-06T16:25:27+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42251428166",
+  "run": {
+    "cmd": "mkdir -p out && mahi-mahi --bam /data/in/input.bam --ref /data/ref/hg38.fa --loci hg38 --sample SAMPLE --sex XX --out-dir out",
+    "cwd": "/opt/tool"
+  },
+  "instrument": "documented",
+  "recipe": {
+    "origin": "proposed"
+  },
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": true,
+    "io": true,
+    "content": true,
+    "starts": true
+  },
+  "level": "content",
+  "io_detail": {
+    "gate": "io",
+    "passed": true,
+    "outputs": [
+      {
+        "path": "**/*.vcf*",
+        "format": "vcf",
+        "checks": {
+          "confined": true,
+          "exists": true,
+          "non_empty": true,
+          "parses_as_vcf": true,
+          "min_records": true
+        },
+        "resolved": "out/SAMPLE.vcf",
+        "records": 74,
+        "uncalled_rows": 25,
+        "passed": true
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": true,
+    "outputs": [
+      {
+        "path": "**/*.vcf*",
+        "resolved": "out/SAMPLE.vcf",
+        "mode": "auto",
+        "checks": {
+          "records_present": true,
+          "genotypes_called": true,
+          "loci_recognised": true
+        },
+        "stats": {
+          "rows": 99,
+          "header_row_dropped": false,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 99,
+          "distinct_str_loci": 99,
+          "distinct_snp_markers": 0,
+          "loci": [
+            "ABCD3",
+            "AFF2",
+            "AFF3",
+            "AR",
+            "ARX_EIEE",
+            "ARX_PRTS",
+            "ATN1",
+            "ATXN1",
+            "ATXN10",
+            "ATXN2",
+            "ATXN3",
+            "ATXN7",
+            "ATXN7_CCG",
+            "ATXN8OS",
+            "ATXN8OS_CTA",
+            "BCLAF3",
+            "BEAN1",
+            "C9ORF72",
+            "CACNA1A",
+            "CBL",
+            "CNBP",
+            "CNBP_CA",
+            "CNBP_CAGA",
+            "COMP",
+            "CSTB",
+            "DAB1",
+            "DAB1_ATTTT1",
+            "DAB1_ATTTT2",
+            "DIP2B",
+            "DMPK",
+            "EIF4A3",
+            "EIF4A3_CACA20_3P",
+            "EIF4A3_CACA20_5P",
+            "EP400",
+            "FAM193B",
+            "FGF14",
+            "FMR1",
+            "FOXL2",
+            "FXN",
+            "FXN_AAAA",
+            "GIPC1",
+            "GLS",
+            "GOLGA8A",
+            "HOXA13-I",
+            "HOXA13-II",
+            "HOXA13-III",
+            "HOXD13",
+            "HTT",
+            "HTT_CCG",
+            "HTT_nonrepeat",
+            "JPH3",
+            "LRP12",
+            "MARCHF6",
+            "MARCHF6_TTTTA",
+            "MARCHF6_TTTTA2",
+            "MIR7-2",
+            "NAXE",
+            "NIPA1",
+            "NOP56",
+            "NOP56_CGCCTG",
+            "NUTM2B-AS1",
+            "PABPN1",
+            "PHOX2B",
+            "PPP2R2B",
+            "PRDM12",
+            "PRNP",
+            "PRNP_CCTCAGGGCGGTGGTGGCTGGGGGCAG",
+            "RAI1",
+            "RAI1_TTTTA",
+            "RAI1_TTTTA2",
+            "RAPGEF2",
+            "RAPGEF2_TTTTA_3P",
+            "RAPGEF2_TTTTA_5P",
+            "RFC1",
+            "RILPL1",
+            "RUNX2",
+            "SAMD12",
+            "SAMD12_TTTTA_3P",
+            "SAMD12_TTTTA_5P",
+            "SOX3",
+            "STARD7",
+            "STARD7_AAAAT",
+            "STARD7_AAAAT2",
+            "TBP",
+            "TBX1",
+            "TCF4",
+            "THAP11",
+            "TNRC6A",
+            "TNRC6A_TTTTA_3P",
+            "TNRC6A_TTTTA_5P",
+            "TYMS",
+            "VWA1",
+            "YEATS2",
+            "YEATS2_TTTTA",
+            "YEATS2_TTTTA2",
+            "ZFHX3",
+            "ZIC2",
+            "ZIC3",
+            "ZNF713"
+          ],
+          "str_loci": [
+            "ABCD3",
+            "AFF2",
+            "AFF3",
+            "AR",
+            "ARX_EIEE",
+            "ARX_PRTS",
+            "ATN1",
+            "ATXN1",
+            "ATXN10",
+            "ATXN2",
+            "ATXN3",
+            "ATXN7",
+            "ATXN7_CCG",
+            "ATXN8OS",
+            "ATXN8OS_CTA",
+            "BCLAF3",
+            "BEAN1",
+            "C9ORF72",
+            "CACNA1A",
+            "CBL",
+            "CNBP",
+            "CNBP_CA",
+            "CNBP_CAGA",
+            "COMP",
+            "CSTB",
+            "DAB1",
+            "DAB1_ATTTT1",
+            "DAB1_ATTTT2",
+            "DIP2B",
+            "DMPK",
+            "EIF4A3",
+            "EIF4A3_CACA20_3P",
+            "EIF4A3_CACA20_5P",
+            "EP400",
+            "FAM193B",
+            "FGF14",
+            "FMR1",
+            "FOXL2",
+            "FXN",
+            "FXN_AAAA",
+            "GIPC1",
+            "GLS",
+            "GOLGA8A",
+            "HOXA13-I",
+            "HOXA13-II",
+            "HOXA13-III",
+            "HOXD13",
+            "HTT",
+            "HTT_CCG",
+            "HTT_nonrepeat",
+            "JPH3",
+            "LRP12",
+            "MARCHF6",
+            "MARCHF6_TTTTA",
+            "MARCHF6_TTTTA2",
+            "MIR7-2",
+            "NAXE",
+            "NIPA1",
+            "NOP56",
+            "NOP56_CGCCTG",
+            "NUTM2B-AS1",
+            "PABPN1",
+            "PHOX2B",
+            "PPP2R2B",
+            "PRDM12",
+            "PRNP",
+            "PRNP_CCTCAGGGCGGTGGTGGCTGGGGGCAG",
+            "RAI1",
+            "RAI1_TTTTA",
+            "RAI1_TTTTA2",
+            "RAPGEF2",
+            "RAPGEF2_TTTTA_3P",
+            "RAPGEF2_TTTTA_5P",
+            "RFC1",
+            "RILPL1",
+            "RUNX2",
+            "SAMD12",
+            "SAMD12_TTTTA_3P",
+            "SAMD12_TTTTA_5P",
+            "SOX3",
+            "STARD7",
+            "STARD7_AAAAT",
+            "STARD7_AAAAT2",
+            "TBP",
+            "TBX1",
+            "TCF4",
+            "THAP11",
+            "TNRC6A",
+            "TNRC6A_TTTTA_3P",
+            "TNRC6A_TTTTA_5P",
+            "TYMS",
+            "VWA1",
+            "YEATS2",
+            "YEATS2_TTTTA",
+            "YEATS2_TTTTA2",
+            "ZFHX3",
+            "ZIC2",
+            "ZIC3",
+            "ZNF713"
+          ],
+          "snp_markers": [],
+          "total_reads": 2533,
+          "max_sequence_depth": 52,
+          "top_loci_by_depth": [
+            [
+              "NUTM2B-AS1",
+              52
+            ],
+            [
+              "GLS",
+              49
+            ],
+            [
+              "TNRC6A_TTTTA_5P",
+              48
+            ],
+            [
+              "TNRC6A",
+              48
+            ],
+            [
+              "TNRC6A_TTTTA_3P",
+              48
+            ],
+            [
+              "ATXN1",
+              47
+            ],
+            [
+              "RFC1",
+              43
+            ],
+            [
+              "ZIC2",
+              43
+            ],
+            [
+              "LRP12",
+              42
+            ],
+            [
+              "ATXN2",
+              42
+            ],
+            [
+              "PABPN1",
+              42
+            ],
+            [
+              "HTT",
+              41
+            ],
+            [
+              "HTT_nonrepeat",
+              41
+            ],
+            [
+              "HTT_CCG",
+              41
+            ],
+            [
+              "CBL",
+              40
+            ],
+            [
+              "AFF3",
+              39
+            ],
+            [
+              "SAMD12_TTTTA_3P",
+              39
+            ],
+            [
+              "SAMD12",
+              39
+            ],
+            [
+              "SAMD12_TTTTA_5P",
+              39
+            ],
+            [
+              "ATXN8OS_CTA",
+              39
+            ],
+            [
+              "ATXN8OS",
+              39
+            ],
+            [
+              "NOP56",
+              39
+            ],
+            [
+              "NOP56_CGCCTG",
+              39
+            ],
+            [
+              "DAB1_ATTTT1",
+              38
+            ],
+            [
+              "DAB1",
+              38
+            ],
+            [
+              "DAB1_ATTTT2",
+              38
+            ],
+            [
+              "RAPGEF2_TTTTA_5P",
+              38
+            ],
+            [
+              "RAPGEF2",
+              38
+            ],
+            [
+              "RAPGEF2_TTTTA_3P",
+              38
+            ],
+            [
+              "PPP2R2B",
+              37
+            ],
+            [
+              "RUNX2",
+              37
+            ],
+            [
+              "CACNA1A",
+              37
+            ],
+            [
+              "ATXN10",
+              37
+            ],
+            [
+              "MARCHF6",
+              36
+            ],
+            [
+              "MARCHF6_TTTTA2",
+              36
+            ],
+            [
+              "FXN_AAAA",
+              36
+            ],
+            [
+              "FXN",
+              36
+            ],
+            [
+              "DIP2B",
+              36
+            ],
+            [
+              "GIPC1",
+              36
+            ],
+            [
+              "MARCHF6_TTTTA",
+              35
+            ],
+            [
+              "BEAN1",
+              35
+            ],
+            [
+              "C9ORF72",
+              34
+            ],
+            [
+              "TCF4",
+              34
+            ],
+            [
+              "DMPK",
+              34
+            ],
+            [
+              "CSTB",
+              34
+            ],
+            [
+              "YEATS2_TTTTA",
+              33
+            ],
+            [
+              "ATXN3",
+              33
+            ],
+            [
+              "JPH3",
+              33
+            ],
+            [
+              "COMP",
+              33
+            ],
+            [
+              "YEATS2",
+              32
+            ],
+            [
+              "YEATS2_TTTTA2",
+              32
+            ],
+            [
+              "ATN1",
+              31
+            ],
+            [
+              "HOXD13",
+              29
+            ],
+            [
+              "TBP",
+              29
+            ],
+            [
+              "HOXA13-III",
+              29
+            ],
+            [
+              "HOXA13-II",
+              29
+            ],
+            [
+              "NIPA1",
+              29
+            ],
+            [
+              "HOXA13-I",
+              28
+            ],
+            [
+              "ATXN7",
+              26
+            ],
+            [
+              "ATXN7_CCG",
+              26
+            ],
+            [
+              "STARD7_AAAAT2",
+              25
+            ],
+            [
+              "STARD7",
+              25
+            ],
+            [
+              "STARD7_AAAAT",
+              25
+            ],
+            [
+              "ARX_PRTS",
+              25
+            ],
+            [
+              "ARX_EIEE",
+              25
+            ],
+            [
+              "CNBP",
+              24
+            ],
+            [
+              "CNBP_CAGA",
+              24
+            ],
+            [
+              "CNBP_CA",
+              24
+            ],
+            [
+              "FOXL2",
+              23
+            ],
+            [
+              "PHOX2B",
+              20
+            ],
+            [
+              "AR",
+              20
+            ],
+            [
+              "FMR1",
+              16
+            ],
+            [
+              "AFF2",
+              15
+            ],
+            [
+              "SOX3",
+              13
+            ],
+            [
+              "VWA1",
+              0
+            ],
+            [
+              "ABCD3",
+              0
+            ],
+            [
+              "NAXE",
+              0
+            ],
+            [
+              "FAM193B",
+              0
+            ],
+            [
+              "ZNF713",
+              0
+            ],
+            [
+              "PRDM12",
+              0
+            ],
+            [
+              "RILPL1",
+              0
+            ],
+            [
+              "EP400",
+              0
+            ],
+            [
+              "FGF14",
+              0
+            ],
+            [
+              "GOLGA8A",
+              0
+            ],
+            [
+              "MIR7-2",
+              0
+            ],
+            [
+              "THAP11",
+              0
+            ],
+            [
+              "ZFHX3",
+              0
+            ],
+            [
+              "RAI1_TTTTA",
+              0
+            ],
+            [
+              "RAI1",
+              0
+            ],
+            [
+              "RAI1_TTTTA2",
+              0
+            ],
+            [
+              "EIF4A3_CACA20_3P",
+              0
+            ],
+            [
+              "EIF4A3",
+              0
+            ],
+            [
+              "EIF4A3_CACA20_5P",
+              0
+            ],
+            [
+              "TYMS",
+              0
+            ],
+            [
+              "PRNP_CCTCAGGGCGGTGGTGGCTGGGGGCAG",
+              0
+            ],
+            [
+              "PRNP",
+              0
+            ],
+            [
+              "TBX1",
+              0
+            ],
+            [
+              "BCLAF3",
+              0
+            ],
+            [
+              "ZIC3",
+              0
+            ]
+          ],
+          "called_genotypes": 74,
+          "regions_given": 0,
+          "regions_hit": 99
+        },
+        "passed": true
+      }
+    ]
+  },
+  "example_detail": null,
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "ont-bam-hg38-med",
+      "dataset": "1000 Genomes ONT, hg38 medical STR slice (R10 SUP)",
+      "io": true,
+      "content": true,
+      "passed": true
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": false,
+      "io": false,
+      "content": null,
+      "passed": false,
+      "matches_expected": null,
+      "produced_count": null
+    }
+  ],
+  "regions": null,
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bdependenc(y|ies)\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "upstream": {
+    "checked": "2026-11-06T16:25:27+00:00",
+    "repo_exists": true,
+    "ref_exists": true,
+    "default_branch": "main",
+    "status": "ahead",
+    "behind_by": 2
+  },
+  "needed_beyond_repo": [
+    "Test data: no sample from the repository was used, so a public reference sample stood in.",
+    "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships."
+  ],
+  "author_known_issues": [
+    {
+      "heading": "Warnings, Precautions, and Limitations",
+      "line": 813,
+      "text": "## Warnings and precautions - Use the loci file version that matches the reference genome passed to --ref. - Haplotagged input is recommended. If --bypass-haplotag-check is used, close-in-length alleles may be merged and accuracy may be reduced. - If using non-standard --loci, check the BED file carefully before use. - If a TR region contains sequence that is not actually repetitive, motif decomposition of this unexpected sequence may be effectively nonsensical. The reported length in bases is still meaningful. - Previous versions of mahi-mahi have used different parameters, configurations, an",
+      "truncated": true,
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L813"
+    },
+    {
+      "heading": "Warnings and precautions",
+      "line": 815,
+      "text": "- Use the loci file version that matches the reference genome passed to --ref. - Haplotagged input is recommended. If --bypass-haplotag-check is used, close-in-length alleles may be merged and accuracy may be reduced. - If using non-standard --loci, check the BED file carefully before use. - If a TR region contains sequence that is not actually repetitive, motif decomposition of this unexpected sequence may be effectively nonsensical. The reported length in bases is still meaningful. - Previous versions of mahi-mahi have used different parameters, configurations, and filenames. Please refer to",
+      "truncated": true,
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L815"
+    },
+    {
+      "heading": "Known limitations",
+      "line": 827,
+      "text": "- When the original BAM contains many non-spanning reads, `DP` can be lower than an allele's `AD` or the sum of `AD`. `DP` measures mean alignment depth over the reference repeat interval, whereas `AD` counts reads selected for allele-length estimation, including selected non-spanning reads. This difference does not by itself indicate an invalid call. - Expansions supported mainly by non-spanning reads may be underestimated and sized less precisely than fully spanned alleles. - Apparent interruptions may be sequencing errors. Visual verification using the read visualisation is recommended. - I",
+      "truncated": true,
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L827"
+    },
+    {
+      "heading": "Troubleshooting and Support",
+      "line": 891,
+      "text": "For help, contact Oxford Nanopore Technologies through your usual support channel: [Oxford Nanopore customer support](https://nanoporetech.com/support/customer-support). ## Common checks - Confirm that the reference genome matches the loci file. - Confirm that the BAM or CRAM file is readable and indexed. - Confirm that the sample sex argument is correct. - Confirm that the input BAM is haplotagged unless --bypass-haplotag-check is intentionally being used. ## Common problems and messages | Message or issue | Likely cause | Suggested action | |------------------------|------------------------|",
+      "truncated": true,
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L891"
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "install_method",
+      "kind": "tree",
+      "path": "pyproject.toml",
+      "text": "pip",
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/pyproject.toml"
+    },
+    {
+      "claim": "run_command",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 230,
+      "text": "mahi-mahi \\",
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L230"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "src/mahi_mahi/data/str_loci.hg19.bed",
+      "text": "bed",
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/src/mahi_mahi/data/str_loci.hg19.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "src/mahi_mahi/data/str_loci.hg38.bed",
+      "text": "bed",
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/src/mahi_mahi/data/str_loci.hg38.bed"
+    },
+    {
+      "claim": "known_issue",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 813,
+      "text": "Warnings, Precautions, and Limitations",
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L813"
+    },
+    {
+      "claim": "known_issue",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 815,
+      "text": "Warnings and precautions",
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L815"
+    },
+    {
+      "claim": "known_issue",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 827,
+      "text": "Known limitations",
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L827"
+    },
+    {
+      "claim": "known_issue",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 891,
+      "text": "Troubleshooting and Support",
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L891"
+    },
+    {
+      "claim": "documented_input",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 55,
+      "text": "-   Aligned BAM or CRAM input.",
+      "url": "https://github.com/nanoporetech/mahi-mahi/blob/861ea09ab44e88424c45b04d8018f3948a8fefbb/README.md#L55"
+    }
+  ],
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 2,
+    "examples": [
+      "src/mahi_mahi/data/str_loci.hg19.bed",
+      "src/mahi_mahi/data/str_loci.hg38.bed"
+    ]
+  },
+  "caveats": {
+    "source": "detect_recipe",
+    "items": [
+      "Environment: generated by STRhub from the repository's pyproject.toml (pip), at the pinned commit.",
+      "Input: the README documents BAM (line 55); this run used STRhub's ont-bam-hg38-med reference data.",
+      "Panel: the loci file the documented command reads, shipped in the repository, lists coordinates inside STRhub's medical STR slice and none inside the forensic one; this run used the medical slice of the same sample (ont-bam-hg38-med).",
+      "The output directory the command writes into (out) was created first.",
+      "1 input path(s) in the README command replaced with /data/in/input.bam.",
+      "1 reference FASTA path(s) replaced with /data/ref/hg38.fa.",
+      "Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output."
+    ]
+  },
+  "logs": {
+    "external": "mahi-mahi-ont-med.log-external.txt",
+    "starts": "mahi-mahi-ont-med.log-starts.txt",
+    "build": "mahi-mahi-ont-med.log-build.txt"
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  },
+  "procedure_review": {
+    "may_say_runs": true,
+    "basis": "gates",
+    "attribution": "tool",
+    "blocker": "ready",
+    "reason": "The repository states how to install (pip) and STRhub holds the sample. The container is that install, packaged. If the documented command then fails, the failure is that command's.",
+    "amendments": [],
+    "install_method": "pip",
+    "citable_install": false,
+    "input_type": "ont-bam-hg38-med",
+    "output_glob": "**/*.vcf*"
+  },
+  "verdict": {
+    "code": "runs",
+    "title": "Runs",
+    "basis": "gates",
+    "reason": "The tool installed and its run produced its documented output.",
+    "readme_gaps": [],
+    "blockers": []
+  },
+  "step1": {
+    "code": "runs",
+    "headline": "As documented, it runs.",
+    "body": "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.",
+    "missing": [],
+    "missing_text": [],
+    "guide": "docs/GUIA-PASO-1.md"
+  },
+  "certificate": {
+    "schema": "strhub-verified/certificate/1",
+    "label": "Runs as documented",
+    "reached": "Runs + Plausible output",
+    "summary": {
+      "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
+      "result": "Runs as documented",
+      "reached": "Runs + Plausible output, 5/5 gates passed",
+      "why": "The tool installed and its run produced its documented output.",
+      "scope": "Installation, execution, and output structure verification.",
+      "not_evaluated": [
+        "Genotype accuracy",
+        "Concordance",
+        "Forensic validity",
+        "Regulatory compliance"
+      ]
+    },
+    "conclusion": [
+      {
+        "title": "Runs end-to-end",
+        "body": "mahi-mahi v1.0.0 installs and executes without error in a clean ubuntu-22.04 environment at the pinned commit."
+      },
+      {
+        "title": "Produces plausible output",
+        "body": "The tool generated a structurally valid VCF output file with genotype calls across 99 target forensic STR loci, with a maximum read depth of 52 at NUTM2B-AS1."
+      },
+      {
+        "title": "Verdict: Runs",
+        "body": "The tool installed and its run produced its documented output."
+      },
+      {
+        "title": "Repository test data not used",
+        "body": "The repository ships example data (2 file(s)), which this run did not use: the gates above ran on STRhub's reference dataset. STRhub Verified supplied 1000 Genomes ONT, hg38 medical STR slice (R10 SUP) as the reference input for this verification run. Users replicating this result should use the same or equivalent publicly available reference material."
+      },
+      {
+        "title": "Reproducibility statement",
+        "body": "The exact command reported in Section 3, executed at the pinned commit in the described environment, is sufficient to reproduce this verification result independently."
+      }
+    ],
+    "out_of_scope": [
+      "Genotype correctness or accuracy",
+      "Concordance against known truth sets",
+      "Sensitivity, specificity, or stutter performance",
+      "Allele calling accuracy or forensic casework suitability",
+      "Regulatory compliance or ISO accreditation",
+      "Multi-laboratory or multi-dataset reproducibility"
+    ],
+    "limitations": [
+      "Single reference dataset per input type",
+      "Single containerized environment (Docker / ubuntu-22.04)",
+      "No truth-set comparison or ground-truth genotypes",
+      "No accuracy or concordance assessment",
+      "No forensic validation of results",
+      "Short-read limitations apply (very long STR alleles may not span reads)"
+    ],
+    "scope": {
+      "statement": "Independent automated verification of reproducible execution. It confirms the tool installs, runs end-to-end, and produces structurally valid output in a standardized environment.",
+      "not": "This is not an analytical validation. Genotype accuracy, concordance, forensic suitability, and regulatory compliance are out of scope.",
+      "disclaimer": "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub does not store tool source code."
+    }
+  }
+}

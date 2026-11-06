@@ -1,0 +1,137 @@
+WARNING:root:Mahi-mahi is running with elevated privileges. Run as a normal user without sudo or administrator privileges to reduce the risk of unintended changes to protected files.
+INFO:root:mahi-mahi version: 1.0.0 **FOR RESEARCH USE ONLY**
+INFO:root:Command used: /usr/local/bin/mahi-mahi --bam /data/in/input.bam --ref /data/ref/hg38.fa --loci hg38 --sample SAMPLE --sex XX --out-dir out
+INFO:root:Using config file: /usr/local/lib/python3.11/site-packages/mahi_mahi/data/config.yaml
+INFO:root:Saved resolved config to: /opt/tool/out/SAMPLE.config.yaml
+INFO:root:Using strand bias method: statistical_testing
+INFO:root:Using built-in loci file for genome hg38: /usr/local/lib/python3.11/site-packages/mahi_mahi/data/str_loci.hg38.bed
+INFO:root:Loading alignments
+WARNING:root:No reads found for chr1:1435798-1435818 with motif GGCGCGGAGC
+[E::bam_parse_basemod2] e01fc957-5a21-4bad-b7fa-4a970313c8ce: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+WARNING:root:chr1_57367043_57367118: TR length clusters are inconsistent with haplotags, which implies that at least one of them is wrong: consider inspecting the .tagged.bam output with e.g. IGV.  Using clusters.
+WARNING:root:No reads found for chr1:94418422-94418443 with motif CCG
+WARNING:root:No reads found for chr1:156591768-156591783 with motif CCGGG
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] ee49eb3f-5305-4052-84b5-11eff0cd5216: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 7779c3fb-afac-45e0-8f5b-20c514140c45: MM tag refers to bases beyond sequence length
+WARNING:root:More than 1/3 of the reads (44 out of 94) for region NUTM2B-AS1 (chr10:79826385-79826403) are secondary alignments or failed processing, so were ignored.  This high number may mean this region has a paralog it is not reliably distinguished from: such regions cannot be genotyped accurately by mahi-mahi.
+[E::bam_parse_basemod2] bc3f325b-a0db-4ecf-84aa-a6f4d9f70530: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 46b15efe-a2dc-4a17-bccc-e07dffddc4ec: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 636486a1-e175-4884-aa91-95dadb97c88e: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 23e3dace-2e3e-4890-9894-515df02b43ad: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] ba2460be-5632-405b-ba52-f46b8a0f201a: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] fc3662f5-a3d6-4319-affc-73fc16adfffa: MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chr12:123533720-123533755 with motif GGC
+WARNING:root:No reads found for chr12:132062524-132062611 with motif CAG,CAA
+[E::bam_parse_basemod2] 7f041063-b11c-47fa-9aab-4122c2bc1504: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+WARNING:root:chr13_70139353_70139428: TR length clusters are inconsistent with haplotags, which implies that at least one of them is wrong: consider inspecting the .tagged.bam output with e.g. IGV.  Using clusters.
+[E::bam_parse_basemod2] aa8bbd88-df35-4062-aabc-92382f7d84dc: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 86e70379-5ef4-41f7-b982-e1923dcb654a: MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chr13:102161576-102161726 with motif GAA
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 6b14c9f4-3cb7-4ea4-85ba-b413b94f6cce: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 7cae6eb2-8a7b-4557-96af-70b9dbd5938a: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 9a93809b-3377-41ea-a7af-12a6625eda83: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 33446258-e9e5-4883-98a3-581c85cc537e: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] c9d526c7-c376-4d2b-9248-2df110d03a45: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 3ef7c7c2-5419-4322-bab3-f946c076f0e9: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chr15:34419425-34419448 with motif TTCT,CT,CCTT,CCCTCT,CCCCT
+WARNING:root:No reads found for chr15:88569436-88569452 with motif GTTT
+[E::bam_parse_basemod2] 9a8e1ffc-49c9-4917-8a0d-9c698b1b50b1: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chr16:67842863-67842950 with motif CAG,CAA
+WARNING:root:No reads found for chr16:72787694-72787757 with motif GCC,ACC,ACT
+WARNING:root:No reads found for chr17:17808359-17808457 with motif TTTTA,TTTCA,TTTTA
+WARNING:root:No reads found for chr17:80147021-80147139 with motif CCTCGCTGTGCCGCTGCCGA,CCTCGCTGCGCCGCTGCCGA,CCTCGCTGTGCCGCTGCCGA
+WARNING:root:No reads found for chr18:666891-667632 with motif GATGGT,GATGGA
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 199a1b96-1c69-48e0-b90b-2410537769a4: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] a8b1c948-ed85-4a32-9144-64ec9aea459c: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] fd7ec42a-70bf-4f03-a519-3d65b7671db9: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 8c3220bf-a7b1-4470-99dc-6e02ee65c142: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] c408e41f-8170-4364-a27c-a5f2dc6d46a3: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 33a08c60-a3a8-44b7-9444-78a37bcf829f: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] b465e17a-ef2c-4cd3-a42f-dab31608b6f5: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 6d79af27-6b2d-46f7-8332-49ece0734ad2: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] b82e5f1a-4d10-4f34-9948-a1ef165bdf20: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] fd80d8c5-9742-4919-a4c0-239348a5e5d9: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 49e139af-b89f-4084-a84a-9d4628ee512b: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chr20:4699370-4699493 with motif CCTCAGGGCGGTGGTGGCTGGGGGCAG,CCTCATGGTGGTGGCTGGGGGCAG,CCCCATGGTGGTGGCTGGGGACAG,CCTCATGGTGGTGGCTGGGGTCAA
+[E::bam_parse_basemod2] 55c26bba-acf7-446e-b47f-ce5f0a40ca11: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] c645b5fc-ab82-4c1a-b061-74ab1d3205bd: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 86bfa4f7-7589-4308-b9ea-9da97ba87700: MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chr22:19766762-19766807 with motif GCN
+[E::bam_parse_basemod2] fb926026-9def-4ecd-bd99-31e0ed586c20: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] e8c9aea3-6f2d-4727-b9de-bb2a6f98c34c: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] e2af4ef5-5a5b-4e30-bf85-b30bc5b36b39: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 1d485e89-9814-4c1e-bd0d-48ecd3e61968: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 1956303c-48cd-4c04-a608-4b7e164d5f65: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] c25b0802-b8d5-48d1-acc4-31d5d5ca8ca9: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] ead4aa49-6a8f-43f1-a13f-7f1d5fa2ed1d: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 7226012b-c353-4a3a-92ab-5e8d7f48b3ad: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 7c42e5c2-b667-4946-8fbf-6f1cf51cbc96: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chr5:177554491-177554530 with motif CCG
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 67d509d8-fb25-4e47-9b47-fe9ac8c6420a: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] da95c916-75e8-4e02-bcdf-6354907436bb: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 2ee5c1f5-53af-434d-8a77-4201cc2b911c: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] da95c916-75e8-4e02-bcdf-6354907436bb: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 2ee5c1f5-53af-434d-8a77-4201cc2b911c: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] da95c916-75e8-4e02-bcdf-6354907436bb: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 2ee5c1f5-53af-434d-8a77-4201cc2b911c: MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chr7:55887601-55887637 with motif CGG
+[E::bam_parse_basemod2] 81cbecc8-1620-4e36-90b8-4dd1088964a3: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 66f223b1-b27b-4d82-8dbf-b31f2fbd07c1: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 1b0dac92-1082-4efa-a656-c7f43a5d63f4: MM tag refers to bases beyond sequence length
+[E::bam_parse_basemod2] 868a8e7f-54e2-4220-84db-778a3234e210: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chr9:130681607-130681640 with motif CCG
+WARNING:root:No reads found for chrX:19990922-19990973 with motif CCG,CCA
+[E::bam_parse_basemod2] 0a5b7235-2267-428e-8450-3b2e38bb4a87: MM tag refers to bases beyond sequence length
+WARNING:root:No reads found for chrX:137566826-137566856 with motif GCN
+[E::bam_parse_basemod2] b054185d-d04d-41aa-a4bc-4055debb7da6: MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+[W::bam_next_basemod] MM tag refers to bases beyond sequence length
+WARNING:root:Region chrX_148500638_148500683 has multiple phasesets {'ps148531909', 'ps148478256'}: discarding 1 reads that are not in the majority phaseset ps148478256 or ps0
+INFO:root:The input BAM is haplotagged.
+INFO:root:Saving per read results to tsv
+INFO:root:Saving per haplotype results to vcf
+WARNING:root:Unexpected sequence at STARD7: expected motifs ['AAAAT'], actual counts {'AAA': 1, 'AAACT': 17, 'CAACT': 1} out of total copy number 19.  This may be a real expansion with a non-standard motif, or an analysis error.
+WARNING:root:Unexpected sequence at YEATS2: expected motifs ['TTTTA'], actual counts {'GTTA': 1, 'TGTT': 1, 'TGTTA': 19, 'TTTT': 1, 'TTTTA': 17} out of total copy number 39.  This may be a real expansion with a non-standard motif, or an analysis error.
+WARNING:root:Unexpected sequence at RFC1: expected motifs ['AAGGG', 'ACAGG', 'AGGGC', 'AAGGC', 'AGAGG', 'AAAAG', 'AAAGG', 'AAGAG', 'AAAGGG'], actual counts {'AAAAG': 1, 'AAAGG': 8, 'AAAGGG': 3, 'AACGG': 4, 'AAG': 1, 'AAGGG': 9, 'ACGG': 2, 'ACGGG': 17} out of total copy number 45.  This may be a real expansion with a non-standard motif, or an analysis error.
+INFO:root:Saving tagged bam
+INFO:root:Saving motif visualizations to /opt/tool/out/SAMPLE_plots
+/usr/local/lib/python3.11/site-packages/mahi_mahi/motif_visualization/matplotlib_backend.py:89: UserWarning: constrained_layout not applied because axes sizes collapsed to zero.  Try making figure larger or Axes decorations smaller.
+  fig.savefig(output_path, format="pdf")
+INFO:root:Saved 52 motif visualization PDF(s)
+INFO:root:Process completed successfully.

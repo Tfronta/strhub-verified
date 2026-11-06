@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-11-06T16:20:00+00:00",
-  "count": 4,
+  "generated": "2026-11-06T16:25:30+00:00",
+  "count": 5,
   "tools": [
     {
       "slug": "expansionhunter-med",
@@ -98,6 +98,55 @@
           "report": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.json",
           "page": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.html",
           "pdf": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.pdf"
+        }
+      ]
+    },
+    {
+      "slug": "mahi-mahi-ont-med",
+      "name": "mahi-mahi",
+      "version": "v1.0.0",
+      "variant": null,
+      "sha": "861ea09ab44e88424c45b04d8018f3948a8fefbb",
+      "committed": "2026-10-13T13:00:00Z",
+      "instrument": "documented",
+      "level": "content",
+      "label": "Runs as documented",
+      "verdict": "runs",
+      "errors_reported": false,
+      "fallback_used": false,
+      "generated": "2026-11-06T16:25:27+00:00",
+      "source_repo": "https://github.com/nanoporetech/mahi-mahi",
+      "source_ref": "861ea09ab44e88424c45b04d8018f3948a8fefbb",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42251428166",
+      "distinct_str_loci": 99,
+      "distinct_snp_markers": 0,
+      "total_reads": 2533,
+      "own_state": "na",
+      "external_state": "pass",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "ont-bam-hg38-med"
+      ],
+      "report": "mahi-mahi-ont-med.json",
+      "page": "mahi-mahi-ont-med.html",
+      "versions": [
+        {
+          "sha": "861ea09ab44e88424c45b04d8018f3948a8fefbb",
+          "instrument": "documented",
+          "version": "v1.0.0",
+          "variant": null,
+          "committed": "2026-10-13T13:00:00Z",
+          "generated": "2026-11-06T16:25:27+00:00",
+          "level": "content",
+          "label": "Runs as documented",
+          "verdict": "runs",
+          "errors_reported": false,
+          "fallback_used": false,
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42251428166",
+          "report": "mahi-mahi-ont-med/861ea09ab44e88424c45b04d8018f3948a8fefbb/mahi-mahi-ont-med.json",
+          "page": "mahi-mahi-ont-med/861ea09ab44e88424c45b04d8018f3948a8fefbb/mahi-mahi-ont-med.html",
+          "pdf": "mahi-mahi-ont-med/861ea09ab44e88424c45b04d8018f3948a8fefbb/mahi-mahi-ont-med.pdf"
         }
       ]
     },
