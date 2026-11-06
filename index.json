@@ -1,7 +1,7 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-11-06T16:14:28+00:00",
-  "count": 2,
+  "generated": "2026-11-06T16:16:49+00:00",
+  "count": 3,
   "tools": [
     {
       "slug": "hipstr",
@@ -49,6 +49,55 @@
           "report": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.json",
           "page": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.html",
           "pdf": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.pdf"
+        }
+      ]
+    },
+    {
+      "slug": "straitrazor",
+      "name": "straitrazor",
+      "version": "v3",
+      "variant": null,
+      "sha": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+      "committed": "2025-08-18T20:48:51Z",
+      "instrument": "documented",
+      "level": "content",
+      "label": "Runs as documented",
+      "verdict": "runs",
+      "errors_reported": false,
+      "fallback_used": false,
+      "generated": "2026-11-06T16:16:46+00:00",
+      "source_repo": "https://github.com/Ahhgust/STRaitRazor",
+      "source_ref": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42250554834",
+      "distinct_str_loci": 63,
+      "distinct_snp_markers": 157,
+      "total_reads": 3967,
+      "own_state": "na",
+      "external_state": "pass",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-str-fastq"
+      ],
+      "report": "straitrazor.json",
+      "page": "straitrazor.html",
+      "versions": [
+        {
+          "sha": "b618e9345ab40f348b504083ae8de2b39abb60fa",
+          "instrument": "documented",
+          "version": "v3",
+          "variant": null,
+          "committed": "2025-08-18T20:48:51Z",
+          "generated": "2026-11-06T16:16:46+00:00",
+          "level": "content",
+          "label": "Runs as documented",
+          "verdict": "runs",
+          "errors_reported": false,
+          "fallback_used": false,
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42250554834",
+          "report": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/straitrazor.json",
+          "page": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/straitrazor.html",
+          "pdf": "straitrazor/b618e9345ab40f348b504083ae8de2b39abb60fa/straitrazor.pdf"
         }
       ]
     },
