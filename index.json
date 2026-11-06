@@ -1,8 +1,57 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-11-06T16:16:49+00:00",
-  "count": 3,
+  "generated": "2026-11-06T16:20:00+00:00",
+  "count": 4,
   "tools": [
+    {
+      "slug": "expansionhunter-med",
+      "name": "ExpansionHunter",
+      "version": "v5.0.0",
+      "variant": null,
+      "sha": "9f5db1d4ab72016b2d93330b9792842d71582622",
+      "committed": "2021-08-20T00:22:50Z",
+      "instrument": "documented",
+      "level": "content",
+      "label": "Runs as documented",
+      "verdict": "runs",
+      "errors_reported": false,
+      "fallback_used": false,
+      "generated": "2026-11-06T16:19:55+00:00",
+      "source_repo": "https://github.com/Illumina/ExpansionHunter",
+      "source_ref": "9f5db1d4ab72016b2d93330b9792842d71582622",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42250919800",
+      "distinct_str_loci": 51,
+      "distinct_snp_markers": 0,
+      "total_reads": 27496,
+      "own_state": "na",
+      "external_state": "pass",
+      "readme_score": 4,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-bam-hg38-med"
+      ],
+      "report": "expansionhunter-med.json",
+      "page": "expansionhunter-med.html",
+      "versions": [
+        {
+          "sha": "9f5db1d4ab72016b2d93330b9792842d71582622",
+          "instrument": "documented",
+          "version": "v5.0.0",
+          "variant": null,
+          "committed": "2021-08-20T00:22:50Z",
+          "generated": "2026-11-06T16:19:55+00:00",
+          "level": "content",
+          "label": "Runs as documented",
+          "verdict": "runs",
+          "errors_reported": false,
+          "fallback_used": false,
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42250919800",
+          "report": "expansionhunter-med/9f5db1d4ab72016b2d93330b9792842d71582622/expansionhunter-med.json",
+          "page": "expansionhunter-med/9f5db1d4ab72016b2d93330b9792842d71582622/expansionhunter-med.html",
+          "pdf": "expansionhunter-med/9f5db1d4ab72016b2d93330b9792842d71582622/expansionhunter-med.pdf"
+        }
+      ]
+    },
     {
       "slug": "hipstr",
       "name": "hipstr",

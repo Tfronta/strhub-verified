@@ -1,0 +1,22 @@
+2026-11-06T16:19:32,[Starting ExpansionHunter v5.0.0]
+
+Basic options:
+  -h [ --help ]                         Print help message
+  -v [ --version ]                      Print version number
+  --reads arg                           BAM/CRAM file with aligned reads
+  --reference arg                       FASTA file with reference genome
+  --variant-catalog arg                 JSON file with variants to genotype
+  --output-prefix arg                   Prefix for the output files
+  --region-extension-length arg (=1000) How far from on/off-target regions to 
+                                        search for informative reads
+  --sex arg (=female)                   Sex of the sample; must be either male 
+                                        or female
+  --log-level arg (=info)               trace, debug, info, warn, or error
+
+Advanced options:
+  -a [ --aligner ] arg (=dag-aligner)   Specify which aligner to use 
+                                        (dag-aligner or path-aligner)
+  -m [ --analysis-mode ] arg (=seeking) Specify which analysis workflow to use 
+                                        (seeking or streaming)
+  -n [ --threads ] arg (=1)             Number of threads to use
+

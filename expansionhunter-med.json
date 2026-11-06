@@ -1,0 +1,659 @@
+{
+  "schema": "strhub-verified/1",
+  "mode": "trial",
+  "tool": {
+    "name": "ExpansionHunter",
+    "version": "v5.0.0",
+    "contact": "https://github.com/Illumina/ExpansionHunter/issues"
+  },
+  "submission": {
+    "by": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/Illumina/ExpansionHunter",
+    "ref": "9f5db1d4ab72016b2d93330b9792842d71582622",
+    "ref_resolved": "9f5db1d4ab72016b2d93330b9792842d71582622",
+    "committed": "2021-08-20T00:22:50Z"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ],
+    "source": "generated"
+  },
+  "generated": "2026-11-06T16:19:55+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42250919800",
+  "run": {
+    "cmd": "mkdir -p sample && ExpansionHunter --reads /data/in/input.bam --reference /data/ref/hg38.fa --variant-catalog /data/in/regions.json --output-prefix sample",
+    "cwd": "/opt/tool"
+  },
+  "instrument": "documented",
+  "recipe": {
+    "origin": "proposed"
+  },
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": true,
+    "io": true,
+    "content": true,
+    "starts": true
+  },
+  "level": "content",
+  "io_detail": {
+    "gate": "io",
+    "passed": true,
+    "outputs": [
+      {
+        "path": "**/*.vcf*",
+        "format": "vcf",
+        "checks": {
+          "confined": true,
+          "exists": true,
+          "non_empty": true,
+          "parses_as_vcf": true,
+          "min_records": true
+        },
+        "resolved": "sample.vcf",
+        "records": 51,
+        "passed": true
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": true,
+    "outputs": [
+      {
+        "path": "**/*.vcf*",
+        "resolved": "sample.vcf",
+        "mode": "auto",
+        "checks": {
+          "records_present": true,
+          "genotypes_called": true,
+          "given_loci_recognised": true
+        },
+        "stats": {
+          "rows": 51,
+          "header_row_dropped": false,
+          "malformed_rows": 0,
+          "dna_invalid_rows": 0,
+          "count_invalid_rows": 0,
+          "distinct_loci": 51,
+          "distinct_str_loci": 51,
+          "distinct_snp_markers": 0,
+          "loci": [
+            "AFF2",
+            "AFF3",
+            "AR",
+            "ARX",
+            "ATN1",
+            "ATXN1",
+            "ATXN10",
+            "ATXN2",
+            "ATXN3",
+            "ATXN7",
+            "ATXN8OS",
+            "BEAN1",
+            "C9orf72",
+            "CACNA1A",
+            "CBL",
+            "CNBP",
+            "COMP",
+            "CSTB",
+            "DAB1",
+            "DIP2B",
+            "DMPK",
+            "FMR1",
+            "FOXL2",
+            "FXN",
+            "GIPC1",
+            "GLS",
+            "HOXA13",
+            "HOXD13",
+            "HTT",
+            "JPH3",
+            "LRP12",
+            "MARCHF6",
+            "NIPA1",
+            "NOP56",
+            "NOTCH2NLC",
+            "NUTM2B-AS1",
+            "PABPN1",
+            "PHOX2B",
+            "PPP2R2B",
+            "RAPGEF2",
+            "RFC1",
+            "RUNX2",
+            "SAMD12",
+            "SOX3",
+            "STARD7",
+            "TBP",
+            "TCF4",
+            "TNRC6A",
+            "XYLT1",
+            "YEATS2",
+            "ZIC2"
+          ],
+          "str_loci": [
+            "AFF2",
+            "AFF3",
+            "AR",
+            "ARX",
+            "ATN1",
+            "ATXN1",
+            "ATXN10",
+            "ATXN2",
+            "ATXN3",
+            "ATXN7",
+            "ATXN8OS",
+            "BEAN1",
+            "C9orf72",
+            "CACNA1A",
+            "CBL",
+            "CNBP",
+            "COMP",
+            "CSTB",
+            "DAB1",
+            "DIP2B",
+            "DMPK",
+            "FMR1",
+            "FOXL2",
+            "FXN",
+            "GIPC1",
+            "GLS",
+            "HOXA13",
+            "HOXD13",
+            "HTT",
+            "JPH3",
+            "LRP12",
+            "MARCHF6",
+            "NIPA1",
+            "NOP56",
+            "NOTCH2NLC",
+            "NUTM2B-AS1",
+            "PABPN1",
+            "PHOX2B",
+            "PPP2R2B",
+            "RAPGEF2",
+            "RFC1",
+            "RUNX2",
+            "SAMD12",
+            "SOX3",
+            "STARD7",
+            "TBP",
+            "TCF4",
+            "TNRC6A",
+            "XYLT1",
+            "YEATS2",
+            "ZIC2"
+          ],
+          "snp_markers": [],
+          "total_reads": 27496,
+          "max_sequence_depth": 1103,
+          "top_loci_by_depth": [
+            [
+              "SAMD12",
+              1103
+            ],
+            [
+              "RAPGEF2",
+              1015
+            ],
+            [
+              "AFF2",
+              876
+            ],
+            [
+              "YEATS2",
+              864
+            ],
+            [
+              "MARCHF6",
+              855
+            ],
+            [
+              "DAB1",
+              834
+            ],
+            [
+              "STARD7",
+              776
+            ],
+            [
+              "ATXN2",
+              775
+            ],
+            [
+              "ATXN10",
+              730
+            ],
+            [
+              "AR",
+              724
+            ],
+            [
+              "TNRC6A",
+              691
+            ],
+            [
+              "TBP",
+              689
+            ],
+            [
+              "ATXN3",
+              642
+            ],
+            [
+              "FMR1",
+              624
+            ],
+            [
+              "SOX3",
+              610
+            ],
+            [
+              "RFC1",
+              608
+            ],
+            [
+              "ATXN1",
+              605
+            ],
+            [
+              "FOXL2",
+              600
+            ],
+            [
+              "HOXA13",
+              592
+            ],
+            [
+              "PABPN1",
+              588
+            ],
+            [
+              "PHOX2B",
+              584
+            ],
+            [
+              "ZIC2",
+              560
+            ],
+            [
+              "ARX",
+              560
+            ],
+            [
+              "CBL",
+              548
+            ],
+            [
+              "BEAN1",
+              547
+            ],
+            [
+              "HOXD13",
+              510
+            ],
+            [
+              "HTT",
+              498
+            ],
+            [
+              "TCF4",
+              484
+            ],
+            [
+              "RUNX2",
+              470
+            ],
+            [
+              "C9orf72",
+              445
+            ],
+            [
+              "JPH3",
+              416
+            ],
+            [
+              "ATN1",
+              414
+            ],
+            [
+              "NIPA1",
+              414
+            ],
+            [
+              "NOTCH2NLC",
+              400
+            ],
+            [
+              "PPP2R2B",
+              398
+            ],
+            [
+              "GIPC1",
+              396
+            ],
+            [
+              "ATXN8OS",
+              386
+            ],
+            [
+              "XYLT1",
+              374
+            ],
+            [
+              "CNBP",
+              364
+            ],
+            [
+              "NUTM2B-AS1",
+              363
+            ],
+            [
+              "CSTB",
+              363
+            ],
+            [
+              "NOP56",
+              358
+            ],
+            [
+              "DMPK",
+              347
+            ],
+            [
+              "CACNA1A",
+              345
+            ],
+            [
+              "FXN",
+              330
+            ],
+            [
+              "LRP12",
+              328
+            ],
+            [
+              "GLS",
+              313
+            ],
+            [
+              "AFF3",
+              310
+            ],
+            [
+              "COMP",
+              303
+            ],
+            [
+              "DIP2B",
+              301
+            ],
+            [
+              "ATXN7",
+              266
+            ]
+          ],
+          "called_genotypes": 51,
+          "regions_given": 51,
+          "regions_hit": 51
+        },
+        "passed": true
+      }
+    ]
+  },
+  "example_detail": null,
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-bam-hg38-med",
+      "dataset": "Illumina BAM (hg38), NA12878, medical STR slice (female)",
+      "io": true,
+      "content": true,
+      "passed": true
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": false,
+      "io": false,
+      "content": null,
+      "passed": false,
+      "matches_expected": null,
+      "produced_count": null
+    }
+  ],
+  "regions": {
+    "source": "strhub",
+    "panel_label": "disease-associated STR loci",
+    "panel_size": 51
+  },
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 4,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\bbam\\b"
+      },
+      "output": {
+        "present": false,
+        "matched": null
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bversions?\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "upstream": {
+    "checked": "2026-11-06T16:19:55+00:00",
+    "repo_exists": true,
+    "ref_exists": true,
+    "default_branch": "master",
+    "status": "ahead",
+    "behind_by": 8
+  },
+  "needed_beyond_repo": [
+    "Test data: no sample from the repository was used, so a public reference sample stood in.",
+    "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships."
+  ],
+  "evidence": [
+    {
+      "claim": "run_command",
+      "kind": "doc",
+      "path": "docs/03_Usage.md",
+      "line": 15,
+      "text": "ExpansionHunter --reads <BAM/CRAM file with aligned reads> \\",
+      "url": "https://github.com/Illumina/ExpansionHunter/blob/9f5db1d4ab72016b2d93330b9792842d71582622/docs/03_Usage.md#L15"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/input/reference.fa",
+      "text": "fasta",
+      "url": "https://github.com/Illumina/ExpansionHunter/blob/9f5db1d4ab72016b2d93330b9792842d71582622/example/input/reference.fa"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/input/variants.bam",
+      "text": "bam",
+      "url": "https://github.com/Illumina/ExpansionHunter/blob/9f5db1d4ab72016b2d93330b9792842d71582622/example/input/variants.bam"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/output/repeats.vcf",
+      "text": "vcf",
+      "url": "https://github.com/Illumina/ExpansionHunter/blob/9f5db1d4ab72016b2d93330b9792842d71582622/example/output/repeats.vcf"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/output/repeats_realigned.bam",
+      "text": "bam",
+      "url": "https://github.com/Illumina/ExpansionHunter/blob/9f5db1d4ab72016b2d93330b9792842d71582622/example/output/repeats_realigned.bam"
+    },
+    {
+      "claim": "documented_input",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 15,
+      "text": "ExpansionHunter --reads <BAM/CRAM file with aligned reads> \\",
+      "url": "https://github.com/Illumina/ExpansionHunter/blob/9f5db1d4ab72016b2d93330b9792842d71582622/README.md#L15"
+    }
+  ],
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 4,
+    "examples": [
+      "example/input/reference.fa",
+      "example/input/variants.bam",
+      "example/output/repeats.vcf",
+      "example/output/repeats_realigned.bam"
+    ]
+  },
+  "caveats": {
+    "source": "detect_recipe",
+    "items": [
+      "Environment: generated by STRhub from the repository's install instructions (release_binary), at the pinned commit.",
+      "Input: the README documents BAM (line 15); this run used STRhub's illumina-bam-hg38-med reference data.",
+      "Panel: the loci file the documented command reads, shipped in the repository, lists coordinates inside STRhub's medical STR slice and none inside the forensic one; this run used the medical slice of the same sample (illumina-bam-hg38-med).",
+      "The output directory the command writes into (sample) was created first.",
+      "1 input path(s) in the README command replaced with /data/in/input.bam.",
+      "1 reference FASTA path(s) replaced with /data/ref/hg38.fa.",
+      "Run command: the one documented in docs/03_Usage.md (line 15), rewritten to STRhub's mounts; everything it created was captured as output.",
+      "Regions: STRhub's ready-made eh_catalog file for the dataset's panel loci (STRhub records the eh_catalog layout for a program of this name)."
+    ]
+  },
+  "logs": {
+    "external": "expansionhunter-med.log-external.txt",
+    "starts": "expansionhunter-med.log-starts.txt",
+    "build": "expansionhunter-med.log-build.txt"
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  },
+  "procedure_review": {
+    "may_say_runs": true,
+    "basis": "gates",
+    "attribution": "tool",
+    "blocker": "ready",
+    "reason": "The repository states how to install (release_binary) and STRhub holds the sample. The container is that install, packaged. If the documented command then fails, the failure is that command's.",
+    "amendments": [],
+    "install_method": "release_binary",
+    "citable_install": true,
+    "input_type": "illumina-bam-hg38-med",
+    "output_glob": "**/*.vcf*"
+  },
+  "verdict": {
+    "code": "runs",
+    "title": "Runs",
+    "basis": "gates",
+    "reason": "The tool installed and its run produced its documented output.",
+    "readme_gaps": [],
+    "blockers": []
+  },
+  "step1": {
+    "code": "runs",
+    "headline": "As documented, it runs.",
+    "body": "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.",
+    "missing": [],
+    "missing_text": [],
+    "guide": "docs/GUIA-PASO-1.md"
+  },
+  "certificate": {
+    "schema": "strhub-verified/certificate/1",
+    "label": "Runs as documented",
+    "reached": "Runs + Plausible output",
+    "summary": {
+      "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
+      "result": "Runs as documented",
+      "reached": "Runs + Plausible output, 5/5 gates passed",
+      "why": "The tool installed and its run produced its documented output.",
+      "scope": "Installation, execution, and output structure verification.",
+      "not_evaluated": [
+        "Genotype accuracy",
+        "Concordance",
+        "Forensic validity",
+        "Regulatory compliance"
+      ]
+    },
+    "conclusion": [
+      {
+        "title": "Runs end-to-end",
+        "body": "ExpansionHunter v5.0.0 installs and executes without error in a clean ubuntu-22.04 environment at the pinned commit."
+      },
+      {
+        "title": "Produces plausible output",
+        "body": "The tool generated a structurally valid VCF output file with genotype calls across 51 target forensic STR loci, with a maximum read depth of 1103 at SAMD12."
+      },
+      {
+        "title": "Verdict: Runs",
+        "body": "The tool installed and its run produced its documented output."
+      },
+      {
+        "title": "Repository test data not used",
+        "body": "The repository ships example data (4 file(s)), which this run did not use: the gates above ran on STRhub's reference dataset. STRhub Verified supplied Illumina BAM (hg38), NA12878, medical STR slice (female) as the reference input for this verification run. Users replicating this result should use the same or equivalent publicly available reference material."
+      },
+      {
+        "title": "Reproducibility statement",
+        "body": "The exact command reported in Section 3, executed at the pinned commit in the described environment, is sufficient to reproduce this verification result independently."
+      }
+    ],
+    "out_of_scope": [
+      "Genotype correctness or accuracy",
+      "Concordance against known truth sets",
+      "Sensitivity, specificity, or stutter performance",
+      "Allele calling accuracy or forensic casework suitability",
+      "Regulatory compliance or ISO accreditation",
+      "Multi-laboratory or multi-dataset reproducibility"
+    ],
+    "limitations": [
+      "Single reference dataset per input type",
+      "Single containerized environment (Docker / ubuntu-22.04)",
+      "No truth-set comparison or ground-truth genotypes",
+      "No accuracy or concordance assessment",
+      "No forensic validation of results",
+      "Short-read limitations apply (very long STR alleles may not span reads)"
+    ],
+    "scope": {
+      "statement": "Independent automated verification of reproducible execution. It confirms the tool installs, runs end-to-end, and produces structurally valid output in a standardized environment.",
+      "not": "This is not an analytical validation. Genotype accuracy, concordance, forensic suitability, and regulatory compliance are out of scope.",
+      "disclaimer": "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub does not store tool source code."
+    }
+  }
+}
