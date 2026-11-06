@@ -1,6 +1,56 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-11-06T13:17:58+00:00",
-  "count": 0,
-  "tools": []
+  "generated": "2026-11-06T14:39:42+00:00",
+  "count": 1,
+  "tools": [
+    {
+      "slug": "hipstr",
+      "name": "hipstr",
+      "version": "v0.7",
+      "variant": "Autosomal (hg38)",
+      "sha": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "committed": "2021-05-10T16:02:08Z",
+      "instrument": "curated",
+      "level": "content",
+      "label": "Not verified as documented",
+      "verdict": "runs",
+      "errors_reported": false,
+      "fallback_used": false,
+      "generated": "2026-11-06T14:39:39+00:00",
+      "source_repo": "https://github.com/tfwillems/HipSTR",
+      "source_ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42235249876",
+      "distinct_str_loci": 23,
+      "distinct_snp_markers": 0,
+      "total_reads": 8230,
+      "own_state": "pass",
+      "external_state": "pass",
+      "readme_score": 5,
+      "readme_max": 5,
+      "dataset_types": [
+        "illumina-bam-hg38"
+      ],
+      "report": "hipstr.json",
+      "page": "hipstr.html",
+      "versions": [
+        {
+          "sha": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+          "instrument": "curated",
+          "version": "v0.7",
+          "variant": "Autosomal (hg38)",
+          "committed": "2021-05-10T16:02:08Z",
+          "generated": "2026-11-06T14:39:39+00:00",
+          "level": "content",
+          "label": "Not verified as documented",
+          "verdict": "runs",
+          "errors_reported": false,
+          "fallback_used": false,
+          "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42235249876",
+          "report": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.json",
+          "page": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.html",
+          "pdf": "hipstr/b2033bfbb5cf55496b776463bdf2993fa763a4be/curated/hipstr.pdf"
+        }
+      ]
+    }
+  ]
 }
