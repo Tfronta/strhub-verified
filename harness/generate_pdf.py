@@ -76,6 +76,7 @@ _LOGO_PATH = _logo_temp_path()
 GATE_DISPLAY = [
     ("available", "Available",                   "The pinned public source exists"),
     ("installs",  "Installs",                    "The environment builds from source"),
+    ("starts",    "Starts",                      "The installed program answers --help in the built environment"),
     ("runs",      "Runs",                        "Executes end-to-end without crashing"),
     ("io",        "Expected IO",                 "Produces a non-empty file in the declared format"),
     ("content",   "Plausible Output",            "Output structure matches expected genotype-bearing format"),
@@ -208,10 +209,13 @@ def boxed(content_list, bg=None, border_color=BORDER, pad=12):
     ]))
     return tbl
 
-def pass_badge(ok=True):
-    if ok:
+def pass_badge(state="pass"):
+    if state == "pass" or state is True:
         text = '<font name="Helvetica-Bold" size="7" color="#ffffff">PASS</font>'
         bg = TEAL
+    elif state == "fail" or state == "stopped":
+        text = '<font name="Helvetica-Bold" size="7" color="#ffffff">FAIL</font>'
+        bg = RED_SOFT
     else:
         text = '<font name="Helvetica-Bold" size="7" color="#9ca3af">—</font>'
         bg = GRAY_LIGHT
@@ -375,10 +379,11 @@ def build_cover(cfg):
     # repository — before the rung it reached (certificate_text.headline,
     # the same the badge and the page print).
     result_label = cfg.get("headline") or LEVEL_LABEL.get(cfg["level"], "Not verified")
+    res_color = "#ef4444" if (cfg.get("verdict") or {}).get("code") == "fails" else "#00909c"
     meta_rows = [
         ("Verification date",  cfg["ver_date"]),
         ("Repository commit",  link(cfg["commit_url"], cfg["commit"])),
-        ("Result",             f'<font color="#00909c"><b>{result_label}</b></font>'),
+        ("Result",             f'<font color="{res_color}"><b>{result_label}</b></font>'),
         ("Reached",            LEVEL_LABEL.get(cfg["level"], "Not run")),
         ("Permalink",          link(cfg["permalink"]) if cfg.get("permalink")
                                else "Not published — this is a test run"),
@@ -465,10 +470,11 @@ def build_body(cfg):
     n_pass = sum(1 for ok in gates_dict.values() if ok)
     n_total = len(gates_dict)
     verdict = cfg.get("verdict") or {}
+    res_color = "#ef4444" if verdict.get("code") == "fails" else "#00909c"
     els.append(section_num("1", "Executive Summary"))
     exec_rows = [
         ("PURPOSE",           PURPOSE),
-        ("RESULT",            f'<font color="#00909c"><b>{esc(result_label)}</b></font>'),
+        ("RESULT",            f'<font color="{res_color}"><b>{esc(result_label)}</b></font>'),
         ("REACHED",           f'{esc(attest_label)}, {n_pass}/{n_total} gates passed'),
     ]
     if verdict.get("reason"):
@@ -537,11 +543,27 @@ def build_body(cfg):
     els.append(section_num(str(sec), "Verification Gates" if curated else f"{AS_IS_HEADING}: Verification Gates"))
     sec += 1
     gdata = []
+    stopped_found = False
     for key, gate_name, gate_desc in GATE_DISPLAY:
+        if key == "starts" and key not in gates_dict:
+            continue
         ok = gates_dict.get(key, False)
+        if ok:
+            st = "pass"
+            desc_text = gate_desc
+        elif not stopped_found and key != "starts":
+            st = "stopped"
+            stopped_found = True
+            desc_text = f'{gate_desc} &nbsp; <font color="#ef4444"><b>The run stopped here.</b></font>'
+        elif not ok and key == "starts":
+            st = "stopped"
+            desc_text = gate_desc
+        else:
+            st = "na"
+            desc_text = f'{gate_desc} &nbsp; <font color="#9ca3af"><i>Not attempted, because the run had already stopped.</i></font>'
         gdata.append([Paragraph(gate_name, ST["gate_name"]),
-                      Paragraph(gate_desc, ST["gate_desc"]),
-                      pass_badge(ok)])
+                      Paragraph(desc_text, ST["gate_desc"]),
+                      pass_badge(st)])
     # A real link, not teal text that looks like one. This row was styled as a
     # link and wasn't clickable — in a document whose whole purpose is to be
     # attached to a review, where the reader cannot reach the log any other way.
@@ -685,12 +707,12 @@ def build_body(cfg):
         els.append(section_num(str(sec), "What the Author Documents as a Known Issue"))
         sec += 1
         els.append(Paragraph(
-            "Quoted from the repository's README at the verified commit. STRhub did not "
+            "Documented by the author in the official repository. Quoted from the repository's README at the verified commit. STRhub did not "
             "establish any of this by running the tool; it is the author's own note about "
             "their own software.", ST["body"]))
         els.append(vspace(3))
         for k in known:
-            els.append(Paragraph(f"<b>{esc(k['heading'])}</b> (README line {k['line']})",
+            els.append(Paragraph(f"<b>{esc(k['heading'])}</b> (Official README line {k['line']})",
                                  S("kih", fontSize=8.5, textColor=INK, leading=12, spaceAfter=2)))
             quote = esc(k["text"]) + ("…" if k.get("truncated") else "")
             els.append(boxed([Paragraph(quote, S("kiq", fontSize=8, textColor=GRAY, leading=12))]))
@@ -755,30 +777,32 @@ def build_body(cfg):
     sec += 1
     stats = cfg.get("stats", {})
     assessed = bool(stats)   # the Content gate ran and produced statistics
-    na = "Not assessed"
-    total_reads = stats.get("total_reads", 0)
-    ev_rows = [
-        ("Output file",              stats.get("output_file") or cfg.get("declared_output", "—")),
-        ("Format",                   stats.get("format") or cfg.get("declared_format", "—")),
-        ("Sequence records",         str(stats.get("rows", 0)) if assessed else na),
-        ("Distinct STR loci",        str(stats.get("distinct_str_loci", 0)) if assessed else na),
-        ("Total reads",              f"{total_reads:,}" if assessed else na),
-        ("Max depth (single locus)", str(stats.get("max_sequence_depth", 0)) if assessed else na),
-    ]
-    tdata = [[Paragraph(k, ST["meta_label"]),
-              Paragraph(v, ST["tbl_cell"])] for k, v in ev_rows]
-    evt = Table(tdata, colWidths=[60*mm, CW - 60*mm])
-    evt.setStyle(TableStyle([
-        ("VALIGN",        (0,0),(-1,-1), "MIDDLE"),
-        ("LEFTPADDING",   (0,0),(-1,-1), 10),
-        ("RIGHTPADDING",  (0,0),(-1,-1), 10),
-        ("TOPPADDING",    (0,0),(-1,-1), 5),
-        ("BOTTOMPADDING", (0,0),(-1,-1), 5),
-        ("ROWBACKGROUNDS",(0,0),(-1,-1), [WHITE, GRAY_LIGHT]),
-        ("LINEBELOW",     (0,0),(-1,-2), 0.3, BORDER),
-        ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
-    ]))
-    els.append(evt)
+    if not assessed:
+        els.append(boxed([Paragraph("<i>No output files were generated because the run stopped before completion.</i>", ST["body"])]))
+    else:
+        total_reads = stats.get("total_reads", 0)
+        ev_rows = [
+            ("Output file",              stats.get("output_file") or cfg.get("declared_output", "—")),
+            ("Format",                   stats.get("format") or cfg.get("declared_format", "—")),
+            ("Sequence records",         str(stats.get("rows", 0))),
+            ("Distinct STR loci",        str(stats.get("distinct_str_loci", 0))),
+            ("Total reads",              f"{total_reads:,}"),
+            ("Max depth (single locus)", str(stats.get("max_sequence_depth", 0))),
+        ]
+        tdata = [[Paragraph(k, ST["meta_label"]),
+                  Paragraph(v, ST["tbl_cell"])] for k, v in ev_rows]
+        evt = Table(tdata, colWidths=[60*mm, CW - 60*mm])
+        evt.setStyle(TableStyle([
+            ("VALIGN",        (0,0),(-1,-1), "MIDDLE"),
+            ("LEFTPADDING",   (0,0),(-1,-1), 10),
+            ("RIGHTPADDING",  (0,0),(-1,-1), 10),
+            ("TOPPADDING",    (0,0),(-1,-1), 5),
+            ("BOTTOMPADDING", (0,0),(-1,-1), 5),
+            ("ROWBACKGROUNDS",(0,0),(-1,-1), [WHITE, GRAY_LIGHT]),
+            ("LINEBELOW",     (0,0),(-1,-2), 0.3, BORDER),
+            ("BOX",           (0,0),(-1,-1), 0.5, BORDER),
+        ]))
+        els.append(evt)
 
     # §7 Verification Data
     els.append(section_num(str(sec), "Verification Data"))
@@ -871,9 +895,22 @@ def build_body(cfg):
     # so a run that produced nothing still showed a green matrix.
     ext = next((d for d in (cfg.get("datasets") or [])
                 if d.get("leg") == "external"), {}) or {}
-    ext_mark = "PASS" if ext.get("passed") else ("—" if ext.get("available") else "N/A")
-    matrix_rows = [
-        (ext_mark, "Reference dataset",        ds.get("name", "—")),
+    if ext.get("passed"):
+        ext_tag = '<font color="#00909c"><b>PASS</b></font>'
+    elif ext.get("available"):
+        ext_tag = '<font color="#ef4444"><b>FAIL</b></font>'
+    else:
+        ext_tag = '<font color="#9ca3af"><b>N/A</b></font>'
+
+    own = next((d for d in (cfg.get("datasets") or [])
+                if d.get("leg") == "own"), None)
+    matrix_rows = []
+    if own:
+        own_tag = '<font color="#00909c"><b>PASS</b></font>' if own.get("passed") else ('<font color="#ef4444"><b>FAIL</b></font>' if own.get("available") else '<font color="#9ca3af"><b>N/A</b></font>')
+        matrix_rows.append((own_tag, "Run on repository test data", own.get("dataset", "—")))
+
+    matrix_rows += [
+        (ext_tag, "Run on reference dataset",        ds.get("name", "—")),
         ("",     f"README check ({rc_score}/{rc_max})",
                  "Advisory: all items present" if rc_score == rc_max else f"{rc_score}/{rc_max} items present"),
         ("",     "Install / environment setup", "Present"),
@@ -884,9 +921,7 @@ def build_body(cfg):
     ]
     tdata = []
     for tag, label, val in matrix_rows:
-        tag_p = Paragraph(
-            f'<font color="#00909c"><b>{tag}</b></font>' if tag else "",
-            ST["tbl_cell"])
+        tag_p = Paragraph(tag if tag else "", ST["tbl_cell"])
         tdata.append([tag_p, Paragraph(label, ST["tbl_cell"]),
                       Paragraph(val, ST["tbl_cell"])])
     C2 = CW * 0.52
