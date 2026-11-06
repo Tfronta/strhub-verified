@@ -1,67 +1,51 @@
 # STRhub Verified
 
-Independent, automated, reproducible-execution attestation for forensic STR
-software. It answers the one question a reviewer most needs and can least
-afford to check by hand: **does this tool actually install and run end-to-end,
-producing output in the documented format, in a stated environment?**
+Independent, automated attestations of documented execution for Short Tandem Repeat (STR) software (forensic and medical/genomics).
 
-It is **not** a concordance/accuracy benchmark, **not** a casework validation,
-and **not** a ranking. Every attestation carries this scope statement:
+We verify whether an STR tool installs and runs end-to-end strictly following the instructions in its public repository, in a clean and reproducible environment. Our purpose is to help authors and users identify documentation or environment friction to collaborate on fixes. It does not evaluate genotype concordance (not a biological benchmark) nor constitute evidence for forensic casework fitness.
 
-> Executed end-to-end in the stated environment with output in the expected
-> format. Concerns reproducible execution only; no claim of accuracy, casework
-> fitness, or regulatory validation.
+Every attestation carries this scope statement:
 
-## Why this needs almost no infrastructure
-The "server" is **GitHub Actions**. Standard runners are free and unlimited on
-public repositories, so each verification is an ephemeral container job at ~zero
-cost. There is no always-on server and no database — the git repo is the
-registry, the CI log is the evidence, and `reports/*.json` + badges are static.
-The only escalation is a tool that needs a GPU to run, which would use a
-self-hosted runner (e.g. Jairu, or a small cloud GPU instance).
+> Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.
 
-## The gates
-| Gate | Question | Where it runs |
-|------|----------|---------------|
-| Available | Is the source public at a pinned ref? | `git ls-remote` |
-| Installs | Does the declared environment build? | `docker build` |
-| Runs | Does it execute to completion (exit 0)? | `docker run` on the fixture |
-| Expected IO | Are the outputs present, non-empty, and valid format? | `harness/check_io.py` |
-| *Reproduces own example* (optional) | Does it match the tool's OWN published example output? | golden-file compare |
+Each result is a fixed, dated attestation verified on the tool's public repository at an immutable commit. It does not constitute continuous monitoring nor a guarantee for subsequent versions or modified environments. STRhub stores no tool source code.
 
-The badge reflects the furthest contiguous gate cleared, and is honest about
-partial results (a tool can be "Installs" but fail "Runs").
+## Verification Gates
 
-## Layout
+The evaluation is conducted in an isolated container without network access and with strict resource ceilings:
+
+| Gate | Question | Verification method |
+|------|----------|---------------------|
+| Available | Is the source public at a pinned ref? | `git ls-remote` / commit check |
+| Installs | Does the environment build from declared instructions? | `docker build` from declared procedure or repo Dockerfile |
+| Starts | Does the installed binary start and respond to `--help`? | Execution in clean container |
+| Runs | Does it execute end-to-end without crashing (exit code 0)? | `docker run` on reference or test dataset |
+| Expected IO | Does it produce non-empty files in declared formats? | Format validation (`harness/check_io.py`) |
+| Plausible Output | Does output contain structured, genotype-bearing records? | Plausibility checks (`harness/check_content.py`) |
+
+The resulting badge reflects the furthest contiguous gate cleared, providing honest and constructive transparency into where execution stopped.
+
+## Execution Modes
+
+1. **1-Click URL Trial**: Evaluates a tool directly from its public repository URL. The harness inspects the README, repository tree, and dependency files to propose an install procedure and command, evaluating it immediately in CI.
+2. **Curated Catalogue Verification**: Evaluates curated configurations under `tools/<slug>/` against open reference datasets (Illumina STR FASTQ, ONT BAM, PacBio HiFi BAM).
+
+## Repository Layout
+
 ```
-.github/workflows/verify.yml   the engine (build -> run -> check -> report)
-schema/manifest.schema.json    the manifest contract
-harness/                       check_io.py, report.py, _manifest.py  (stdlib + pyyaml)
-tools/<tool>/manifest.yml      author-declared: repo, ref, run cmd, expected outputs
-tools/<tool>/Dockerfile        the pinned environment
-fixtures/                      tiny consent-clean test inputs
-reports/                       generated attestations + shields.io badges
+.github/workflows/verify.yml   The verification engine workflow
+schema/manifest.schema.json    Manifest specification contract
+datasets/                      Open reference datasets and panel BED definitions
+harness/                       Recipe detection, execution runners, and report generators
+tools/<tool>/                  Curated tool recipes (manifest.yml, Dockerfile, assets)
 ```
 
-## Add a tool (self-service)
-1. Create `tools/<your-tool>/` with a `manifest.yml` (see `schema/` and the
-   STRait Razor example) and a `Dockerfile`.
-2. Pin `source.ref` to an immutable commit.
-3. Open a PR. CI runs the gates and posts the attestation as an artifact.
-4. STRhub independently re-runs the same harness to attest — you never hand
-   over anything beyond your public repo at the pinned ref.
+## Reproducible Execution Architecture
 
-## Run locally
-```bash
-docker build --build-arg STRAITRAZOR_REF=<sha> -f tools/strait-razor-PowerSeqv2.31/Dockerfile -t toolimg tools/strait-razor-PowerSeqv2.31
-mkdir -p work/out
-docker run --rm -v "$PWD/fixtures/example:/data/in:ro" -v "$PWD/work/out:/data/out" toolimg \
-  "str8rzr -c /opt/strait-razor/PowerSeqv2.31.config /data/in/sample.fastq > /data/out/sample.allsequences.txt"
-python harness/check_io.py tools/strait-razor-PowerSeqv2.31/manifest.yml work/out
-python harness/report.py --manifest tools/strait-razor-PowerSeqv2.31/manifest.yml --installs pass --runs pass
-```
+- **Engine**: GitHub Actions with standard ephemeral Ubuntu runners.
+- **Container Hardening**: Evaluated inside Docker with `--network none`, `--cap-drop ALL`, `--security-opt no-new-privileges`, and strict CPU, process, and memory caps.
+- **Artifacts**: Every verification generates an immutable attestation package comprising a signed JSON report, an HTML report, and a formal PDF certificate with cryptographic digests.
 
-## Status
-v0 scaffold. STRait Razor is the worked example; lines marked `# VERIFY` must be
-confirmed against the tool's manual before the first real attestation.
-License: AGPL-3.0 (to match STRhub).
+## License
+
+AGPL-3.0 (matching STRhub).
