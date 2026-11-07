@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-11-07T12:10:27+00:00",
+  "generated": "2026-11-07T12:14:29+00:00",
   "count": 8,
   "tools": [
     {
@@ -376,7 +376,11 @@
           "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42252289928",
           "report": "strspy-ont/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/curated/strspy-ont.json",
           "page": "strspy-ont/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/curated/strspy-ont.html",
-          "pdf": "strspy-ont/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/curated/strspy-ont.pdf"
+          "pdf": "strspy-ont/dafdee7e7e5672c8dc732e8577dbe153f53a12f5/curated/strspy-ont.pdf",
+          "retired": {
+            "retired": "2026-11-07T12:14:29+00:00",
+            "reason": "retired in favor of URL-derived documented proposal"
+          }
         }
       ]
     },
