@@ -794,13 +794,16 @@ def build_body(cfg):
         fmt_val = (stats.get("format") or cfg.get("declared_format", "—")).upper()
         depth_src = stats.get("depth_source") or ("FORMAT/DP" if fmt_val == "VCF" and total_reads > 0 else "")
         reads_label = f"Total reads ({depth_src})" if depth_src else "Total reads"
+        top_loci = cfg.get("loci_with_depth") or stats.get("top_loci_by_depth") or []
+        max_depth = stats.get("max_sequence_depth", 0)
+        top_val = f"{top_loci[0][0]} ({max_depth:,} reads)" if top_loci else str(max_depth)
         ev_rows = [
             ("Output file",              stats.get("output_file") or cfg.get("declared_output", "—")),
             ("Format",                   stats.get("format") or cfg.get("declared_format", "—")),
             ("Sequence records",         str(stats.get("rows", 0))),
             ("Distinct STR loci",        str(stats.get("distinct_str_loci", 0))),
             (reads_label,                f"{total_reads:,}"),
-            ("Max depth (single locus)", str(stats.get("max_sequence_depth", 0))),
+            ("Highest-coverage locus",   top_val),
         ]
         tdata = [[Paragraph(k, ST["meta_label"]),
                   Paragraph(v, ST["tbl_cell"])] for k, v in ev_rows]
