@@ -400,8 +400,7 @@ def conclusion_items_for(cfg: dict) -> list[tuple[str, str]]:
     if gates.get("content"):
         produced = ("Produces plausible output",
                     f"The tool generated a structurally valid {fmt_label}output file with genotype "
-                    f"calls across {n_loci} target forensic STR loci, with a "
-                    f"maximum read depth of {max_depth} at {deepest_locus}.")
+                    f"calls across {n_loci} target forensic STR loci.")
     elif gates.get("io"):
         produced = ("Produces output in the declared format",
                     f"The tool wrote a non-empty {fmt_label}file. Whether its contents look like "

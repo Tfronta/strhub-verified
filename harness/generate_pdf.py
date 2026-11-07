@@ -770,18 +770,6 @@ def build_body(cfg):
     els.append(vspace(3))
     els.append(Paragraph(RECORD_NOTE, ST["body"]))
 
-    # §5 Out of Scope
-    els.append(section_num(str(sec), "Out of Scope"))
-    sec += 1
-    out_items = OUT_OF_SCOPE
-    content = [Paragraph("This report does not evaluate any of the following:", ST["body"])]
-    for item in out_items:
-        content.append(Paragraph(
-            f'<font color="#9ca3af">–</font>  {item}',
-            S("oi", fontSize=8.5, textColor=GRAY, leading=14,
-              leftIndent=10, spaceAfter=1)))
-    els.append(boxed(content))
-
     # §6 Output Content Evidence
     els.append(section_num(str(sec), "Output Content Evidence"))
     sec += 1
@@ -790,26 +778,20 @@ def build_body(cfg):
     if not assessed:
         els.append(boxed([Paragraph("<i>No output files were generated because the run stopped before completion.</i>", ST["body"])]))
     else:
-        total_reads = stats.get("total_reads", 0)
-        fmt_val = (stats.get("format") or cfg.get("declared_format", "—")).upper()
-        depth_src = stats.get("depth_source") or ("FORMAT/DP" if fmt_val == "VCF" and total_reads > 0 else "")
-        reads_label = f"Total reads ({depth_src})" if depth_src else "Total reads"
-        top_loci = cfg.get("loci_with_depth") or stats.get("top_loci_by_depth") or []
-        max_depth = stats.get("max_sequence_depth", 0)
-        top_val = f"{top_loci[0][0]} ({max_depth:,} reads)" if top_loci else str(max_depth)
+        called_loci = stats.get("str_loci") or stats.get("loci") or []
+        loci_str = " · ".join(called_loci) if called_loci else "—"
         ev_rows = [
             ("Output file",              stats.get("output_file") or cfg.get("declared_output", "—")),
             ("Format",                   stats.get("format") or cfg.get("declared_format", "—")),
             ("Sequence records",         str(stats.get("rows", 0))),
             ("Distinct STR loci",        str(stats.get("distinct_str_loci", 0))),
-            (reads_label,                f"{total_reads:,}"),
-            ("Highest-coverage locus",   top_val),
+            ("STR loci detected",        loci_str),
         ]
         tdata = [[Paragraph(k, ST["meta_label"]),
                   Paragraph(v, ST["tbl_cell"])] for k, v in ev_rows]
         evt = Table(tdata, colWidths=[60*mm, CW - 60*mm])
         evt.setStyle(TableStyle([
-            ("VALIGN",        (0,0),(-1,-1), "MIDDLE"),
+            ("VALIGN",        (0,0),(-1,-1), "TOP"),
             ("LEFTPADDING",   (0,0),(-1,-1), 10),
             ("RIGHTPADDING",  (0,0),(-1,-1), 10),
             ("TOPPADDING",    (0,0),(-1,-1), 5),
@@ -996,25 +978,20 @@ def build_body(cfg):
         sec += 1
         els.append(boxed(note_els))
 
-    # Limitations
-    els.append(section_num(str(sec), "Limitations"))
+    # Scope and Limitations (consolidated)
+    els.append(section_num(str(sec), "Scope and Limitations"))
     sec += 1
     lim_items = LIMITATIONS
     lim = [Paragraph(
+        "Concerns reproducible execution only; no claim of genotype accuracy, "
+        "concordance, forensic casework suitability, or regulatory validation.",
+        ST["body"]), vspace(2)]
+    lim += [Paragraph(
         f'<font color="#9ca3af">–</font>  {item}',
         S("li", fontSize=8.5, textColor=GRAY, leading=14,
           leftIndent=10, spaceAfter=1)) for item in lim_items]
+    lim += [vspace(2), Paragraph(DISCLAIMER, ST["body"])]
     els.append(boxed(lim))
-
-    # Disclaimers
-    els.append(section_num(str(sec), "Scope and Disclaimers"))
-    sec += 1
-    disc = (
-        "Executed end-to-end in the stated environment with output in the expected format. "
-        "Concerns reproducible execution only; no claim of accuracy, casework fitness, "
-        "or regulatory validation.<br/><br/>" + DISCLAIMER
-    )
-    els.append(boxed([Paragraph(disc, ST["body"])]))
 
     # §11 Conclusion. What the run established, gate by gate — see
     # conclusion_items_for, which is pure so it can be held to it by tests.
@@ -1407,10 +1384,6 @@ def main() -> int:
     story += build_cover(cfg)
     story.append(PageBreak())
     story += build_body(cfg)
-    appendix = build_appendix(cfg)
-    if appendix:
-        story.append(PageBreak())
-        story += appendix
 
     doc.build(story, canvasmaker=_make_canvas_class(cfg))
     print(f"✓ {out_path}")
