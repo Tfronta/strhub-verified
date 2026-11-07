@@ -249,6 +249,7 @@ jobs:
   verify:
     needs: resolve
     runs-on: ubuntu-22.04   # free, unlimited on public repos
+    timeout-minutes: 45
     permissions:
       contents: write        # deploy pushes reports to gh-pages; rejection notices go to main
     strategy:
@@ -1128,12 +1129,12 @@ jobs:
           # winner's tree instead of rebased over it, and running out of attempts
           # fails the step. The old loop ended in a `sleep` that exits 0, which
           # painted a lost deploy green and left the catalogue silently stale.
-          for i in 1 2 3 4 5; do
+          for i in 1 2 3 4 5 6 7 8 9 10; do
             if publish; then exit 0; fi
             echo "publish attempt $i failed (most likely a race with another leg); retrying"
-            sleep $((i * 3))
+            sleep $((i * 2 + RANDOM % 6))
           done
-          echo "::error::could not publish reports for $TOOL to gh-pages after 5 attempts"
+          echo "::error::could not publish reports for $TOOL to gh-pages after 10 attempts"
           exit 1
 
       # A trial from a URL that published is now a catalogue entry, and the
@@ -1163,11 +1164,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "$dest"
+          if git diff --cached --quiet; then echo "recipe for $SLUG already up to date"; exit 0; fi
           git commit -q -m "verified: commit the recipe that published $SLUG (trial from URL, run ${{ github.run_id }})"
-          for i in 1 2 3; do
+          for i in 1 2 3 4 5 6 7 8; do
             if git push "$remote" HEAD:main; then exit 0; fi
             git pull --rebase "$remote" main || true
-            sleep 3
+            sleep $((i * 2 + RANDOM % 5))
           done
           # An error, not a warning: the entry is published, and without its
           # recipe on main the monthly refresh silently stops re-verifying it.
@@ -1190,10 +1192,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git rm -q "state/rejections/$TOOL.json"
           git commit -q -m "verified: clear rejection notice for $TOOL (attestation published)"
-          for i in 1 2 3; do
+          for i in 1 2 3 4 5; do
             if git push "$remote" HEAD:main; then exit 0; fi
             git pull --rebase "$remote" main || true
-            sleep 3
+            sleep $((i * 2 + RANDOM % 5))
           done
           echo "::warning::could not clear the stale rejection notice for $TOOL; it will be cleared on the next successful run"
 
