@@ -1,23 +1,20 @@
 # STRhub Verified: STRspy (strspy-ont)
 
-**Not verified as documented.**
+**Does not run as documented: stops at run.**
 
-## What STRhub had to do to run this tool
+## As it is in the repository
 
-STRhub wrote its own recipe for this tool, an environment and a command of its own rather than the repository's instructions, and ran that. Each item below is something a first-time user following the README would have to work out for themselves, and so a recommendation to the author. This run does not change the tool's label: the label is what happens as it is in the repository.
+**Step 1, the documented run: As documented, it does not run.** The tool exited with an error before producing its documented output. The installed program starts: it answers --help. That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end. Fix the documentation, or the step that broke, and try the link again on the new commit.
 
-- Creates the conda environment straight from setup/STRspy_2.0_env.yml. Instead of: bash setup/STRspy_2.0.setup.sh, the documented installer. The installer stops at `read ans` for a confirmation; it hangs unattended.
-- Unzips the prebuilt database db-v2/STRspy2.0-DB.zip and deletes the macOS files it ships with (__MACOSX, ._*, .DS_Store). Instead of: Nothing documented: the README does not mention the prebuilt database; the author offered it in issue #12. The stray files match the per-locus FASTA/BED globs and pollute the run.
-- Writes config/ToolsConfig.txt directly, with the tool paths of the environment. Instead of: bash setup/GenerateToolConfig.sh followed by mv setup/UserToolsConfig.txt config/, as documented. The script writes UserToolsConfig.txt to the current directory, so the documented mv fails, and the wrapper expects ToolsConfig.txt.
-- Runs src/STRspy_Normal_v2.0_Args.sh directly, with the flags its own -h lists. Instead of: bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt, the only documented command. The wrapper checks for the scripts in the repository root, where they are not (they are in src/), and exits: 'please make sure you are in the same directory of STRspy'.
+**Verdict: Fails.** The tool exited with an error before producing its documented output. The installed program starts: it answers --help.
 
-With those changes, the run reached **Runs + Expected IO**: it produces a non-empty file in the declared format.
+What stopped it, and what can be done:
 
-**Step 1, the documented run: As documented, it runs.** A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.
+- The tool was installed but exited with an error when run.
+  - Yourself: Adjust the command and try again.
+  - The tool's owner: open an issue, "Documented command fails on a public reference sample".
 
-**Verdict: Runs.** The tool installed and its run produced its documented output.
-
-## This run, in full
+Reached **Installs**: the environment builds from source.
 
 ### Gates
 
@@ -25,23 +22,10 @@ With those changes, the run reached **Runs + Expected IO**: it produces a non-em
 |---|---|---|
 | Available | PASS | the pinned public source exists |
 | Installs | PASS | the environment builds from source |
-| Runs | PASS | it executes end-to-end without crashing |
-| Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
+| Runs | — | it executes end-to-end without crashing |
+| Runs + Expected IO | — | it produces a non-empty file in the declared format |
 | Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
 | Starts | PASS | the installed program answers --help in the built environment |
-
-### Errors reported during the run
-
-The tool reported errors on 9 item(s) during the run.
-This does not assess whether the results produced are correct.
-
-| What happened | Times | Affected |
-|---|---|---|
-| Could not open expected files | 18 | D10S1248, D12S391, D13S317, D5S818, D7S820, D8S1179, FGA, TPOX, vWA |
-
-Structural errors, such as a file that will not open, an unrecognized command-line flag, or an incomplete build, do not depend on the sample: a coverage-limited slice yields fewer reads, but it cannot cause them. These are not attributable to STRhub's reference sample.
-
-A small test file in the tool's own repository lets a new user run it on their first day and see it working before trusting it with their own data, and it lets a verification run against the author's sample as well as STRhub's slice. Publishing the output that file should produce helps just as much: it shows what the results are meant to look like, which is what a reader needs to tell a correct run from one that merely finished.
 
 ### What the author documents as a known issue
 
@@ -56,7 +40,7 @@ Quoted from the repository's README at the verified commit. STRhub did not estab
 Executed verbatim inside the container, at the pinned commit. Paths under /data are STRhub's mounts: the input sample, the reference genome and the output directory.
 
 ```
-bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /opt/strspy/db/STRspy2.0-DB -b /opt/strspy/db/STRspy2.0-DB -l /opt/strspy/db-v2/STRspy_v2.DB.sort.bed -k 0.4 -o /data/out -c /opt/strspy/config/ToolsConfig.txt -d 1
+bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt
 ```
 - Log (external): [`strspy-ont.log-external.txt`](strspy-ont.log-external.txt)
 - Log (starts): [`strspy-ont.log-starts.txt`](strspy-ont.log-starts.txt)
@@ -66,24 +50,16 @@ bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /op
 
 - Source: `https://github.com/unique379r/strspy` @ `dafdee7e7e5672c8dc732e8577dbe153f53a12f5`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-11-06T16:33:45+00:00
+- Generated: 2026-11-07T12:10:24+00:00
 - Upstream: The verified commit is 14 commit(s) behind `main`. That is context, not a fault: a pinned release is often meant to sit behind, and the attestation describes the commit it names.
-- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/42252289928
-
-## Output content (plausibility evidence)
-
-- Sequence records: **6** (malformed: 0)
-- STR loci detected: **0**
-- Total reads across calls: **0** (deepest single sequence: 0)
-
-
+- CI run: https://github.com/Tfronta/strhub-verified/actions/runs/42371099676
 
 ## Verification matrix
 
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
 | STRhub fixture | N/A | N/A | — | — |
-| External data | yes | PASS | yes | 1000 Genomes ONT, hg38 CODIS slice (R10 SUP) |
+| External data | yes | — | — | 1000 Genomes ONT, hg38 CODIS slice (R10 SUP) |
 | Tool's own example | N/A | N/A | — | — |
 
 ## README check (advisory)
@@ -113,7 +89,15 @@ What this run's configuration rests on, each item at the verified commit. Open a
 The result above describes a run configured as follows. Anyone repeating it needs the same things.
 
 - Test data: no sample from the repository was used, so a public reference sample stood in.
-- A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under "What STRhub had to do to run this tool".
+- A container environment, built from the tool's declared install steps rather than from a recipe the repository ships.
+
+## Notes from reading the repository
+
+Recorded automatically from the tool's public files when this run was configured. **Not verified by execution**, and not part of the gates above. Useful for what to check by hand.
+
+- Environment: generated by STRhub from the repository's setup/STRspy_2.0_env.yml (conda), at the pinned commit.
+- Input: the README documents BAM and FASTQ (line 44); this run used STRhub's ont-bam-hg38 reference data. The author recommends BAM (line 295: "Tip: Its good practice to use pre-aligned bams for quicker outcomes.").
+- Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output.
 
 ## Out of scope
 

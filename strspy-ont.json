@@ -1,10 +1,9 @@
 {
   "schema": "strhub-verified/1",
-  "mode": "publish",
+  "mode": "trial",
   "tool": {
     "name": "STRspy",
     "version": "v2.0",
-    "maintainer": "Kesharwani RK; Zascavage RR et al.",
     "contact": "https://github.com/unique379r/strspy/issues"
   },
   "submission": {
@@ -20,65 +19,40 @@
     "dockerfile": "Dockerfile",
     "os": [
       "ubuntu-22.04"
-    ]
+    ],
+    "source": "generated"
   },
-  "generated": "2026-11-06T16:33:45+00:00",
-  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42252289928",
+  "generated": "2026-11-07T12:10:24+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42371099676",
   "run": {
-    "cmd": "bash /opt/strspy/src/STRspy_Normal_v2.0_Args.sh -s /data/in -r yes -t ont -f /opt/strspy/db/STRspy2.0-DB -b /opt/strspy/db/STRspy2.0-DB -l /opt/strspy/db-v2/STRspy_v2.DB.sort.bed -k 0.4 -o /data/out -c /opt/strspy/config/ToolsConfig.txt -d 1"
+    "cmd": "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt",
+    "cwd": "/opt/tool"
   },
-  "instrument": "curated",
+  "instrument": "documented",
   "recipe": {
-    "origin": "curated",
-    "workarounds": [
-      {
-        "what": "Creates the conda environment straight from setup/STRspy_2.0_env.yml.",
-        "instead_of": "bash setup/STRspy_2.0.setup.sh, the documented installer.",
-        "why": "The installer stops at `read ans` for a confirmation; it hangs unattended."
-      },
-      {
-        "what": "Unzips the prebuilt database db-v2/STRspy2.0-DB.zip and deletes the macOS files it ships with (__MACOSX, ._*, .DS_Store).",
-        "instead_of": "Nothing documented: the README does not mention the prebuilt database; the author offered it in issue #12.",
-        "why": "The stray files match the per-locus FASTA/BED globs and pollute the run."
-      },
-      {
-        "what": "Writes config/ToolsConfig.txt directly, with the tool paths of the environment.",
-        "instead_of": "bash setup/GenerateToolConfig.sh followed by mv setup/UserToolsConfig.txt config/, as documented.",
-        "why": "The script writes UserToolsConfig.txt to the current directory, so the documented mv fails, and the wrapper expects ToolsConfig.txt."
-      },
-      {
-        "what": "Runs src/STRspy_Normal_v2.0_Args.sh directly, with the flags its own -h lists.",
-        "instead_of": "bash ./STRspy_run_v2.0_Args.sh config/InputConfig.txt config/ToolsConfig.txt, the only documented command.",
-        "why": "The wrapper checks for the scripts in the repository root, where they are not (they are in src/), and exits: 'please make sure you are in the same directory of STRspy'."
-      }
-    ]
+    "origin": "proposed"
   },
   "gates": {
     "available": true,
     "installs": true,
-    "runs": true,
-    "io": true,
+    "runs": false,
+    "io": false,
     "content": false,
     "starts": true
   },
-  "level": "io",
+  "level": "installs",
   "io_detail": {
     "gate": "io",
-    "passed": true,
+    "passed": false,
     "outputs": [
       {
-        "path": "**/*.txt",
+        "path": "**/*.t[sx][vt]",
         "format": "tsv",
         "checks": {
           "confined": true,
-          "exists": true,
-          "non_empty": true,
-          "parses_as_tsv": true,
-          "min_records": true
+          "exists": false
         },
-        "resolved": "Countings/CSF1PO_input.bam_Allele_freqs.txt",
-        "records": 5,
-        "passed": true
+        "passed": false
       }
     ]
   },
@@ -88,33 +62,9 @@
     "passed": false,
     "outputs": [
       {
-        "path": "**/*.txt",
-        "resolved": "Countings/CSF1PO_input.bam_Allele_freqs.txt",
-        "mode": "auto",
-        "checks": {
-          "records_present": true,
-          "locus_column_found": false,
-          "loci_recognised": false,
-          "calls_or_counts_present": false
-        },
-        "stats": {
-          "rows": 6,
-          "header_row_dropped": false,
-          "malformed_rows": 0,
-          "dna_invalid_rows": 0,
-          "count_invalid_rows": 0,
-          "distinct_loci": 0,
-          "distinct_str_loci": 0,
-          "distinct_snp_markers": 0,
-          "loci": [],
-          "str_loci": [],
-          "snp_markers": [],
-          "total_reads": 0,
-          "max_sequence_depth": 0,
-          "top_loci_by_depth": [],
-          "locus_column_found": false
-        },
-        "passed": false
+        "path": "**/*.t[sx][vt]",
+        "passed": false,
+        "error": "output not found"
       }
     ]
   },
@@ -135,9 +85,9 @@
       "available": true,
       "type": "ont-bam-hg38",
       "dataset": "1000 Genomes ONT, hg38 CODIS slice (R10 SUP)",
-      "io": true,
+      "io": false,
       "content": false,
-      "passed": true
+      "passed": false
     },
     {
       "leg": "example",
@@ -182,7 +132,7 @@
   },
   "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
   "upstream": {
-    "checked": "2026-11-06T16:33:45+00:00",
+    "checked": "2026-11-07T12:10:24+00:00",
     "repo_exists": true,
     "ref_exists": true,
     "default_branch": "main",
@@ -191,7 +141,7 @@
   },
   "needed_beyond_repo": [
     "Test data: no sample from the repository was used, so a public reference sample stood in.",
-    "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under \"What STRhub had to do to run this tool\"."
+    "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships."
   ],
   "author_known_issues": [
     {
@@ -274,32 +224,18 @@
       "db-v2/optional-create-custom-db/testTwofa/vWA.fa"
     ]
   },
+  "caveats": {
+    "source": "detect_recipe",
+    "items": [
+      "Environment: generated by STRhub from the repository's setup/STRspy_2.0_env.yml (conda), at the pinned commit.",
+      "Input: the README documents BAM and FASTQ (line 44); this run used STRhub's ont-bam-hg38 reference data. The author recommends BAM (line 295: \"Tip: Its good practice to use pre-aligned bams for quicker outcomes.\").",
+      "Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output."
+    ]
+  },
   "logs": {
     "external": "strspy-ont.log-external.txt",
     "starts": "strspy-ont.log-starts.txt",
     "build": "strspy-ont.log-build.txt"
-  },
-  "diagnostics": {
-    "external": [
-      {
-        "id": "cannot_open",
-        "severity": "error",
-        "title": "Cannot open file: /data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam",
-        "count": 18,
-        "examples": [
-          "/data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D12S391_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D13S317_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D5S818_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D7S820_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/D8S1179_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/FGA_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/TPOX_input.bam_alignment.sorted.bam",
-          "/data/out/IntersectMappedReads/vWA_input.bam_alignment.sorted.bam"
-        ],
-        "suggestion": "The tool could not open '/data/out/IntersectMappedReads/D10S1248_input.bam_alignment.sorted.bam'. Verify the path exists and the file format is correct."
-      }
-    ]
   },
   "manual_verification": {
     "eligible": false,
@@ -307,31 +243,54 @@
     "reason_code": null,
     "reason": null
   },
-  "verdict": {
-    "code": "runs",
-    "title": "Runs",
+  "procedure_review": {
+    "may_say_runs": true,
     "basis": "gates",
-    "reason": "The tool installed and its run produced its documented output.",
+    "attribution": "tool",
+    "blocker": "ready",
+    "reason": "The repository states how to install (conda) and STRhub holds the sample. The container is that install, packaged. If the documented command then fails, the failure is that command's.",
+    "amendments": [],
+    "install_method": "conda",
+    "citable_install": false,
+    "input_type": "ont-bam-hg38",
+    "output_glob": "**/*.t[sx][vt]"
+  },
+  "verdict": {
+    "code": "fails",
+    "title": "Fails",
+    "basis": "gates",
+    "reason": "The tool exited with an error before producing its documented output. The installed program starts: it answers --help.",
     "readme_gaps": [],
-    "blockers": []
+    "blockers": [
+      {
+        "code": "run_failed",
+        "what": "The tool was installed but exited with an error when run.",
+        "self_fix": "edit_command",
+        "self_fix_text": "Adjust the command and try again.",
+        "ask_owner": {
+          "title": "Documented command fails on a public reference sample",
+          "body": "STRhub Verified installed the tool from a clean checkout at the pinned commit and ran the command the README documents on a public hg38 reference sample; it exited with an error. The log is linked from the run."
+        }
+      }
+    ]
   },
   "step1": {
-    "code": "runs",
-    "headline": "As documented, it runs.",
-    "body": "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.",
+    "code": "does_not_run",
+    "headline": "As documented, it does not run.",
+    "body": "The tool exited with an error before producing its documented output. The installed program starts: it answers --help. That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end. Fix the documentation, or the step that broke, and try the link again on the new commit.",
     "missing": [],
     "missing_text": [],
     "guide": "docs/GUIA-PASO-1.md"
   },
   "certificate": {
     "schema": "strhub-verified/certificate/1",
-    "label": "Not verified as documented",
-    "reached": "Runs + Expected IO",
+    "label": "Does not run as documented: stops at run",
+    "reached": "Installs",
     "summary": {
       "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
-      "result": "Not verified as documented",
-      "reached": "Runs + Expected IO, 4/5 gates passed",
-      "why": "The tool installed and its run produced its documented output.",
+      "result": "Does not run as documented: stops at run",
+      "reached": "Installs, 2/5 gates passed",
+      "why": "The tool exited with an error before producing its documented output. The installed program starts: it answers --help.",
       "scope": "Installation, execution, and output structure verification.",
       "not_evaluated": [
         "Genotype accuracy",
@@ -342,16 +301,16 @@
     },
     "conclusion": [
       {
-        "title": "Runs end-to-end",
-        "body": "STRspy v2.0 installs and executes without error in a clean ubuntu-22.04 environment at the pinned commit."
+        "title": "Does not run end-to-end",
+        "body": "STRspy v2.0 installs in a clean ubuntu-22.04 environment at the pinned commit, but the documented command stopped with an error before finishing. The messages it printed are in the execution log; Section 4 shows how far it got."
       },
       {
-        "title": "Produces output in the declared format",
-        "body": "The tool wrote a non-empty TSV file. Whether its contents look like genotype data was not established at this level."
+        "title": "No output produced",
+        "body": "No file in the declared format was written, so nothing could be checked for structure or content. This says the run did not get that far; it is not a finding about the quality of the software."
       },
       {
-        "title": "Verdict: Runs",
-        "body": "The tool installed and its run produced its documented output."
+        "title": "Verdict: Fails",
+        "body": "The tool exited with an error before producing its documented output. The installed program starts: it answers --help."
       },
       {
         "title": "Repository test data not used",
