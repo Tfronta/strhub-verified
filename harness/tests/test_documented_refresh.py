@@ -6,7 +6,7 @@ import documented_refresh as dr
 
 
 def test_every_committed_recipe_strhub_wrote_is_listed_with_its_commit():
-    tools = dr.curated_tools()
+    tools = dr.curated_tools(dr.ROOT / "harness" / "testdata" / "fixtures" / "legacy_workspace")
     # One trial per repository and commit: hipstr-y and the PowerSeq kit ride
     # with hipstr and the ForenSeq kit, which pin the same commits.
     assert [t["slug"] for t in tools] == ["gangstr", "hipstr", "strait-razor-forenseq", "strsearch", "strspy-ont"]

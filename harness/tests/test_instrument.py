@@ -50,7 +50,9 @@ def test_every_committed_recipe_declares_its_origin_and_a_curated_one_its_workar
         assert doc["recipe"]["workarounds"], f"{m}: a curated recipe lists what it does that the README does not"
         for w in doc["recipe"]["workarounds"]:
             assert w["what"] and w["instead_of"], m
-    assert "curated" in seen
+    assert "curated" not in seen
+    if seen:
+        assert seen.issubset({"proposed", "maintainer"})
 
 
 def _report(instrument, workarounds=None):
@@ -120,7 +122,7 @@ def test_the_badge_of_a_curated_run_says_whose_recipe_it_was(tmp_path):
     """The badge travels alone; a green one from a recipe STRhub wrote must
     not read as the tool's own. Run report.py end to end on the STRspy
     manifest with every gate passed and read the badge it writes."""
-    manifest = ROOT / "tools" / "strspy-ont" / "manifest.yml"
+    manifest = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "strspy-ont" / "manifest.yml"
     env = {"PATH": "/usr/bin:/bin", "HOME": str(tmp_path)}
     res = subprocess.run([sys.executable, str(ROOT / "harness" / "report.py"), "--manifest", str(manifest),
                           "--available", "pass", "--installs", "pass", "--runs", "pass",

@@ -1,0 +1,44 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: GangSTR
+  version: v2.5
+source:
+  repo: "https://github.com/gymreklab/gangstr"
+  ref: "6ea9b2b8daca51dcab1f0e46210622b94b52ff17"
+# STRhub submitted this tool for verification; its maintainer did not. Any
+# maintainer named above answers for the software, not for this run: the
+# command, the environment and the regions below are STRhub's configuration,
+# and the report has to attribute them that way.
+submission:
+  by: third_party
+# Written by STRhub, not read off the repository: a note under the documented
+# result, never the badge. Each workaround is a departure from the README a
+# first-time user would have to discover (docs/PLAN-Documented-Is-The-Badge.md).
+recipe:
+  origin: curated
+  workarounds:
+    - what: "Installs GangSTR 2.5.0 from bioconda, a prebuilt binary."
+      instead_of: "cmake .. && make from the source at the pinned commit, as the README documents."
+      why: "The documented build stops in htslib: the repository's CMakeLists runs autoreconf without -i (config.sub/config.guess missing). What ran is bioconda's build of 2.5.0, not this commit's source."
+    - what: "Supplies the regions BED from STRhub's library and the command-line flags STRhub chose for its reference slice."
+      instead_of: "A regions file and a command the README leaves to the user."
+report:
+  slug: "gangstr"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out /data/out/output"
+  timeout_minutes: 20
+inputs:
+  type: "illumina-bam-hg38"
+  regions:
+    library: gangstr   # STRhub's ready-made 24-locus file (the 9-locus assets/regions.bed it replaces was hand-made)
+  fixture: "illumina_slices/NA12878.autosomal.bam"
+outputs:
+- path: output.vcf
+  format: vcf
+  min_records: 1

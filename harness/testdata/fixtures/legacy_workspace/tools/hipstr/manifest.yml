@@ -1,0 +1,54 @@
+# STRhub Verified manifest — generated from a self-service submission.
+# Verification metadata only; STRhub stores no tool source code. The
+# Dockerfile clones the author's PUBLIC repo at the pinned ref at build time.
+
+tool:
+  name: hipstr
+  version: v0.7
+  maintainer: tfwillems
+  contact: "https://github.com/tfwillems/HipSTR/issues"
+  variant: "Autosomal (hg38)"
+source:
+  repo: "https://github.com/tfwillems/HipSTR"
+  ref: b2033bfbb5cf55496b776463bdf2993fa763a4be
+# STRhub submitted this tool for verification; its maintainer did not. Any
+# maintainer named above answers for the software, not for this run: the
+# command, the environment and the regions below are STRhub's configuration,
+# and the report has to attribute them that way.
+submission:
+  by: third_party
+# Written by STRhub, not read off the repository: a note under the documented
+# result, never the badge. Each workaround is a departure from the README a
+# first-time user would have to discover (docs/PLAN-Documented-Is-The-Badge.md).
+recipe:
+  origin: curated
+  workarounds:
+    - what: "Runs HipSTR with flags tuned to STRhub's reference slice (--min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250)."
+      instead_of: "The README's command, which has none of them."
+      why: "On a BAM slice around the panel loci most mates fall outside the slice and read quality trims most reads; without these flags nearly every locus is skipped."
+    - what: "Supplies the regions BED from STRhub's library."
+      instead_of: "A regions file the README leaves to the user."
+report:
+  slug: "hipstr"
+environment:
+  dockerfile: Dockerfile
+  os: ["ubuntu-22.04"]
+run:
+  cmd: "HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa --regions /data/in/regions.bed --str-vcf /data/out/result.vcf.gz --min-reads 5 --use-unpaired --read-qual-trim ! --def-stutter-model --max-str-len 250"
+  timeout_minutes: 15
+inputs:
+  type: "illumina-bam-hg38"
+  fixture: "illumina_slices/NA12878.autosomal.bam"
+outputs:
+  - path: result.vcf.gz
+    format: vcf
+    min_records: 1
+    # VCF columns: 0=CHROM 1=POS 2=ID(locus) 3=REF 4=ALT 5=QUAL 6=FILTER 7=INFO 8=FORMAT 9+=SAMPLE
+    content:
+      locus_column: 2
+      dna_column: 3
+      # A genotype VCF for the autosomal CODIS panel names ~21 STR loci. A floor
+      # well above one keeps "plausible output" from passing on a single row —
+      # the trivial check S6 flagged. Kept far below the observed count so a
+      # real run never trips it.
+      min_distinct_loci: 10

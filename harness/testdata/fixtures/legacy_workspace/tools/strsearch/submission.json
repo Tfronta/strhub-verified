@@ -1,0 +1,57 @@
+{
+  "schema": "strhub-verified/submission/1",
+  "saved": "2026-08-14T21:29:12.968Z",
+  "tool": {
+    "name": "STRsearch",
+    "version": "c70179b",
+    "maintainer": "AnJingwd",
+    "contact": "https://github.com/AnJingwd/STRsearch/issues"
+  },
+  "submitter": {
+    "role": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/AnJingwd/STRsearch",
+    "ref": "c70179b3b175adc82a7314409af06900b3861d61"
+  },
+  "docker": {
+    "mode": "provided",
+    "dockerfile": "# Built to the requirements STRsearch DECLARES, not to the versions its own\n# Dockerfile freezes. Its README asks for \"bwa (v1.7 or higher)\", \"samtools\n# (v1.7 or higher)\", \"bamToFastq (v2.17.0 or higher)\" and \"seqtk (v1.2 or\n# higher)\"; its Dockerfile pins those exact numbers on ubuntu:16.04 and Miniconda\n# 4.3.31, a coherent stack for the day it was written that no longer resolves.\n# Apt on 22.04 satisfies every stated floor.\nFROM ubuntu:22.04\nRUN apt-get update && apt-get install -y --no-install-recommends \\\n        git ca-certificates python3 python3-numpy \\\n        samtools bedtools seqtk \\\n    && rm -rf /var/lib/apt/lists/*\nARG TOOL_REF=c70179b3b175adc82a7314409af06900b3861d61\nWORKDIR /opt\nRUN git clone https://github.com/AnJingwd/STRsearch.git STRsearch \\\n    && cd STRsearch && git checkout \"${TOOL_REF}\"\n# conf.py ships with \"YOUR PATH/...\" placeholders and the tool reads it on every\n# run. command -v rather than which, so with set -e a missing binary fails the\n# build instead of writing an empty path that only breaks mid-run. usearch is\n# licensed and unobtainable here; it is reached only by --assemble_pairs, which\n# this run does not use, and conf_parse only eval()s the value.\nRUN set -eux; \\\n    S=\"$(command -v samtools)\"; B=\"$(command -v bamToFastq)\"; Q=\"$(command -v seqtk)\"; \\\n    printf '[softwares]\\nmybwa=\"bwa\"\\nmysamtools=\"%s\"\\nmybamToFastq=\"%s\"\\nmyseqtk=\"%s\"\\nmyusearch=\"usearch\"\\n' \\\n      \"$S\" \"$B\" \"$Q\" > /opt/STRsearch/conf.py; \\\n    cat /opt/STRsearch/conf.py\n# Import check at build time, so a missing dependency fails Installs — where it\n# belongs — rather than Runs.\nRUN python3 -c \"import sys; sys.path.insert(0,'/opt/STRsearch'); import scripts.STR_search, scripts.STR_parse\"\nENTRYPOINT [\"/bin/bash\", \"-lc\"]"
+  },
+  "run": {
+    "cmd": "python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt",
+    "timeout_minutes": 20
+  },
+  "outputs": [
+    {
+      "path": "multiple_alleles.txt",
+      "format": "tsv",
+      "min_records": 1,
+      "content": {
+        "columns": 6,
+        "count_columns": [
+          5
+        ],
+        "locus_column": 2,
+        "min_distinct_loci": 8,
+        "expect_loci": [
+          "TH01",
+          "TPOX",
+          "CSF1PO",
+          "D5S818",
+          "D13S317",
+          "D16S539",
+          "D7S820",
+          "D8S1179"
+        ]
+      }
+    }
+  ],
+  "os": [
+    "ubuntu-22.04"
+  ],
+  "inputs": {
+    "type": "illumina-bam-hg38"
+  },
+  "regions_asset": true
+}

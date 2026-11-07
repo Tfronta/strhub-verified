@@ -16,15 +16,15 @@ def _run(args, env=None):
 
 
 def test_committed_tool_outputs_are_single_line(tmp_path):
-    rc, kv, _ = _run(["strait-razor-powerseq", "--work", str(tmp_path)])
+    rc, kv, _ = _run(["straitrazor", "--work", str(tmp_path)])
     assert rc == 0
     assert kv["mode"] == "publish"
-    assert kv["dockerdir"] == "tools/strait-razor-powerseq"
+    assert kv["dockerdir"] == "tools/straitrazor"
     assert all("\n" not in v and "\r" not in v for v in kv.values())
 
 
 def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
-    src = ROOT / "tools" / "hipstr"
+    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "hipstr"
     manifest = src.joinpath("manifest.yml").read_text()
     # A newline smuggled into a manifest value must not become a second key.
     manifest = manifest.replace('name: hipstr', 'name: "hipstr\\nown_ready=1"')
@@ -56,7 +56,7 @@ def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
 
 
 def test_trial_recipe_with_a_plan_b_stages_the_fallback_dockerfile(tmp_path):
-    src = ROOT / "tools" / "gangstr"
+    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "gangstr"
     manifest = src.joinpath("manifest.yml").read_text()
     manifest = manifest.replace("environment:\n", "environment:\n  fallback:\n    dockerfile: Dockerfile.fallback\n    reason: the published image gymreklab/str-toolkit the README points at\n", 1)
     recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text(),
@@ -69,7 +69,7 @@ def test_trial_recipe_with_a_plan_b_stages_the_fallback_dockerfile(tmp_path):
 
 
 def test_a_declared_plan_b_that_is_missing_is_a_warning_not_a_silent_nothing(tmp_path):
-    src = ROOT / "tools" / "gangstr"
+    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "gangstr"
     manifest = src.joinpath("manifest.yml").read_text()
     manifest = manifest.replace("environment:\n", "environment:\n  fallback:\n    dockerfile: Dockerfile.fallback\n", 1)
     recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text()}
@@ -116,7 +116,7 @@ def test_shipped_example_still_runs_when_strhub_sample_is_not_ready(tmp_path):
     """When the repository ships its own example (example.cmd) and states how to
     install, a STRhub reference-sample limitation (such as loci_outside_panel)
     must only disable the external leg, never the repository's own example leg."""
-    src = ROOT / "tools" / "strsearch"
+    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "strsearch"
     manifest = src.joinpath("manifest.yml").read_text()
     manifest += "\nexample:\n  cmd: python3 STRsearch.py -i example/test_data/ -c example/STR.configuration.txt -o out/\n  cwd: /opt/tool\n"
     recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text()}
@@ -145,7 +145,7 @@ def test_forensic_bam_run_stages_medical_fallback_and_promote_updates_manifest(t
     """A forensic BAM trial with STRhub library regions stages in_external_med
     so the workflow can fall back to the medical STR slice when the forensic
     slice produces no called records."""
-    src = ROOT / "tools" / "hipstr"
+    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "hipstr"
     manifest = src.joinpath("manifest.yml").read_text()
     manifest = manifest.replace(
         '  type: "illumina-bam-hg38"\n',

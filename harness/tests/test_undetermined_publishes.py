@@ -28,7 +28,7 @@ def test_the_badge_of_an_undetermined_run_says_so_not_the_rung_it_reached(tmp_pa
     # "Not verified as documented" whatever it found; the case here is the
     # repository's own instructions, so the manifest is copied as proposed.
     import yaml
-    doc = yaml.safe_load((ROOT / "tools" / "strspy-ont" / "manifest.yml").read_text())
+    doc = yaml.safe_load((ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "strspy-ont" / "manifest.yml").read_text())
     doc["recipe"] = {"origin": "proposed"}
     manifest = tmp_path / "manifest.yml"
     manifest.write_text(yaml.safe_dump(doc, sort_keys=False))

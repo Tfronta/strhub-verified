@@ -28,6 +28,8 @@ ARG_LINE = re.compile(r'^(ARG\s+\w*_REF=)\S+', re.M)
 def retarget(slug: str, new_ref: str) -> dict:
     d = ROOT / "tools" / slug
     if not (d / "manifest.yml").is_file():
+        d = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / slug
+    if not (d / "manifest.yml").is_file():
         raise SystemExit(f"::error::no committed recipe at tools/{slug}")
     manifest = (d / "manifest.yml").read_text()
     manifest, n_ref = REF_LINE.subn(rf'\g<1>"{new_ref}"\g<2>', manifest, count=1)

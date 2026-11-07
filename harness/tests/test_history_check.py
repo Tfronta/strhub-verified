@@ -137,7 +137,7 @@ def test_the_committed_cases_read_and_validate():
     assert doc["tool"] == "strspy-ont" and len(doc["cases"]) >= 4
     assert {c["run"] for c in doc["cases"]} == {"committed", "proposed"}
     assert all(len(c["ref"]) == 40 for c in doc["cases"])
-    assert (ROOT / "tools" / doc["tool"] / "manifest.yml").is_file()
+    assert (ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / doc["tool"] / "manifest.yml").is_file()
 
 
 def test_a_proposed_case_can_decline_to_publish():

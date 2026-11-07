@@ -1155,10 +1155,6 @@ jobs:
           set -e
           [ -n "$SLUG" ] || { echo "::warning::no slug to commit the recipe under"; exit 0; }
           dest="tools/$SLUG"
-          if [ -f "$dest/manifest.yml" ]; then
-            echo "$dest is already committed; the published result was refreshed, the recipe is left as curated"
-            exit 0
-          fi
           mkdir -p "$dest"
           cp "$DOCKER_DIR/manifest.yml" "$DOCKER_DIR/Dockerfile" "$dest/"
           [ -f "$DOCKER_DIR/Dockerfile.fallback" ] && cp "$DOCKER_DIR/Dockerfile.fallback" "$dest/" || true

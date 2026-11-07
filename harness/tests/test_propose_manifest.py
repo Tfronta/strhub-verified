@@ -178,12 +178,12 @@ def test_a_trial_is_filed_under_the_tool_s_catalogue_slug_not_the_run_s_name(tmp
     # The run is named by whoever dispatched it (trial-<repo>-<ref>); the report
     # is filed where a published result lives: one card per tool and assay,
     # with no version or commit in it.
-    r = pm.build(_proposal("hipstr"), "trial-hipstr-b2033bf")
+    r = pm.build(_proposal("straitrazor"), "trial-straitrazor-b618e93")
     m = _valid(r["manifest_yml"], tmp_path)
-    assert m["report"]["slug"] == "hipstr"
-    # The same card a committed HipSTR entry uses, so a trial refreshes it
+    assert m["report"]["slug"] == "straitrazor"
+    # The same card a committed entry uses, so a trial refreshes it
     # instead of opening a second one.
-    assert (pathlib.Path(__file__).resolve().parents[2] / "tools" / "hipstr" / "manifest.yml").is_file()
+    assert (pathlib.Path(__file__).resolve().parents[2] / "tools" / "straitrazor" / "manifest.yml").is_file()
 
 
 def test_catalogue_slug_adds_a_suffix_only_for_a_non_canonical_assay():

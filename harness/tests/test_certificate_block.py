@@ -19,7 +19,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 
 def _run_report(tmp_path, runs="fail"):
-    doc = yaml.safe_load((ROOT / "tools" / "strspy-ont" / "manifest.yml").read_text())
+    doc = yaml.safe_load((ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "strspy-ont" / "manifest.yml").read_text())
     doc["recipe"] = {"origin": "proposed"}
     manifest = tmp_path / "manifest.yml"
     manifest.write_text(yaml.safe_dump(doc, sort_keys=False))
