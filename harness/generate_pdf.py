@@ -358,14 +358,6 @@ def build_cover(cfg):
     els.append(build_header_cover())
     els.append(HR(TEAL, thickness=1.5, spaceB=10, spaceA=14))
 
-    # A trial is a rehearsal that publishes nothing. Said once on the cover and
-    # once in every page footer, so a page of it cannot be passed around as a
-    # certificate of something that was never published.
-    if cfg.get("is_trial"):
-        els.append(Paragraph(
-            "TEST RUN — NOT A PUBLISHED ATTESTATION",
-            S("trialmark", fontSize=9, fontName="Helvetica-Bold", textColor=RED_SOFT,
-              alignment=TA_CENTER, spaceAfter=6)))
     els.append(Paragraph("Technical Reproducibility Validation Report", ST["report_title"]))
     els.append(vspace(2))
     els.append(Paragraph(cfg["tool_name"], ST["tool_name"]))
