@@ -110,8 +110,12 @@ def name_regions(regions, panel_path: pathlib.Path | None):
     named = []
     for chrom, start, end, name in regions:
         if name.startswith(chrom + ":"):
+            cb = chrom.removeprefix("chr")
             for pc, ps, pe, pn in panel:
-                if pc == chrom and ps <= start and end <= pe:
+                if pc.removeprefix("chr") == cb and (
+                    (ps <= start and end <= pe)
+                    or (abs(start - ps) <= POS_SLACK and abs(end - pe) <= POS_SLACK)
+                ):
                     name = pn
                     break
         named.append((chrom, start, end, name))
@@ -136,8 +140,10 @@ def _sum_int_tokens(val: str) -> tuple[int, bool]:
     return sum(nums), True
 
 
-def vcf_record_depth(fmt: list[str], samples: list[list[str]], info: str = "") -> int:
-    """Derive read depth for a VCF record across STR caller conventions.
+def vcf_record_depth_with_source(
+    fmt: list[str], samples: list[list[str]], info: str = ""
+) -> tuple[int, str | None]:
+    """Derive read depth and the VCF tag it came from across STR caller conventions.
 
     Checks per-sample FORMAT tags in priority order:
       1. DP — standard VCF read depth (HipSTR, GangSTR, LongTR, etc.)
@@ -151,6 +157,7 @@ def vcf_record_depth(fmt: list[str], samples: list[list[str]], info: str = "") -
     """
     depth = 0
     found = False
+    source: str | None = None
 
     if "DP" in fmt:
         di = fmt.index("DP")
@@ -160,6 +167,7 @@ def vcf_record_depth(fmt: list[str], samples: list[list[str]], info: str = "") -
                 if ok:
                     depth += v
                     found = True
+                    source = "FORMAT/DP"
 
     if not found:
         eh_tags = [t for t in ("ADSP", "ADFL", "ADIR", "AD_SP", "AD_FL", "AD_IR") if t in fmt]
@@ -172,6 +180,8 @@ def vcf_record_depth(fmt: list[str], samples: list[list[str]], info: str = "") -
                         if ok:
                             depth += v
                             found = True
+            if found:
+                source = "FORMAT/" + "+".join(eh_tags)
 
     if not found:
         for tag in ("SD", "AD", "SR", "NR", "NV"):
@@ -184,24 +194,37 @@ def vcf_record_depth(fmt: list[str], samples: list[list[str]], info: str = "") -
                             depth += v
                             found = True
                 if found:
+                    source = f"FORMAT/{tag}"
                     break
 
     if (not found or depth == 0) and "LC" in fmt:
         li = fmt.index("LC")
+        lc_found = False
+        lc_depth = 0
         for sp in samples:
             if li < len(sp):
                 try:
-                    depth += int(round(float(sp[li])))
-                    found = True
+                    lc_depth += int(round(float(sp[li])))
+                    lc_found = True
                 except ValueError:
                     pass
+        if lc_found:
+            depth = lc_depth
+            found = True
+            source = "FORMAT/LC"
 
     if not found and info:
         m = re.search(r"(?:^|;)DP=(\d+)", info)
         if m:
             depth = int(m.group(1))
+            source = "INFO/DP"
 
-    return depth
+    return depth, source
+
+
+def vcf_record_depth(fmt: list[str], samples: list[list[str]], info: str = "") -> int:
+    """Derive read depth for a VCF record across STR caller conventions."""
+    return vcf_record_depth_with_source(fmt, samples, info)[0]
 
 
 def analyze_vcf(path: pathlib.Path, regions: list[tuple[str, int, int, str]]) -> dict:
@@ -211,12 +234,14 @@ def analyze_vcf(path: pathlib.Path, regions: list[tuple[str, int, int, str]]) ->
     bad = 0
     depth_total = 0
     max_depth = 0
+    depth_sources: list[str] = []
     hits: dict[str, int] = collections.OrderedDict()
     hit_depth: collections.Counter = collections.Counter()
     by_chrom: dict[str, list[tuple[int, int, str]]] = collections.defaultdict(list)
     for chrom, start, end, name in regions:
-        by_chrom[chrom].append((start, end, name))
-        by_chrom[chrom.removeprefix("chr")].append((start, end, name))
+        bare = chrom.removeprefix("chr")
+        by_chrom[bare].append((start, end, name))
+        by_chrom["chr" + bare].append((start, end, name))
     names = {n for _, _, _, n in regions}
 
     for ln in _read_text(path).splitlines():
@@ -232,6 +257,7 @@ def analyze_vcf(path: pathlib.Path, regions: list[tuple[str, int, int, str]]) ->
         if not INT_RE.match(pos) or not DNA_RE.match(ref) and not re.match(r"^[ACGTN]+$", ref, re.I):
             bad += 1
         depth = 0
+        rec_source: str | None = None
         gt_called = False
         if len(f) >= 10 and f[8]:
             fmt = f[8].split(":")
@@ -241,9 +267,11 @@ def analyze_vcf(path: pathlib.Path, regions: list[tuple[str, int, int, str]]) ->
                 gi = fmt.index("GT")
                 gt = sample[gi] if gi < len(sample) else "."
                 gt_called = bool(gt) and gt not in (".", "./.", ".|.")
-            depth = vcf_record_depth(fmt, samples, info)
+            depth, rec_source = vcf_record_depth_with_source(fmt, samples, info)
         elif info:
-            depth = vcf_record_depth([], [], info)
+            depth, rec_source = vcf_record_depth_with_source([], [], info)
+        if rec_source and rec_source not in depth_sources:
+            depth_sources.append(rec_source)
         if gt_called:
             called += 1
         depth_total += depth
@@ -260,7 +288,7 @@ def analyze_vcf(path: pathlib.Path, regions: list[tuple[str, int, int, str]]) ->
         if locus is None and vid not in (".", ""):
             locus = vid
         if locus is None and info:
-            m = re.search(r"(?:^|;)(?:VARID|REPID|TRID|LOCUS)=([^;\s]+)", info)
+            m = re.search(r"(?:^|;)(?:VARID|REPID|TRID|LOCUS|NAME)=([^;\s]+)", info)
             if m:
                 locus = m.group(1)
         if locus:
@@ -278,6 +306,8 @@ def analyze_vcf(path: pathlib.Path, regions: list[tuple[str, int, int, str]]) ->
         "total_reads": depth_total, "max_sequence_depth": max_depth,
         "top_loci_by_depth": hit_depth.most_common(),
     })
+    if depth_sources:
+        stats["depth_source"] = ", ".join(depth_sources)
     return stats
 
 

@@ -791,12 +791,15 @@ def build_body(cfg):
         els.append(boxed([Paragraph("<i>No output files were generated because the run stopped before completion.</i>", ST["body"])]))
     else:
         total_reads = stats.get("total_reads", 0)
+        fmt_val = (stats.get("format") or cfg.get("declared_format", "—")).upper()
+        depth_src = stats.get("depth_source") or ("FORMAT/DP" if fmt_val == "VCF" and total_reads > 0 else "")
+        reads_label = f"Total reads ({depth_src})" if depth_src else "Total reads"
         ev_rows = [
             ("Output file",              stats.get("output_file") or cfg.get("declared_output", "—")),
             ("Format",                   stats.get("format") or cfg.get("declared_format", "—")),
             ("Sequence records",         str(stats.get("rows", 0))),
             ("Distinct STR loci",        str(stats.get("distinct_str_loci", 0))),
-            ("Total reads",              f"{total_reads:,}"),
+            (reads_label,                f"{total_reads:,}"),
             ("Max depth (single locus)", str(stats.get("max_sequence_depth", 0))),
         ]
         tdata = [[Paragraph(k, ST["meta_label"]),
@@ -1105,18 +1108,21 @@ def build_appendix(cfg):
         return tbl
 
     els = []
+    fmt_val = ((cfg.get("stats") or {}).get("format") or cfg.get("declared_format", "")).upper()
+    depth_src = (cfg.get("stats") or {}).get("depth_source") or ("FORMAT/DP" if fmt_val == "VCF" else "")
     pages = [loci_data[i:i + PER_PAGE] for i in range(0, len(loci_data), PER_PAGE)]
     for page_idx, page_loci in enumerate(pages):
         if page_idx > 0:
             els.append(PageBreak())
         els.append(build_header_inner(cfg))
         els.append(HR(TEAL, thickness=1.2, spaceB=4, spaceA=8))
-        title = "Appendix: Read Depth per Locus"
+        title = f"Appendix: Read Depth per Locus ({depth_src})" if depth_src else "Appendix: Read Depth per Locus"
         if len(pages) > 1:
             title += f" ({page_idx + 1}/{len(pages)})"
         els.append(Paragraph(title, ST["appendix_title"]))
+        src_note = f" (metric: {depth_src})" if depth_src else ""
         subtitle = (f"{cfg['tool_display']} · verified {cfg['ver_date']} · "
-                    f"showing all {total_loci} detected loci ranked from highest to lowest depth")
+                    f"showing all {total_loci} detected loci ranked from highest to lowest depth{src_note}")
         els.append(Paragraph(
             subtitle,
             S("as2", fontSize=8, textColor=GRAY, leading=12, spaceAfter=10)))

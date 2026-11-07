@@ -58,6 +58,7 @@ def test_hipstr_style_vcf_is_recognised_by_id(tmp_path):
     assert st["rows"] == 24 and st["called_genotypes"] == 24
     assert st["regions_hit"] == 24 and "TH01" in st["str_loci"]
     assert st["total_reads"] == 24 * 20
+    assert st["depth_source"] == "FORMAT/DP"
     assert all(ca.judge(st, "vcf", 24).values())
 
 
@@ -202,4 +203,6 @@ def test_expansionhunter_and_trgt_vcf_depths_are_extracted(tmp_path):
     assert depth_by_locus["HTT"] == 39
     assert st["total_reads"] == 43 + 30 + 39
     assert st["max_sequence_depth"] == 43
+    assert st["depth_source"] == "FORMAT/ADSP+ADFL+ADIR, FORMAT/SD, FORMAT/LC"
+
 

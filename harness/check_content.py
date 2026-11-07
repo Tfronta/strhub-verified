@@ -89,6 +89,7 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
     locus_rows: collections.Counter = collections.Counter()
     total_reads = 0
     max_depth = 0
+    depth_sources: list[str] = []
 
     for r in rows:
         f = r.split("\t")
@@ -117,7 +118,10 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
             fmt = f[8].split(":")
             samples = [s.split(":") for s in f[9:]]
             info = f[7] if len(f) > 7 else ""
-            depth += content_auto.vcf_record_depth(fmt, samples, info)
+            rec_depth, rec_source = content_auto.vcf_record_depth_with_source(fmt, samples, info)
+            depth += rec_depth
+            if rec_source and rec_source not in depth_sources:
+                depth_sources.append(rec_source)
         if not ok_counts:
             counts_bad += 1
         if locus_col is not None and locus_col < len(f):
@@ -130,7 +134,7 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
     snp_markers = sorted(l for l in locus_rows if _SNP_RE.match(l))
     str_loci = sorted(l for l in locus_rows if not _SNP_RE.match(l))
 
-    return {
+    res = {
         "rows": len(rows),
         # Recorded, not silent: a row we removed from the author's file is a
         # decision the report has to own.
@@ -148,6 +152,9 @@ def _analyze(path: pathlib.Path, spec: dict) -> dict:
         "max_sequence_depth": max_depth,
         "top_loci_by_depth": locus_reads.most_common(),
     }
+    if depth_sources:
+        res["depth_source"] = ", ".join(depth_sources)
+    return res
 
 
 def _check_one(path: pathlib.Path, spec: dict) -> dict:
@@ -183,7 +190,10 @@ def _auto_entry(f: pathlib.Path, fmt: str, spec: dict, regions_path, panel_names
     apply on top, so a manifest can tighten what auto finds but never has to
     say where the columns are."""
     if fmt == "vcf":
-        regions = content_auto.name_regions(content_auto.read_regions(regions_path), panel_path)
+        raw_regions = content_auto.read_regions(regions_path)
+        if not raw_regions and panel_path:
+            raw_regions = content_auto.read_regions(panel_path)
+        regions = content_auto.name_regions(raw_regions, panel_path)
         stats = content_auto.analyze_vcf(f, regions)
         checks = content_auto.judge(stats, "vcf", len(regions))
     else:
