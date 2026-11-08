@@ -63,5 +63,17 @@ def test_expected_golden_file_is_compared_but_never_fails(tmp_path):
 def test_wrapper_keeps_the_command_and_its_exit_status():
     w = prepare.example_wrapper("./HipSTR --bams  x.bam\n --out out.vcf", "/opt/tool")
     assert w.startswith("cd '/opt/tool' && touch /tmp/.strhub_mark && ( ./HipSTR --bams x.bam --out out.vcf ); rc=$?;")
+    assert "! -path '*/__pycache__/*' ! -name '*.pyc'" in w
     assert w.endswith("exit $rc")
     assert "\n" not in w
+
+
+def test_pycache_and_pyc_files_do_not_count_as_example_output(tmp_path):
+    out = tmp_path / "out"
+    cache = out / "scripts" / "__pycache__"
+    cache.mkdir(parents=True)
+    (cache / "STR_parse.cpython-36.pyc").write_bytes(b"\x03\xf3\r\n")
+    (out / "module.pyc").write_bytes(b"\x03\xf3\r\n")
+    r = check_example.check(_manifest(tmp_path, {"cmd": "'python3 pipeline.py'"}), str(out))
+    assert r["passed"] is False
+    assert r["produced"] == []

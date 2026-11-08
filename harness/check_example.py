@@ -42,7 +42,9 @@ def check(manifest_path: str, out_dir: str) -> dict:
         return result
 
     produced = sorted(str(p.relative_to(out)) for p in out.rglob("*")
-                      if p.is_file() and p.stat().st_size > 0)
+                      if p.is_file() and p.stat().st_size > 0
+                      and "__pycache__" not in p.parts
+                      and p.suffix.lower() not in (".pyc", ".pyo"))
     result["produced"] = produced[:100]
     result["produced_count"] = len(produced)
 

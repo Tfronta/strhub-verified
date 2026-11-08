@@ -239,7 +239,7 @@ _rule(
     # The shell's own message, and only that. `X: not found` on its own also
     # matched "usage: ... --bams: not found" and "Processing complete: not found
     # any errors", each of which turned a clean run's badge yellow.
-    r"(\S+):\s+command not found|exec: ['\"]?([^'\"\s]+)['\"]?: executable file not found",
+    r"(\S+):\s+command not found|exec: ['\"]?([^'\"\s]+)['\"]?: executable file not found|(?:^|/)sh:\s+\d+:\s+(\S+):\s+not found",
     "error", "cmd_not_found",
     "Command not found: {0}",
     "The binary '{0}' was not found in the container. Check the Dockerfile "
@@ -454,7 +454,7 @@ def diagnose(log_text: str) -> list[dict]:
                 continue
             groups = tuple(_clean(g) if isinstance(g, str) else g for g in m.groups())
             if rid == _CMD_NOT_FOUND_FOLD:
-                groups = (groups[0] or groups[1] or "",)
+                groups = (next((g for g in groups if g), ""),)
             sev = "warning" if warned and severity == "error" else severity
             entry = by_rule.get(rid)
             if entry is None:

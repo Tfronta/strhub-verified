@@ -26,6 +26,11 @@ def test_shell_command_not_found_fires():
     assert got["cmd_not_found"]["examples"] == ["str8rzr"]
 
 
+def test_dash_sh_command_not_found_fires():
+    got = ids("sh: 1: YOUR: not found\n/bin/sh: 2: bwa: not found")
+    assert got["cmd_not_found"]["examples"] == ["YOUR", "bwa"]
+
+
 def test_docker_exec_not_found_fires():
     got = ids('exec: "GangSTR": executable file not found in $PATH')
     assert got["cmd_not_found"]["examples"] == ["GangSTR"]

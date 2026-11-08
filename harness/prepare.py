@@ -310,6 +310,7 @@ def example_wrapper(cmd: str, cwd: str) -> str:
         # too, so the copy never feeds on itself.
         "find . -xdev -type f -newer /tmp/.strhub_mark -size +0 ! -path './.git/*' "
         "! -path './proc/*' ! -path './sys/*' ! -path './dev/*' ! -path './data/*' "
+        "! -path '*/__pycache__/*' ! -name '*.pyc' ! -name '*.pyo' "
         "2>/dev/null | head -500 | "
         "while IFS= read -r f; do mkdir -p \"/data/out/$(dirname \"$f\")\" && cp \"$f\" \"/data/out/$f\"; done; "
         "exit $rc"
