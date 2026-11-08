@@ -1,32 +1,49 @@
 # STRhub Verified: GangSTR (gangstr)
 
-**Not verified as documented.**
+**Does not run as documented: stops at install.**
 
-## What STRhub had to do to run this tool
+## As it is in the repository
 
-STRhub wrote its own recipe for this tool, an environment and a command of its own rather than the repository's instructions, and ran that. Each item below is something a first-time user following the README would have to work out for themselves, and so a recommendation to the author. This run does not change the tool's label: the label is what happens as it is in the repository.
+**Step 1, the documented run: As documented, it does not run.** The environment did not build from the declared install steps. That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end.
 
-- Installs GangSTR 2.5.0 from bioconda, a prebuilt binary. Instead of: cmake .. && make from the source at the pinned commit, as the README documents. The documented build stops in htslib: the repository's CMakeLists runs autoreconf without -i (config.sub/config.guess missing). What ran is bioconda's build of 2.5.0, not this commit's source.
-- Supplies the regions BED from STRhub's library and the command-line flags STRhub chose for its reference slice. Instead of: A regions file and a command the README leaves to the user.
+**Verdict: Fails.** The environment did not build from the declared install steps.
 
-With those changes, the run reached **Runs + Plausible output**: its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+What stopped it, and what can be done:
 
-**Step 1, the documented run: As documented, it runs.** A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.
+- The environment did not build from the declared install steps.
+  - Yourself: Adjust the install steps and try again.
+  - The tool's owner: open an issue, "Documented CMake build fails at pinned commit".
 
-**Verdict: Runs.** The tool installed and its run produced its documented output.
-
-## This run, in full
+Reached **Available**: the pinned public source exists.
 
 ### Gates
 
 | Gate | Status | Meaning |
 |---|---|---|
 | Available | PASS | the pinned public source exists |
-| Installs | PASS | the environment builds from source |
-| Runs | PASS | it executes end-to-end without crashing |
-| Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
-| Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
-| Starts | PASS | the installed program answers --help in the built environment |
+| Installs | — | the environment builds from source |
+| Runs | — | it executes end-to-end without crashing |
+| Runs + Expected IO | — | it produces a non-empty file in the declared format |
+| Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Starts | — | the installed program answers --help in the built environment |
+
+### It did not build from source
+
+STRhub tried to build the tool from its source at the pinned commit, following the build steps the repository declares, and the build failed. Nothing below the Installs gate ran.
+
+What this means:
+
+- **If you are trying to run it:** A build from source at this commit fails in a clean environment; the cause and a suggested fix are below.
+- **If you are reviewing a paper:** Nothing ran, so this says nothing about the software's output. It records that this attempt to build it stopped, and whose side the cause is on.
+- **If you maintain it:** The cause could not be classified automatically. The full build output is linked below.
+
+What failed:
+
+| What happened | Times | Suggested fix |
+|---|---|---|
+| An autotools build is missing its auxiliary file: config.sub | 1 | The configure script needs config.sub, which autoreconf -i (or automake --add-missing) copies in from the automake package. Running autoreconf -fi before ./configure in that step fixes it. |
+
+Full build output: [`gangstr.log-build.txt`](gangstr.log-build.txt)
 
 ### Command that ran
 
@@ -35,66 +52,21 @@ Executed verbatim inside the container, at the pinned commit. Paths under /data 
 ```
 GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out /data/out/output
 ```
-- Log (own): [`gangstr.log-own.txt`](gangstr.log-own.txt)
-- Log (external): [`gangstr.log-external.txt`](gangstr.log-external.txt)
-- Log (starts): [`gangstr.log-starts.txt`](gangstr.log-starts.txt)
 - Log (build): [`gangstr.log-build.txt`](gangstr.log-build.txt)
+- Log (external): [`gangstr.log-external.txt`](gangstr.log-external.txt)
 
 ## Run details
 
 - Source: `https://github.com/gymreklab/gangstr` @ `6ea9b2b8daca51dcab1f0e46210622b94b52ff17`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-11-06T16:37:44+00:00
-- Upstream: The verified commit is the head of `master`.
+- Generated: 2026-11-08T16:00:00+00:00
 - CI run: https://github.com/Tfronta/strhub-verified/actions/runs/42253585030
-
-## Output content (plausibility evidence)
-
-- Sequence records: **24** (malformed: 0)
-- STR loci detected: **24**
-- Total reads across calls: **10738** (deepest single sequence: 757)
-- STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA …
-- Top markers by read depth: D18S51 (757), D16S539 (618), PentaD (613), D5S818 (589), D6S1043 (585), D7S820 (579)
 
 ## Verification matrix
 
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
-| External data | yes | PASS | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
-| Tool's own example | N/A | N/A | — | — |
-
-## Regions
-
-STRhub supplied the regions BED. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
-
-## README check (advisory)
-
-Score: **5/5**. Advisory only; does not affect the execution badge.
-
-- PASS install
-- PASS command
-- PASS input
-- PASS output
-- PASS dependencies
-
-## Evidence
-
-What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.
-- Install method: [`CMakeLists.txt`](https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/CMakeLists.txt)
-- Fallback environment: [`README.md` line 18](https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L18): `A Docker with GangSTR plus the dumpSTR filtering tool installed is available at [gymreklab/str-toolkit](https://hub.docker.com/r/gymreklab/str-toolkit) from Docker hub.`
-- Run command: [`README.md` line 101](https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L101): `GangSTR --bam file.bam`
-- Example data: [`test/HTT.bed`](https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/HTT.bed)
-- Example data: [`test/alignment/nc190_25.sorted.bam`](https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc190_25.sorted.bam)
-- Example data: [`test/alignment/nc10_25.sorted.bam`](https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc10_25.sorted.bam)
-- Example data: [`test/alignment/nc30_15.sorted.bam`](https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc30_15.sorted.bam)
-- Example data: [`experimental/supplement_bed/hg38_codis.bed`](https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/experimental/supplement_bed/hg38_codis.bed)
-- Documented input: [`README.md` line 6](https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L6): `GangSTR takes aligned reads (BAM) and a set of repeats in the reference genome as input and outputs a VCF file containing genotypes for each locus.`
-
-## What this run needed beyond the repository
-
-The result above describes a run configured as follows. Anyone repeating it needs the same things.
-
-- A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under "What STRhub had to do to run this tool".
+| External data | yes | — | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
 
 ## Out of scope
 
@@ -118,7 +90,7 @@ This report does not evaluate any of the following:
 
 ## Scope (read this)
 
-Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.
+Executed in a standardized environment following the repository's declared build instructions. Concerns reproducible execution only.
 
 This is **not** a claim that the genotypes are correct, nor that the tool is fit for casework or meets any regulatory standard. Concordance against known truth is out of scope.
 

@@ -1,34 +1,49 @@
 # STRhub Verified: STRsearch (strsearch)
 
-**Not verified as documented.**
+**Does not run as documented: stops at install.**
 
-## What STRhub had to do to run this tool
+## As it is in the repository
 
-STRhub wrote its own recipe for this tool, an environment and a command of its own rather than the repository's instructions, and ran that. Each item below is something a first-time user following the README would have to work out for themselves, and so a recommendation to the author. This run does not change the tool's label: the label is what happens as it is in the repository.
+**Step 1, the documented run: As documented, it does not run.** The environment did not build from the declared install steps. That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end.
 
-- Builds the environment on ubuntu 22.04 at the version floors the README declares (bwa, samtools, bamToFastq, seqtk). Instead of: The repository's own Dockerfile: ubuntu 16.04 with exact pins and Miniconda 4.3.31. The pinned stack no longer resolves.
-- Fills in conf.py with the paths of the installed tools. Instead of: conf.py as shipped, with 'YOUR PATH/...' placeholders the user is to replace.
-- Leaves usearch out. Instead of: usearch, which conf.py names. Licensed and unobtainable; only --assemble_pairs reaches it, and this run does not use it.
-- Supplies an hg38 regions configuration in STRsearch's eleven-column layout, with flanking sequences, written by STRhub. Instead of: The repository's example, which is hg19 and covers five markers. No hg38 configuration ships with the repository.
+**Verdict: Fails.** The environment did not build from the declared install steps.
 
-With those changes, the run reached **Runs + Plausible output**: its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci).
+What stopped it, and what can be done:
 
-**Step 1, the documented run: As documented, it runs.** A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.
+- The environment did not build from the declared install steps.
+  - Yourself: Adjust the install steps and try again.
+  - The tool's owner: open an issue, "Documented Dockerfile build fails at pinned commit".
 
-**Verdict: Runs.** The tool installed and its run produced its documented output.
-
-## This run, in full
+Reached **Available**: the pinned public source exists.
 
 ### Gates
 
 | Gate | Status | Meaning |
 |---|---|---|
 | Available | PASS | the pinned public source exists |
-| Installs | PASS | the environment builds from source |
-| Runs | PASS | it executes end-to-end without crashing |
-| Runs + Expected IO | PASS | it produces a non-empty file in the declared format |
-| Runs + Plausible output | PASS | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
-| Starts | PASS | the installed program answers --help in the built environment |
+| Installs | — | the environment builds from source |
+| Runs | — | it executes end-to-end without crashing |
+| Runs + Expected IO | — | it produces a non-empty file in the declared format |
+| Runs + Plausible output | — | its output looks like plausible genotype-bearing data (declared columns, DNA sequences, integer read counts, and enough recognisable forensic loci) |
+| Starts | — | the installed program answers --help in the built environment |
+
+### It did not build from source
+
+STRhub tried to build the tool from its source at the pinned commit, following the build steps the repository declares, and the build failed. Nothing below the Installs gate ran.
+
+What this means:
+
+- **If you are trying to run it:** A build from source at this commit fails in a clean environment; the cause and a suggested fix are below.
+- **If you are reviewing a paper:** Nothing ran, so this says nothing about the software's output. It records that this attempt to build it stopped, and whose side the cause is on.
+- **If you maintain it:** The cause could not be classified automatically. The full build output is linked below.
+
+What failed:
+
+| What happened | Times | Suggested fix |
+|---|---|---|
+| A file the build fetches over HTTP could not be downloaded: usearch | 1 | The URL returned HTTP 404. The upstream download link is no longer valid. |
+
+Full build output: [`strsearch.log-build.txt`](strsearch.log-build.txt)
 
 ### Command that ran
 
@@ -37,66 +52,21 @@ Executed verbatim inside the container, at the pinned commit. Paths under /data 
 ```
 python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt
 ```
-- Log (external): [`strsearch.log-external.txt`](strsearch.log-external.txt)
-- Log (starts): [`strsearch.log-starts.txt`](strsearch.log-starts.txt)
 - Log (build): [`strsearch.log-build.txt`](strsearch.log-build.txt)
+- Log (external): [`strsearch.log-external.txt`](strsearch.log-external.txt)
 
 ## Run details
 
 - Source: `https://github.com/AnJingwd/STRsearch` @ `c70179b3b175adc82a7314409af06900b3861d61`
 - Environment: ubuntu-22.04 (`Dockerfile`)
-- Generated: 2026-11-06T16:40:37+00:00
-- Upstream: The verified commit is the head of `master`.
+- Generated: 2026-11-08T16:00:00+00:00
 - CI run: https://github.com/Tfronta/strhub-verified/actions/runs/42254219171
-
-## Output content (plausibility evidence)
-
-- Sequence records: **388** (malformed: 0)
-- STR loci detected: **24**
-- Total reads across calls: **2401** (deepest single sequence: 51)
-- STR loci: CSF1PO, D10S1248, D12S391, D13S317, D16S539, D18S51, D19S433, D1S1656, D21S11, D22S1045, D2S1338, D2S441, D3S1358, D5S818, D6S1043, D7S820, D8S1179, FGA …
-- Top markers by read depth: vWA (241), D21S11 (187), FGA (164), D19S433 (131), SE33 (125), D18S51 (123)
 
 ## Verification matrix
 
 | Leg | Available | Result | Errors reported | Dataset |
 |---|---|---|---|---|
-| STRhub fixture | N/A | N/A | — | — |
-| External data | yes | PASS | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
-| Tool's own example | N/A | N/A | — | — |
-
-## Regions
-
-STRhub supplied the regions BED. The reference dataset is a slice around 24 forensic STR loci, not a whole genome: it carries reads only at those loci.
-
-## README check (advisory)
-
-Score: **5/5**. Advisory only; does not affect the execution badge.
-
-- PASS install
-- PASS command
-- PASS input
-- PASS output
-- PASS dependencies
-
-## Evidence
-
-What this run's configuration rests on, each item at the verified commit. Open any of them to check the claim it supports.
-- Published image: [`README.md` line 223](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L223): `docker pull anjing123/strsearch:latest`
-- Run command: [`README.md` line 107](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L107): `python3 pipeline.py from_bam \`
-- Example data: [`example/ref_test.bed`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/ref_test.bed)
-- Example data: [`example/test_data/test.bam`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test.bam)
-- Example data: [`example/test_data/test_R1.fastq`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R1.fastq)
-- Example data: [`example/test_data/test_R2.fastq`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R2.fastq)
-- Example data: [`example/test_output/STRfq/Marker94_reads_test_sortByname.bam`](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_output/STRfq/Marker94_reads_test_sortByname.bam)
-- Documented input: [`README.md` line 77](https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L77): `FASTQ file or BAM-file from singe-end or paird-end sequencing platforms`
-
-## What this run needed beyond the repository
-
-The result above describes a run configured as follows. Anyone repeating it needs the same things.
-
-- Test data: no sample from the repository was used, so a public reference sample stood in.
-- A container environment, supplied with the submission.
+| External data | yes | — | — | Illumina BAM (hg38), NA12878 (autosomal, female) |
 
 ## Out of scope
 
@@ -120,7 +90,7 @@ This report does not evaluate any of the following:
 
 ## Scope (read this)
 
-Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.
+Executed in a standardized environment following the repository's declared build instructions. Concerns reproducible execution only.
 
 This is **not** a claim that the genotypes are correct, nor that the tool is fit for casework or meets any regulatory standard. Concordance against known truth is out of scope.
 

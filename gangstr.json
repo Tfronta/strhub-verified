@@ -3,7 +3,8 @@
   "mode": "publish",
   "tool": {
     "name": "GangSTR",
-    "version": "v2.5"
+    "version": "v2.5",
+    "contact": "https://github.com/gymreklab/gangstr/issues"
   },
   "submission": {
     "by": "third_party"
@@ -18,435 +19,116 @@
     "dockerfile": "Dockerfile",
     "os": [
       "ubuntu-22.04"
-    ]
+    ],
+    "source": "generated"
   },
-  "generated": "2026-11-06T16:37:44+00:00",
+  "generated": "2026-11-08T16:00:00+00:00",
   "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42253585030",
   "run": {
     "cmd": "GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out /data/out/output"
   },
-  "instrument": "curated",
+  "instrument": "documented",
   "recipe": {
-    "origin": "curated",
-    "workarounds": [
-      {
-        "what": "Installs GangSTR 2.5.0 from bioconda, a prebuilt binary.",
-        "instead_of": "cmake .. && make from the source at the pinned commit, as the README documents.",
-        "why": "The documented build stops in htslib: the repository's CMakeLists runs autoreconf without -i (config.sub/config.guess missing). What ran is bioconda's build of 2.5.0, not this commit's source."
-      },
-      {
-        "what": "Supplies the regions BED from STRhub's library and the command-line flags STRhub chose for its reference slice.",
-        "instead_of": "A regions file and a command the README leaves to the user."
-      }
-    ]
+    "origin": "proposed"
   },
   "gates": {
     "available": true,
-    "installs": true,
-    "runs": true,
-    "io": true,
-    "content": true,
-    "starts": true
+    "installs": false,
+    "runs": false,
+    "io": false,
+    "content": false,
+    "starts": false
   },
-  "level": "content",
+  "level": "available",
   "io_detail": {
     "gate": "io",
-    "passed": true,
-    "outputs": [
-      {
-        "path": "output.vcf",
-        "format": "vcf",
-        "checks": {
-          "confined": true,
-          "exists": true,
-          "non_empty": true,
-          "parses_as_vcf": true,
-          "min_records": true
-        },
-        "resolved": "output.vcf",
-        "records": 24,
-        "passed": true
-      }
-    ]
+    "passed": false,
+    "outputs": []
   },
   "content_detail": {
     "gate": "content",
     "applicable": true,
-    "passed": true,
-    "outputs": [
-      {
-        "path": "output.vcf",
-        "resolved": "output.vcf",
-        "mode": "auto",
-        "checks": {
-          "records_present": true,
-          "genotypes_called": true,
-          "given_loci_recognised": true
-        },
-        "stats": {
-          "rows": 24,
-          "header_row_dropped": false,
-          "malformed_rows": 0,
-          "dna_invalid_rows": 0,
-          "count_invalid_rows": 0,
-          "distinct_loci": 24,
-          "distinct_str_loci": 24,
-          "distinct_snp_markers": 0,
-          "loci": [
-            "CSF1PO",
-            "D10S1248",
-            "D12S391",
-            "D13S317",
-            "D16S539",
-            "D18S51",
-            "D19S433",
-            "D1S1656",
-            "D21S11",
-            "D22S1045",
-            "D2S1338",
-            "D2S441",
-            "D3S1358",
-            "D5S818",
-            "D6S1043",
-            "D7S820",
-            "D8S1179",
-            "FGA",
-            "PentaD",
-            "PentaE",
-            "SE33",
-            "TH01",
-            "TPOX",
-            "vWA"
-          ],
-          "str_loci": [
-            "CSF1PO",
-            "D10S1248",
-            "D12S391",
-            "D13S317",
-            "D16S539",
-            "D18S51",
-            "D19S433",
-            "D1S1656",
-            "D21S11",
-            "D22S1045",
-            "D2S1338",
-            "D2S441",
-            "D3S1358",
-            "D5S818",
-            "D6S1043",
-            "D7S820",
-            "D8S1179",
-            "FGA",
-            "PentaD",
-            "PentaE",
-            "SE33",
-            "TH01",
-            "TPOX",
-            "vWA"
-          ],
-          "snp_markers": [],
-          "total_reads": 10738,
-          "max_sequence_depth": 757,
-          "top_loci_by_depth": [
-            [
-              "D18S51",
-              757
-            ],
-            [
-              "D16S539",
-              618
-            ],
-            [
-              "PentaD",
-              613
-            ],
-            [
-              "D5S818",
-              589
-            ],
-            [
-              "D6S1043",
-              585
-            ],
-            [
-              "D7S820",
-              579
-            ],
-            [
-              "D3S1358",
-              575
-            ],
-            [
-              "D8S1179",
-              558
-            ],
-            [
-              "D2S441",
-              517
-            ],
-            [
-              "vWA",
-              495
-            ],
-            [
-              "D10S1248",
-              460
-            ],
-            [
-              "PentaE",
-              456
-            ],
-            [
-              "D13S317",
-              442
-            ],
-            [
-              "CSF1PO",
-              435
-            ],
-            [
-              "D22S1045",
-              429
-            ],
-            [
-              "D19S433",
-              361
-            ],
-            [
-              "TPOX",
-              328
-            ],
-            [
-              "SE33",
-              328
-            ],
-            [
-              "TH01",
-              306
-            ],
-            [
-              "D21S11",
-              282
-            ],
-            [
-              "D12S391",
-              281
-            ],
-            [
-              "D1S1656",
-              268
-            ],
-            [
-              "FGA",
-              254
-            ],
-            [
-              "D2S1338",
-              222
-            ]
-          ],
-          "called_genotypes": 24,
-          "regions_given": 24,
-          "regions_hit": 24
-        },
-        "passed": true
-      }
-    ]
+    "passed": false,
+    "outputs": []
   },
   "example_detail": null,
   "datasets": [
-    {
-      "leg": "own",
-      "label": "STRhub fixture",
-      "available": true,
-      "io": true,
-      "content": true,
-      "passed": true,
-      "fixture_source": "strhub"
-    },
     {
       "leg": "external",
       "label": "External data",
       "available": true,
       "type": "illumina-bam-hg38",
       "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
-      "io": true,
-      "content": true,
-      "passed": true
-    },
-    {
-      "leg": "example",
-      "label": "Tool's own example",
-      "available": false,
       "io": false,
-      "content": null,
-      "passed": false,
-      "matches_expected": null,
-      "produced_count": null
+      "content": false,
+      "passed": false
     }
   ],
-  "regions": {
-    "source": "strhub",
-    "panel_size": 24
-  },
-  "readme_check": {
-    "gate": "readme",
-    "advisory": true,
-    "score": 5,
-    "max": 5,
-    "checks": {
-      "install": {
-        "present": true,
-        "matched": "\\binstall(ation|ing|)\\b"
-      },
-      "command": {
-        "present": true,
-        "matched": "\\busage\\b"
-      },
-      "input": {
-        "present": true,
-        "matched": "\\binput\\b"
-      },
-      "output": {
-        "present": true,
-        "matched": "\\boutput\\b"
-      },
-      "dependencies": {
-        "present": true,
-        "matched": "\\bdependenc(y|ies)\\b"
+  "install_detail": {
+    "gate": "installs",
+    "passed": false,
+    "diagnostics": [
+      {
+        "id": "autotools_aux_missing",
+        "severity": "error",
+        "title": "An autotools build is missing its auxiliary file: config.sub",
+        "count": 1,
+        "examples": [
+          "config.sub"
+        ],
+        "suggestion": "The configure script needs config.sub, which autoreconf -i (or automake --add-missing) copies in from the automake package. Running autoreconf -fi before ./configure in that step fixes it."
       }
-    },
-    "empty": false
-  },
-  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
-  "upstream": {
-    "checked": "2026-11-06T16:37:44+00:00",
-    "repo_exists": true,
-    "ref_exists": true,
-    "default_branch": "master",
-    "status": "identical",
-    "behind_by": 0
-  },
-  "needed_beyond_repo": [
-    "A container environment and a command written by STRhub, not taken from the repository's instructions; what they do differently is listed under \"What STRhub had to do to run this tool\"."
-  ],
-  "evidence": [
-    {
-      "claim": "install_method",
-      "kind": "tree",
-      "path": "CMakeLists.txt",
-      "text": "cmake",
-      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/CMakeLists.txt"
-    },
-    {
-      "claim": "fallback_environment",
-      "kind": "readme",
-      "path": "README.md",
-      "line": 18,
-      "text": "A Docker with GangSTR plus the dumpSTR filtering tool installed is available at [gymreklab/str-toolkit](https://hub.docker.com/r/gymreklab/str-toolkit) from Docker hub.",
-      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L18"
-    },
-    {
-      "claim": "run_command",
-      "kind": "readme",
-      "path": "README.md",
-      "line": 101,
-      "text": "GangSTR --bam file.bam",
-      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L101"
-    },
-    {
-      "claim": "example_data",
-      "kind": "tree",
-      "path": "test/HTT.bed",
-      "text": "bed",
-      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/HTT.bed"
-    },
-    {
-      "claim": "example_data",
-      "kind": "tree",
-      "path": "test/alignment/nc190_25.sorted.bam",
-      "text": "bam",
-      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc190_25.sorted.bam"
-    },
-    {
-      "claim": "example_data",
-      "kind": "tree",
-      "path": "test/alignment/nc10_25.sorted.bam",
-      "text": "bam",
-      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc10_25.sorted.bam"
-    },
-    {
-      "claim": "example_data",
-      "kind": "tree",
-      "path": "test/alignment/nc30_15.sorted.bam",
-      "text": "bam",
-      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc30_15.sorted.bam"
-    },
-    {
-      "claim": "example_data",
-      "kind": "tree",
-      "path": "experimental/supplement_bed/hg38_codis.bed",
-      "text": "bed",
-      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/experimental/supplement_bed/hg38_codis.bed"
-    },
-    {
-      "claim": "documented_input",
-      "kind": "readme",
-      "path": "README.md",
-      "line": 6,
-      "text": "GangSTR takes aligned reads (BAM) and a set of repeats in the reference genome as input and outputs a VCF file containing genotypes for each locus.",
-      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L6"
-    }
-  ],
-  "repo_test_data": {
-    "known": true,
-    "present": true,
-    "count": 10,
-    "examples": [
-      "test/HTT.bed",
-      "test/alignment/nc190_25.sorted.bam",
-      "test/alignment/nc10_25.sorted.bam",
-      "test/alignment/nc30_15.sorted.bam",
-      "experimental/supplement_bed/hg38_codis.bed"
     ]
   },
-  "logs": {
-    "own": "gangstr.log-own.txt",
-    "external": "gangstr.log-external.txt",
-    "starts": "gangstr.log-starts.txt",
-    "build": "gangstr.log-build.txt"
-  },
-  "manual_verification": {
-    "eligible": false,
-    "basis": null,
-    "reason_code": null,
-    "reason": null
+  "procedure_review": {
+    "may_say_runs": true,
+    "basis": "gates",
+    "attribution": "tool",
+    "blocker": "ready",
+    "reason": "The repository states how to install (cmake) and STRhub holds the sample. The container is that install, packaged. If the documented build fails, the failure is that build's.",
+    "amendments": [],
+    "install_method": "cmake",
+    "citable_install": true,
+    "input_type": "illumina-bam-hg38",
+    "output_glob": "**/*.vcf*"
   },
   "verdict": {
-    "code": "runs",
-    "title": "Runs",
+    "code": "fails",
+    "title": "Fails",
     "basis": "gates",
-    "reason": "The tool installed and its run produced its documented output.",
+    "reason": "The environment did not build from the declared install steps.",
     "readme_gaps": [],
-    "blockers": []
+    "blockers": [
+      {
+        "code": "build_failed",
+        "what": "The environment did not build from the declared install steps.",
+        "self_fix": "edit_build",
+        "self_fix_text": "Adjust the install steps and try again.",
+        "ask_owner": {
+          "title": "Documented CMake build fails at pinned commit",
+          "body": "STRhub Verified attempted to build GangSTR from source following the repository documentation at commit 6ea9b2b. The build fails in htslib because autoreconf is run without -i (config.sub missing)."
+        }
+      }
+    ]
   },
   "step1": {
-    "code": "runs",
-    "headline": "As documented, it runs.",
-    "body": "A third party installed the tool with the steps this commit states and ran the command it writes, and the output file that command names appeared. This says nothing about genotypes or about the forensic panel.",
+    "code": "does_not_run",
+    "headline": "As documented, it does not run.",
+    "body": "The environment did not build from the declared install steps. That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end.",
     "missing": [],
     "missing_text": [],
     "guide": "docs/GUIA-PASO-1.md"
   },
+  "scope": "Executed in a standardized environment following the repository's declared build instructions. Concerns reproducible execution only.",
   "certificate": {
     "schema": "strhub-verified/certificate/1",
-    "label": "Not verified as documented",
-    "reached": "Runs + Plausible output",
+    "label": "Does not run as documented: stops at install",
+    "reached": "Available",
     "summary": {
       "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
-      "result": "Not verified as documented",
-      "reached": "Runs + Plausible output, 5/5 gates passed",
-      "why": "The tool installed and its run produced its documented output.",
+      "result": "Does not run as documented: stops at install",
+      "reached": "Available, 1/5 gates passed",
+      "why": "The environment did not build from the declared install steps.",
       "scope": "Installation, execution, and output structure verification.",
       "not_evaluated": [
         "Genotype accuracy",
@@ -457,24 +139,20 @@
     },
     "conclusion": [
       {
-        "title": "Runs end-to-end",
-        "body": "GangSTR v2.5 installs and executes without error in a clean ubuntu-22.04 environment at the pinned commit."
+        "title": "Does not install",
+        "body": "GangSTR v2.5 does not install in a clean ubuntu-22.04 environment at the pinned commit following the declared install steps (CMake build of bundled htslib fails)."
       },
       {
-        "title": "Produces plausible output",
-        "body": "The tool generated a structurally valid VCF output file with genotype calls across 24 target forensic STR loci, with a maximum read depth of 757 at D18S51."
+        "title": "Execution and output gates not reached",
+        "body": "Because the tool did not install, execution on reference data was not attempted."
       },
       {
-        "title": "Verdict: Runs",
-        "body": "The tool installed and its run produced its documented output."
-      },
-      {
-        "title": "Repository test data not used",
-        "body": "The repository ships example data (10 file(s)), which this run did not use: the gates above ran on STRhub's reference dataset. STRhub Verified supplied Illumina BAM (hg38), NA12878 (autosomal, female) as the reference input for this verification run. Users replicating this result should use the same or equivalent publicly available reference material."
+        "title": "Verdict: Fails",
+        "body": "The environment did not build from the declared install steps."
       },
       {
         "title": "Reproducibility statement",
-        "body": "The exact command reported in Section 3, executed at the pinned commit in the described environment, is sufficient to reproduce this verification result independently."
+        "body": "The build instructions recorded in Section 3, executed at the pinned commit in the described environment, reproduce this failure."
       }
     ],
     "out_of_scope": [
@@ -494,9 +172,13 @@
       "Short-read limitations apply (very long STR alleles may not span reads)"
     ],
     "scope": {
-      "statement": "Independent automated verification of reproducible execution. It confirms the tool installs, runs end-to-end, and produces structurally valid output in a standardized environment.",
-      "not": "This is not an analytical validation. Genotype accuracy, concordance, forensic suitability, and regulatory compliance are out of scope.",
-      "disclaimer": "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub does not store tool source code."
+      "statement": "Independent automated verification of reproducible execution.",
+      "not": "This is not an analytical validation.",
+      "disclaimer": "Each result is a dated snapshot."
     }
+  },
+  "logs": {
+    "build": "gangstr.log-build.txt",
+    "external": "gangstr.log-external.txt"
   }
 }
