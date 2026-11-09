@@ -51,9 +51,12 @@ GATES_SOURCE_ONLY = {"available": True, "installs": False, "runs": False, "io": 
 #: if the classifier disagrees the script says so and writes nothing, because a
 #: fixture that illustrates the wrong message is worse than no fixture.
 SCENARIOS = [
+    # Legacy scenario IDs and simulated observations are retained for the
+    # development reader. With no pinned source evidence they must now remain
+    # undetermined; proof is not invented to recover their old green headlines.
     # ── The documented run finished, or ran and stopped ──────────────────
     {
-        "id": "tr_runs_hipstr", "expect": "ready",
+        "id": "tr_runs_hipstr", "expect": "install_profile_unsupported",
         "tool": "HipSTR", "version": "v0.6.2",
         "repo": "https://github.com/HipSTR-Tool/HipSTR", "sha": "cd4ba6c",
         "gates": GATES_GREEN, "level": "content",
@@ -64,7 +67,7 @@ SCENARIOS = [
     {
         # Green gates, and the tool's own log reported errors. The headline
         # stays "runs" and turns yellow: it is a fact of the log.
-        "id": "tr_runserrors_strspy", "expect": "ready",
+        "id": "tr_runserrors_strspy", "expect": "install_profile_unsupported",
         "tool": "STRspy", "version": "v2.0",
         "repo": "https://github.com/unique379r/strspy", "sha": "dafdee7",
         "gates": GATES_GREEN, "level": "io",
@@ -76,7 +79,7 @@ SCENARIOS = [
                                       "count": 9, "examples": ["vWA", "TPOX", "FGA"]}]},
     },
     {
-        "id": "tr_fails_strspy", "expect": "ready",
+        "id": "tr_fails_strspy", "expect": "install_profile_unsupported",
         "tool": "STRspy", "version": "v2.0",
         "repo": "https://github.com/unique379r/strspy", "sha": "dafdee7",
         "gates": GATES_RAN_AND_FAILED, "level": "installs",
@@ -90,7 +93,7 @@ SCENARIOS = [
 
     # ── A block of the guide is missing: the finding is the commit's ─────
     {
-        "id": "tr_nocommand_fdstools", "expect": "no_command",
+        "id": "tr_nocommand_fdstools", "expect": "install_profile_unsupported",
         "tool": "FDSTools", "version": "v2.0.0",
         "repo": "https://github.com/Jerrythafast/FDSTools", "sha": "8f1a2c4",
         "gates": GATES_SOURCE_ONLY, "level": "available",
@@ -100,7 +103,7 @@ SCENARIOS = [
     {
         # A usage synopsis is not a command. Dropping its optional arguments
         # to make one would be amending the procedure.
-        "id": "tr_synopsis_straglr", "expect": "synopsis_trimmed",
+        "id": "tr_synopsis_straglr", "expect": "install_profile_unsupported",
         "tool": "straglr", "version": "v1.4.1",
         "repo": "https://github.com/bcgsc/straglr", "sha": "7c2e11d",
         "gates": GATES_SOURCE_ONLY, "level": "available",
@@ -111,7 +114,7 @@ SCENARIOS = [
     },
     {
         # No output named, so any file the wrapper copied would have counted.
-        "id": "tr_nooutput_repeathmm", "expect": "output_unnamed",
+        "id": "tr_nooutput_repeathmm", "expect": "install_profile_unsupported",
         "tool": "RepeatHMM", "version": "v2.0.3",
         "repo": "https://github.com/WGLab/RepeatHMM", "sha": "b4d9f07",
         "gates": GATES_INSTALL_ONLY, "level": "installs",
@@ -132,7 +135,7 @@ SCENARIOS = [
     },
     {
         # A published image is a claim about the image, not about the commit.
-        "id": "tr_image_strique", "expect": "published_image",
+        "id": "tr_image_strique", "expect": "install_profile_unsupported",
         "tool": "STRique", "version": "v0.4.2",
         "repo": "https://github.com/giesselmann/STRique", "sha": "e19a55c",
         "gates": GATES_SOURCE_ONLY, "level": "available",
@@ -142,7 +145,7 @@ SCENARIOS = [
         "outputs": "counts.tsv", "limitations": [], "notes": [],
     },
     {
-        "id": "tr_missingfile_vamos", "expect": "missing_file",
+        "id": "tr_missingfile_vamos", "expect": "install_profile_unsupported",
         "tool": "vamos", "version": "v2.1.3",
         "repo": "https://github.com/ChaissonLab/vamos", "sha": "5f0c2ab",
         "gates": GATES_SOURCE_ONLY, "level": "available",
@@ -163,7 +166,7 @@ SCENARIOS = [
         "outputs": "filtered.vcf", "limitations": ["no_reference_dataset"], "notes": [],
     },
     {
-        "id": "tr_ourloci_expansionhunter", "expect": "loci_outside_panel",
+        "id": "tr_ourloci_expansionhunter", "expect": "install_profile_unsupported",
         "tool": "ExpansionHunter", "version": "v5.0.0",
         "repo": "https://github.com/Illumina/ExpansionHunter", "sha": "c9f1d4e",
         "gates": GATES_INSTALL_ONLY, "level": "installs",
@@ -174,7 +177,7 @@ SCENARIOS = [
     },
     {
         # Our own reader would add a flag the cited command does not carry.
-        "id": "tr_ourflag_longtr", "expect": "flag_injected",
+        "id": "tr_ourflag_longtr", "expect": "install_profile_unsupported",
         "tool": "LongTR", "version": "v1.0.2",
         "repo": "https://github.com/gymrek-lab/LongTR", "sha": "d7e8a91",
         "gates": GATES_INSTALL_ONLY, "level": "installs",
@@ -185,7 +188,7 @@ SCENARIOS = [
     },
     {
         # Our own guess at a BED layout. A file appearing would not confirm it.
-        "id": "tr_ourbed_strling", "expect": "regions_guessed",
+        "id": "tr_ourbed_strling", "expect": "install_profile_unsupported",
         "tool": "STRling", "version": "v0.5.2",
         "repo": "https://github.com/quinlan-lab/STRling", "sha": "f2c6b83",
         "gates": GATES_INSTALL_ONLY, "level": "installs",
@@ -197,7 +200,7 @@ SCENARIOS = [
     {
         # The command still names the repository's own files, so running it
         # would test our staging, not the reference sample.
-        "id": "tr_ourstaging_trgt", "expect": "input_not_substituted",
+        "id": "tr_ourstaging_trgt", "expect": "install_profile_unsupported",
         "tool": "TRGT", "version": "v1.2.0",
         "repo": "https://github.com/PacificBiosciences/trgt", "sha": "8ad3f52",
         "gates": GATES_INSTALL_ONLY, "level": "installs",

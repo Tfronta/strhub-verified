@@ -15,8 +15,8 @@ README at the pinned ref and answers, with the evidence for each answer:
 Nothing here is a judgement about the tool. A gap is a fact about the
 documentation, reported so the trial can say "could not determine how to run
 this" with the list of what was missing, instead of failing silently. The
-model-backed autoconfig fills in what this cannot; this runs first, costs
-nothing, and is testable offline against the snapshots in testdata/repos/.
+strict procedure review blocks what this reader cannot establish; no agent
+fills the gaps. This is testable offline against snapshots in testdata/repos/.
 
 Beyond the README it reads, at the same ref: the documents and wiki pages the
 README links, the build and packaging files, the loci files the repository
@@ -1632,206 +1632,15 @@ def propose_example(commands: list[dict], tree_paths: list[str], examples: list[
     return None
 
 
-#: What a source build is given besides the toolchain: compilers, the usual
-#: C libraries a bioinformatics tool links (htslib's), and git over HTTPS.
-BUILD_APT = ("build-essential cmake git ca-certificates curl autoconf automake libtool pkg-config "
-             "zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev libssl-dev libncurses-dev")
-#: GitHub over HTTPS where a build asks for SSH: a fresh environment has no
-#: key, and LongTR's Makefile clones spoa as git@github.com:. The report says
-#: so when a build file does it (build.ssh_urls_in).
-GIT_HTTPS = ('RUN git config --global url."https://github.com/".insteadOf "git@github.com:" '
-             '&& git config --global url."https://".insteadOf "git://"\n')
-#: Executables the build produced, on the PATH, wherever it left them
-#: (build/install/bin/ExpansionHunter, target/release/trgt, src/vamos).
-EXPOSE = ("RUN find /opt/tool -xdev -type f -perm -u+x -newer /tmp/.strhub_built "
-          "! -path '*/CMakeFiles/*' ! -path '*/.git/*' ! -name '*.so*' ! -name '*.a' ! -name '*.o' "
-          "! -name '*.sh' ! -name '*.py' ! -name 'config.status' ! -name 'libtool' "
-          "-exec ln -sf {} /usr/local/bin/ \\;\n")
-
-
-def keep_path(path: str, extra: str = "") -> str:
-    """ENV PATH, and the same PATH for a login shell. The run is `bash -lc`,
-    and Debian's /etc/profile (micromamba, python:*-slim, rust, golang)
-    resets PATH: straglr's python, in the conda environment, was "not found"
-    by the very shell that ran it."""
-    exports = f"export PATH={path}:$PATH" + (f"; {extra}" if extra else "")
-    return (f"ENV PATH=\"{path}:$PATH\"\n"
-            f"RUN echo '{exports}' > /etc/profile.d/zz-strhub-path.sh\n")
-
-
-def _python_for(files: dict[str, str]) -> str:
-    """3.11, or the nearest version pyproject's requires-python admits."""
-    text = files.get("pyproject.toml", "") + files.get("setup.cfg", "") + files.get("setup.py", "")
-    m = re.search(r"(?:requires-python|python_requires)\s*=\s*['\"]([^'\"]+)['\"]", text)
-    if not m:
-        return "3.11"
-    spec = m.group(1)
-
-    def ok(v: tuple[int, int]) -> bool:
-        for part in spec.split(","):
-            part = part.strip()
-            mm = re.match(r"(>=|<=|==|!=|~=|>|<)\s*(\d+)\.(\d+)", part)
-            if not mm:
-                continue
-            op, want = mm.group(1), (int(mm.group(2)), int(mm.group(3)))
-            if (op == ">=" and v < want) or (op == ">" and v <= want) or (op == "<" and v >= want) \
-                    or (op == "<=" and v > want) or (op == "==" and v[:2] != want) \
-                    or (op == "!=" and v == want) or (op == "~=" and (v < want or v[0] != want[0])):
-                return False
-        return True
-    # 3.11 when the package admits it: the newest that still ships distutils,
-    # which NanoRepeat's dependencies import. Picking the newest admitted
-    # (3.12) failed a run on STRhub's choice, not the tool's.
-    for v in ((3, 11), (3, 10), (3, 12), (3, 9), (3, 8)):
-        if ok(v):
-            return f"{v[0]}.{v[1]}"
-    return "3.11"
-
-
+# Discovery does not authorize manufacturing an installation.
 def generate_dockerfile(slug: str, ref: str, build: dict, image_layout: bool = False,
-                        files: dict[str, str] | None = None) -> str | None:
-    """A pinned environment for the methods STRhub can template. None when the
-    repository ships its own Dockerfile (used as-is) or nothing was detected.
+                        files: dict[str, str] | None = None) -> None:
+    """Discovery never manufactures an installation from a build-file family.
 
-    `image_layout`: this is plan B for the repository's own Dockerfile. The
-    command was written for that image's layout and runs in its WORKDIR, so a
-    published image stands in as it is, with nothing cloned and no WORKDIR
-    moved."""
-    files = files or {}
-    # Only the submodule step is tolerated (many repositories have none); a
-    # failed clone or checkout must fail the build. Written as `A && B && (C ||
-    # true)` on purpose: `A && B && C || true` swallows A and B too, and a build
-    # that carried on with an empty /opt/tool then failed at `make` with "no
-    # makefile found", which read as the tool's fault.
-    clone = (f"ARG TOOL_REF={ref}\nWORKDIR /opt\n"
-             f"RUN git clone https://github.com/{slug}.git tool \\\n"
-             f"    && cd tool && git checkout \"${{TOOL_REF}}\" \\\n"
-             f"    && (git submodule update --init --recursive || true)\nWORKDIR /opt/tool\n"
-             "RUN touch /tmp/.strhub_built\n")
-    tail = keep_path("/opt/tool:/opt/tool/bin") + "WORKDIR /work\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n"
-    head = "# Proposed by STRhub Verified detect_recipe. The build IS the Installs gate.\n"
-    apt = ("RUN apt-get update && apt-get install -y --no-install-recommends \\\n"
-           "        {pkgs} \\\n    && rm -rf /var/lib/apt/lists/*\n")
-    m = build["method"]
-    if m == "dockerfile":
-        return None
-    if m == "docker_image" and image_layout:
-        return head + f"FROM {build['image']}\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n"
-    if m == "docker_image":
-        # The image already holds the tool; the clone rides along so the
-        # example leg can find the repository's own data.
-        return (head + f"FROM {build['image']}\nUSER root\n"
-                + "RUN (apt-get update && apt-get install -y --no-install-recommends git ca-certificates "
-                "&& rm -rf /var/lib/apt/lists/*) || (apk add --no-cache git ca-certificates) || true\n"
-                + clone + "WORKDIR /work\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n")
-    if m == "release_binary":
-        # The author's own build of this release: downloaded, checked against
-        # the digest GitHub records when it records one, unpacked, and its
-        # executables put on the PATH. The clone rides along for the example.
-        check = ""
-        if build.get("digest", "") and str(build["digest"]).startswith("sha256:"):
-            check = f" && echo \"{build['digest'][7:]}  /tmp/asset\" | sha256sum -c -"
-        name = build["asset"]
-        unpack = ("tar -xzf /tmp/asset -C /opt/release" if name.endswith((".tar.gz", ".tgz"))
-                  else "tar -xJf /tmp/asset -C /opt/release" if name.endswith(".tar.xz")
-                  else "tar -xjf /tmp/asset -C /opt/release" if name.endswith((".tar.bz2", ".tbz2"))
-                  else "unzip -q /tmp/asset -d /opt/release" if name.endswith(".zip")
-                  else f"cp /tmp/asset /opt/release/{name} && chmod +x /opt/release/{name}")
-        return (head + "FROM ubuntu:22.04\n"
-                + apt.format(pkgs="git ca-certificates curl unzip xz-utils bzip2 libgomp1 zlib1g libbz2-1.0 liblzma5 libcurl4")
-                + clone
-                + f"RUN mkdir -p /opt/release && curl -fsSL -o /tmp/asset \"{build['url']}\"{check} \\\n"
-                + f"    && {unpack} && rm /tmp/asset\n"
-                + "RUN find /opt/release -type f -perm -u+x ! -name '*.so*' -exec ln -sf {} /usr/local/bin/ \\;\n"
-                + tail)
-    if m == "bioconda":
-        return (head + "FROM mambaorg/micromamba:1.5.8\nUSER root\n"
-                + apt.format(pkgs="git ca-certificates") + clone
-                + f"RUN micromamba install -y -n base -c conda-forge -c bioconda {build['package']} "
-                "&& micromamba clean -a -y\n"
-                + keep_path("/opt/conda/bin:/opt/tool", "export CONDA_PREFIX=/opt/conda") + "WORKDIR /work\n"
-                + "ENTRYPOINT [\"micromamba\", \"run\", \"-n\", \"base\", \"/bin/bash\", \"-lc\"]\n")
-    if m == "conda":
-        create = (f"RUN micromamba create -y -n tool -c conda-forge -c bioconda --file {build['file']} "
-                  if build.get("spec_list") else f"RUN micromamba create -y -n tool -f {build['file']} ")
-        # Built against the environment's own libraries: vamos's Makefile
-        # includes htslib/sam.h, which conda put under the environment, not
-        # where the compiler looks by default.
-        # `micromamba run -n tool` leaves CONDA_PREFIX at the root prefix, and
-        # vamos's Makefile compiles with -I $(CONDA_PREFIX)/include: it expects
-        # the environment activated, so it is declared as such.
-        env_paths = ('export CONDA_PREFIX=/opt/conda/envs/tool; '
-                     'export CPATH=$CONDA_PREFIX/include:${CPATH:-} LIBRARY_PATH=$CONDA_PREFIX/lib:${LIBRARY_PATH:-} '
-                     'LD_LIBRARY_PATH=$CONDA_PREFIX/lib:${LD_LIBRARY_PATH:-} PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig; ')
-        then = "".join(f"RUN micromamba run -n tool bash -lc '{env_paths}{step}'\n" for step in build.get("then") or [])
-        # A make or pip step on top of the environment compiles: vamos's
-        # Makefile runs cmake for parasail, and the plain image had none.
-        pkgs = BUILD_APT if build.get("then") else "git ca-certificates build-essential"
-        # ENV_NAME: the micromamba image's own .bashrc activates "the current
-        # environment" in every login shell, `base` unless told otherwise,
-        # and activating base takes the tool's environment off the PATH. The
-        # run is `bash -lc`: straglr's python was "not found" in the very
-        # environment it was installed in.
-        return (head + "FROM mambaorg/micromamba:1.5.8\nUSER root\n"
-                + apt.format(pkgs=pkgs) + GIT_HTTPS + clone
-                + create + "&& micromamba clean -a -y\n" + "ENV ENV_NAME=tool\n" + then
-                + (EXPOSE if then else "")
-                # What the build on top linked against the environment's own
-                # libraries finds them when it runs: vamos, built with
-                # -L $(CONDA_PREFIX)/lib and no rpath, stopped with
-                # "libhts.so.3: cannot open shared object file".
-                + keep_path("/opt/conda/envs/tool/bin:/opt/tool", "export CONDA_PREFIX=/opt/conda/envs/tool"
-                            + ("; export LD_LIBRARY_PATH=/opt/conda/envs/tool/lib:${LD_LIBRARY_PATH:-}"
-                               if build.get("then") else ""))
-                + "WORKDIR /work\n"
-                + "ENTRYPOINT [\"micromamba\", \"run\", \"-n\", \"tool\", \"/bin/bash\", \"-lc\"]\n")
-    if m == "pip":
-        install = ("RUN pip install --no-cache-dir -r requirements.txt\n" if build["file"] == "requirements.txt"
-                   else "RUN pip install --no-cache-dir .\n")
-        return (head + f"FROM python:{_python_for(files)}-slim\n"
-                + apt.format(pkgs="git ca-certificates build-essential zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev")
-                + GIT_HTTPS + clone + install + tail)
-    if m == "cmake":
-        # Out of the source tree, as every CMake project documents it
-        # (`mkdir build && cd build && cmake ..`); ExpansionHunterDenovo's
-        # source is in source/.
-        src = build.get("dir") or "."
-        return (head + "FROM ubuntu:22.04\n" + apt.format(pkgs=BUILD_APT) + GIT_HTTPS + clone
-                + f"RUN cmake -S {src} -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j2\n"
-                + EXPOSE + tail)
-    if m == "make":
-        where = f" -C {build['dir']}" if build.get("dir") else ""
-        return (head + "FROM ubuntu:22.04\n" + apt.format(pkgs=BUILD_APT) + GIT_HTTPS + clone
-                + f"RUN make{where}\n" + EXPOSE + tail)
-    if m == "autotools":
-        return (head + "FROM ubuntu:22.04\n" + apt.format(pkgs=BUILD_APT + " libgsl-dev libfftw3-dev") + GIT_HTTPS + clone
-                + "RUN ([ -x ./configure ] || autoreconf -i) && ./configure && make\n" + EXPOSE + tail)
-    if m == "cargo":
-        return (head + "FROM rust:1-bookworm\n"
-                + apt.format(pkgs="git ca-certificates cmake clang libclang-dev pkg-config libssl-dev "
-                                  "zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev")
-                + GIT_HTTPS + clone
-                + "RUN cargo build --release\n" + EXPOSE
-                + keep_path("/opt/tool/target/release:/usr/local/cargo/bin")
-                + "WORKDIR /work\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n")
-    if m == "go":
-        return (head + "FROM golang:1.22\n" + clone + "RUN go build -o /usr/local/bin/ ./...\n" + tail)
-    if m == "r":
-        return (head + "FROM rocker/r-ver:4.4.1\n"
-                + apt.format(pkgs="git ca-certificates libcurl4-openssl-dev libssl-dev libxml2-dev") + clone
-                + "RUN R -q -e 'install.packages(\"remotes\", repos=\"https://cloud.r-project.org\"); "
-                  "remotes::install_local(\".\", dependencies=TRUE, upgrade=\"never\")'\n" + tail)
-    if m == "nim":
-        return (head + "FROM nimlang/nim:2.0.8\n" + apt.format(pkgs="git ca-certificates libhts-dev") + GIT_HTTPS + clone
-                + "RUN nimble install -y -d && nimble build -y -d:release\n" + EXPOSE + tail)
-    if m == "script":
-        return (head + "FROM ubuntu:22.04\n" + apt.format(pkgs=BUILD_APT + " python3 python3-pip wget unzip")
-                + GIT_HTTPS + clone + f"RUN bash {build['file']}\n" + EXPOSE + tail)
-    if m == "readme":
-        # Scripts run straight from the clone; the README's install lines are
-        # left for the model or the author, since they can be anything.
-        return (head + "FROM ubuntu:22.04\n" + apt.format(pkgs="git ca-certificates python3 python3-pip")
-                + clone + tail)
+    The strict profile builds an upstream Dockerfile unchanged. Other methods
+    remain findings in `build`, with an evaluator limitation, until every
+    effective installation step can be established from upstream evidence.
+    """
     return None
 
 
@@ -1980,6 +1789,9 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
                                and e["path"].count("/") <= 1
                                and e["path"].lower().endswith((".config", ".cfg", ".conf", ".ini"))),
         "commands": commands,
+        "source_documents": command_sources(readme, readme_name, docs),
+        "upstream_files": ({build["file"]: files[build["file"]]}
+                           if build.get("method") == "dockerfile" and files.get(build.get("file")) else {}),
         "input_type": input_type,
         "output": output,
         "readme": rd,

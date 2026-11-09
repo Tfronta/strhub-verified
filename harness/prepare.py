@@ -390,7 +390,7 @@ def example_wrapper(cmd: str, cwd: str) -> str:
     time, runs the command exactly as documented, and copies every regular file
     created or modified afterwards. The command's own exit status is preserved.
     """
-    cmd = " ".join(cmd.split())
+    cmd = cmd.strip()
     return (
         f"cd {cwd!r} && touch /tmp/.strhub_mark && ( {cmd} ); rc=$?; "
         # -xdev: stay on the image's own filesystem. From a WORKDIR of `/`,
@@ -406,7 +406,7 @@ def example_wrapper(cmd: str, cwd: str) -> str:
     )
 
 
-_WRAPPED = re.compile(r"^cd (?P<cwd>'[^']*'|\S+) && touch /tmp/\.strhub_mark && \( (?P<cmd>.+?) \); rc=\$\?; ")
+_WRAPPED = re.compile(r"^cd (?P<cwd>'[^']*'|\S+) && touch /tmp/\.strhub_mark && \( (?P<cmd>.+?) \); rc=\$\?; ", re.S)
 
 
 def unwrap_example(cmd: str) -> tuple[str, str | None]:
@@ -416,9 +416,9 @@ def unwrap_example(cmd: str) -> tuple[str, str | None]:
     The report names what the gates ran. The wrapper is STRhub's plumbing
     around that — marking the time, copying files — and a reader shown the
     whole line cannot tell which part is the tool's."""
-    m = _WRAPPED.match(" ".join(cmd.split()))
+    m = _WRAPPED.match(cmd)
     if not m:
-        return " ".join(cmd.split()), None
+        return cmd, None
     return m.group("cmd"), m.group("cwd").strip("'")
 
 
@@ -466,7 +466,7 @@ def starts_command(run_cmd: str, cwd: str | None = None) -> str:
 def _output_value(value) -> str:
     """One $GITHUB_OUTPUT value. Newlines are the delimiter of that file, so a
     manifest value carrying one could inject further keys (own_ready=1, ...)."""
-    return " ".join(str(value if value is not None else "").split())
+    return str(value if value is not None else "").replace("\r", " ").replace("\n", " ")
 
 
 def main() -> int:
@@ -522,24 +522,27 @@ def main() -> int:
         own_ready = False
         external_ready = False
 
-    # Step 1 procedure check: when the recipe was proposed from the repository
-    # and the classifier says the procedure is incomplete or amended
-    # (procedure.may_say_runs is False), we do not run the forensic legs. If
-    # the commit lacks a copyable install procedure altogether, we do not build
-    # a template image either (docs/PLAN-Paso-1.md, Tanda 3).
-    procedure_ready = True
-    install_ready = True
+    # Recompute the review against the actual manifest. Cached may_say_runs
+    # or an origin label is not authorization to build or run a procedure.
+    import procedure as procedure_lib
+    proposal_data = {}
     prop_path = pathlib.Path(args.proposal) if args.proposal else (ROOT / "recipe_proposal.json")
     if prop_path.is_file():
         try:
-            prop_data = json.loads(prop_path.read_text())
-            proc = prop_data.get("procedure") or {}
-            if proc:
-                procedure_ready = bool(proc.get("may_say_runs", True))
-                if proc.get("blocker") == "no_install_procedure":
-                    install_ready = False
-        except Exception:  # noqa: BLE001
-            pass
+            proposal_data = json.loads(prop_path.read_text())
+            if not isinstance(proposal_data, dict):
+                proposal_data = {}
+        except (ValueError, OSError):
+            proposal_data = {}
+    review = procedure_lib.classify(proposal_data, m, proposal_data.get("limitations") or [],
+                                    (m.get("caveats") or {}).get("items") or [])
+    procedure_ready = review["may_say_runs"]
+    install_ready = review["install_ready"]
+    import fidelity
+    review["manifest_sha256"] = fidelity.digest(json.dumps(m, sort_keys=True))
+    work.mkdir(parents=True, exist_ok=True)
+    review_path = _paths.destination(work, "procedure_review.json")
+    review_path.write_text(json.dumps(review, indent=2) + "\n")
     if not procedure_ready:
         own_ready = False
         external_ready = False
@@ -592,6 +595,10 @@ def main() -> int:
     example = m.get("example") or {}
     example_ready = bool(example.get("cmd"))
     example_cwd = example.get("cwd") or "/opt/tool"
+    if example_ready:
+        candidates = [c for c in proposal_data.get("commands", []) if c.get("cmd") == example["cmd"]]
+        example_ready = (example_cwd == "." and any(fidelity.cite(proposal_data, c)["verified"] for c in candidates)
+                         and not fidelity.rewrite(example["cmd"], None)["limitations"])
 
     # Legacy fallback metadata is preserved for historical recipes only.
     # The Installs gate builds the selected primary Dockerfile once; it never
@@ -602,7 +609,7 @@ def main() -> int:
               file=sys.stderr)
         fallback = ""
 
-    if not install_ready:
+    if not install_ready or not procedure_ready:
         example_ready = False
     if not procedure_ready:
         ref_genome_url = ""
@@ -614,8 +621,9 @@ def main() -> int:
         "install_ready": "1" if install_ready else "0",
         # Whether the installed program starts at all: its --help, in the
         # built image, before anything is asked of it (the Starts check).
-        "starts_cmd": ((f"cd {m['starts'].get('cwd', '/opt/tool')!r} && " + m["starts"]["cmd"])
-                       if m.get("starts") else starts_command(m["run"]["cmd"])),
+        # No inferred --help invocation: it is a command too. A future explicit
+        # starts profile must establish it from upstream before executing it.
+        "starts_cmd": "",
         "example_ready": "1" if example_ready else "0",
         "example_cmd": example_wrapper(example.get("cmd", ""), example_cwd) if example_ready else "",
         "cmd": m["run"]["cmd"],

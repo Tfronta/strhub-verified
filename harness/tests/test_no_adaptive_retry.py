@@ -44,7 +44,7 @@ def test_external_leg_preserves_first_result_without_switching_dataset(tmp_path,
     assert manifest.read_bytes() == before
 
 
-def test_failed_install_never_builds_a_second_environment(tmp_path):
+def test_generated_install_is_refused_before_docker_without_trying_an_alternative(tmp_path):
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir()
     docker = bin_dir / "docker"
@@ -60,9 +60,8 @@ def test_failed_install_never_builds_a_second_environment(tmp_path):
         capture_output=True, text=True,
     )
     assert result.returncode != 0
-    builds = (tmp_path / "builds.txt").read_text().splitlines()
-    assert len(builds) == 1 and builds[0].startswith("build ")
-    assert not output.exists()
+    assert not (tmp_path / "builds.txt").exists()
+    assert "source_evidence=unverified" in output.read_text()
 
 
 def test_no_workflow_can_launch_the_retired_agent():

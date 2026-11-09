@@ -17,15 +17,15 @@ def _manifest(method="conda", source="generated", outputs="**/*", cmd="tool --in
     }
 
 
-def test_conda_from_the_repo_with_our_sample_can_be_run():
+def test_conda_file_alone_does_not_prove_generated_install_steps():
     """STRspy: the commit ships an environment file and STRhub holds the BAM.
     Packaging that into a container is the run, not a reason to refuse it."""
     proposal = {"build": {"method": "conda"}, "commands": [{"cmd": "tool --in x.bam"}]}
     got = procedure.classify(proposal, _manifest(cmd="tool --in /data/in/input.bam", outputs="out.txt"),
                              [], ["Environment: generated"])
-    assert got["may_say_runs"] is True
-    assert got["blocker"] == "ready"
-    assert verdict.decide(G_OK, procedure=got)["code"] == "runs"
+    assert got["may_say_runs"] is False
+    assert got["install_ready"] is False
+    assert verdict.decide(G_OK, procedure=got)["code"] == "undetermined"
 
 
 def test_no_install_in_the_repo_is_a_limitation_not_a_run():
@@ -36,15 +36,14 @@ def test_no_install_in_the_repo_is_a_limitation_not_a_run():
     assert got["blocker"] == "no_install_procedure"
 
 
-def test_a_repository_dockerfile_with_the_input_is_the_tools_to_fail():
+def test_repository_source_label_without_cited_files_is_not_proof():
     proposal = {"build": {"method": "dockerfile"}, "commands": [{"cmd": "tool --in x.bam"}]}
     manifest = _manifest(method="dockerfile", source="repository", outputs="out.vcf",
                          cmd="tool --in /data/in/input.bam")
     got = procedure.classify(proposal, manifest, [], [])
-    assert got["may_say_runs"] is True
-    assert got["attribution"] == "tool"
-    assert got["blocker"] == "ready"
-    assert verdict.decide(G_OK, procedure=got)["code"] == "runs"
+    assert got["may_say_runs"] is False
+    assert got["attribution"] == "strhub"
+    assert verdict.decide(G_OK, procedure=got)["code"] == "undetermined"
 
 
 def test_missing_input_is_not_a_failure_of_the_tool():
@@ -63,14 +62,14 @@ def test_a_file_appearing_does_not_confirm_a_guessed_input():
     assert v["code"] == "undetermined" and v["basis"] == "recipe"
 
 
-def test_mkdir_plumbing_is_not_a_flag_of_the_tool():
+def test_mkdir_is_not_silently_excused_as_plumbing():
     proposal = {"build": {"method": "dockerfile"},
                 "commands": [{"cmd": "python3 pipeline.py --bam in.bam"}]}
     manifest = _manifest(method="dockerfile", source="repository", outputs="out.txt",
                          cmd="mkdir -p example && python3 pipeline.py --bam /data/in/input.bam")
     got = procedure.classify(proposal, manifest, [], [])
-    assert got["blocker"] == "ready"
-    assert not any(a["code"] == "flag_injected" for a in got["amendments"])
+    assert got["may_say_runs"] is False
+    assert any(a["code"] == "command_changed" for a in got["amendments"])
 
 
 def test_a_command_still_pointing_at_the_repos_files_is_not_our_sample():
@@ -80,7 +79,7 @@ def test_a_command_still_pointing_at_the_repos_files_is_not_our_sample():
                          cmd="trgt genotype --reads example/sample.bam")
     # release_binary is citable even when source is not "repository".
     got = procedure.classify(proposal, manifest, [], [])
-    assert got["blocker"] == "input_not_substituted"
+    assert any(a["code"] == "input_not_substituted" for a in got["amendments"])
     assert got["may_say_runs"] is False
 
 

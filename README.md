@@ -52,6 +52,11 @@ Format validity, data-row counts and genotype-call presence are recorded
 separately. These checks do not establish biological correctness or full VCF
 conformance, and never repair a tool's output.
 
+Execution also requires the [upstream fidelity profile](docs/UPSTREAM-FIDELITY.md).
+Complete commands and their permitted substitutions are checked against pinned
+source evidence. Generic installation generation and image entrypoint overrides
+are disabled. Unsupported procedures remain evaluator limits, even with green gates.
+
 1. **1-Click URL Trial**: Evaluates a tool directly from its public repository URL. The harness inspects the README, repository tree, and dependency files to propose an install procedure and command, evaluating it immediately in CI.
 2. **Curated Catalogue Verification**: Evaluates curated configurations under `tools/<slug>/` against open reference datasets (Illumina STR FASTQ, ONT BAM, PacBio HiFi BAM).
 

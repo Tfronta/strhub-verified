@@ -928,6 +928,7 @@ def main() -> int:
     ap.add_argument("--log-example", default="", help="log of the own-example leg")
     ap.add_argument("--starts", default="starts.json", help="check_starts.py output")
     ap.add_argument("--log-starts", default="", help="log of the Starts check")
+    ap.add_argument("--procedure-review", default="", help="recomputed pre-execution procedure review")
     ap.add_argument("--recipe-proposal", default="",
                     help="detect_recipe.py output when the recipe was proposed from the "
                          "repository; lets the verdict tell a documentation gap from a failure")
@@ -1332,6 +1333,16 @@ def main() -> int:
                              and int(o.get("records_without_gt") or 0) == 0 for o in outputs):
             strhub_fault = "the structurally valid output VCF contains no called genotypes; this run does not establish why"
     procedure = (proposal or {}).get("procedure")
+    if args.procedure_review:
+        import fidelity
+        procedure = {"may_say_runs": False, "basis": "strhub", "attribution": "strhub",
+                     "blocker": "procedure_evidence_missing", "reason": "The pre-execution procedure review is missing, invalid or belongs to another manifest."}
+        try:
+            reviewed = json.loads(pathlib.Path(args.procedure_review).read_text())
+            if reviewed.get("profile") == fidelity.PROFILE and reviewed.get("manifest_sha256") == fidelity.digest(json.dumps(m, sort_keys=True)):
+                procedure = reviewed
+        except (OSError, ValueError, AttributeError):
+            pass
     if procedure:
         report["procedure_review"] = procedure
     report["verdict"] = verdict_lib.decide(

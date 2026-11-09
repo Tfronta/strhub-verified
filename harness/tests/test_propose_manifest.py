@@ -24,16 +24,17 @@ def test_hipstr_recipe_is_generated_and_rewritten_to_strhub_mounts(tmp_path):
     r = pm.build(_proposal("hipstr"), "hipstr-trial")
     m = _valid(r["manifest_yml"], tmp_path)
     assert m["environment"]["source"] == "generated"
-    assert "FROM ubuntu:22.04" in r["dockerfile"]
+    assert r["dockerfile"].endswith("FROM scratch\n")
+    assert not r["procedure"]["install_ready"]
     assert m["inputs"]["type"] == "illumina-bam-hg38"
-    assert "/data/in/input.bam" in m["run"]["cmd"]
-    assert "--fasta /data/ref/hg38.fa" in m["run"]["cmd"]
-    assert "--regions /data/in/regions.bed" in m["run"]["cmd"]
+    assert "run1.bam,run2.bam,run3.bam,run4.bam" in m["run"]["cmd"]
+    assert "--fasta /data/ref/hg38.fa" in " ".join(m["run"]["cmd"].split())
+    assert "str_regions.bed" in m["run"]["cmd"]
     assert m["run"]["cmd"].startswith("cd '/opt/tool' && touch /tmp/.strhub_mark")
     assert m["outputs"][0] == {"path": "**/*.vcf*", "format": "vcf", "min_records": 1}
     # HipSTR reads the hipstr layout: the library file is used, no limitation.
-    assert m["inputs"]["regions"] == {"library": "hipstr"}
-    assert r["limitations"] == []
+    assert "regions" not in m["inputs"]
+    assert "install_profile_unsupported" in r["limitations"]
     assert m["caveats"]["source"] == "detect_recipe"
     assert "example" not in m  # README shows placeholders, not shipped data
 
@@ -48,17 +49,17 @@ def test_strsearch_uses_the_repository_dockerfile_and_its_example(tmp_path):
     assert any("hg19" in c for c in m["caveats"]["items"])
 
 
-def test_straitrazor_fastq_is_pointed_at_the_nist_sample(tmp_path):
+def test_straitrazor_config_and_positional_placeholders_are_not_guessed(tmp_path):
     r = pm.build(_proposal("straitrazor"), "straitrazor-trial")
     m = _valid(r["manifest_yml"], tmp_path)
     assert m["inputs"]["type"] == "illumina-str-fastq"
     # README placeholders resolved: the kit-matched config from the tree, and
     # `fastqfile` pointed at the NIST sample. The un-piped form is chosen.
-    assert "str8rzr -c ForenSeqv1.27.config /data/in/sample.fastq > allsequences.txt" in m["run"]["cmd"]
+    assert "str8rzr -c configFile fastqfile > allsequences.txt" in m["run"]["cmd"]
     assert "zcat" not in m["run"]["cmd"]
-    assert any("ForenSeq kit" in c for c in m["caveats"]["items"])
+    assert not any("ForenSeq kit" in c for c in m["caveats"]["items"])
     assert m["outputs"][0]["path"] == "**/*.t[sx][vt]"
-    assert r["limitations"] == []
+    assert not r["procedure"]["may_say_runs"]
 
 
 def test_empty_repository_yields_a_recipe_that_reports_its_gaps(tmp_path):
@@ -72,7 +73,7 @@ def test_empty_repository_yields_a_recipe_that_reports_its_gaps(tmp_path):
 
 def test_rewrite_leaves_unknown_types_alone():
     cmd, notes = pm.rewrite_for_strhub("tool -i reads.fsa -o out", "capillary-fsa")
-    assert cmd == "tool -i reads.fsa -o out" and notes
+    assert cmd == "tool -i reads.fsa -o out"
 
 
 def test_recipe_round_trips_through_json():
@@ -80,23 +81,20 @@ def test_recipe_round_trips_through_json():
     json.dumps({"manifest_yml": r["manifest_yml"], "dockerfile": r["dockerfile"]})
 
 
-def test_a_list_of_input_files_becomes_one_canonical_input(tmp_path):
+def test_a_list_of_input_files_is_not_reduced_to_one_available_sample(tmp_path):
     cmd, _ = pm.rewrite_for_strhub("./HipSTR --bams run1.bam,run2.bam,run3.bam --fasta g.fa", "illumina-bam-hg38")
-    assert cmd == "./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa"
+    assert cmd == "./HipSTR --bams run1.bam,run2.bam,run3.bam --fasta /data/ref/hg38.fa"
 
 
-def test_gangstr_recipe_declares_the_published_image_as_plan_b(tmp_path):
+def test_gangstr_recipe_does_not_manufacture_a_primary_or_fallback_install(tmp_path):
     r = pm.build(_proposal("gangstr"), "gangstr-trial")
     m = _valid(r["manifest_yml"], tmp_path)  # environment.fallback is schema-valid
     assert m["environment"]["source"] == "generated"
-    assert m["environment"]["fallback"] == {
-        "dockerfile": "Dockerfile.fallback",
-        "reason": "the published image gymreklab/str-toolkit the README points at",
-    }
-    assert "FROM ubuntu:22.04" in r["dockerfile"]
-    assert "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
+    assert "fallback" not in m["environment"]
+    assert r["dockerfile"].endswith("FROM scratch\n")
+    assert r["dockerfile_fallback"] is None
     env_caveat = next(c for c in m["caveats"]["items"] if c.startswith("Environment:"))
-    assert "at the pinned commit" in env_caveat and "If that build fails" in env_caveat
+    assert "no proven installation profile" in env_caveat
 
 
 def test_a_recipe_without_a_plan_b_declares_none(tmp_path):
@@ -216,13 +214,13 @@ def test_the_version_is_the_release_the_ref_came_from_else_the_short_sha(tmp_pat
     assert m["tool"]["version"] == sha[:7]
 
 
-def test_a_loci_catalog_the_docs_download_becomes_the_panel_file():
+def test_a_loci_catalog_is_not_replaced_by_a_tool_name_lookup():
     # vamos's README fetches vamos.effMotifs-0.1.GRCh38.tsv from Zenodo for -r.
     # Which loci to annotate is the user's choice, as HipSTR's regions BED is.
     cmd = "vamos --read -b demo.aln.bam -r vamos.effMotifs-0.1.GRCh38.tsv -s S1 -o reads.vcf -t 8"
     new, notes = pm.rewrite_for_strhub(cmd, "ont-bam-hg38", library_format="motif", tree_paths=["README.md"])
-    assert "-r /data/in/regions.bed" in new and "-o reads.vcf" in new
-    assert any("vamos.effMotifs-0.1.GRCh38.tsv (after -r)" in n and "user's choice" in n for n in notes)
+    assert "-r vamos.effMotifs-0.1.GRCh38.tsv" in new and "-o reads.vcf" in new
+    assert "/data/in/regions.bed" not in new
     # A catalog the repository ships is the tool's own, and an output is an output.
     kept, _ = pm.rewrite_for_strhub("vamos --read -b x.bam -r example/region_motifs.tsv -o motifs.tsv",
                                     "ont-bam-hg38", library_format="motif",
@@ -259,10 +257,10 @@ def test_local_trial_never_fabricates_a_passed_run_without_docker(tmp_path):
     assert report["verdict"]["basis"] == "strhub"
 
 
-def test_bare_output_directory_creates_dir_first():
+def test_bare_output_directory_does_not_authorize_mkdir():
     cmd, notes = pm.normalize_documented("tool -i in.bam -o Results", "illumina-bam-hg38", [], "input.bam", "/data/ref/hg38.fa", False)
-    assert cmd.startswith("mkdir -p Results &&")
-    assert any("Results" in n and "created first" in n for n in notes)
+    assert cmd == "tool -i in.bam -o Results"
+    assert not notes
 
 
 def test_file_output_does_not_create_dir():
@@ -276,8 +274,8 @@ def test_input_directory_option_rewritten_to_data_in():
         "ont-bam-hg38",
         docs_text="-s input read dir (either bam or fastq)",
     )
-    assert "-s /data/in" in cmd
-    assert any("replaced with /data/in" in n for n in notes)
+    assert cmd == "tool -s my_reads -r yes -o Results"
+    assert not notes
 
 
 def test_shipped_bed_is_not_replaced_with_panel_bed():
@@ -342,4 +340,5 @@ def test_medical_slice_routing_does_not_flag_input_swapped():
     caveats = r["manifest"]["caveats"]["items"]
     assert not any("holds no reference sample" in c for c in caveats)
     assert not any("other documented kind was used" in c for c in caveats)
-    assert r["procedure"]["may_say_runs"] is True
+    assert r["procedure"]["may_say_runs"] is False
+    assert r["procedure"]["install_ready"] is False

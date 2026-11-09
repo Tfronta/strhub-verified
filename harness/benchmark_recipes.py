@@ -11,11 +11,11 @@ what the documentation says a user should do:
   input     the STRhub dataset chosen is the one a faithful run uses (or none,
             when none fits)
   program   the run command invokes the documented program (and subcommand)
-  clean     the rewritten command has no placeholder left in it (`,...`,
-            `path/to`, `<...>`, "YOUR PATH")
-  honest    a tool STRhub cannot run on its data is not attempted as if it
-            could, and one it can is not given up on
-  viable    runnable, and install + input + program + clean all hold
+  reviewed  the strict procedure has an explicit admission decision and reason
+  attemptable the strict profile establishes permission to attempt the procedure
+
+Historical runnable/clean targets remain in the pinned snapshots as historical
+data. They cannot authorize filling placeholders or generating installations.
 
 Offline and deterministic: no network, no Docker. Whether the Dockerfile
 really builds is measured by running trials, not here.
@@ -35,10 +35,7 @@ from prepare import unwrap_example  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BENCH = ROOT / "harness" / "testdata" / "benchmark"
-METRICS = ("install", "input", "program", "clean", "honest", "viable")
-BLOCKING = {"no_command", "install_method_unknown", "no_reference_dataset", "regions_format_unknown",
-            "loci_outside_panel", "documented_file_missing"}
-LEFTOVER = re.compile(r",\.\.\.|…|\bpath/to\b|/path/to/|YOUR[ _]PATH|<[^<>\s][^<>]*>|\bFILE\.bam\b", re.I)
+METRICS = ("install", "input", "program", "reviewed", "attemptable")
 
 
 def rows() -> list[dict]:
@@ -73,7 +70,6 @@ def score(name: str, expected: dict) -> dict:
     top = (proposal.get("commands") or [{}])[0]
     run_cmd, _cwd = unwrap_example(m["run"]["cmd"])
     exp_prog = expected["program"]
-    runnable = bool(expected["runnable_on_strhub_data"]["value"])
     got_type = (m.get("inputs") or {}).get("type")
     # A type STRhub holds no data for is no dataset at all.
     if got_type and not pm.datasets_lib.resolve(got_type):
@@ -90,20 +86,19 @@ def score(name: str, expected: dict) -> dict:
         after = top["cmd"].split(top["invokes"], 1)[-1].split()
         prog_ok = (top.get("subcommand") == exp_prog["subcommand"]
                    or any(tok == exp_prog["subcommand"] for tok in after[:3]))
-    clean = (bool(top) and not LEFTOVER.search(run_cmd.replace(" > ", " ").replace(" < ", " "))) \
-        if exp_prog.get("value") else not top
-    blocked = bool(limits & BLOCKING) or not got_type
-    honest = (not blocked) if runnable else blocked
-    viable = runnable and install and input_ok and prog_ok and clean and not blocked
+    review = recipe["procedure"]
+    attemptable = review["may_say_runs"]
+    reviewed = bool(review.get("profile") and review.get("reason")
+                    and (review.get("blocker") == "ready" if attemptable else review.get("amendments") or limits))
     return {
-        "name": name, "install": install, "input": input_ok, "program": prog_ok, "clean": clean,
-        "honest": honest, "viable": viable,
+        "name": name, "install": install, "input": input_ok, "program": prog_ok,
+        "reviewed": reviewed, "attemptable": attemptable,
         "got": {"method": method, "type": got_type, "invokes": top.get("invokes"),
                 "cmd": run_cmd[:160], "limitations": sorted(limits)},
         "want": {"methods": expected["install"]["acceptable_methods"],
                  "type": expected["input"]["strhub_type"],
                  "program": (exp_prog["value"] or "(none)") + (f" {exp_prog['subcommand']}" if exp_prog.get("subcommand") else ""),
-                 "runnable": runnable},
+                 "legacy_runnable_target": expected["runnable_on_strhub_data"]["value"]},
     }
 
 

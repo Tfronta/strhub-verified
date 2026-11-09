@@ -81,12 +81,8 @@ REGISTER: dict[str, tuple[str, str]] = {
     "997283df285e": ("diagnose_log", "log"),  # This tool requires the VCF output path to end in .gz (bgzipped). Change the output path in the 
     "dc6dbb4a5df8": ("generate_pdf", "tree"),  # Recorded automatically from the tool's public files when this run was configured. Not verified 
     "6b4450723321": ("generate_pdf", "tree"),  # This tool ships no demo or test data of its own. STRhub ran the verification using the public r
-    "16cb4d607cc3": ("propose_manifest", "readme"),  # : the documentation names that file only as a placeholder and STRhub holds no such file.
-    "7ceb34632e90": ("propose_manifest", "tree"),  # # No install method was detected; a bare image so the trial can report # the documentation gap 
     "831100e24df2": ("propose_manifest", "tree"),  # # The repository ships its own Dockerfile (
-    "ec6b7b9d5fd5": ("propose_manifest", "readme"),  # ' the README installs; its version is the package's, not necessarily the pinned commit.
-    "36152cfaf0d6": ("propose_manifest", "readme"),  # Run command: the README's own command, rewritten to STRhub's mounts; everything it created was 
-    "714329de2505": ("propose_manifest", "readme"),  # the README points at; the tool inside it is whatever that image holds, not necessarily the pinn
+    "c3b2bcd382dc": ("propose_manifest", "readme"),  # Planned command, subject to full source citation and procedure review.
     "70be7a8f1331": ("propose_manifest", "readme"),  # true # no command found in the README; nothing to run
     "4febb7603b17": ("report", "policy"),  # <br><br> This is <b>not</b> a claim that the genotypes are correct, nor that the tool is fit for cas
     "82688741465a": ("report", "manifest"),  # A container environment, built from the tool's declared install steps rather than from a recipe
@@ -125,7 +121,6 @@ REGISTER: dict[str, tuple[str, str]] = {
     "cbc9c7684db7": ("propose_manifest", "readme"),  # Input: the README documents {kinds} (line N); this run used…
     "915bef0dcd27": ("propose_manifest", "run"),     # STRhub holds no reference sample as {type}, so the other documented kind was used.
     # The documented command names the file and the tree at the pinned ref does not hold it.
-    "b1f54592cd2d": ("propose_manifest", "tree"),    # {path} (after {flag}), a file of loci the documentation leaves to the user and the repository does not ship…
     "99be0d39da1f": ("verdict", "readme"),           # no sentence in the README says what the tool takes as input…
     # A failed build, in plain words. Both rest on the Installs gate: the
     # build STRhub ran from the repository's declared steps stopped, and (on

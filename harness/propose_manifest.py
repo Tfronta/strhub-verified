@@ -41,25 +41,12 @@ import regions_library  # noqa: E402
 import _manifest  # noqa: E402
 from prepare import example_wrapper  # noqa: E402
 
-INPUT_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b", re.I)
-REF_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:fa|fasta|fna)(?:\.gz)?\b", re.I)
-BED_TOKEN = re.compile(r"(?<![\w/])(?!all_STRs_in_genome\.bed\b)[\w./-]+\.bed\b", re.I)
-#: A file of loci the documentation leaves to the user, after the option that
-#: reads it: vamos's `-r vamos.effMotifs-0.1.GRCh38.tsv`, fetched from Zenodo.
-LOCI_FILE = re.compile(r"(?<!\S)(--?[\w-]+)(\s+|=)((?!/)[\w./-]*(?:motif|region|repeat|catalog|loci)[\w./-]*"
-                       r"\.(?:tsv|txt)(?:\.gz)?)(?![\w./-])", re.I)
-OUTPUT_FLAG = re.compile(r"^--?(?:o|out|output|outdir|out[-_]?dir|output[-_]?dir|output[-_]?prefix|prefix)$", re.I)
 OUTPUT_GLOB = {
     "vcf": ("**/*.vcf*", "vcf"),
     "tsv": ("**/*.t[sx][vt]", "tsv"),   # .tsv and .txt
     "csv": ("**/*.csv", "csv"),
     "json": ("**/*.json", "json"),
 }
-#: Types with a STRhub dataset, and which of them need a regions BED the
-#: tool understands (a per-tool format STRhub cannot yet generate for a
-#: stranger's tool; see the datasets library plan).
-REQUIRES_REGIONS = {"illumina-bam-hg38", "illumina-bam-hg38-y", "illumina-bam-hg38-med"}
-
 #: The disease-locus slice of the same sample and platform. A tool whose shipped
 #: catalog genotypes medical repeat loci (ExpansionHunter's 31, TRGT's pathogenic
 #: repeats) has nothing to genotype in the forensic slice; in this one it does.
@@ -68,365 +55,39 @@ MEDICAL_VARIANT = {"illumina-bam-hg38": "illumina-bam-hg38-med",
                    "ont-bam-hg38": "ont-bam-hg38-med"}
 
 
-PLACEHOLDER_INPUT = re.compile(
-    r"(?<![\w/.-])[<\[]?(?!\w*(?:list|fofn|manifest|dir|folder|table|index))\w*(?:fastq|fq|bam|reads|input)"
-    r"(?!\w*(?:list|fofn|manifest|dir|folder|table|index))\w*[>\]]?(?![\w/.-])", re.I)
-PLACEHOLDER_CONFIG = re.compile(r"(?<![\w/.-])[<\[]?\w*config\w*[>\]]?(?![\w/.-])", re.I)
-
-
 def resolve_placeholders(cmd: str, config_files: list[str], kit: str | None) -> tuple[str, list[str]]:
-    """READMEs write `str8rzr -c configFile fastqfile`; a stranger with the
-    repository in front of them substitutes a real config from the tree. When
-    the dataset names a kit (the NIST sample is ForenSeq), the matching config
-    is chosen; otherwise the first one, and the note says so."""
-    notes = []
-    new = cmd
-    if config_files:
-        chosen = next((c for c in config_files if kit and kit.lower() in c.lower()), config_files[0])
-        new, n = PLACEHOLDER_CONFIG.subn(chosen, new)
-        if n:
-            notes.append(f"'{cmd.split()[0]}' config placeholder resolved to {chosen}"
-                         + (f" (matches the dataset's {kit} kit)." if kit and kit.lower() in chosen.lower()
-                            else " (first configuration file in the repository; may not match the data)."))
-    return new, notes
-
-
-#: `<BAM/CRAM file with aligned reads>`: what a documented placeholder stands
-#: for, read off its own words. Order matters: the first kind that matches wins.
-ANGLE_KINDS = [
-    ("indir", re.compile(r"\b(?:in(?:put)?|reads?|bams?|fastqs?)[ _-]?(?:dir(?:ectory)?|folder)\b|"
-                         r"\b(?:dir(?:ectory)?|folder)[ _-]?(?:in(?:put)?|reads?|bams?|fastqs?)\b", re.I)),
-    ("input", re.compile(r"\b(?:bams?|crams?|fastqs?|fq|reads?|alignments?|aligned)\b", re.I)),
-    ("reference", re.compile(r"\b(?:fasta|fa|reference(?! allele)|genome|ref)\b", re.I)),
-    ("regions", re.compile(r"\b(?:bed|regions?|loci|locus|repeats?|targets?)\b", re.I)),
-    ("catalog", re.compile(r"\b(?:catalog|catalogue|json)\b", re.I)),
-    ("outdir", re.compile(r"\b(?:out(?:put)?[ _-]?dir(?:ectory)?|folder|directory|working[ _-]?path)\b", re.I)),
-    ("output", re.compile(r"\b(?:out(?:put)?|prefix|vcf|result|report)\b", re.I)),
-    ("threads", re.compile(r"\b(?:threads?|cpus?|cores?|processes|procs?|jobs)\b", re.I)),
-    ("sample", re.compile(r"\b(?:sample|name|id)\b", re.I)),
-]
-EXCLUDE_FLAG = re.compile(r"--?[\w-]*(?:exclude|skip|blacklist|mask|ignore)[\w-]*$", re.I)
-
-
-def _tree_file(tree_paths: list[str], want: re.Pattern) -> str | None:
-    """A file the repository ships that matches `want`, hg38 first."""
-    hits = [p for p in tree_paths if want.search(p)]
-    hits.sort(key=lambda p: (not re.search(r"hg38|grch38|b38", p, re.I), p.count("/"), p))
-    return hits[0] if hits else None
+    """No implicit config selection from a kit name or a repository listing."""
+    return cmd, []
 
 
 def normalize_documented(cmd: str, input_type: str | None, tree_paths: list[str] | None,
                          canonical: str | None, ref_mount: str | None,
                          has_regions: bool, binary_elsewhere: bool = False,
                          catalog_from_library: bool = False) -> tuple[str, list[str]]:
-    """The parts of a documented command that are not a command yet: usage
-    brackets, `<descriptions>`, `path/to/` stand-ins, `a.bam,...` lists and a
-    `./tool` that the build put elsewhere. Every change is a note."""
-    tree = set(tree_paths or [])
-    notes: list[str] = []
-    new = cmd.rstrip("\\ ").strip()
-    # Optional arguments of a usage synopsis (`[--loci loci.bed]`), innermost
-    # first: the documented minimum is what is run.
-    if re.search(r"\[\s*-", new):
-        before = new
-
-        def optional(m: re.Match) -> str:
-            inner = m.group(1)
-            # The loci to genotype are optional only in the sense that
-            # without them the tool scans the whole genome: straglr's
-            # `[--loci loci.bed]` is its genotyping mode. Kept, when STRhub
-            # holds a regions file to give it.
-            if has_regions and re.search(r"--?(?:loci|regions?|bed|repeats?|targets?)\b", inner, re.I):
-                return " " + inner.strip()
-            return ""
-        while True:
-            nxt = re.sub(r"\s*\[([^\[\]]*)\]", optional, new)
-            if nxt == new:
-                break
-            new = nxt
-        if new != before:
-            notes.append("Optional arguments of the documented usage ([...]) were left out, "
-                         "except the loci to genotype.")
-    # `x.bam,...` and `a.bam,b.bam,...`: a list of the same kind of file is one file here.
-    new = re.sub(r"((?:[\w./<>-]+),(?:[\w./<>-]+,)*)\s*(?:\.\.\.|…)", lambda m: m.group(1).rstrip(","), new)
-    new = re.sub(r"\s(?:\.\.\.|…)(?=\s|$)", "", new)
-    # `$sample`, `${reference_fasta}`: shell variables standing in for the
-    # user's files, as STRling's docs write them. A whole-token variable is
-    # resolved by its name like a <description>; inside a file name it is the
-    # sample's name.
-    def shell_var(m: re.Match) -> str:
-        name = m.group(1) or m.group(2)
-        whole = m.group(0) == m.string[m.start():m.end()] and (
-            (m.start() == 0 or m.string[m.start() - 1] in " =") and
-            (m.end() == len(m.string) or m.string[m.end()] in " "))
-        words = re.sub(r"[_\-]+", " ", name)
-        kind = next((k for k, rx in ANGLE_KINDS if rx.search(words)), None)
-        if whole and kind == "indir":
-            return "/data/in"
-        if whole and kind == "reference" and ref_mount:
-            return ref_mount
-        if whole and kind == "input" and canonical:
-            return f"/data/in/{canonical}"
-        if whole and kind == "outdir":
-            return "strhub_out"
-        if whole and kind == "threads":
-            return "2"
-        return "sample"
-    if re.search(r"\$(?:\{\w+\}|[A-Za-z_]\w*)", new):
-        new = re.sub(r"\$(?:\{(\w+)\}|([A-Za-z_]\w*))", shell_var, new)
-        notes.append("Shell variables in the documented command ($sample, $reference_fasta, ...) "
-                     "were filled in with STRhub's sample and mounts.")
-    # `<description>` placeholders, resolved by what they describe.
-    unresolved: list[str] = []
-
-    def angle(m: re.Match) -> str:
-        words = m.group(1)
-        # The flag it follows says what it is (`--reference <file>`); another
-        # placeholder before it says nothing about it.
-        before = new[:m.start()].split()
-        prev = before[-1] if before and before[-1].startswith("-") else ""
-        text = re.sub(r"[_\-/.]+", " ", f"{prev} {words}")
-        kind = next((k for k, rx in ANGLE_KINDS if rx.search(text)), None)
-        if kind == "indir":
-            return "/data/in"
-        if kind == "input" and canonical:
-            return f"/data/in/{canonical}"
-        if kind == "reference" and ref_mount:
-            return ref_mount
-        if kind == "regions" and has_regions:
-            return "/data/in/regions.bed"
-        if kind == "catalog" and catalog_from_library:
-            # The loci to genotype, left to the user like a regions BED:
-            # STRhub's catalog of the panel it holds reads (the library's
-            # eh_catalog), not a catalog of loci the sample does not cover.
-            return "/data/in/regions.json"
-        if kind == "catalog":
-            found = _tree_file(list(tree), re.compile(r"(?:catalog|catalogue)[^/]*\.json$", re.I))
-            if found:
-                notes.append(f"'<{words}>' resolved to {found}, shipped in the repository.")
-                return found
-        if kind == "outdir":
-            return "strhub_out"
-        if kind == "output":
-            return "sample"
-        if kind == "threads":
-            return "2"
-        if kind == "sample":
-            return "sample"
-        unresolved.append(words)
-        return m.group(0)
-    new = re.sub(r"<([^<>\n]{1,80})>", angle, new)
-    if unresolved:
-        notes.append("Placeholder(s) STRhub could not resolve: " + ", ".join(f"<{u}>" for u in unresolved) + ".")
-    # `/path/to/Tool` and `path/to/samtools`: a program on the PATH. A data file
-    # behind `path/to/` is left for the token rules below, and an option whose
-    # file STRhub does not hold is dropped, and said.
-    toks = new.split()
-    out: list[str] = []
-    i = 0
-    while i < len(toks):
-        t = toks[i]
-        m = re.match(r"^(?:\./)?/?(?:path/to|PATH/TO|your/path|/your/path)/(.+)$", t)
-        if m:
-            rest = m.group(1)
-            base = rest.split("/")[-1]
-            prev = out[-1] if out and out[-1].startswith("-") else ""
-            if has_regions and re.match(r"^--?(?:loci|regions?|bed|repeats?|targets?|catalog|variant[-_]catalog)$", prev, re.I):
-                out.append("regions.bed")
-                i += 1
-                continue
-            if "." not in base or base.endswith((".py", ".sh", ".pl")):
-                out.append(base)
-                i += 1
-                continue
-            if not re.search(r"\.(?:bam|cram|f(?:ast)?q|fa|fasta|fna|bed)(?:\.gz)?$", base, re.I):
-                if out and out[-1].startswith("-"):
-                    notes.append(f"Dropped {out[-1]} {t}: the documentation names that file only as a "
-                                 "placeholder and STRhub holds no such file.")
-                    out.pop()
-                else:
-                    notes.append(f"{t} is a placeholder STRhub could not resolve.")
-                    out.append(t)
-                i += 1
-                continue
-            out.append(rest)
-            i += 1
-            continue
-        out.append(t)
-        i += 1
-    new = " ".join(out)
-    # An exclusion list is not a regions file: pointing it at the panel would
-    # exclude exactly the loci the run is for.
-    toks = new.split()
-    out = []
-    i = 0
-    while i < len(toks):
-        if EXCLUDE_FLAG.match(toks[i]) and i + 1 < len(toks) and toks[i + 1].lower().endswith(".bed"):
-            notes.append(f"Dropped {toks[i]} {toks[i + 1]}: an exclusion list STRhub does not hold.")
-            i += 2
-            continue
-        out.append(toks[i])
-        i += 1
-    new = " ".join(out)
-    new, more = from_the_path(new, tree, binary_elsewhere)
-    notes += more
-    # An output prefix inside a directory nobody made: STRling's
-    # `--output-prefix str-results/$sample` stopped with "couldn't open output
-    # file" because its docs run `mkdir -p str-results` a few lines earlier.
-    dirs = []
-    toks = new.split()
-    for i, t in enumerate(toks[:-1]):
-        if re.match(r"^--?(?:o|out|output|outdir|out[-_]?dir|output[-_]?dir|output[-_]?prefix|prefix|"
-                    r"working[-_]?path|tr-vcf|str-vcf|vcf)$", t, re.I):
-            val = toks[i + 1]
-            if "/" in val.strip("/"):
-                # If it looks like a file with an extension, take its directory; else the whole path
-                if re.search(r"\.[a-zA-Z0-9]{1,5}(?:\.gz)?$", val):
-                    d = val.rsplit("/", 1)[0]
-                else:
-                    d = val.rstrip("/")
-            else:
-                is_dir_flag = bool(re.match(r"^--?(?:outdir|out[-_]?dir|output[-_]?dir|working[-_]?path)$", t, re.I))
-                has_file_ext = bool(re.search(r"\.[a-zA-Z0-9]{1,5}(?:\.gz)?$", val))
-                if is_dir_flag or not has_file_ext:
-                    d = val
-                else:
-                    d = ""
-            if d and not d.startswith(("/", "-", "$")) and d not in (".", "..") and d not in dirs:
-                dirs.append(d)
-    # Exclude directories that are already created by an earlier mkdir in the command
-    dirs = [d for d in dirs if not re.search(rf"\bmkdir\b[^\n;&]*\b{re.escape(d)}\b", new)]
-    if dirs:
-        new = f"mkdir -p {' '.join(dirs)} && {new}"
-        notes.append(f"The output directory the command writes into ({', '.join(dirs)}) was created first.")
-    return new, notes
-
-
-def from_the_path(cmd: str, tree: set[str], binary_elsewhere: bool) -> tuple[str, list[str]]:
-    """`./trgt` where the build left trgt somewhere else: the same program, from
-    the PATH. For the run leg and the example alike: TRGT's own example ran
-    `./trgt` in the clone and failed with "No such file", a red that was ours."""
-    m = re.match(r"^((?:\w+=\S+\s+)*)\./([\w.+-]+)(\s|$)", cmd)
-    if m and binary_elsewhere and tree and m.group(2) not in tree:
-        return (f"{m.group(1)}{m.group(2)}{cmd[m.end(2):]}",
-                [f"'./{m.group(2)}' run as '{m.group(2)}' from the PATH: the build puts it there, "
-                 "not in the directory the documentation runs it from."])
+    """Retained API: normalization cannot invent a runnable command."""
     return cmd, []
 
 
-#: Build methods whose executables do not land where a README runs them from
-#: (`./tool` in the clone): they are put on the PATH instead.
-BINARY_ELSEWHERE = {"cargo", "cmake", "go", "autotools", "release_binary", "bioconda",
-                    "docker_image", "pip", "make_subdir"}
+def from_the_path(cmd: str, tree: set[str], binary_elsewhere: bool) -> tuple[str, list[str]]:
+    """Executable paths are part of the cited procedure, never rewritten."""
+    return cmd, []
+
+
+BINARY_ELSEWHERE = set()
 
 
 def rewrite_for_strhub(cmd: str, input_type: str | None, config_files: list[str] | None = None,
                        tree_paths: list[str] | None = None, build_method: str | None = None,
                        docs_text: str = "", library_format: str | None = None) -> tuple[str, list[str]]:
-    """Point the documented command at STRhub's mounts. Returns (cmd, notes)."""
-    ds = datasets_lib.resolve(input_type) if input_type else None
-    notes: list[str] = []
-    if not ds:
-        return cmd, ["No STRhub reference dataset for the detected input type; the run "
-                     "leg uses the command as documented."]
-    canonical = ds.get("canonical_input")
-    ref_mount = (ds.get("reference_genome") or {}).get("mount_path", "/data/ref/hg38.fa") \
-        if ds.get("reference_genome") else None
-    has_regions = bool(ds.get("regions_library")) or input_type in REQUIRES_REGIONS
-    catalog_from_library = bool(library_format in regions_library.JSON_FORMATS
-                                and regions_library.library_path(input_type or "", library_format))
-    cmd, notes0 = normalize_documented(cmd, input_type, tree_paths, canonical, ref_mount, has_regions,
-                                       binary_elsewhere=build_method in BINARY_ELSEWHERE,
-                                       catalog_from_library=catalog_from_library)
-    new, notes = resolve_placeholders(cmd, config_files or [], ds.get("kit"))
-    notes = notes0 + notes
-    if canonical:
-        # Input directory rewriting: when a flag or placeholder indicates a
-        # directory of reads/inputs rather than a single file, point it at
-        # /data/in (STRhub mounts the input files into /data/in).
-        is_s_dir = bool(re.search(r"-s\b[^\n]*(?:read|input|bam|fastq)[^\n]*(?:dir|folder)", docs_text, re.I)
-                        or re.search(r"-s\b[^\n]*(?:dir|folder)[^\n]*(?:read|input|bam|fastq)", docs_text, re.I))
-        toks = new.split()
-        replaced_dir = False
-        for i in range(len(toks) - 1):
-            flag = toks[i]
-            val = toks[i + 1]
-            flag_is_indir = bool(re.match(r"^--?(?:indir|in[-_]?dir|input[-_]?dir|reads[-_]?dir|bam[-_]?dir|"
-                                          r"fastq[-_]?dir|fastqs[-_]?dir|data[-_]?dir)$", flag, re.I)
-                                 or (flag == "-s" and is_s_dir))
-            val_is_indir = bool(re.match(r"^[<\[]?(?:\w*[-_])?(?:reads?|bams?|fastqs?|input)[-_]?(?:dir|directory|folder)[>\]]?/?$", val, re.I)
-                                or re.match(r"^[<\[]?(?:dir|directory|folder)[-_]?(?:reads?|bams?|fastqs?|input)\w*[>\]]?/?$", val, re.I))
-            if (flag_is_indir or val_is_indir) and not val.startswith("/data/in"):
-                toks[i + 1] = "/data/in"
-                replaced_dir = True
-                break
-        if replaced_dir:
-            new = " ".join(toks)
-            notes.append("Input directory path in the README command replaced with /data/in.")
-
-        # `--bams run1.bam,run2.bam,run3.bam,run4.bam` is a README showing the
-        # flag takes a list; four copies of the same file is not what anyone
-        # means, and HipSTR refuses it. One list becomes one file.
-        def _first_of_list(m: re.Match) -> str:
-            notes.append("A comma-separated input list in the documented command was reduced to its first file.")
-            return m.group(1).split(",")[0]
-        new = re.sub(r"((?:[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?)(?:,[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?)+)",
-                     _first_of_list, new, flags=re.I)
-        new, n = INPUT_TOKEN.subn(f"/data/in/{canonical}", new)
-        n2 = 0
-        if n == 0:
-            new, n2 = PLACEHOLDER_INPUT.subn(f"/data/in/{canonical}", new)
-        if n or n2:
-            notes.append(f"{n or n2} input {'path' if n else 'placeholder'}(s) in the README command "
-                         f"replaced with /data/in/{canonical}.")
-    if ds.get("reference_genome"):
-        mount = ds["reference_genome"].get("mount_path", "/data/ref/hg38.fa")
-        new, n = REF_TOKEN.subn(mount, new)
-        if n:
-            notes.append(f"{n} reference FASTA path(s) replaced with {mount}.")
-    if input_type in REQUIRES_REGIONS or ds.get("supported_loci"):
-        tree = set(tree_paths or [])
-        replaced_beds = []
-
-        def _bed_replace(m: re.Match) -> str:
-            path = m.group(0)
-            p = path.lstrip("./")
-            is_shipped_db = (p in tree and any(p.startswith(prefix) for prefix in ("db/", "db-", "database/", "models/")))
-            if is_shipped_db:
-                return path
-            replaced_beds.append(path)
-            return "/data/in/regions.bed"
-
-        new = BED_TOKEN.sub(_bed_replace, new)
-        if replaced_beds:
-            notes.append(f"{len(replaced_beds)} BED path(s) replaced with /data/in/regions.bed.")
-    # The loci to genotype, from a file the documentation leaves to the user
-    # (vamos's README fetches one from Zenodo), in a layout STRhub's library
-    # writes for this tool. Which loci is the user's choice, as HipSTR's
-    # regions BED is; STRhub's are the ones its reads cover. A file the
-    # repository ships is the tool's own and stays.
-    if library_format and library_format not in regions_library.JSON_FORMATS \
-            and regions_library.library_path(input_type or "", library_format):
-        tree = set(tree_paths or [])
-
-        def loci_file(m: re.Match) -> str:
-            flag, sep, path = m.groups()
-            if OUTPUT_FLAG.match(flag) or path.lstrip("./") in tree:
-                return m.group(0)
-            notes.append(f"{path} (after {flag}), a file of loci the documentation leaves to the user and the "
-                         f"repository does not ship, replaced with STRhub's {library_format} file of the panel "
-                         "loci (/data/in/regions.bed): which loci to genotype is the user's choice.")
-            return f"{flag}{sep}/data/in/regions.bed"
-        new = LOCI_FILE.sub(loci_file, new)
-    return new, notes
+    """Apply only the closed, independently checked substitution profile."""
+    import fidelity
+    review = fidelity.rewrite(cmd, input_type)
+    notes = [f"{item['role']}: {item['original']} -> {item['replacement']}."
+             for item in review['substitutions']]
+    notes += [f"Evaluator limitation: {item}." for item in review['limitations']]
+    return review['command'], notes
 
 
-# Which input types add a suffix to a catalogue slug. The autosomal Illumina
-# BAM and the Illumina STR FASTQ are the canonical assays and add nothing; a
-# Y-STR or a nanopore run is a different claim about the same tool and gets
-# its own card, and so is a PacBio HiFi run. Unlisted types fall back to their
-# last hyphen-segment, which for pacbio-hifi-bam-hg38 would be "hg38". Kept
-# in step with TYPE_SLUG_SUFFIX in strhub-web/lib/verified/submission.ts.
 TYPE_SLUG_SUFFIX = {
     "illumina-bam-hg38": "",
     "illumina-str-fastq": "",
@@ -521,7 +182,7 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     if med:
         panel_note = (f"Panel: the loci file the documented command reads, shipped in the repository, lists "
                       f"coordinates inside STRhub's medical STR slice and none inside the forensic one; this "
-                      f"run used the medical slice of the same sample ({med}).")
+                      f"plan selects the medical slice of the same sample ({med}).")
         input_type = med
     # The input caveat quotes what the README says and states what this run
     # did. Nothing in it is inferred: the kinds, the recommendation and the
@@ -535,14 +196,14 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
             kind = "BAM" if "bam" in input_type else "FASTQ"
             input_note = (f"Input: the documented command takes {kind} ({top.get('file') or 'README.md'}, "
                           f"line {top.get('line')}); no sentence says so, so the command is what was read. "
-                          f"This run used STRhub's {input_type} reference data.")
+                          f"This plan selects STRhub's {input_type} reference data.")
         elif it.get("how") == "read":
             docs = stmts.get("inputs") or []
             kinds = " and ".join(i["kind"].upper() for i in docs)
             line = docs[0]["line"] if docs else None
             input_note = (f"Input: the README documents {kinds}"
                           + (f" (line {line})" if line else "")
-                          + f"; this run used STRhub's {input_type} reference data.")
+                          + f"; this plan selects STRhub's {input_type} reference data.")
             rec = stmts.get("recommendation")
             if rec:
                 quote = re.sub(r"[*_`]+", "", rec["text"])[:90]
@@ -553,7 +214,7 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
                                "so the other documented kind was used.")
         else:
             input_note = (f"Input: no sentence in the README says what the tool takes; "
-                          f"{input_type} was tried on the strength of mentions alone.")
+                          f"{input_type} is only a guess from mentions; it is not authorization to execute.")
             limitations.append("input_type_guessed")
     from_repo = build_info.get("method") == "dockerfile"
     caveat_items: list[str] = []
@@ -566,56 +227,17 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         env = {"dockerfile": "Dockerfile", "os": ["ubuntu-22.04"], "source": "repository",
                "from_repo": build_info["file"]}
         cwd = "."
-        caveat = f"Environment: the repository's own {build_info['file']} was built as-is."
-        fb = build_info.get("fallback") or {}
-        if fb and proposal.get("dockerfile_fallback"):
-            what = published_environment(fb)
-            env["fallback"] = {"dockerfile": "Dockerfile.fallback", "reason": what}
-            dockerfile_fallback_text = proposal["dockerfile_fallback"]
-            caveat += f" If it does not build, {what} stands in, and the report says so."
+        caveat = f"Environment: the repository's own {build_info['file']} is selected as-is, subject to the evidence check."
         caveat_items.append(caveat)
-    elif proposal.get("dockerfile"):
-        dockerfile_text = proposal["dockerfile"]
-        env = {"dockerfile": "Dockerfile", "os": ["ubuntu-22.04"], "source": "generated"}
-        cwd = "/opt/tool"
-        if build_info.get("method") == "docker_image":
-            caveat_items.append(f"Environment: the published image {build_info.get('image')} the README points "
-                                "at; the tool inside it is whatever that image holds, not necessarily the pinned commit.")
-        elif build_info.get("method") == "bioconda":
-            caveat_items.append(f"Environment: the Bioconda package '{build_info.get('package')}' the README installs; "
-                                "its version is the package's, not necessarily the pinned commit.")
-        else:
-            caveat = (f"Environment: generated by STRhub from the repository's "
-                      f"{build_info.get('file') or 'install instructions'} ({build_info.get('method')}), "
-                      "at the pinned commit.")
-            # Plan B. The pinned commit is what the report names, so it is
-            # what gets built first; the published environment the README
-            # points at only stands in if that build fails, and the report
-            # says which one ran.
-            fb = build_info.get("fallback") or {}
-            if fb and proposal.get("dockerfile_fallback"):
-                what = published_environment(fb)
-                env["fallback"] = {"dockerfile": "Dockerfile.fallback", "reason": what}
-                dockerfile_fallback_text = proposal["dockerfile_fallback"]
-                caveat += f" If that build fails, {what} stands in, and the report says so."
-            caveat_items.append(caveat)
     else:
-        dockerfile_text = ("# No install method was detected; a bare image so the trial can report\n"
-                           "# the documentation gap rather than a build error of STRhub's making.\n"
-                           "FROM ubuntu:22.04\nRUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates "
-                           "&& rm -rf /var/lib/apt/lists/*\n"
-                           f"ARG TOOL_REF={ref}\nWORKDIR /opt\nRUN git clone https://github.com/{repo.split('github.com/')[-1]}.git tool "
-                           "&& cd tool && git checkout \"${TOOL_REF}\"\nWORKDIR /opt/tool\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n")
+        # Non-runnable: never infer dependencies, interpreters or library paths.
+        dockerfile_text = "# Installation profile not established; must not be built.\nFROM scratch\n"
         env = {"dockerfile": "Dockerfile", "os": ["ubuntu-22.04"], "source": "generated"}
         cwd = "/opt/tool"
-        limitations.append("install_method_unknown")
+        limitations.append("install_method_unknown" if build_info.get("method") == "unknown"
+                           else "install_profile_unsupported")
+        caveat_items.append("Environment: no proven installation profile; STRhub did not manufacture installation steps.")
 
-    ssh = build_info.get("ssh_urls_in") or []
-    if ssh and not from_repo:
-        # Disclosed as what it is: a change to the environment, not to the
-        # tool, and a finding for the author at the same time.
-        caveat_items.append(f"Environment: {', '.join(ssh[:2])} fetch dependencies over SSH (git@github.com:), "
-                            "which needs a GitHub SSH key; STRhub's build fetched them over HTTPS instead.")
     # --- the command
     best = commands[0]["cmd"] if commands else ""
     if input_note:
@@ -635,28 +257,20 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
                                               proposal.get("readme_text", ""), lib_fmt)
         pre = commands[0].get("prerequisite")
         if pre:
-            # The documented step that writes what this command reads runs
-            # first, rewritten the same way, and the run stops if it fails.
-            pre_cmd, pre_notes = rewrite_for_strhub(pre["cmd"], input_type, proposal.get("config_files"),
-                                                    proposal.get("tree_paths"), build_info.get("method"),
-                                                    proposal.get("readme_text", ""), lib_fmt)
-            rewritten = f"{pre_cmd} && {rewritten}"
-            notes = [n for n in pre_notes if n not in notes] + notes
-            notes.append(f"The documented step before it ({pre['file']}, line {pre['line']}) runs first: "
-                         f"it writes {pre['writes']}, which the command reads.")
+            notes.append("Evaluator limitation: a possible prerequisite was discovered but was not automatically chained.")
         caveat_items += notes
         run_cmd = example_wrapper(rewritten, cwd)
         top = commands[0]
         if top.get("origin", "readme") == "readme":
             caveat_items.append("Run command: the README's own command, rewritten to STRhub's mounts; "
-                                "everything it created was captured as output.")
+                                "the capture wrapper is planned only if the procedure review passes.")
         elif top.get("origin") == "wiki":
             caveat_items.append(f"Run command: the one documented on the wiki ({top['file']}, line {top['line']}), "
-                                "rewritten to STRhub's mounts; everything it created was captured as output. "
+                                "rewritten to STRhub's mounts; the capture wrapper is planned only if the procedure review passes. "
                                 "A wiki is not versioned with the code: it was read as it is today.")
         else:
             caveat_items.append(f"Run command: the one documented in {top['file']} (line {top['line']}), "
-                                "rewritten to STRhub's mounts; everything it created was captured as output.")
+                                "rewritten to STRhub's mounts; the capture wrapper is planned only if the procedure review passes.")
     if best and input_type and datasets_lib.resolve(input_type):
         limitations += check_documented_files(run_cmd, proposal, input_type, caveat_items)
     regions_block = None
@@ -702,8 +316,8 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         "tool": {"name": name, "version": version, "contact": f"{repo.rstrip('/')}/issues"},
         "submission": {"by": submitted_by},
         "source": {"repo": repo, "ref": ref},
-        # Read off the repository, so it may stand behind the badge; a recipe
-        # somebody wrote by hand may not (docs/PLAN-Documented-Is-The-Badge.md).
+        # Discovery origin only. Eligibility requires the pinned procedure
+        # review; this label does not establish documented execution.
         "recipe": {"origin": "proposed"},
         "report": {"slug": catalogue_slug(name, input_type)},
         "environment": env,
@@ -712,12 +326,6 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
                    if input_type else {}),
         "outputs": outputs,
     }
-    if not best:
-        # Nothing documented to run, but the packaging says what the program
-        # is called: ask it for --help, so the report can say whether it starts.
-        exes = (proposal.get("packaging") or {}).get("executables") or []
-        if exes:
-            manifest["starts"] = {"cmd": f"{exes[0]} --help", "cwd": cwd}
     ex = proposal.get("example")
     if ex and ex.get("cmd"):
         ex_cmd, ex_notes = from_the_path(ex["cmd"], set(proposal.get("tree_paths") or []),
@@ -739,10 +347,9 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     import procedure as procedure_lib
     reviewed = procedure_lib.classify(proposal, manifest, limitations, caveat_items)
 
-    header = ("# STRhub Verified recipe, PROPOSED from the repository by detect_recipe.\n"
-              "# Nobody typed this: every choice is listed under `caveats`, and the report\n"
-              "# says so. It is published only if the run's verdict is attributable to the\n"
-              "# tool (runs or fails); a verdict that is STRhub's limitation never is.\n")
+    header = ("# STRhub Verified candidate, proposed by detect_recipe.\n"
+              "# Requires pinned upstream evidence and a strict procedure review.\n"
+              "# An origin label is not proof; unsupported procedures must not run.\n")
     return {
         "manifest": manifest,
         "manifest_yml": header + yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True, width=1000),
