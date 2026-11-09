@@ -28,7 +28,7 @@ def test_hipstr_builds_with_make_takes_bam_writes_vcf():
     assert r["commands"][0]["invokes"] == "HipSTR"
     assert "--regions" in r["commands"][0]["cmd"] and "--str-vcf" in r["commands"][0]["cmd"]
     assert r["readme"]["gaps"] == []
-    assert "FROM ubuntu:22.04" in r["dockerfile"]
+    assert r["dockerfile"] is None
 
 
 def test_straitrazor_has_no_example_data_but_a_runnable_command():
@@ -75,9 +75,8 @@ def test_gangstr_builds_the_pinned_commit_and_keeps_the_published_image_as_plan_
     assert [c["method"] for c in r["build"]["candidates"]] == ["cmake", "docker_image", "bioconda"]
     # Out of the source tree, as CMake projects document it, and whatever it
     # built is put on the PATH.
-    assert "FROM ubuntu:22.04" in r["dockerfile"] and "cmake -S . -B build" in r["dockerfile"]
-    assert "/usr/local/bin/" in r["dockerfile"]
-    assert r["dockerfile_fallback"].startswith("# Proposed") and "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
+    assert r["dockerfile"] is None
+    assert r["dockerfile_fallback"] is None
     assert r["commands"][0]["invokes"] == "GangSTR"
     # One option per line in the README, no backslashes: all of them are kept.
     assert "--regions" in r["commands"][0]["cmd"] and "--out" in r["commands"][0]["cmd"]
@@ -89,7 +88,7 @@ def test_strspy_conda_env_under_setup_dir_is_found():
     r = _detect("strspy")
     assert r["build"]["method"] == "conda"
     assert r["build"]["file"] == "setup/STRspy_2.0_env.yml"
-    assert "micromamba create" in r["dockerfile"]
+    assert r["dockerfile"] is None
     assert "ont-bam-hg38" in r["input_type"]["candidates"]
 
 
@@ -131,16 +130,11 @@ def test_example_is_proposed_only_when_the_command_runs_on_shipped_data():
     assert _detect("gangstr")["example"] is None
 
 
-def test_generated_dockerfiles_never_mask_a_failed_clone():
-    import re
-    for name in ("hipstr", "straitrazor", "gangstr", "strspy", "gangstr:fallback"):
-        name, _, which = name.partition(":")
-        df = _detect(name)["dockerfile_fallback" if which else "dockerfile"]
-        assert df, name
-        for line in df.splitlines():
-            # A bare `|| true` at the end of a RUN chain hides every earlier
-            # failure in the chain. Only a parenthesised step may be tolerated.
-            assert not re.search(r"&&\s+[^()\n]*\|\|\s*true\s*$", line), (name, line)
+def test_discovery_never_generates_primary_or_retry_installations():
+    for name in ("hipstr", "straitrazor", "gangstr", "strspy", "strsearch"):
+        proposal = _detect(name)
+        assert proposal["dockerfile"] is None
+        assert proposal["dockerfile_fallback"] is None
 
 
 README_WITH_IMAGE = "## Install\n\nA Docker image is available at [x](https://hub.docker.com/r/gymreklab/str-toolkit).\n\n```\nGangSTR --bam file.bam --ref ref.fa --regions r.bed --out o\n```\n"
@@ -151,7 +145,7 @@ def test_a_published_docker_image_is_the_environment_only_when_nothing_builds_th
     r = dr.detect("gymreklab/gangstr", "abc", {"tree": [], "truncated": False}, README_WITH_IMAGE, "README.md")
     assert r["build"]["method"] == "docker_image" and r["build"]["image"] == "gymreklab/str-toolkit"
     assert r["build"]["fallback"] is None and r["dockerfile_fallback"] is None
-    assert r["dockerfile"].startswith("# Proposed") and "FROM gymreklab/str-toolkit" in r["dockerfile"]
+    assert r["dockerfile"] is None
 
 
 def test_a_source_build_outranks_the_published_image_which_becomes_plan_b():
@@ -159,12 +153,8 @@ def test_a_source_build_outranks_the_published_image_which_becomes_plan_b():
     r = dr.detect("gymreklab/gangstr", "abc", tree, README_WITH_IMAGE, "README.md")
     assert r["build"]["method"] == "cmake"
     assert r["build"]["fallback"]["image"] == "gymreklab/str-toolkit"
-    assert "FROM ubuntu:22.04" in r["dockerfile"]
-    assert "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
-    # Both lay the tool out the same way, so one command runs on either.
-    for df in (r["dockerfile"], r["dockerfile_fallback"]):
-        assert "git clone https://github.com/gymreklab/gangstr.git tool" in df
-        assert df.rstrip().endswith('ENTRYPOINT ["/bin/bash", "-lc"]')
+    assert r["dockerfile"] is None
+    assert r["dockerfile_fallback"] is None
 
 
 def test_the_repositorys_own_dockerfile_is_built_first_and_the_documented_image_is_plan_b():
@@ -176,8 +166,7 @@ def test_the_repositorys_own_dockerfile_is_built_first_and_the_documented_image_
     assert r["build"]["method"] == "dockerfile"
     assert r["build"]["fallback"]["method"] == "docker_image"
     # The command was written for the image's layout: the stand-in keeps it.
-    assert r["dockerfile_fallback"].splitlines()[1:] == [
-        "FROM gymreklab/str-toolkit", 'ENTRYPOINT ["/bin/bash", "-lc"]']
+    assert r["dockerfile_fallback"] is None
 
 
 def test_a_repository_dockerfile_without_a_documented_image_has_no_plan_b():
@@ -187,9 +176,9 @@ def test_a_repository_dockerfile_without_a_documented_image_has_no_plan_b():
     assert r["build"]["fallback"] is None and r["dockerfile_fallback"] is None
 
 
-def test_source_builds_bring_the_autotools():
+def test_source_builds_do_not_add_undocumented_autotools():
     df = _detect("hipstr")["dockerfile"]
-    assert "autoconf automake libtool" in df
+    assert df is None
 
 
 def test_the_author_s_own_known_bug_section_is_carried_out_of_the_readme():

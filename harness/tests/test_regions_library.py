@@ -56,12 +56,12 @@ def _proposal(name):
     return dr.detect(dr.repo_slug(repo), tree["ref"], tree, readme, "README.md")
 
 
-def test_proposal_picks_the_library_file_for_known_tools(tmp_path):
+def test_tool_name_alone_cannot_authorize_a_regions_conversion(tmp_path):
     for name, fmt in (("hipstr", "hipstr"), ("gangstr", "gangstr"), ("strsearch", "strsearch")):
         r = pm.build(_proposal(name), f"{name}-trial")
-        assert r["manifest"]["inputs"].get("regions") == {"library": fmt}, name
+        assert "regions" not in r["manifest"]["inputs"], name
         assert "regions_format_unknown" not in r["limitations"]
-        assert any("ready-made" in c for c in r["manifest"]["caveats"]["items"])
+        assert not any("ready-made" in c for c in r["manifest"]["caveats"]["items"])
 
 
 def test_the_long_read_tools_get_the_motif_in_column_four():

@@ -62,10 +62,10 @@ def test_expected_golden_file_is_compared_but_never_fails(tmp_path):
 
 def test_wrapper_keeps_the_command_and_its_exit_status():
     w = prepare.example_wrapper("./HipSTR --bams  x.bam\n --out out.vcf", "/opt/tool")
-    assert w.startswith("cd '/opt/tool' && touch /tmp/.strhub_mark && ( ./HipSTR --bams x.bam --out out.vcf ); rc=$?;")
+    assert w.startswith("cd '/opt/tool' && touch /tmp/.strhub_mark && ( ./HipSTR --bams  x.bam\n --out out.vcf ); rc=$?;")
     assert "! -path '*/__pycache__/*' ! -name '*.pyc'" in w
     assert w.endswith("exit $rc")
-    assert "\n" not in w
+    assert "\n --out out.vcf" in w  # never turn a newline into a different shell command
 
 
 def test_pycache_and_pyc_files_do_not_count_as_example_output(tmp_path):

@@ -515,7 +515,7 @@ jobs:
         name: "Gate · Installs"
         # Nothing to build from a ref the repository does not hold, or when the
         # commit states no install procedure at all.
-        if: steps.available.outcome == 'success' && steps.m.outputs.install_ready != '0'
+        if: steps.available.outcome == 'success' && steps.m.outputs.install_ready == '1'
         continue-on-error: true
         env:
           TOOL_REF: ${{ steps.m.outputs.ref }}
@@ -527,16 +527,17 @@ jobs:
           # pipefail, or `tee` would swallow docker's exit status and a failed
           # build would be recorded as a passed gate — the one bug this step
           # must not have.
-          set -o pipefail
+          set -euo pipefail
           mkdir -p work
           : > work/log_build.txt
+          echo "source_evidence=unverified" >> "$GITHUB_OUTPUT"
+          [ -n "$DOCKER_FROM_REPO" ] || { echo '::error::no proven upstream installation'; exit 1; }
           CONTEXT="$DOCKER_DIR"
           if [ -n "$DOCKER_FROM_REPO" ]; then
             # The repository ships its own Dockerfile: build THAT, at the pinned
             # ref. The author's own statement of the environment, taken at its word.
-            # Cloned under the repository's own name, because some Dockerfiles
-            # are written to be built from the directory ABOVE the clone
-            # (STRsearch: `COPY ./STRsearch /STRsearch`).
+            # Profile 1 requires the documented repository-root build context.
+            # No parent context is inferred to work around a missing COPY.
             NAME=$(basename "${TOOL_REPO%.git}")
             rm -rf work/ctx && mkdir -p work/ctx
             SRC="work/ctx/$NAME"
@@ -548,30 +549,15 @@ jobs:
             want=$(git -C "$SRC" rev-parse "${TOOL_REF}^{commit}")
             [ "$(git -C "$SRC" rev-parse HEAD)" = "$want" ] \
               || { echo "::error::checked out $(git -C "$SRC" rev-parse HEAD), not $TOOL_REF"; exit 1; }
-            git -C "$SRC" submodule update --init --recursive -q || true
             DOCKER_DIR="$SRC"; DOCKER_FILE="$DOCKER_FROM_REPO"; CONTEXT="$SRC"
-            # Validate the actual checked-out path, including symlink targets,
-            # before grep reads it or Docker receives it as a build definition.
             python harness/_paths.py "$SRC" "$DOCKER_FILE"
-            # A Dockerfile that copies the repository by its own name is
-            # written for the parent directory as context. Building it from
-            # inside the clone failed with "/STRsearch: not found" and was
-            # published as the tool not installing. The Dockerfile is not
-            # touched; only the directory docker is pointed at changes, and
-            # the build log says so.
-            # Only when the clone has no file or directory of that name itself:
-            # strkit's `COPY strkit strkit` copies its own package directory,
-            # and the parent context made every other COPY "not found".
-            if [ ! -e "$SRC/$NAME" ] && grep -Eiq "^[[:space:]]*(COPY|ADD)([[:space:]]+--[^[:space:]]+)*[[:space:]]+(\./)?${NAME}(/|[[:space:]])" "$SRC/$DOCKER_FILE"; then
-              CONTEXT=work/ctx
-              printf '==== STRhub: %s copies ./%s, so it is built from the directory that holds the clone ====\n\n' \
-                "$DOCKER_FILE" "$NAME" | tee -a work/log_build.txt
-            fi
+            # No context inference, submodule repair, generated dependencies
+            # or build-argument overrides. Check the actual pinned files.
+            python harness/fidelity.py --checkout "$SRC" --review work/procedure_review.json
+            echo "source_evidence=verified" >> "$GITHUB_OUTPUT"
           fi
           build() {  # $1 Dockerfile, $2 its directory, $3 context
             docker build \
-              --build-arg "STRAITRAZOR_REF=$TOOL_REF" \
-              --build-arg "TOOL_REF=$TOOL_REF" \
               -f "$2/$1" \
               -t toolimg:ci \
               "$3" 2>&1 | tee -a work/log_build.txt
@@ -592,8 +578,8 @@ jobs:
         timeout-minutes: 5
         env:
           STARTS_CMD: ${{ steps.m.outputs.starts_cmd }}
-          ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
-          ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
+          ENTRY: ""
+          ENTRY_ARGS: ""
         run: |
           rc=0
           bash harness/run_container.sh strhub_starts 2 work/log_starts.txt \
@@ -616,15 +602,12 @@ jobs:
           # The author's own command. It is meant to run INSIDE the container (the
           # image entrypoint is `bash -lc`), so it is passed as a single argument
           # here and never evaluated by the runner's shell.
-          # The engine's own images end in `ENTRYPOINT ["/bin/bash", "-lc"]`, so
-          # the command is passed as one argument. A repository's own Dockerfile
-          # has whatever entrypoint its author chose; for those the entrypoint is
-          # overridden to bash so the command still reaches a shell. Unquoted on
-          # purpose: empty for the engine's images, two words for a repository's.
+          # The strict profile already established a compatible upstream
+          # entrypoint. Neither ENTRYPOINT nor its arguments are overridden.
           TOOL_CMD: ${{ steps.m.outputs.cmd }}
           RUN_MINUTES: ${{ steps.m.outputs.timeout }}
-          ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
-          ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
+          ENTRY: ""
+          ENTRY_ARGS: ""
         run: |
           set -o pipefail
           mkdir -p work/out_own
@@ -682,8 +665,8 @@ jobs:
         env:
           EXAMPLE_CMD: ${{ steps.m.outputs.example_cmd }}
           RUN_MINUTES: ${{ steps.m.outputs.timeout }}
-          ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
-          ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
+          ENTRY: ""
+          ENTRY_ARGS: ""
         run: |
           set -o pipefail
           mkdir -p work/out_example
@@ -720,8 +703,8 @@ jobs:
         env:
           TOOL_CMD: ${{ steps.m.outputs.cmd }}
           RUN_MINUTES: ${{ steps.m.outputs.timeout }}
-          ENTRY: ${{ steps.m.outputs.dockerfile_from_repo != '' && '--entrypoint /bin/bash' || '' }}
-          ENTRY_ARGS: ${{ steps.m.outputs.dockerfile_from_repo != '' && '-lc' || '' }}
+          ENTRY: ""
+          ENTRY_ARGS: ""
           MANIFEST: ${{ steps.m.outputs.manifest }}
         run: |
           set -o pipefail
@@ -859,7 +842,7 @@ jobs:
           # A step of STRhub's own that failed before the gates could run. When
           # one did, the gates below it were skipped and would otherwise read as
           # the tool stopping at "source not available".
-          INFRA_FAILURE: ${{ (steps.propose.outcome == 'failure' && 'the recipe proposal step') || (steps.m.outcome == 'failure' && 'the staging of inputs') || (steps.ref_dl.outcome == 'failure' && 'the reference genome download') || '' }}
+          INFRA_FAILURE: ${{ (steps.propose.outcome == 'failure' && 'the recipe proposal step') || (steps.m.outcome == 'failure' && 'the staging of inputs') || (steps.installs.outcome == 'failure' && steps.installs.outputs.source_evidence != 'verified' && 'the upstream procedure evidence check before Docker') || (steps.ref_dl.outcome == 'failure' && 'the reference genome download') || '' }}
           # The selected primary Dockerfile, or empty when it did not build.
           # A failed install never triggers a fallback environment.
           ENVIRONMENT_BUILT: ${{ steps.installs.outputs.environment }}
@@ -888,6 +871,7 @@ jobs:
           fi
           python harness/report.py \
             --manifest "$MANIFEST" \
+            --procedure-review work/procedure_review.json \
             --available "$AVAILABLE_OUTCOME" \
             --installs "$INSTALLS_OUTCOME" \
             --runs "$LADDER_RUNS" \

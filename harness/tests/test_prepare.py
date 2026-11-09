@@ -95,7 +95,7 @@ def test_the_tools_own_command_comes_back_out_of_the_wrapper():
     wrapped = prepare.example_wrapper(cmd, "/opt/tool")
     assert prepare.unwrap_example(wrapped) == (cmd, "/opt/tool")
     # A committed manifest's command is not wrapped and comes back as it is.
-    assert prepare.unwrap_example("  GangSTR --bam in.bam   --out out ") == ("GangSTR --bam in.bam --out out", None)
+    assert prepare.unwrap_example("  GangSTR --bam in.bam   --out out ") == ("  GangSTR --bam in.bam   --out out ", None)
 
 
 def test_the_ont_fastq_is_handed_over_uncompressed(tmp_path):
@@ -112,7 +112,7 @@ def test_the_ont_fastq_is_handed_over_uncompressed(tmp_path):
     assert sum(1 for _ in fq.open()) == 4 * 864
 
 
-def test_shipped_example_still_runs_when_strhub_sample_is_not_ready(tmp_path):
+def test_shipped_example_cannot_bypass_absent_installation_evidence(tmp_path):
     """When the repository ships its own example (example.cmd) and states how to
     install, a STRhub reference-sample limitation (such as loci_outside_panel)
     must only disable the external leg, never the repository's own example leg."""
@@ -128,8 +128,8 @@ def test_shipped_example_still_runs_when_strhub_sample_is_not_ready(tmp_path):
     rc, kv, err = _run(["strsearch", "--work", str(tmp_path), "--recipe-b64", b64, "--proposal", str(proposal)])
     assert rc == 0, err
     assert kv["external_ready"] == "0"
-    assert kv["install_ready"] == "1"
-    assert kv["example_ready"] == "1"
+    assert kv["install_ready"] == "0"
+    assert kv["example_ready"] == "0"
 
     # When no install procedure exists at all, nothing builds so example_ready is 0.
     proposal.write_text(json.dumps({
@@ -156,7 +156,7 @@ def test_forensic_bam_run_keeps_only_its_selected_dataset(tmp_path):
     rc, kv, err = _run(["hipstr", "--work", str(tmp_path), "--recipe-b64", b64])
     assert rc == 0, err
     assert kv["input_type"] == "illumina-bam-hg38"
-    assert kv["external_ready"] == "1"
+    assert kv["external_ready"] == "0"  # staged input alone is not procedure evidence
     assert not any(k.startswith("med_") for k in kv)
     assert (tmp_path / "in_external" / "input.bam").is_file()
     assert not (tmp_path / "in_external_med").exists()
@@ -174,6 +174,6 @@ def test_medical_dataset_selected_before_execution_still_stages(tmp_path):
     rc, kv, err = _run(["trgt-hifi-med", "--work", str(tmp_path)])
     assert rc == 0, err
     assert kv["input_type"] == "pacbio-hifi-bam-hg38-med"
-    assert kv["external_ready"] == "1"
+    assert kv["external_ready"] == "0"
     assert (tmp_path / "in_external" / "input.bam").is_file()
     assert not (tmp_path / "in_external_med").exists()

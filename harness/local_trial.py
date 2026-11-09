@@ -191,6 +191,24 @@ def _parse_kv_output(text: str) -> dict[str, str]:
     return out
 
 
+def upstream_build_command(manifest: dict, review: dict, checkout: pathlib.Path, tag: str) -> list[str]:
+    """Resolve only the cited upstream build; never build the proposed stub."""
+    import fidelity
+    import _paths
+    if (not (review.get("installation") or {}).get("ready")
+            or review.get("manifest_sha256") != fidelity.digest(json.dumps(manifest, sort_keys=True))):
+        raise ValueError("no proven upstream installation for this manifest")
+    source = manifest["source"]
+    subprocess.run(["git", "clone", "--no-checkout", "--", source["repo"], str(checkout)], check=True, capture_output=True, text=True)
+    subprocess.run(["git", "-C", str(checkout), "checkout", "--detach", source["ref"]], check=True, capture_output=True, text=True)
+    head = subprocess.run(["git", "-C", str(checkout), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
+    if head != source["ref"]:
+        raise ValueError("checkout is not the cited immutable commit")
+    fidelity.verify_checkout(checkout, review)
+    path = _paths.confined(checkout, manifest["environment"]["from_repo"])
+    return ["docker", "build", "-f", str(path), "-t", tag, str(checkout)]
+
+
 def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.Path,
                       prefer_offline: bool = False, run_docker: bool = False) -> dict:
     slug = dr.repo_slug(repo_url)
@@ -244,12 +262,13 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         work_dir = tmp_path / "work"
         prep_env = {**os.environ, "RECIPE_B64": recipe_b64}
         prep_res = subprocess.run(
-            [sys.executable, str(ROOT / "harness" / "prepare.py"), run_slug, "--work", str(work_dir)],
+            [sys.executable, str(ROOT / "harness" / "prepare.py"), run_slug, "--work", str(work_dir),
+             "--proposal", str(proposal_json)],
             cwd=str(ROOT), env=prep_env, capture_output=True, text=True, check=True,
         )
         preflight = _parse_kv_output(prep_res.stdout)
 
-        proc = built["procedure"]
+        proc = json.loads((work_dir / "procedure_review.json").read_text())
         may_run = bool(proc.get("may_say_runs"))
 
         log_ext = tmp_path / "log_external.txt"
@@ -262,7 +281,7 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         installs_flag = "fail"
         runs_flag = "fail"
         infra_failure = ""
-        if not may_run and not (run_docker and preflight.get("example_ready") == "1"):
+        if preflight.get("install_ready") != "1" or (not may_run and preflight.get("example_ready") != "1"):
             log_build.write_text(
                 f"==== STRhub Verified local evaluation ====\n"
                 f"Repository: https://github.com/{slug} @ {ref}\n"
@@ -281,15 +300,13 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
                       f"external_ready={preflight.get('external_ready')}, example_ready={preflight.get('example_ready')})",
                       file=sys.stderr)
                 print(f"[local_trial] [2/3] Building image {img_tag}...", file=sys.stderr)
-                build_cmd = [
-                    "docker", "build",
-                    "--build-arg", f"STRAITRAZOR_REF={ref}",
-                    "--build-arg", f"TOOL_REF={ref}",
-                    "-f", str(dockerfile_path),
-                    "-t", img_tag,
-                    str(prop_dir),
-                ]
-                b_res = subprocess.run(build_cmd, cwd=str(ROOT), capture_output=True, text=True)
+                try:
+                    build_cmd = upstream_build_command(built["manifest"], proc, work_dir / "source", img_tag)
+                except (ValueError, OSError, subprocess.CalledProcessError) as exc:
+                    infra_failure = "upstream installation evidence could not be established at the pinned checkout"
+                    b_res = subprocess.CompletedProcess([], 1, "", str(exc))
+                else:
+                    b_res = subprocess.run(build_cmd, cwd=str(ROOT), capture_output=True, text=True)
                 log_build.write_text((b_res.stdout or "") + ("\n" + b_res.stderr if b_res.stderr else ""))
                 if b_res.returncode == 0:
                     installs_flag = "pass"
@@ -364,6 +381,7 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         cmd = [
             sys.executable, str(ROOT / "harness" / "report.py"),
             "--manifest", str(manifest_path),
+            "--procedure-review", str(work_dir / "procedure_review.json"),
             "--available", avail_flag,
             "--installs", installs_flag,
             "--runs", runs_flag,

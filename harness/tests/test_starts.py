@@ -48,7 +48,7 @@ def test_the_verdict_says_whether_the_program_starts_when_nothing_ran_to_the_end
     assert "--help" not in verdict.decide(ok)["reason"]
 
 
-def test_a_readme_with_no_command_still_asks_the_packaged_program(tmp_path):
+def test_a_readme_with_no_command_does_not_authorize_an_invented_help_invocation(tmp_path):
     import detect_recipe as dr
     import propose_manifest as pm
     tree = {"tree": [{"path": "pyproject.toml", "type": "blob", "size": 1}], "truncated": False}
@@ -57,7 +57,7 @@ def test_a_readme_with_no_command_still_asks_the_packaged_program(tmp_path):
                          extras={"files": files})
     r = pm.build(proposal, "fdstools-trial")
     assert "no_command" in r["limitations"]
-    assert r["manifest"]["starts"] == {"cmd": "fdstools --help", "cwd": "/opt/tool"}
+    assert "starts" not in r["manifest"]
 
 
 def test_the_placeholder_command_is_not_a_run():
