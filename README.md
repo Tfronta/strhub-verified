@@ -47,6 +47,11 @@ Manifest validation is mandatory before input staging. Local paths and symlink
 targets must stay in their declared roots; unsafe paths stop preparation.
 See [Input boundary](docs/INPUT-BOUNDARY.md) for the policy and regression checks.
 
+VCF outputs must pass the [versioned structural checks](docs/VCF-STRUCTURE.md).
+Format validity, data-row counts and genotype-call presence are recorded
+separately. These checks do not establish biological correctness or full VCF
+conformance, and never repair a tool's output.
+
 1. **1-Click URL Trial**: Evaluates a tool directly from its public repository URL. The harness inspects the README, repository tree, and dependency files to propose an install procedure and command, evaluating it immediately in CI.
 2. **Curated Catalogue Verification**: Evaluates curated configurations under `tools/<slug>/` against open reference datasets (Illumina STR FASTQ, ONT BAM, PacBio HiFi BAM).
 

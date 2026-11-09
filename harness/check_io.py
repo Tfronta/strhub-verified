@@ -11,15 +11,14 @@ Exit:   0 if all required checks pass, 1 otherwise.
 from __future__ import annotations
 import argparse
 import csv
-import glob
 import gzip
 import json
-import os
 import pathlib
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
+import vcf_structure  # noqa: E402
 
 
 def _read_text(path: pathlib.Path) -> str:
@@ -28,43 +27,54 @@ def _read_text(path: pathlib.Path) -> str:
     return path.read_text(errors="replace")
 
 
-def _count_vcf_rows(text: str) -> tuple[int, int]:
-    """Return (called_or_site_records, uncalled_rows) for a VCF text.
+def _vcf_file(path: pathlib.Path, out: pathlib.Path, spec: dict) -> dict:
+    result = {"resolved": str(path.relative_to(out)), "checks": {"non_empty": path.stat().st_size > 0},
+              "records": 0, "called_records": 0, "uncalled_rows": 0, "records_without_gt": 0}
+    try:
+        text = vcf_structure.read(path)
+        summary = vcf_structure.validate(text)
+        result.update(vars(summary))
+        result["validation_status"] = "valid"
+        result["checks"]["parses_as_vcf"] = True
+        result["checks"]["min_records"] = summary.records >= spec.get("min_records", 1)
+        # Keep the existing policy for all-missing GT output, but record that
+        # independently of format validity and the number of data rows.
+        result["checks"]["has_called_genotypes"] = summary.uncalled_rows == 0 or summary.called_records > 0
+        if spec.get("must_contain"):
+            missing = [s for s in spec["must_contain"] if s not in text]
+            result["checks"]["must_contain"] = not missing
+            if missing:
+                result["missing"] = missing
+    except (vcf_structure.VCFError, OSError, EOFError, UnicodeError, ValueError) as exc:
+        result["validation_status"] = "unsupported" if isinstance(exc, vcf_structure.UnsupportedVCF) else "invalid"
+        result["checks"]["parses_as_vcf"] = False
+        result["checks"]["min_records"] = False
+        result["parse_error"] = str(exc)
+    result["passed"] = all(result["checks"].values())
+    return result
 
-    A VCF row with a FORMAT column containing GT where every sample has a
-    missing genotype ('.', './.', '.|.') is an uncalled template row (for
-    example, a tool echoing its locus catalog with './.' when the input BAM
-    slice holds no reads at those coordinates), not a called record. Rows
-    without a GT column (such as sites-only VCFs) count as records as before.
-    """
-    records = 0
-    uncalled = 0
-    for ln in text.splitlines():
-        if not ln.strip() or ln.startswith("#"):
-            continue
-        f = ln.split("\t")
-        if len(f) >= 10 and "GT" in f[8].split(":"):
-            gi = f[8].split(":").index("GT")
-            has_call = False
-            for sample in f[9:]:
-                sp = sample.split(":")
-                gt = sp[gi].strip() if gi < len(sp) else "."
-                if gt and gt not in (".", "./.", ".|."):
-                    has_call = True
-                    break
-            if has_call:
-                records += 1
-            else:
-                uncalled += 1
-        else:
-            records += 1
-    return records, uncalled
+
+def _vcf_outputs(matches: list[pathlib.Path], out: pathlib.Path, spec: dict) -> dict:
+    files = [_vcf_file(path, out, spec) for path in matches]
+    keys = set().union(*(f["checks"] for f in files))
+    result = {"resolved": files[0]["resolved"], "files": files,
+              "validation_profile": vcf_structure.PROFILE,
+              "checks": {key: all(f["checks"].get(key, False) for f in files) for key in sorted(keys)},
+              "passed": all(f["passed"] for f in files)}
+    for key in ("records", "called_records", "uncalled_rows", "records_without_gt"):
+        result[key] = sum(f[key] for f in files)
+    statuses = {f["validation_status"] for f in files}
+    result["validation_status"] = "invalid" if "invalid" in statuses else "unsupported" if "unsupported" in statuses else "valid"
+    errors = [f"{f['resolved']}: {f['parse_error']}" for f in files if f.get("parse_error")]
+    if errors:
+        result["parse_error"] = "; ".join(errors)
+    return result
 
 
 def _count_records(path: pathlib.Path, fmt: str) -> int:
-    text = _read_text(path)
     if fmt == "vcf":
-        return _count_vcf_rows(text)[0]
+        return vcf_structure.validate(vcf_structure.read(path)).records
+    text = _read_text(path)
     if fmt == "json":
         obj = json.loads(text)
         return len(obj) if isinstance(obj, (list, dict)) else 1
@@ -138,25 +148,27 @@ def check(manifest_path: str, out_dir: str) -> dict:
             checks.append(entry)
             continue
 
+        if spec["format"] == "vcf":
+            validated = _vcf_outputs(matches, out, spec)
+            entry.update({k: v for k, v in validated.items() if k != "checks"})
+            entry["checks"].update(validated["checks"])
+            ok = ok and entry["passed"]
+            checks.append(entry)
+            continue
+
         f = matches[0]
         entry["resolved"] = str(f.relative_to(out))
         nonempty = f.stat().st_size > 0
         entry["checks"]["non_empty"] = nonempty
 
-        uncalled = 0
         try:
-            if spec["format"] == "vcf":
-                n, uncalled = _count_vcf_rows(_read_text(f))
-            else:
-                n = _count_records(f, spec["format"])
+            n = _count_records(f, spec["format"])
             parses = True
         except Exception as exc:  # noqa: BLE001
             n, parses = 0, False
             entry["parse_error"] = str(exc)
         entry["checks"]["parses_as_" + spec["format"]] = parses
         entry["records"] = n
-        if uncalled > 0:
-            entry["uncalled_rows"] = uncalled
         entry["checks"]["min_records"] = n >= spec.get("min_records", 1)
 
         if spec.get("must_contain"):

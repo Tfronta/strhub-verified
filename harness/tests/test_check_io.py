@@ -1,5 +1,6 @@
 """The IO gate: present, non-empty, parses, and clears min_records."""
 import pathlib
+import pytest
 
 import check_io
 
@@ -34,9 +35,10 @@ def test_all_text_rows_keep_every_row(tmp_path):
     assert _count(tmp_path, "t.tsv", text, "tsv") == 2
 
 
-def test_vcf_counts_non_header_lines(tmp_path):
+def test_vcf_refuses_a_truncated_two_column_table(tmp_path):
     text = "##fileformat=VCFv4.2\n#CHROM\tPOS\nchr1\t1\nchr1\t2\n"
-    assert _count(tmp_path, "x.vcf", text, "vcf") == 2
+    with pytest.raises(ValueError):
+        _count(tmp_path, "x.vcf", text, "vcf")
 
 
 def test_vcf_uncalled_rows_do_not_count_as_called_records(tmp_path):
@@ -61,14 +63,18 @@ def test_vcf_uncalled_rows_do_not_count_as_called_records(tmp_path):
     )
     result = check_io.check(str(manifest), str(out))
     assert result["passed"] is False
-    assert result["outputs"][0]["records"] == 0
+    assert result["outputs"][0]["records"] == 2
+    assert result["outputs"][0]["called_records"] == 0
+    assert result["outputs"][0]["checks"]["parses_as_vcf"] is True
+    assert result["outputs"][0]["checks"]["has_called_genotypes"] is False
     assert result["outputs"][0]["uncalled_rows"] == 2
 
     # When at least one locus has a called genotype (including 0/0), it counts.
     (out / "calls.vcf").write_text(vcf + "chr11\t2171088\tTH01\tA\t.\t.\tPASS\t.\tGT:DP\t0/0:45\n")
     result2 = check_io.check(str(manifest), str(out))
     assert result2["passed"] is True
-    assert result2["outputs"][0]["records"] == 1
+    assert result2["outputs"][0]["records"] == 3
+    assert result2["outputs"][0]["called_records"] == 1
 
 
 def test_uncalled_vcf_on_slice_is_strhub_limitation_not_runs_or_fails(tmp_path):

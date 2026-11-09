@@ -1321,10 +1321,16 @@ def main() -> int:
         if ours:
             strhub_fault = ", ".join(sorted(ours))
     if not strhub_fault and gates["runs"] and not gates["io"]:
-        uncalled = sum(int(o.get("uncalled_rows") or 0) for o in (io_detail or {}).get("outputs") or [])
-        if uncalled > 0:
-            strhub_fault = (f"the output VCF contained {uncalled} uncalled locus row(s) (./.) and 0 called "
-                            "genotypes, because STRhub's reference slice carries no reads at the target coordinates")
+        outputs = (io_detail or {}).get("outputs") or []
+        files = [f for o in outputs for f in o.get("files", [o])]
+        if files and all(f.get("passed") or f.get("validation_status") == "unsupported" for f in files) \
+                and any(f.get("validation_status") == "unsupported" for f in files):
+            strhub_fault = "the evaluator does not support a declared VCF version or feature; format validity was not established"
+        elif outputs and all(o.get("format") == "vcf" and o.get("checks", {}).get("parses_as_vcf")
+                             and int(o.get("uncalled_rows") or 0) > 0
+                             and int(o.get("called_records", o.get("records", 0)) or 0) == 0
+                             and int(o.get("records_without_gt") or 0) == 0 for o in outputs):
+            strhub_fault = "the structurally valid output VCF contains no called genotypes; this run does not establish why"
     procedure = (proposal or {}).get("procedure")
     if procedure:
         report["procedure_review"] = procedure
