@@ -1,0 +1,21 @@
+Step 7/10 : RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j2
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+[ 15%] Performing update step for 'htslib'
+autoreconf: export WARNINGS=
+autoreconf: Entering directory '.'
+autoreconf: configure.ac: not using Gettext
+autoreconf: running: aclocal --force 
+autoreconf: configure.ac: tracing
+autoreconf: configure.ac: not using Libtool
+autoreconf: running: /usr/bin/autoconf --force
+configure.ac:32: error: required file 'config.sub' not found
+configure.ac:32:   try running autoreconf --install
+autoreconf: error: /usr/bin/autoconf failed with exit status: 1
+make[2]: *** [CMakeFiles/htslib.dir/build.make:101: thirdparty/htslib/src/htslib-stamp/htslib-update] Error 1
+make[1]: *** [CMakeFiles/Makefile2:144: CMakeFiles/htslib.dir/all] Error 2
+make: *** [Makefile:152: all] Error 2

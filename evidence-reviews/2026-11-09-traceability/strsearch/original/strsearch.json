@@ -1,0 +1,185 @@
+{
+  "schema": "strhub-verified/1",
+  "mode": "publish",
+  "tool": {
+    "name": "STRsearch",
+    "version": "c70179b",
+    "maintainer": "AnJingwd",
+    "contact": "https://github.com/AnJingwd/STRsearch/issues"
+  },
+  "submission": {
+    "by": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/AnJingwd/STRsearch",
+    "ref": "c70179b3b175adc82a7314409af06900b3861d61",
+    "ref_resolved": "c70179b3b175adc82a7314409af06900b3861d61",
+    "committed": "2020-03-19T08:43:38Z"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ],
+    "source": "submitted"
+  },
+  "generated": "2026-11-08T16:00:00+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42254219171",
+  "run": {
+    "cmd": "python3 /opt/STRsearch/pipeline.py --type paired --num_processors 4 --reads_threshold 30 --stutter_ratio 0.5 from_bam --working_path /data/out --sample sample --sex female --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes /data/out/genotypes.txt --multiple_alleles /data/out/multiple_alleles.txt --qc_matrix /data/out/qc_matrix.txt"
+  },
+  "instrument": "documented",
+  "recipe": {
+    "origin": "proposed"
+  },
+  "gates": {
+    "available": true,
+    "installs": false,
+    "runs": false,
+    "io": false,
+    "content": false,
+    "starts": false
+  },
+  "level": "available",
+  "io_detail": {
+    "gate": "io",
+    "passed": false,
+    "outputs": []
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": false,
+    "outputs": []
+  },
+  "example_detail": null,
+  "datasets": [
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-bam-hg38",
+      "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
+      "io": false,
+      "content": false,
+      "passed": false
+    }
+  ],
+  "install_detail": {
+    "gate": "installs",
+    "passed": false,
+    "diagnostics": [
+      {
+        "id": "build_download_failed",
+        "severity": "error",
+        "title": "A file the build fetches over HTTP could not be downloaded: usearch",
+        "count": 1,
+        "examples": [
+          "usearch"
+        ],
+        "suggestion": "The URL returned HTTP 404. The upstream download link is no longer valid."
+      }
+    ]
+  },
+  "procedure_review": {
+    "may_say_runs": true,
+    "basis": "gates",
+    "attribution": "tool",
+    "blocker": "ready",
+    "reason": "The repository states how to install (Dockerfile) and STRhub holds the sample. The container is that install, packaged. If the documented build fails, the failure is that build's.",
+    "amendments": [],
+    "install_method": "dockerfile",
+    "citable_install": true,
+    "input_type": "illumina-bam-hg38",
+    "output_glob": "**/*.txt"
+  },
+  "verdict": {
+    "code": "fails",
+    "title": "Fails",
+    "basis": "gates",
+    "reason": "The environment did not build from the declared install steps.",
+    "readme_gaps": [],
+    "blockers": [
+      {
+        "code": "build_failed",
+        "what": "The environment did not build from the declared install steps.",
+        "self_fix": "edit_build",
+        "self_fix_text": "Adjust the install steps and try again.",
+        "ask_owner": {
+          "title": "Documented Dockerfile build fails at pinned commit",
+          "body": "STRhub Verified attempted to build the Dockerfile in the repository at commit c70179b. The build fails downloading usearch (HTTP 404) and pinned dependencies fail to resolve."
+        }
+      }
+    ]
+  },
+  "step1": {
+    "code": "does_not_run",
+    "headline": "As documented, it does not run.",
+    "body": "The environment did not build from the declared install steps. That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end.",
+    "missing": [],
+    "missing_text": [],
+    "guide": "docs/GUIA-PASO-1.md"
+  },
+  "scope": "Executed in a standardized environment following the repository's declared build instructions. Concerns reproducible execution only.",
+  "certificate": {
+    "schema": "strhub-verified/certificate/1",
+    "label": "Does not run as documented: stops at install",
+    "reached": "Available",
+    "summary": {
+      "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
+      "result": "Does not run as documented: stops at install",
+      "reached": "Available, 1/5 gates passed",
+      "why": "The environment did not build from the declared install steps.",
+      "scope": "Installation, execution, and output structure verification.",
+      "not_evaluated": [
+        "Genotype accuracy",
+        "Concordance",
+        "Forensic validity",
+        "Regulatory compliance"
+      ]
+    },
+    "conclusion": [
+      {
+        "title": "Does not install",
+        "body": "STRsearch c70179b does not install in a clean environment following the repository Dockerfile (download of usearch dependency fails)."
+      },
+      {
+        "title": "Execution and output gates not reached",
+        "body": "Because the tool did not install, execution on reference data was not attempted."
+      },
+      {
+        "title": "Verdict: Fails",
+        "body": "The environment did not build from the declared install steps."
+      },
+      {
+        "title": "Reproducibility statement",
+        "body": "The build instructions recorded in Section 3, executed at the pinned commit in the described environment, reproduce this failure."
+      }
+    ],
+    "out_of_scope": [
+      "Genotype correctness or accuracy",
+      "Concordance against known truth sets",
+      "Sensitivity, specificity, or stutter performance",
+      "Allele calling accuracy or forensic casework suitability",
+      "Regulatory compliance or ISO accreditation",
+      "Multi-laboratory or multi-dataset reproducibility"
+    ],
+    "limitations": [
+      "Single reference dataset per input type",
+      "Single containerized environment (Docker / ubuntu-22.04)",
+      "No truth-set comparison or ground-truth genotypes",
+      "No accuracy or concordance assessment",
+      "No forensic validation of results",
+      "Short-read limitations apply (very long STR alleles may not span reads)"
+    ],
+    "scope": {
+      "statement": "Independent automated verification of reproducible execution.",
+      "not": "This is not an analytical validation.",
+      "disclaimer": "Each result is a dated snapshot."
+    }
+  },
+  "logs": {
+    "build": "strsearch.log-build.txt",
+    "external": "strsearch.log-external.txt"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "schema": "strhub-verified/index/3",
-  "generated": "2026-11-08T19:15:06+00:00",
+  "generated": "2026-11-09T17:24:48+00:00",
   "count": 8,
   "tools": [
     {
@@ -60,25 +60,193 @@
       "sha": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
       "committed": "2021-04-19T19:30:11Z",
       "instrument": "documented",
-      "level": "available",
-      "label": "Does not run as documented: stops at install",
-      "verdict": "fails",
+      "level": "none",
+      "label": "Evidence insufficient",
+      "verdict": "undetermined",
       "errors_reported": false,
       "fallback_used": false,
-      "generated": "2026-11-08T16:00:00+00:00",
+      "generated": "2026-11-09T17:22:49Z",
       "source_repo": "https://github.com/gymreklab/gangstr",
       "source_ref": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42253585030",
+      "ci_run": null,
+      "record_type": "editorial_review",
+      "evidence_review": {
+        "id": "2026-11-09-traceability",
+        "reviewed_at": "2026-11-09T17:22:49Z",
+        "prepared_by": "Codex",
+        "approved_by": null,
+        "source_publication_commit": "b2815e3ac0eb3bf0da3a5a47304f1a155d2c7a94",
+        "status": "insufficient_evidence",
+        "scope": "Review of the publication's provenance, not a new execution or certification of recipe fidelity.",
+        "original_report_sha256": "5e921fc8809551c37cc888d59eb763768d0ce6c14466ad0287bfdf68389ba67e",
+        "reason": "The published report links CI run 42253585030, which tested a curated recipe, rather than evidence for the documented failure it describes. Run 42066986140 contains a real build failure at the same tool commit, but its recorded command and full log differ from this publication. No exact originating artifact for the published report and extract was established. The publication's execution claim is withdrawn; this does not assert that the reported build error is fabricated.",
+        "recovered_evidence_note": "Original artifacts from runs 41308001752, 42066986140, 42216592702 and 42488855247 are preserved independently with their recipes and logs. Run 42066986140 failed at commit 6ea9b2b8daca51dcab1f0e46210622b94b52ff17. The two later trials tested e368b9f4dbf7ab7585036a5ff2e68480d0623c80. None is substituted for the unsupported publication. Their historical conclusions have not been re-certified against the new strict policy.",
+        "archive_url": "https://github.com/Tfronta/strhub-verified/tree/gh-pages/evidence-reviews/2026-11-09-traceability/gangstr/original",
+        "review_url": "https://github.com/Tfronta/strhub-verified/blob/gh-pages/evidence-reviews/2026-11-09-traceability/gangstr/review.json",
+        "recovered_artifacts": [
+          {
+            "run_id": 41308001752,
+            "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41308001752",
+            "artifact_name": "trial-trial-gangstr-6ea9b2b",
+            "tool_commit": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+            "original_verdict": {
+              "code": "runs",
+              "title": "Runs",
+              "basis": "gates",
+              "reason": "The tool's run produced its documented output, on the published environment the README points at: the build from the pinned commit failed, so what ran is the version that environment holds.",
+              "readme_gaps": [],
+              "blockers": []
+            },
+            "file_sha256": {
+              "gangstr.badge.json": "d79c3f923411b2b92639657a32ca48b7288d81774bac9e7065e2cbaeade7929f",
+              "gangstr.html": "d2de5b9b0d3e55b95e63b43f9af6caf2bd9e7d6e735f4c0921e3b01617dbdb0f",
+              "gangstr.json": "711799e576f9d8413530c98226744e407f1c7e814aede2462f47ec254213fb11",
+              "gangstr.log-build.txt": "b27ed5cfcf1775ec7f59798c37acf23181d4bab386406e603d5d2395998f7276",
+              "gangstr.log-external.txt": "05445a99a62cbf6d7c428fc7e067ecb7a062f1eafc727db0a78da6da181bc3f4",
+              "gangstr.log-starts.txt": "3d22c3656062efb667a4b847051a5d3fc8f863057d4d7a0787c0f258aefdca07",
+              "gangstr.pdf": "696657857cc7c09abe4cc2d8446d8c0572ff30c29ec7baaa953fe190546a670b",
+              "gangstr.recipe.json": "afb53429a83ed4e610308c32e8ae9497df2915168d88886a6ace7b635cb00e3b",
+              "gangstr.summary.md": "c93f4f6cd8fd48819e5ab505f403138ae466a89a4de96851ad401ade97941a8e"
+            }
+          },
+          {
+            "run_id": 42066986140,
+            "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42066986140",
+            "artifact_name": "trial-trial-gangstr-v2.5",
+            "tool_commit": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+            "original_verdict": {
+              "code": "fails",
+              "title": "Fails",
+              "basis": "gates",
+              "reason": "The environment did not build from the declared install steps.",
+              "readme_gaps": [],
+              "blockers": [
+                {
+                  "code": "build_failed",
+                  "what": "The environment did not build from the install steps found in the repository.",
+                  "self_fix": "edit_install",
+                  "self_fix_text": "Adjust the install steps (or provide a Dockerfile) and try again.",
+                  "ask_owner": {
+                    "title": "Build fails from a clean checkout",
+                    "body": "STRhub Verified tried to build the tool from a clean checkout at the pinned commit, following the repository's own install steps, and the build failed. The build log is linked from the run."
+                  }
+                }
+              ]
+            },
+            "file_sha256": {
+              "gangstr.badge.json": "a2232f0c9f977e6ac3848556edb3dc71c71a873f0e7b8cf2d74388759a3e814c",
+              "gangstr.html": "cbd97f3e0d2e99099c2c71690cc9505e3e6efa930ce3038d39ebc81df1f273fd",
+              "gangstr.json": "08e5c8b76250e515a36470867c8089fd032fe3c4b16dd5aa7dbe05cc7b7dae64",
+              "gangstr.log-build.txt": "488ca82aa0585668a262438e29f9e7651aad735c1309a2d15e9fac2d92371268",
+              "gangstr.pdf": "cf6c38d4c107daa89aee18308a4ef06a2e016f5d6a6e4e0998187671383a86dc",
+              "gangstr.recipe.json": "1a3cdd5a7564163efa4c4068e6fbc322d691b7544b2e4ebc9b04460b4eddc77e",
+              "gangstr.summary.md": "6601ad2e536fd4c21014fc22b87f65d364144a3f0c3eb23b3567de082560d922"
+            }
+          },
+          {
+            "run_id": 42216592702,
+            "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42216592702",
+            "artifact_name": "trial-trial-gangstr-v2.5",
+            "tool_commit": "e368b9f4dbf7ab7585036a5ff2e68480d0623c80",
+            "original_verdict": {
+              "code": "fails",
+              "title": "Fails",
+              "basis": "gates",
+              "reason": "The environment did not build from the declared install steps.",
+              "readme_gaps": [],
+              "blockers": [
+                {
+                  "code": "build_failed",
+                  "what": "The environment did not build from the install steps found in the repository.",
+                  "self_fix": "edit_install",
+                  "self_fix_text": "Adjust the install steps (or provide a Dockerfile) and try again.",
+                  "ask_owner": {
+                    "title": "Build fails from a clean checkout",
+                    "body": "STRhub Verified tried to build the tool from a clean checkout at the pinned commit, following the repository's own install steps, and the build failed. The build log is linked from the run."
+                  }
+                }
+              ]
+            },
+            "file_sha256": {
+              "gangstr.badge.json": "a2232f0c9f977e6ac3848556edb3dc71c71a873f0e7b8cf2d74388759a3e814c",
+              "gangstr.html": "469a0c044d725c073746cd2a9e9c94ef0b07d9db4d23ec88dfa935d60105d068",
+              "gangstr.json": "4bbf13cc18784b17269ddc98fc773fdc2d2bdbf9c14671b857ba6f3250186c4d",
+              "gangstr.log-build.txt": "f9ec3a3e6c235c216c4c7f5642edfa645a9cff4adca9a2390cabeeb89a5128eb",
+              "gangstr.pdf": "9dd6c2e397d6a52776ae28a9bd794bf6a34396b2066c649afa6c0da5e7e16322",
+              "gangstr.recipe.json": "919a893c78cd3477f3579b2135e1f9217cbbdd56d0a4c560d932a49fd551bd7f",
+              "gangstr.summary.md": "4b58387133bbb97d16e8316e5082610e6e98a6758b1dbd4fa3bb0d2912680e21"
+            }
+          },
+          {
+            "run_id": 42488855247,
+            "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42488855247",
+            "artifact_name": "trial-trial-gangstr-v2.5",
+            "tool_commit": "e368b9f4dbf7ab7585036a5ff2e68480d0623c80",
+            "original_verdict": {
+              "code": "fails",
+              "title": "Fails",
+              "basis": "gates",
+              "reason": "The environment did not build from the declared install steps.",
+              "readme_gaps": [],
+              "blockers": [
+                {
+                  "code": "build_failed",
+                  "what": "The environment did not build from the install steps found in the repository.",
+                  "self_fix": "edit_install",
+                  "self_fix_text": "Adjust the install steps (or provide a Dockerfile) and try again.",
+                  "ask_owner": {
+                    "title": "Build fails from a clean checkout",
+                    "body": "STRhub Verified tried to build the tool from a clean checkout at the pinned commit, following the repository's own install steps, and the build failed. The build log is linked from the run."
+                  }
+                }
+              ]
+            },
+            "file_sha256": {
+              "gangstr.badge.json": "a2232f0c9f977e6ac3848556edb3dc71c71a873f0e7b8cf2d74388759a3e814c",
+              "gangstr.html": "92f3b11ad0d24c5e6584d8a02f43252d01446ba007825e58a9bc199e9ea99f2f",
+              "gangstr.json": "7faa90f1c2df813f5f91ebf61f07d02ad2bf0e3a5b4e6ad811ca2d4111b1df21",
+              "gangstr.log-build.txt": "9ef60cdb864c3d14ad0d11f75785a62597d1b424a334cbf36273f659b7bedd5d",
+              "gangstr.pdf": "122ca531ad1b2acff0cae25d054f8fe4c0feb1b62657f4ab2f68f90439c0b5b0",
+              "gangstr.recipe.json": "4ebd5d72befd9ed14fcd9627da0861a2dde8911970292f354b608c8c532ea1cc",
+              "gangstr.summary.md": "01d30e6a1429ef1277ab251d273aa378bbbcfaf4cc46d9be8fe53865979b0f0e"
+            }
+          }
+        ],
+        "original_generated": "2026-11-08T16:00:00+00:00",
+        "original_ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42253585030",
+        "original_files_sha256": {
+          "gangstr.badge.json": "a2232f0c9f977e6ac3848556edb3dc71c71a873f0e7b8cf2d74388759a3e814c",
+          "gangstr.html": "d8c3dd55cbc423ed81e073ca392f1ce4ab497959e858c71e83356d6b394b83ea",
+          "gangstr.json": "5e921fc8809551c37cc888d59eb763768d0ce6c14466ad0287bfdf68389ba67e",
+          "gangstr.log-build.txt": "0488498f90a528d6b6802a2c4b9cdd5c9f574181c68c896b536d039f41db1b24",
+          "gangstr.pdf": "c1df8117d0ed03bc634bbc5408b13be4d1465b23af48c40681a511c5c8635512",
+          "gangstr.summary.md": "96deac7cbc53bd94f69f64fb81a5a7e9ad0b242fa2f2be2dadde4589335aaf9a",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.badge.json": "d3a2217b545f9d5a9e3978ff4ca9bd61181010d307a0ee61d526d99c5eef8769",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.html": "ea072a55859793276575665cc0f4140eaaa744eeb2a84867bffa82e1f75d90bb",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.json": "462d0d52f7fd893a9a6be6b4a8a4dba08877ff8cffe93549dbbffaba448e5ee7",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.log-build.txt": "1c1dc0db95e3bc670b8662bd92966d834927813da5aa6e7c797e9c0a188ae5c4",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.log-external.txt": "84b11535856eb1e9ab022a375cde284bcaf02b85d0e684a731146259c5b17470",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.log-own.txt": "84b11535856eb1e9ab022a375cde284bcaf02b85d0e684a731146259c5b17470",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.log-starts.txt": "0d69408104fc2f26a73d5a60cebc4b3620a70ed71406c23343297fe8ca7d2cef",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.pdf": "d67e4a8b5ba576716e30d9c9bac1c3cbd2e85bde6c00a4f0137306bb87f1e29a",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/gangstr.summary.md": "b8959de6709d9566ec5f8ba48340eb77c5aa71c43dff3ad3a224d1955619df0c",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/curated/retired.json": "7d325016713eaeeed6caec8809fcc4dc34a96007c45dab361bf128379cc97ac4",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.badge.json": "a2232f0c9f977e6ac3848556edb3dc71c71a873f0e7b8cf2d74388759a3e814c",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.html": "d8c3dd55cbc423ed81e073ca392f1ce4ab497959e858c71e83356d6b394b83ea",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.json": "5e921fc8809551c37cc888d59eb763768d0ce6c14466ad0287bfdf68389ba67e",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.log-build.txt": "0488498f90a528d6b6802a2c4b9cdd5c9f574181c68c896b536d039f41db1b24",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.pdf": "c1df8117d0ed03bc634bbc5408b13be4d1465b23af48c40681a511c5c8635512",
+          "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.summary.md": "96deac7cbc53bd94f69f64fb81a5a7e9ad0b242fa2f2be2dadde4589335aaf9a"
+        }
+      },
       "distinct_str_loci": null,
       "distinct_snp_markers": null,
       "total_reads": null,
       "own_state": null,
-      "external_state": "fail",
+      "external_state": null,
       "readme_score": null,
       "readme_max": null,
-      "dataset_types": [
-        "illumina-bam-hg38"
-      ],
+      "dataset_types": [],
       "report": "gangstr.json",
       "page": "gangstr.html",
       "versions": [
@@ -97,7 +265,11 @@
           "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42253585030",
           "report": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.json",
           "page": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.html",
-          "pdf": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.pdf"
+          "pdf": "gangstr/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/gangstr.pdf",
+          "retired": {
+            "retired": "2026-11-09T17:22:49Z",
+            "reason": "The published report links CI run 42253585030, which tested a curated recipe, rather than evidence for the documented failure it describes. Run 42066986140 contains a real build failure at the same tool commit, but its recorded command and full log differ from this publication. No exact originating artifact for the published report and extract was established. The publication's execution claim is withdrawn; this does not assert that the reported build error is fabricated."
+          }
         },
         {
           "sha": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
@@ -298,25 +470,141 @@
       "sha": "c70179b3b175adc82a7314409af06900b3861d61",
       "committed": "2020-03-19T08:43:38Z",
       "instrument": "documented",
-      "level": "available",
-      "label": "Does not run as documented: stops at install",
-      "verdict": "fails",
+      "level": "none",
+      "label": "Evidence insufficient",
+      "verdict": "undetermined",
       "errors_reported": false,
       "fallback_used": false,
-      "generated": "2026-11-08T16:00:00+00:00",
+      "generated": "2026-11-09T17:22:49Z",
       "source_repo": "https://github.com/AnJingwd/STRsearch",
       "source_ref": "c70179b3b175adc82a7314409af06900b3861d61",
-      "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42254219171",
+      "ci_run": null,
+      "record_type": "editorial_review",
+      "evidence_review": {
+        "id": "2026-11-09-traceability",
+        "reviewed_at": "2026-11-09T17:22:49Z",
+        "prepared_by": "Codex",
+        "approved_by": null,
+        "source_publication_commit": "b2815e3ac0eb3bf0da3a5a47304f1a155d2c7a94",
+        "status": "insufficient_evidence",
+        "scope": "Review of the publication's provenance, not a new execution or certification of recipe fidelity.",
+        "original_report_sha256": "d488ea15d96b1a9ba6356825d126fc75ae3e690e8975be159f54360e7eadc97b",
+        "reason": "The published report links CI run 42254219171, which tested a curated recipe that installed and ran, rather than the claimed source-install failure. Recovered trials 42067018462 and 42483706971 used a published image and recorded successful installation with an undetermined source-commit verdict. They do not support the published usearch download failure. No exact originating artifact for that failure report and extract was established.",
+        "recovered_evidence_note": "Original artifacts from runs 41308009228, 42067018462 and 42483706971 are preserved independently with their recipes and logs. The latter two use anjing123/strsearch:latest, installed successfully, and classify source-commit execution as undetermined. These different procedures cannot be presented as evidence of the source-build failure. Their historical conclusions have not been re-certified against the new strict policy.",
+        "archive_url": "https://github.com/Tfronta/strhub-verified/tree/gh-pages/evidence-reviews/2026-11-09-traceability/strsearch/original",
+        "review_url": "https://github.com/Tfronta/strhub-verified/blob/gh-pages/evidence-reviews/2026-11-09-traceability/strsearch/review.json",
+        "recovered_artifacts": [
+          {
+            "run_id": 41308009228,
+            "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/41308009228",
+            "artifact_name": "trial-trial-strsearch-c70179b",
+            "tool_commit": "c70179b3b175adc82a7314409af06900b3861d61",
+            "original_verdict": {
+              "code": "runs",
+              "title": "Runs",
+              "basis": "gates",
+              "reason": "The tool's run produced its documented output, on the published environment the README points at: the build from the pinned commit failed, so what ran is the version that environment holds.",
+              "readme_gaps": [],
+              "blockers": []
+            },
+            "file_sha256": {
+              "strsearch.badge.json": "d79c3f923411b2b92639657a32ca48b7288d81774bac9e7065e2cbaeade7929f",
+              "strsearch.html": "0b8665ffc6ec159a9b1ef8cf8dcb1388375437256fb4e2c429d26a79fa062e71",
+              "strsearch.json": "5d373aef4323b5d8941295ce4670e363ac7f60ea79182fdb7a35fb171a945866",
+              "strsearch.log-build.txt": "2ccd6ba9f25c38d9059d3b8f7041d03291e7d0ad437f13b916797503c8d108c7",
+              "strsearch.log-example.txt": "b4e0aced159329b48c3e5be56e79f2b45da30111d8cea6af7c6df20c7956df5c",
+              "strsearch.log-external.txt": "cf20cd1d7cf70beac6081e85239494ccb1ca1c2cd18cd31eb2df575032666fb7",
+              "strsearch.log-starts.txt": "67c6f89fb1b9d1a5b68a7ada6ae836a26daf1771c332c89a9dd22c519b0e33af",
+              "strsearch.pdf": "906bac60b41a4a9f066347466858d9db5da108d8557c1d131958f593e476a899",
+              "strsearch.recipe.json": "e83d516268d303fdc13b9dc665ec5d33a4238318302f1324623dff096ce012ee",
+              "strsearch.summary.md": "9650d88d1248ebb2c894495a4f8e4acadea8cf07006ac4c977cdfcc81d00a0cc"
+            }
+          },
+          {
+            "run_id": 42067018462,
+            "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42067018462",
+            "artifact_name": "trial-trial-strsearch-c70179b",
+            "tool_commit": "c70179b3b175adc82a7314409af06900b3861d61",
+            "original_verdict": {
+              "code": "undetermined",
+              "title": "Could not be determined",
+              "basis": "strhub",
+              "reason": "The install named here is a published image or package. That is a claim about the image, not about this commit, and it was not counted as the commit running. The installed program starts: it answers --help. The repository's own documented example ran and produced its output.",
+              "readme_gaps": [],
+              "blockers": []
+            },
+            "file_sha256": {
+              "strsearch.badge.json": "d40b4017e92a9ce29ab93ae38f8fdba0c87600dd1874dde989bc058a85e574b4",
+              "strsearch.html": "d14c7686b4ad76c682d4508cdd66a2f802e75e2cc8137d43ac66c6a2d83bb386",
+              "strsearch.json": "3539b95da7261fbd5207991caa97c44f52425a6387c77240527337d9e957d48f",
+              "strsearch.log-build.txt": "1596046048276f9071e8cd0ed12b0be5b383227a377efa16c14bf0c26bbad9c9",
+              "strsearch.log-example.txt": "140ab23e3af5bcd3eed6d5ca196ffc8a9106f241c7f1e51d6826cee919c30801",
+              "strsearch.log-starts.txt": "67c6f89fb1b9d1a5b68a7ada6ae836a26daf1771c332c89a9dd22c519b0e33af",
+              "strsearch.pdf": "da51fcd93fbe4ca9d038cae62bcc1445a2ede9ae013c3feec70572eed6b0e138",
+              "strsearch.recipe.json": "645e5991f3b6fd7c3e29addbe89396b9a47a80525718aa7ae6267950ef0188b9",
+              "strsearch.summary.md": "1028d456540634103bcfce6061d18e670a8d03c6cbb1c96ac91343f77ad9be40"
+            }
+          },
+          {
+            "run_id": 42483706971,
+            "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42483706971",
+            "artifact_name": "trial-trial-strsearch-master",
+            "tool_commit": "c70179b3b175adc82a7314409af06900b3861d61",
+            "original_verdict": {
+              "code": "undetermined",
+              "title": "Could not be determined",
+              "basis": "strhub",
+              "reason": "The install named here is a published image or package. That is a claim about the image, not about this commit, and it was not counted as the commit running. The installed program starts: it answers --help. The repository's own documented example ran and produced its output.",
+              "readme_gaps": [],
+              "blockers": []
+            },
+            "file_sha256": {
+              "strsearch.badge.json": "d40b4017e92a9ce29ab93ae38f8fdba0c87600dd1874dde989bc058a85e574b4",
+              "strsearch.html": "e9a4cfb9f7e754ade99b2ac769f66b5f0d274db79cf62d2d6a86161d38d8f02a",
+              "strsearch.json": "8862c9eb2e06f8b93e9c19c8736308380fcbe1ef47f2d091579e4834721c5bbe",
+              "strsearch.log-build.txt": "c250887f7d4fd88f8b032933c947b674470503023df38db3f8de413f3d5b29d7",
+              "strsearch.log-example.txt": "140ab23e3af5bcd3eed6d5ca196ffc8a9106f241c7f1e51d6826cee919c30801",
+              "strsearch.log-starts.txt": "67c6f89fb1b9d1a5b68a7ada6ae836a26daf1771c332c89a9dd22c519b0e33af",
+              "strsearch.pdf": "db57a91b2b05efcd32ee96c21ed85e847d2076b6105173847c9e703472638f7d",
+              "strsearch.recipe.json": "645e5991f3b6fd7c3e29addbe89396b9a47a80525718aa7ae6267950ef0188b9",
+              "strsearch.summary.md": "3c78007592807c6ac2d59d45f3462a15049650a8e4d6aeaba772cae227bd832c"
+            }
+          }
+        ],
+        "original_generated": "2026-11-08T16:00:00+00:00",
+        "original_ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42254219171",
+        "original_files_sha256": {
+          "strsearch.badge.json": "a2232f0c9f977e6ac3848556edb3dc71c71a873f0e7b8cf2d74388759a3e814c",
+          "strsearch.html": "67415e67cd78bfba9665d2c6ccc91bacc950f31b4e2316b86e6472f83f3acb52",
+          "strsearch.json": "d488ea15d96b1a9ba6356825d126fc75ae3e690e8975be159f54360e7eadc97b",
+          "strsearch.log-build.txt": "5bae145432b41f107293cfff21c9b25b99d159012b8d9498752ef801f52f52d0",
+          "strsearch.pdf": "8c399604a0f3fde09125f13e5cbabedaf5f0ebfe850052ff029a5ab670d4a4b7",
+          "strsearch.summary.md": "1cd9ef61327e371940ab5a21bb083c1725dd12b7f7916af88be61620db68d87e",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/curated/retired.json": "1f00af3c43883bd90f3fad7939f6f3eba13ed8c46148f503073291d1a4d5e6d8",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/curated/strsearch.badge.json": "d3a2217b545f9d5a9e3978ff4ca9bd61181010d307a0ee61d526d99c5eef8769",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/curated/strsearch.html": "33222d89d81178ecd8361bc2668cab1432c7faa91ae8442f17335b2dad5383c9",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/curated/strsearch.json": "92fba5540f4204e6b82a27c78f406887acf55fa16a7e610a5a78ff912cac26ed",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/curated/strsearch.log-build.txt": "9a8222326afd69ddbb1369659bc2ea167f15262c550926394e8d5ecc420040fe",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/curated/strsearch.log-external.txt": "596298ae20465c7cc773edf4b25e12550f0fb8f18d35edb484e52b63d5049b7d",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/curated/strsearch.log-starts.txt": "be4ba52534afec504798db6b2354e3ccb296587fa674a42f37c4a0fb27767ed5",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/curated/strsearch.pdf": "64ad7ccd1d203b3afada75bf51149971546413ee67d5ff1b2d7f60b1b51b042e",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/curated/strsearch.summary.md": "d925f25721d13058fa046d8e9d8da79f27d8ab9b9976b8877ec8d624d4d61623",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.badge.json": "a2232f0c9f977e6ac3848556edb3dc71c71a873f0e7b8cf2d74388759a3e814c",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.html": "67415e67cd78bfba9665d2c6ccc91bacc950f31b4e2316b86e6472f83f3acb52",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.json": "d488ea15d96b1a9ba6356825d126fc75ae3e690e8975be159f54360e7eadc97b",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.log-build.txt": "5bae145432b41f107293cfff21c9b25b99d159012b8d9498752ef801f52f52d0",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.pdf": "8c399604a0f3fde09125f13e5cbabedaf5f0ebfe850052ff029a5ab670d4a4b7",
+          "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.summary.md": "1cd9ef61327e371940ab5a21bb083c1725dd12b7f7916af88be61620db68d87e"
+        }
+      },
       "distinct_str_loci": null,
       "distinct_snp_markers": null,
       "total_reads": null,
       "own_state": null,
-      "external_state": "fail",
+      "external_state": null,
       "readme_score": null,
       "readme_max": null,
-      "dataset_types": [
-        "illumina-bam-hg38"
-      ],
+      "dataset_types": [],
       "report": "strsearch.json",
       "page": "strsearch.html",
       "versions": [
@@ -335,7 +623,11 @@
           "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42254219171",
           "report": "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.json",
           "page": "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.html",
-          "pdf": "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.pdf"
+          "pdf": "strsearch/c70179b3b175adc82a7314409af06900b3861d61/strsearch.pdf",
+          "retired": {
+            "retired": "2026-11-09T17:22:49Z",
+            "reason": "The published report links CI run 42254219171, which tested a curated recipe that installed and ran, rather than the claimed source-install failure. Recovered trials 42067018462 and 42483706971 used a published image and recorded successful installation with an undetermined source-commit verdict. They do not support the published usearch download failure. No exact originating artifact for that failure report and extract was established."
+          }
         },
         {
           "sha": "c70179b3b175adc82a7314409af06900b3861d61",

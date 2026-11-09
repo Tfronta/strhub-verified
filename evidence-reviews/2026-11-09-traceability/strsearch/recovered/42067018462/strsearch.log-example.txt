@@ -1,0 +1,4 @@
+mesg: ttyname failed: Inappropriate ioctl for device
+sh: 1: YOUR: not found
+sh: 1: YOUR: not found
+sh: 1: YOUR: not found
