@@ -1,0 +1,86 @@
+[
+  {
+    "path": "fixtures/sample.bam",
+    "valid": true
+  },
+  {
+    "path": "tools/example/assets/regions.bed",
+    "valid": true
+  },
+  {
+    "path": "./fixtures/sample.bam",
+    "valid": true
+  },
+  {
+    "path": "a b/échantillon.bed",
+    "valid": true
+  },
+  {
+    "path": "a//b.bam",
+    "valid": true
+  },
+  {
+    "path": "/tmp/sentinel",
+    "valid": false
+  },
+  {
+    "path": "../sentinel",
+    "valid": false
+  },
+  {
+    "path": "a/../sentinel",
+    "valid": false
+  },
+  {
+    "path": "a/../../sentinel",
+    "valid": false
+  },
+  {
+    "path": "~/.ssh/key",
+    "valid": false
+  },
+  {
+    "path": "C:\\sentinel",
+    "valid": false
+  },
+  {
+    "path": "C:sentinel",
+    "valid": false
+  },
+  {
+    "path": "a\\..\\b",
+    "valid": false
+  },
+  {
+    "path": ".git/config",
+    "valid": false
+  },
+  {
+    "path": "a/.git/config",
+    "valid": false
+  },
+  {
+    "path": ".",
+    "valid": false
+  },
+  {
+    "path": "",
+    "valid": false
+  },
+  {
+    "path": "a\nfile",
+    "valid": false
+  },
+  {
+    "path": "a\rfile",
+    "valid": false
+  },
+  {
+    "path": "a\tfile",
+    "valid": false
+  },
+  {
+    "path": "a\u0000file",
+    "valid": false
+  }
+]

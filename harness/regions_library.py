@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import pathlib
 import re
+import _paths
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -78,7 +79,7 @@ def library_path(input_type: str, fmt: str) -> pathlib.Path | None:
     rel = lib.get(fmt)
     if not rel:
         return None
-    p = ROOT / rel
+    p = _paths.confined(ROOT, rel)
     return p if p.is_file() else None
 
 

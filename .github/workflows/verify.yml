@@ -550,6 +550,9 @@ jobs:
               || { echo "::error::checked out $(git -C "$SRC" rev-parse HEAD), not $TOOL_REF"; exit 1; }
             git -C "$SRC" submodule update --init --recursive -q || true
             DOCKER_DIR="$SRC"; DOCKER_FILE="$DOCKER_FROM_REPO"; CONTEXT="$SRC"
+            # Validate the actual checked-out path, including symlink targets,
+            # before grep reads it or Docker receives it as a build definition.
+            python harness/_paths.py "$SRC" "$DOCKER_FILE"
             # A Dockerfile that copies the repository by its own name is
             # written for the parent directory as context. Building it from
             # inside the clone failed with "/STRsearch: not found" and was

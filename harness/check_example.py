@@ -19,6 +19,7 @@ Exit:   0 if the example produced its output, 1 otherwise.
 """
 from __future__ import annotations
 import argparse
+import glob
 import json
 import pathlib
 import sys
@@ -41,7 +42,8 @@ def check(manifest_path: str, out_dir: str) -> dict:
     if not result["applicable"]:
         return result
 
-    produced = sorted(str(p.relative_to(out)) for p in out.rglob("*")
+    confined_outputs, _ = _manifest.safe_glob(out, "**/*")
+    produced = sorted(str(p.relative_to(out)) for p in confined_outputs
                       if p.is_file() and p.stat().st_size > 0
                       and "__pycache__" not in p.parts
                       and p.suffix.lower() not in (".pyc", ".pyo"))
@@ -68,12 +70,12 @@ def check(manifest_path: str, out_dir: str) -> dict:
     if expected and declared:
         first = result["outputs_detail"][declared[0]]["matched"]
         cwd = pathlib.Path(spec.get("cwd") or "/opt/tool")
-        golden = out / pathlib.PurePosixPath(expected)
         # The golden file lives in the clone, not under /data/out; the wrapper
         # only copies files the command touched. It is fetched by the workflow
         # into out_dir/_expected/ when declared (see verify.yml), so look there.
-        golden = out / "_expected" / pathlib.PurePosixPath(expected).name
-        if first and golden.is_file():
+        golden_matches, _ = _manifest.safe_glob(out, "_expected/" + glob.escape(pathlib.PurePosixPath(expected).name))
+        if first and golden_matches:
+            golden = golden_matches[0]
             same = _normalised(out / first[0]) == _normalised(golden)
             result["checks"]["matches_expected"] = same
             result["expected_detail"] = {"golden": expected, "produced": first[0], "cwd": str(cwd)}

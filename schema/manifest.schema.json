@@ -6,6 +6,9 @@
   "type": "object",
   "required": ["tool", "source", "environment", "run", "outputs"],
   "additionalProperties": false,
+  "$defs": {
+    "relativePath": { "type": "string", "minLength": 1, "pattern": "^(?!/)(?!~)(?![A-Za-z]:)(?!.*[\\\\\\u0000-\\u001f\\u007f])(?!.*(^|/)\\.\\.(/|$))(?!.*(^|/)\\.git(/|$)).+$" }
+  },
   "properties": {
     "tool": {
       "type": "object",
@@ -46,15 +49,15 @@
       "required": ["dockerfile"],
       "additionalProperties": false,
       "properties": {
-        "dockerfile": { "type": "string", "description": "Path to the Dockerfile, relative to this manifest" },
+        "dockerfile": { "$ref": "#/$defs/relativePath", "description": "Path to the Dockerfile, relative to this manifest" },
         "os": {
           "type": "array",
           "items": { "type": "string" },
           "description": "OS targets the attestation is scoped to, e.g. ['ubuntu-22.04']. Honesty matters: only claim what you test."
         },
         "source": { "type": "string", "enum": ["submitted", "generated", "repository"], "description": "Where the container definition came from: 'submitted' if it arrived with the submission, 'generated' if built from declared install steps, 'repository' if the repository ships its own Dockerfile and the engine built that one. STRhub commits a Dockerfile for every tool, so without this a report cannot say what the run needed beyond the repository." },
-        "from_repo": { "type": "string", "description": "With source 'repository': path of the Dockerfile inside the repository. The engine clones the repository at the pinned ref and builds it with the clone as context; the run then uses the image's own entrypoint and working directory." },
-        "fallback": { "type": "object", "required": ["dockerfile"], "additionalProperties": false, "description": "DEPRECATED, historical metadata only. A second Dockerfile recorded by older recipes. The verification workflow never builds it after a failed primary install; the original failure is preserved. Historical reports can still record environment.fallback_used.", "properties": { "dockerfile": { "type": "string", "description": "Path to the fallback Dockerfile, relative to this manifest. Must lay the tool out like the first one (the clone at /opt/tool, a bash entrypoint) so the same command runs on either." }, "reason": { "type": "string", "description": "What the fallback environment is, as the report should name it, e.g. 'the published image gymreklab/str-toolkit the README points at'." } } }
+        "from_repo": { "$ref": "#/$defs/relativePath", "description": "With source 'repository': path of the Dockerfile inside the repository. The engine clones the repository at the pinned ref and builds it with the clone as context; the run then uses the image's own entrypoint and working directory." },
+        "fallback": { "type": "object", "required": ["dockerfile"], "additionalProperties": false, "description": "DEPRECATED, historical metadata only. A second Dockerfile recorded by older recipes. The verification workflow never builds it after a failed primary install; the original failure is preserved. Historical reports can still record environment.fallback_used.", "properties": { "dockerfile": { "$ref": "#/$defs/relativePath", "description": "Path to the fallback Dockerfile, relative to this manifest. Must lay the tool out like the first one (the clone at /opt/tool, a bash entrypoint) so the same command runs on either." }, "reason": { "type": "string", "description": "What the fallback environment is, as the report should name it, e.g. 'the published image gymreklab/str-toolkit the README points at'." } } }
       }
     },
     "run": {
@@ -80,7 +83,7 @@
         "fixture": {
           "description": "The author's own test data (BYOR). Either a path inside this repo, OR a remote pointer into the author's PUBLIC repo (repo + ref + path) so STRhub stores no data.",
           "oneOf": [
-            { "type": "string", "description": "Path to the test fixture dir, relative to repo root", "default": "fixtures/example" },
+            { "$ref": "#/$defs/relativePath", "description": "Path to the test fixture dir, relative to repo root", "default": "fixtures/example" },
             {
               "type": "object",
               "required": ["repo", "ref", "path"],
@@ -88,7 +91,7 @@
               "properties": {
                 "repo": { "type": "string", "format": "uri", "description": "Author's PUBLIC repo URL" },
                 "ref": { "type": "string", "description": "Immutable commit SHA or tag" },
-                "path": { "type": "string", "description": "Path to the fixture file inside that repo" }
+                "path": { "$ref": "#/$defs/relativePath", "description": "Path to the fixture file inside that repo" }
               }
             }
           ]
@@ -106,7 +109,7 @@
               }
             },
             {
-              "type": "string",
+              "$ref": "#/$defs/relativePath",
               "description": "Path to a regions BED committed in THIS repo, relative to the repo root. Provenance is STRhub."
             },
             {
@@ -115,7 +118,7 @@
               "required": ["path", "provided_by"],
               "additionalProperties": false,
               "properties": {
-                "path": { "type": "string", "description": "Path relative to the repo root, e.g. tools/<slug>/assets/regions.bed" },
+                "path": { "$ref": "#/$defs/relativePath", "description": "Path relative to the repo root, e.g. tools/<slug>/assets/regions.bed" },
                 "provided_by": { "type": "string", "enum": ["author"], "description": "Records that the regions came from the submission rather than from a panel STRhub committed. The single allowed value predates STRhub submitting third-party tools and is kept for compatibility; it does not assert who authored the file." }
               }
             },
@@ -127,7 +130,7 @@
               "properties": {
                 "repo": { "type": "string", "format": "uri", "description": "Author's PUBLIC repo URL" },
                 "ref": { "type": "string", "description": "Immutable commit SHA or tag" },
-                "path": { "type": "string", "description": "Path to the regions BED inside that repo" }
+                "path": { "$ref": "#/$defs/relativePath", "description": "Path to the regions BED inside that repo" }
               }
             }
           ]
@@ -187,7 +190,7 @@
       "description": "Optional reporting overrides. Use 'slug' to give a tool variant its own attestation/badge filenames (reports/<slug>.json and <slug>.badge.json).",
       "additionalProperties": false,
       "properties": {
-        "slug": { "type": "string", "description": "Filename stem for this variant's report + badge, e.g. 'strait-razor-PowerSeqv2.31'." }
+        "slug": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$", "description": "Safe filename stem for this variant's report + badge, e.g. 'strait-razor-PowerSeqv2.31'. No directory components." }
       }
     },
     "starts": {

@@ -26,6 +26,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import benchmark_recipes as br  # noqa: E402
 import detect_recipe as dr  # noqa: E402
 import propose_manifest as pm  # noqa: E402
+import _manifest  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -216,6 +217,7 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
     proposal = dr.detect(slug, ref, src["tree_resp"], src["readme"], src["readme_name"], extras=src)
     run_slug = f"trial-{slug.split('/')[-1].lower()}-{ref[:7]}"
     built = pm.build(proposal, run_slug, submitted_by="third_party", ref_label=ref_label)
+    _manifest.loads(built["manifest_yml"])
     proposal["limitations"] = built["limitations"]
     proposal["procedure"] = built["procedure"]
 
