@@ -1,5 +1,4 @@
-"""What the recipe agent did, as Markdown: the run summary, and the body of the
-pull request that carries a recipe that ran.
+"""Read-only rendering of historical reports from the retired recipe agent.
 
     python harness/assist_report.py work/assist/result.json [--pr]
 """
@@ -19,7 +18,9 @@ def cost(usage: dict) -> float:
 
 def render(r: dict, pr: bool = False) -> str:
     sha7 = (r.get("ref") or "")[:7]
-    lines = [f"## Recipe agent: {r.get('slug')} at {sha7}", ""]
+    lines = [f"## Historical recipe agent: {r.get('slug')} at {sha7}", "",
+             "The repair agent is retired. This report preserves a past run; "
+             "it does not authorize a repair or a new verification.", ""]
     doc = (r.get("documented") or {}).get("result") or {}
     if doc:
         lines.append(f"**The documented instructions, run literally:** {doc.get('verdict')}. "
@@ -56,13 +57,11 @@ def render(r: dict, pr: bool = False) -> str:
         lines.append("")
     if pr:
         lines += [
-            "### Before merging",
+            "### Historical curated recipe",
             "",
-            "- This is a **curated** recipe: once published it is a note under the documented result, never the badge.",
-            "- The agent could not change the tool's code (enforced before every trial). Check that each workaround "
-            "is true and that none is missing: they become recommendations to the author.",
-            "- GitHub does not start checks on a pull request opened by its own token. The trial that ran this exact "
-            "recipe is linked above; close and reopen this PR to run the check.",
+            "- This **curated** recipe records historical departures from the documented procedure; it cannot support the documented badge.",
+            "- Preserve its linked evidence. Do not merge or rerun it to repair a failed verification.",
+            "- Any correction must be documented upstream before a separate verification is requested.",
         ]
     return "\n".join(lines) + "\n"
 

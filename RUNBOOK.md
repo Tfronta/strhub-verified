@@ -357,16 +357,11 @@ unidas; marcadores como `fastqfile` cuentan como entrada), tipo de entrada más
 probable con sus señales y avisos (hg19, BAM/FASTQ ambiguo), formato de salida,
 Dockerfile generado, y **los huecos del README** (qué no dice).
 
-**Entorno: primero el commit fijado, la imagen publicada como plan B.** Si el
-repo se puede compilar (`CMakeLists.txt`, `Makefile`, `setup.py`, `environment.yml`…),
-la receta propuesta compila **ese commit**: lo que el informe nombra es lo que corre.
-Si además el README apunta a una imagen publicada (Docker Hub) o a un paquete de
-Bioconda, eso queda como `environment.fallback` (`Dockerfile.fallback`): la compuerta
-Installs lo construye **solo si** falla el build del commit fijado. Un informe que
-corrió sobre el plan B lo dice en todos lados (`environment.fallback_used`, la línea
-"Environment", el veredicto, "Why the pinned commit did not build" con el log del
-build que falló, el PDF). Si el repo trae su propio Dockerfile, no hay plan B. Si no
-hay nada que compilar, la imagen publicada es el entorno principal, como antes.
+**Entorno: una instalación seleccionada antes de ejecutar.** Installs construye
+el Dockerfile principal una sola vez. Si falla, conserva el fallo; no intenta
+una imagen publicada, Bioconda ni otro Dockerfile para recuperar la ejecución.
+Los campos históricos `environment.fallback` y `Dockerfile.fallback` pueden
+seguir presentes como metadatos de recetas antiguas, pero no se ejecutan.
 
 `harness/propose_manifest.py proposal.json --slug X` lo convierte en receta:
 comando del README reescrito a los mounts de STRhub (`/data/in/sample.fastq`,
@@ -424,22 +419,22 @@ tabla; `harness/tests/test_benchmark.py` no deja bajar ningún total. Si un camb
 en el mismo commit. Línea de base (motor antes de la fase 2, 18 nuevas): install 10, input 12, program 3,
 clean 7, honest 15, viable 0.
 
-### Agente de recetas: "What STRhub had to do", escrito solo (fase 3)
+### Agente de reparación retirado y ejecución sin reintentos adaptativos
 
-Cuando la corrida documentada no corre, `.github/workflows/assist.yml` (a mano: repo, commit, tag,
-intentos) corre `harness/assist.py`. Primero corre la receta documentada como ensayo; si no corre, un
-modelo (`claude-opus-5-5`) lee el repo en el commit fijado (README, docs, archivos, sitios de docs que el
-repo enlaza), propone una receta, y **cada receta se corre como ensayo real sin publicar**; lee el
-resultado y reintenta, hasta `max_attempts`. Reglas que el harness hace cumplir antes de cada ensayo:
-no tocar el código de la herramienta (`sed -i`, `patch`, `git apply` o redirecciones a archivos de
-programa; sí la configuración que los docs mandan editar), construir el commit fijado, entrypoint
-`bash -lc`, manifiesto válido contra el esquema. Cada desvío de la documentación queda en
-`recipe.workarounds` (qué, en lugar de qué, por qué). Si una receta corre, se abre un PR con
-`tools/<slug>/` de origen `curated`: una persona lo revisa antes de que el refresh mensual lo publique
-como nota bajo el resultado documentado, nunca como badge. El resumen del run y el PR dicen los
-intentos, los desvíos, las recomendaciones al autor y el costo aproximado.
+Se retiró `.github/workflows/assist.yml`. La invocación antigua de
+`harness/assist.py` termina con código 2 y una explicación, incluso si hay
+credenciales configuradas. No llama al modelo, no ejecuta ensayos y no abre PRs.
+`harness/assist_report.py` sigue disponible para leer informes históricos y los
+identifica como tales. Los antecedentes se conservan en los informes y en Git.
 
-Necesita el secret `ANTHROPIC_API_KEY` en el repo. Tests sin red: `harness/tests/test_assist.py`.
+Cada leg conserva el dataset elegido antes de ejecutar, su salida, log y código
+de salida originales. Ya no se prepara un panel médico alternativo para
+reintentar después de observar un fallo; tampoco existe `--promote-medical`.
+Elegir un dataset médico compatible antes del ensayo sigue siendo posible.
+
+El diagnóstico puede recomendar al autor una corrección documental, pero no la
+aplica ni ejecuta. Una corrección upstream requiere una verificación separada.
+Política y pruebas: [NO-ADAPTIVE-RETRIES.md](docs/NO-ADAPTIVE-RETRIES.md).
 
 ### Compuerta "Reproduces own example"
 

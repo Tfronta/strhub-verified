@@ -27,6 +27,22 @@ The resulting badge reflects the furthest contiguous gate cleared, providing hon
 
 ## Execution Modes
 
+### No adaptive retries
+
+Each run leg uses the procedure, environment and dataset selected before it
+starts. A failed install or run is recorded with its original exit status,
+outputs and logs. It never triggers recipe repair, a fallback environment or
+a retry on another dataset. Medical datasets can still be selected before
+execution when appropriate to the documented procedure.
+
+The recipe-repair agent is retired: its workflow has been removed and
+`harness/assist.py` refuses legacy invocations. Historical curated reports
+remain available as historical evidence, not as a reason to rerun repairs.
+Diagnostics may recommend an upstream documentation change; they do not apply
+or execute it. See [the policy and regression checks](docs/NO-ADAPTIVE-RETRIES.md).
+
+### Verification entry points
+
 1. **1-Click URL Trial**: Evaluates a tool directly from its public repository URL. The harness inspects the README, repository tree, and dependency files to propose an install procedure and command, evaluating it immediately in CI.
 2. **Curated Catalogue Verification**: Evaluates curated configurations under `tools/<slug>/` against open reference datasets (Illumina STR FASTQ, ONT BAM, PacBio HiFi BAM).
 

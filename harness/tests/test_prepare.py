@@ -141,10 +141,9 @@ def test_shipped_example_still_runs_when_strhub_sample_is_not_ready(tmp_path):
     assert kv2["example_ready"] == "0"
 
 
-def test_forensic_bam_run_stages_medical_fallback_and_promote_updates_manifest(tmp_path):
-    """A forensic BAM trial with STRhub library regions stages in_external_med
-    so the workflow can fall back to the medical STR slice when the forensic
-    slice produces no called records."""
+def test_forensic_bam_run_keeps_only_its_selected_dataset(tmp_path):
+    """No alternate input is staged, and the retired promotion cannot mutate
+    the manifest after a failed attempt."""
     src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "hipstr"
     manifest = src.joinpath("manifest.yml").read_text()
     manifest = manifest.replace(
@@ -156,16 +155,25 @@ def test_forensic_bam_run_stages_medical_fallback_and_promote_updates_manifest(t
     b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
     rc, kv, err = _run(["hipstr", "--work", str(tmp_path), "--recipe-b64", b64])
     assert rc == 0, err
-    assert kv["med_fallback_ready"] == "1"
-    assert kv["med_input_type"] == "illumina-bam-hg38-med"
-    assert kv["med_supported_loci"] == "datasets/illumina-bam-hg38-med/loci.bed"
-    assert (tmp_path / "in_external_med" / "input.bam").is_file()
-    assert (tmp_path / "in_external_med" / "regions.bed").is_file()
+    assert kv["input_type"] == "illumina-bam-hg38"
+    assert kv["external_ready"] == "1"
+    assert not any(k.startswith("med_") for k in kv)
+    assert (tmp_path / "in_external" / "input.bam").is_file()
+    assert not (tmp_path / "in_external_med").exists()
 
-    # Promoting the manifest updates inputs.type and appends the panel caveat.
+    # Old callers must fail without modifying the selected procedure.
     mf_path = tmp_path / "recipe" / "hipstr" / "manifest.yml"
+    before = mf_path.read_bytes()
     rc_prom, _, err_prom = _run(["--promote-medical", str(mf_path), "illumina-bam-hg38-med"])
-    assert rc_prom == 0, err_prom
-    updated = mf_path.read_text()
-    assert "illumina-bam-hg38-med" in updated
-    assert "medical STR slice" in updated
+    assert rc_prom != 0
+    assert "unrecognized arguments" in err_prom
+    assert mf_path.read_bytes() == before
+
+
+def test_medical_dataset_selected_before_execution_still_stages(tmp_path):
+    rc, kv, err = _run(["trgt-hifi-med", "--work", str(tmp_path)])
+    assert rc == 0, err
+    assert kv["input_type"] == "pacbio-hifi-bam-hg38-med"
+    assert kv["external_ready"] == "1"
+    assert (tmp_path / "in_external" / "input.bam").is_file()
+    assert not (tmp_path / "in_external_med").exists()
