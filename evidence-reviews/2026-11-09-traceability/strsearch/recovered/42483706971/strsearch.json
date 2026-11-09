@@ -1,0 +1,337 @@
+{
+  "schema": "strhub-verified/1",
+  "mode": "trial",
+  "tool": {
+    "name": "STRsearch",
+    "version": "c70179b",
+    "contact": "https://github.com/AnJingwd/STRsearch/issues"
+  },
+  "submission": {
+    "by": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/AnJingwd/STRsearch",
+    "ref": "c70179b3b175adc82a7314409af06900b3861d61",
+    "ref_resolved": "c70179b3b175adc82a7314409af06900b3861d61",
+    "committed": "2020-03-19T08:43:38Z"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ],
+    "source": "generated"
+  },
+  "generated": "2026-11-08T13:12:45+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42483706971",
+  "run": {
+    "cmd": "mkdir -p example/test_results && python3 pipeline.py from_bam --working_path example/test_results --sample test --sex male --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes example/test_results/test_genotypes.txt --multiple_alleles example/test_results/test_multiple_alleles.txt --qc_matrix example/test_results/test_qc_matrix.txt",
+    "cwd": "/opt/tool"
+  },
+  "instrument": "documented",
+  "recipe": {
+    "origin": "proposed"
+  },
+  "gates": {
+    "available": true,
+    "installs": true,
+    "runs": false,
+    "io": false,
+    "content": false,
+    "starts": true,
+    "example": true
+  },
+  "level": "installs",
+  "io_detail": {},
+  "content_detail": {},
+  "example_detail": {
+    "gate": "example",
+    "applicable": true,
+    "passed": true,
+    "declared_outputs": [],
+    "produced": [
+      "scripts/__pycache__/STR_parse.cpython-36.pyc",
+      "scripts/__pycache__/STR_search.cpython-36.pyc",
+      "scripts/__pycache__/__init__.cpython-36.pyc",
+      "scripts/__pycache__/bwa_align.cpython-36.pyc",
+      "scripts/__pycache__/fastq.cpython-36.pyc",
+      "scripts/__pycache__/get_STR_fastq.cpython-36.pyc"
+    ],
+    "checks": {
+      "created_non_empty_file": true
+    },
+    "produced_count": 6
+  },
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": false,
+      "type": "illumina-bam-hg38",
+      "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
+      "io": false,
+      "content": false,
+      "passed": false
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": true,
+      "io": true,
+      "content": null,
+      "passed": true,
+      "matches_expected": null,
+      "produced_count": 6
+    }
+  ],
+  "regions": {
+    "source": "strhub",
+    "panel_size": 24
+  },
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bversions?\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "upstream": {
+    "checked": "2026-11-08T13:12:46+00:00",
+    "repo_exists": true,
+    "ref_exists": true,
+    "default_branch": "master",
+    "status": "identical",
+    "behind_by": 0
+  },
+  "needed_beyond_repo": [
+    "Test data: no sample from the repository was used, so a public reference sample stood in.",
+    "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships."
+  ],
+  "evidence": [
+    {
+      "claim": "published_image",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 223,
+      "text": "docker pull anjing123/strsearch:latest",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L223"
+    },
+    {
+      "claim": "run_command",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 107,
+      "text": "python3 pipeline.py from_bam \\",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L107"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/ref_test.bed",
+      "text": "bed",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/ref_test.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/test_data/test.bam",
+      "text": "bam",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test.bam"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/test_data/test_R1.fastq",
+      "text": "fastq",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R1.fastq"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/test_data/test_R2.fastq",
+      "text": "fastq",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R2.fastq"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "example/test_output/STRfq/Marker94_reads_test_sortByname.bam",
+      "text": "bam",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_output/STRfq/Marker94_reads_test_sortByname.bam"
+    },
+    {
+      "claim": "documented_input",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 77,
+      "text": "FASTQ file or BAM-file from singe-end or paird-end sequencing platforms",
+      "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L77"
+    }
+  ],
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 35,
+    "examples": [
+      "example/ref_test.bed",
+      "example/test_data/test.bam",
+      "example/test_data/test_R1.fastq",
+      "example/test_data/test_R2.fastq",
+      "example/test_output/STRfq/Marker94_reads_test_sortByname.bam"
+    ]
+  },
+  "caveats": {
+    "source": "detect_recipe",
+    "items": [
+      "Environment: the published image anjing123/strsearch:latest the README points at; the tool inside it is whatever that image holds, not necessarily the pinned commit.",
+      "Input: the README documents BAM and FASTQ (line 77); this run used STRhub's illumina-bam-hg38 reference data.",
+      "The output directory the command writes into (example/test_results) was created first.",
+      "1 input path(s) in the README command replaced with /data/in/input.bam.",
+      "1 BED path(s) replaced with /data/in/regions.bed.",
+      "Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output.",
+      "Regions: STRhub's ready-made strsearch file for the dataset's panel loci (STRhub records the strsearch layout for a program of this name).",
+      "README mentions hg19/GRCh37 only; STRhub reference BAMs are hg38"
+    ]
+  },
+  "logs": {
+    "example": "strsearch.log-example.txt",
+    "starts": "strsearch.log-starts.txt",
+    "build": "strsearch.log-build.txt"
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  },
+  "procedure_review": {
+    "may_say_runs": false,
+    "basis": "strhub",
+    "attribution": "strhub",
+    "blocker": "published_image",
+    "reason": "The install named here is a published image or package. That is a claim about the image, not about this commit, and it was not counted as the commit running.",
+    "amendments": [
+      {
+        "code": "published_image",
+        "what": "The install named here is a published image or package. That is a claim about the image, not about this commit, and it was not counted as the commit running."
+      }
+    ],
+    "install_method": "docker_image",
+    "citable_install": false,
+    "input_type": "illumina-bam-hg38",
+    "output_glob": "**/*.t[sx][vt]"
+  },
+  "verdict": {
+    "code": "undetermined",
+    "title": "Could not be determined",
+    "basis": "strhub",
+    "reason": "The install named here is a published image or package. That is a claim about the image, not about this commit, and it was not counted as the commit running. The installed program starts: it answers --help. The repository's own documented example ran and produced its output.",
+    "readme_gaps": [],
+    "blockers": []
+  },
+  "step1": {
+    "code": "cannot_tell",
+    "headline": "As documented, a third party cannot tell how to run it.",
+    "body": "The install named here is a published image or package. That is a claim about the image, not about this commit, and it was not counted as the commit running. Nothing was executed. That does not mean the tool does not work: what the guide asks for is missing from the README at this commit. Add it and try the link again on the new commit.",
+    "missing": [
+      "install"
+    ],
+    "missing_text": [
+      "Installation, copyable"
+    ],
+    "guide": "docs/GUIA-PASO-1.md"
+  },
+  "certificate": {
+    "schema": "strhub-verified/certificate/1",
+    "label": "Could not be determined",
+    "reached": "Installs",
+    "summary": {
+      "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
+      "result": "Could not be determined",
+      "reached": "Installs, 2/5 gates passed",
+      "why": "The install named here is a published image or package. That is a claim about the image, not about this commit, and it was not counted as the commit running. The installed program starts: it answers --help. The repository's own documented example ran and produced its output.",
+      "scope": "Installation, execution, and output structure verification.",
+      "not_evaluated": [
+        "Genotype accuracy",
+        "Concordance",
+        "Forensic validity",
+        "Regulatory compliance"
+      ]
+    },
+    "conclusion": [
+      {
+        "title": "Does not run end-to-end",
+        "body": "STRsearch c70179b installs in a clean ubuntu-22.04 environment at the pinned commit, but the documented command stopped with an error before finishing. The messages it printed are in the execution log; Section 4 shows how far it got."
+      },
+      {
+        "title": "No output produced",
+        "body": "No file in the declared format was written, so nothing could be checked for structure or content. This says the run did not get that far; it is not a finding about the quality of the software."
+      },
+      {
+        "title": "Verdict: Could not be determined",
+        "body": "The install named here is a published image or package. That is a claim about the image, not about this commit, and it was not counted as the commit running. The installed program starts: it answers --help. The repository's own documented example ran and produced its output."
+      },
+      {
+        "title": "Repository test data not used",
+        "body": "The repository ships example data (35 file(s)), which this run did not use: the gates above ran on STRhub's reference dataset. STRhub Verified supplied Illumina BAM (hg38), NA12878 (autosomal, female) as the reference input for this verification run. Users replicating this result should use the same or equivalent publicly available reference material."
+      },
+      {
+        "title": "Reproducibility statement",
+        "body": "The exact command reported in Section 3, executed at the pinned commit in the described environment, is sufficient to reproduce this verification result independently."
+      }
+    ],
+    "out_of_scope": [
+      "Genotype correctness or accuracy",
+      "Concordance against known truth sets",
+      "Sensitivity, specificity, or stutter performance",
+      "Allele calling accuracy or forensic casework suitability",
+      "Regulatory compliance or ISO accreditation",
+      "Multi-laboratory or multi-dataset reproducibility"
+    ],
+    "limitations": [
+      "Single reference dataset per input type",
+      "Single containerized environment (Docker / ubuntu-22.04)",
+      "No truth-set comparison or ground-truth genotypes",
+      "No accuracy or concordance assessment",
+      "No forensic validation of results",
+      "Short-read limitations apply (very long STR alleles may not span reads)"
+    ],
+    "scope": {
+      "statement": "Independent automated verification of reproducible execution. It confirms the tool installs, runs end-to-end, and produces structurally valid output in a standardized environment.",
+      "not": "This is not an analytical validation. Genotype accuracy, concordance, forensic suitability, and regulatory compliance are out of scope.",
+      "disclaimer": "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub does not store tool source code."
+    }
+  }
+}

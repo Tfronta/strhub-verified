@@ -1,0 +1,621 @@
+{
+  "schema": "strhub-verified/recipe/1",
+  "slug": "strsearch",
+  "manifest_yml": "# STRhub Verified recipe, PROPOSED from the repository by detect_recipe.\n# Nobody typed this: every choice is listed under `caveats`, and the report\n# says so. It is published only if the run's verdict is attributable to the\n# tool (runs or fails); a verdict that is STRhub's limitation never is.\ntool:\n  name: STRsearch\n  version: c70179b\n  contact: https://github.com/AnJingwd/STRsearch/issues\nsubmission:\n  by: third_party\nsource:\n  repo: https://github.com/AnJingwd/STRsearch\n  ref: c70179b3b175adc82a7314409af06900b3861d61\nrecipe:\n  origin: proposed\nreport:\n  slug: strsearch\nenvironment:\n  dockerfile: Dockerfile\n  os:\n  - ubuntu-22.04\n  source: repository\n  from_repo: Dockerfile\n  fallback:\n    dockerfile: Dockerfile.fallback\n    reason: the published image anjing123/strsearch:latest the README points at\nrun:\n  cmd: cd '.' && touch /tmp/.strhub_mark && ( mkdir -p example && python3 pipeline.py from_bam --working_path example/test_results --sample test --sex male --bam /data/in/input.bam --ref_bed /data/in/regions.bed --genotypes example/test_results/test_genotypes.txt --multiple_alleles example/test_results/test_multiple_alleles.txt --qc_matrix example/test_results/test_qc_matrix.txt ); rc=$?; find . -xdev -type f -newer /tmp/.strhub_mark -size +0 ! -path './.git/*' ! -path './proc/*' ! -path './sys/*' ! -path './dev/*' ! -path './data/*' 2>/dev/null | head -500 | while IFS= read -r f; do mkdir -p \"/data/out/$(dirname \"$f\")\" && cp \"$f\" \"/data/out/$f\"; done; exit $rc\n  timeout_minutes: 20\ninputs:\n  type: illumina-bam-hg38\n  regions:\n    library: strsearch\noutputs:\n- path: '**/*.t[sx][vt]'\n  format: tsv\n  min_records: 1\nexample:\n  cmd: python3 pipeline.py from_fastq --working_path example/test_results/ --sample test --fq1 example/test_data/test_R1.fastq --fq2 example/test_data/test_R2.fastq --ref ucsc.hg19.fasta\n  cwd: .\n  source: detected\ncaveats:\n  source: detect_recipe\n  items:\n  - 'Environment: the repository''s own Dockerfile was built as-is. If it does not build, the published image anjing123/strsearch:latest the README points at stands in, and the report says so.'\n  - 'Input: the README documents BAM and FASTQ (line 77); this run used STRhub''s illumina-bam-hg38 reference data.'\n  - The output directory the command writes into (example) was created first.\n  - 1 input path(s) in the README command replaced with /data/in/input.bam.\n  - 1 BED path(s) replaced with /data/in/regions.bed.\n  - 'Run command: the README''s own command, rewritten to STRhub''s mounts; everything it created was captured as output.'\n  - 'Regions: STRhub''s ready-made strsearch file for the dataset''s panel loci (STRhub records the strsearch layout for a program of this name).'\n  - README mentions hg19/GRCh37 only; STRhub reference BAMs are hg38\n",
+  "dockerfile": "# The repository ships its own Dockerfile (Dockerfile); the engine\n# builds that one with the repository at the pinned ref as context.\n",
+  "dockerfile_fallback": "# Proposed by STRhub Verified detect_recipe. The build IS the Installs gate.\nFROM anjing123/strsearch:latest\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n",
+  "proposal": {
+    "schema": "strhub-verified/recipe-proposal/1",
+    "repo": "https://github.com/AnJingwd/STRsearch",
+    "ref": "c70179b3b175adc82a7314409af06900b3861d61",
+    "tree_truncated": false,
+    "build": {
+      "method": "dockerfile",
+      "file": "Dockerfile",
+      "dir": null,
+      "package": null,
+      "image": null,
+      "asset": null,
+      "url": null,
+      "digest": null,
+      "tag": null,
+      "spec_list": false,
+      "then": [],
+      "ssh_urls_in": [],
+      "readme_line": null,
+      "fallback": {
+        "method": "docker_image",
+        "file": null,
+        "image": "anjing123/strsearch:latest",
+        "readme_line": 223
+      },
+      "candidates": [
+        {
+          "method": "dockerfile",
+          "file": "Dockerfile"
+        },
+        {
+          "method": "docker_image",
+          "file": null,
+          "image": "anjing123/strsearch:latest",
+          "readme_line": 223
+        }
+      ],
+      "readme_install_lines": [
+        "docker pull anjing123/strsearch:latest",
+        "docker run -v LOCAL_PATH/app/:/app/ -w /app/ -it anjing123/strsearch:latest from_fastq --working_path /app/test_results/ --sample test --fq1 /app/test_data/test_R1.fastq --fq2 /app/test_data/test_R2.fastq --ref /app/ref/ucsc.hg19.fasta",
+        "docker run -v LOCAL_PATH/app/:/app/ -w /app/ -it anjing123/strsearch:latest from_bam --working_path /app/test_results/ --sample test --sex male --bam /app/test_results/alignments/test.bam --ref_bed /app/ref_test.bed --genotypes /app/test_results/test_genotypes.txt --multiple_alleles /app/test_results/test_multiple_alleles.txt --qc_matrix /app/test_results/test_qc_matrix.txt"
+      ]
+    },
+    "example_data": [
+      {
+        "path": "example/ref_test.bed",
+        "kind": "bed",
+        "size": 649,
+        "in_example_dir": true,
+        "looks_like_output": false
+      },
+      {
+        "path": "example/test_data/test.bam",
+        "kind": "bam",
+        "size": 2221994,
+        "in_example_dir": true,
+        "looks_like_output": false
+      },
+      {
+        "path": "example/test_data/test_R1.fastq",
+        "kind": "fastq",
+        "size": 5345231,
+        "in_example_dir": true,
+        "looks_like_output": false
+      },
+      {
+        "path": "example/test_data/test_R2.fastq",
+        "kind": "fastq",
+        "size": 5345971,
+        "in_example_dir": true,
+        "looks_like_output": false
+      },
+      {
+        "path": "example/test_output/STRfq/Marker94_reads_test_sortByname.bam",
+        "kind": "bam",
+        "size": 232518,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker3_reads_test_sortByname.bam",
+        "kind": "bam",
+        "size": 256419,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker94_reads_test.bam",
+        "kind": "bam",
+        "size": 271905,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker3_reads_test.bam",
+        "kind": "bam",
+        "size": 303618,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker58_reads_test_sortByname.bam",
+        "kind": "bam",
+        "size": 367003,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker58_reads_test.bam",
+        "kind": "bam",
+        "size": 435146,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker79_reads_test_sortByname.bam",
+        "kind": "bam",
+        "size": 448419,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker79_reads_test.bam",
+        "kind": "bam",
+        "size": 512821,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker94_reads_test_R1.fastq",
+        "kind": "fastq",
+        "size": 551875,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker94_reads_test_R2.fastq",
+        "kind": "fastq",
+        "size": 551875,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker94_reads_test_R2_trans.fastq",
+        "kind": "fastq",
+        "size": 551875,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker3_reads_test_R1.fastq",
+        "kind": "fastq",
+        "size": 801618,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker3_reads_test_R2.fastq",
+        "kind": "fastq",
+        "size": 801618,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker3_reads_test_R2_trans.fastq",
+        "kind": "fastq",
+        "size": 801618,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker79_reads_test_R1.fastq",
+        "kind": "fastq",
+        "size": 909542,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker79_reads_test_R2.fastq",
+        "kind": "fastq",
+        "size": 909890,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker79_reads_test_R2_trans.fastq",
+        "kind": "fastq",
+        "size": 909890,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker85_reads_test_sortByname.bam",
+        "kind": "bam",
+        "size": 929812,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker58_reads_test_R1.fastq",
+        "kind": "fastq",
+        "size": 963938,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker58_reads_test_R2.fastq",
+        "kind": "fastq",
+        "size": 964330,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker58_reads_test_R2_trans.fastq",
+        "kind": "fastq",
+        "size": 964330,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker85_reads_test.bam",
+        "kind": "bam",
+        "size": 1036518,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker94_reads_test_merge.fastq",
+        "kind": "fastq",
+        "size": 1103750,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker3_reads_test_merge.fastq",
+        "kind": "fastq",
+        "size": 1603236,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker79_reads_test_merge.fastq",
+        "kind": "fastq",
+        "size": 1819432,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker58_reads_test_merge.fastq",
+        "kind": "fastq",
+        "size": 1928268,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker85_reads_test_R1.fastq",
+        "kind": "fastq",
+        "size": 2097257,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker85_reads_test_R1_trans.fastq",
+        "kind": "fastq",
+        "size": 2097257,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker85_reads_test_R2.fastq",
+        "kind": "fastq",
+        "size": 2097257,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/alignments/test.bam",
+        "kind": "bam",
+        "size": 2141405,
+        "in_example_dir": true,
+        "looks_like_output": true
+      },
+      {
+        "path": "example/test_output/STRfq/Marker85_reads_test_merge.fastq",
+        "kind": "fastq",
+        "size": 4194514,
+        "in_example_dir": true,
+        "looks_like_output": true
+      }
+    ],
+    "tool_names": [
+      "STR_parse",
+      "STR_parse.py",
+      "STR_search",
+      "STR_search.py",
+      "STRsearch",
+      "__init__.py",
+      "build a base classifier",
+      "build a base classifier.py",
+      "bwa_align",
+      "bwa_align.py",
+      "conf",
+      "conf.py",
+      "fastq",
+      "fastq.py",
+      "get_STR_fastq",
+      "get_STR_fastq.py",
+      "pipeline",
+      "pipeline.py",
+      "strsearch"
+    ],
+    "tree_paths": [
+      "Dockerfile",
+      "LICENSE",
+      "README.md",
+      "conf.py",
+      "example/ref_test.bed",
+      "example/test_data/test.bam",
+      "example/test_data/test_R1.fastq",
+      "example/test_data/test_R2.fastq",
+      "example/test_output/STRfq/Marker3_reads_test.bam",
+      "example/test_output/STRfq/Marker3_reads_test_R1.fastq",
+      "example/test_output/STRfq/Marker3_reads_test_R2.fastq",
+      "example/test_output/STRfq/Marker3_reads_test_R2_trans.fastq",
+      "example/test_output/STRfq/Marker3_reads_test_merge.fastq",
+      "example/test_output/STRfq/Marker3_reads_test_sortByname.bam",
+      "example/test_output/STRfq/Marker58_reads_test.bam",
+      "example/test_output/STRfq/Marker58_reads_test_R1.fastq",
+      "example/test_output/STRfq/Marker58_reads_test_R2.fastq",
+      "example/test_output/STRfq/Marker58_reads_test_R2_trans.fastq",
+      "example/test_output/STRfq/Marker58_reads_test_merge.fastq",
+      "example/test_output/STRfq/Marker58_reads_test_sortByname.bam",
+      "example/test_output/STRfq/Marker79_reads_test.bam",
+      "example/test_output/STRfq/Marker79_reads_test_R1.fastq",
+      "example/test_output/STRfq/Marker79_reads_test_R2.fastq",
+      "example/test_output/STRfq/Marker79_reads_test_R2_trans.fastq",
+      "example/test_output/STRfq/Marker79_reads_test_merge.fastq",
+      "example/test_output/STRfq/Marker79_reads_test_sortByname.bam",
+      "example/test_output/STRfq/Marker85_reads_test.bam",
+      "example/test_output/STRfq/Marker85_reads_test_R1.fastq",
+      "example/test_output/STRfq/Marker85_reads_test_R1_trans.fastq",
+      "example/test_output/STRfq/Marker85_reads_test_R2.fastq",
+      "example/test_output/STRfq/Marker85_reads_test_merge.fastq",
+      "example/test_output/STRfq/Marker85_reads_test_sortByname.bam",
+      "example/test_output/STRfq/Marker94_reads_test.bam",
+      "example/test_output/STRfq/Marker94_reads_test_R1.fastq",
+      "example/test_output/STRfq/Marker94_reads_test_R2.fastq",
+      "example/test_output/STRfq/Marker94_reads_test_R2_trans.fastq",
+      "example/test_output/STRfq/Marker94_reads_test_merge.fastq",
+      "example/test_output/STRfq/Marker94_reads_test_sortByname.bam",
+      "example/test_output/STRsearch/Marker3_results_test.txt",
+      "example/test_output/STRsearch/Marker58_results_test.txt",
+      "example/test_output/STRsearch/Marker79_results_test.txt",
+      "example/test_output/STRsearch/Marker85_results_test.txt",
+      "example/test_output/STRsearch/Marker94_results_test.txt",
+      "example/test_output/alignments/test.bam",
+      "example/test_output/alignments/test.bam.bai",
+      "example/test_output/test_genotypes.txt",
+      "example/test_output/test_multiple_alleles.txt",
+      "example/test_output/test_qc_matrix.txt",
+      "model/Additional file 1.xlsx",
+      "model/Additional file 2.xlsx",
+      "model/Additional file 3.xlsx",
+      "model/Ion_S5.pkl",
+      "model/build a base classifier.py",
+      "pipeline.py",
+      "scripts/STR_parse.py",
+      "scripts/STR_search.py",
+      "scripts/__init__.py",
+      "scripts/bwa_align.py",
+      "scripts/fastq.py",
+      "scripts/get_STR_fastq.py"
+    ],
+    "packaging": {
+      "packages": [],
+      "executables": []
+    },
+    "shipped_loci": {},
+    "registry": {
+      "bioconda": {},
+      "documented": []
+    },
+    "docs_read": [],
+    "config_files": [],
+    "commands": [
+      {
+        "cmd": "python3 pipeline.py from_bam --working_path example/test_results --sample test --sex male --bam example/test_results/alignments/test.bam --ref_bed example/ref_test.bed --genotypes example/test_results/test_genotypes.txt --multiple_alleles example/test_results/test_multiple_alleles.txt --qc_matrix example/test_results/test_qc_matrix.txt",
+        "file": "README.md",
+        "origin": "readme",
+        "line": 107,
+        "invokes": "pipeline.py",
+        "subcommand": "from_bam",
+        "named_in_tree": true,
+        "entry_point": false,
+        "has_input_flag": true,
+        "has_output_flag": true,
+        "help_only": false,
+        "main_verb": true,
+        "piped": false,
+        "source_rank": 0,
+        "rst": false
+      },
+      {
+        "cmd": "python3 pipeline.py from_fastq --working_path example/test_results/ --sample test --fq1 example/test_data/test_R1.fastq --fq2 example/test_data/test_R2.fastq --ref ucsc.hg19.fasta",
+        "file": "README.md",
+        "origin": "readme",
+        "line": 96,
+        "invokes": "pipeline.py",
+        "subcommand": "from_fastq",
+        "named_in_tree": true,
+        "entry_point": false,
+        "has_input_flag": true,
+        "has_output_flag": true,
+        "help_only": false,
+        "main_verb": true,
+        "piped": false,
+        "source_rank": 0,
+        "rst": false
+      },
+      {
+        "cmd": "python3 pipeline.py --type single from_fastq --working_path example/test_results/ --sample test --fq1 example/test_data/test_R1.fastq --ref ucsc.hg19.fasta",
+        "file": "README.md",
+        "origin": "readme",
+        "line": 123,
+        "invokes": "pipeline.py",
+        "subcommand": null,
+        "named_in_tree": true,
+        "entry_point": false,
+        "has_input_flag": true,
+        "has_output_flag": true,
+        "help_only": false,
+        "main_verb": false,
+        "piped": false,
+        "source_rank": 0,
+        "rst": false
+      },
+      {
+        "cmd": "python3 pipeline.py --type single from_bam --working_path example/test_results --sample test --sex male --bam example/test_results/alignments/test.bam --ref_bed example/ref_test.bed --genotypes example/test_results/test_genotypes.txt --multiple_alleles example/test_results/test_multiple_alleles.txt --qc_matrix example/test_results/test_qc_matrix.txt",
+        "file": "README.md",
+        "origin": "readme",
+        "line": 135,
+        "invokes": "pipeline.py",
+        "subcommand": null,
+        "named_in_tree": true,
+        "entry_point": false,
+        "has_input_flag": true,
+        "has_output_flag": true,
+        "help_only": false,
+        "main_verb": false,
+        "piped": false,
+        "source_rank": 0,
+        "rst": false
+      },
+      {
+        "cmd": "python3 pipeline.py --assemble_pairs True --reads_threshold 50 --stutter_ratio 0.6 --num_threads 8 --num_processors 8 from_bam --working_path example/test_results --sample test --sex male --bam example/test_results/alignments/test.bam --ref_bed example/ref_test.bed --genotypes example/test_results/test_genotypes.txt --multiple_alleles example/test_results/test_multiple_alleles.txt --qc_matrix example/test_results/test_qc_matrix.txt",
+        "file": "README.md",
+        "origin": "readme",
+        "line": 153,
+        "invokes": "pipeline.py",
+        "subcommand": null,
+        "named_in_tree": true,
+        "entry_point": false,
+        "has_input_flag": true,
+        "has_output_flag": true,
+        "help_only": false,
+        "main_verb": false,
+        "piped": false,
+        "source_rank": 0,
+        "rst": false
+      }
+    ],
+    "input_type": {
+      "best": "illumina-bam-hg38",
+      "candidates": [
+        "illumina-bam-hg38",
+        "illumina-str-fastq"
+      ],
+      "signals": {
+        "bam": 11,
+        "fastq": 10,
+        "ont": 0,
+        "illumina": 3,
+        "hg38": 0,
+        "hg19": 9,
+        "ystr": 2,
+        "snp": 0,
+        "ce": 0
+      },
+      "warnings": [
+        "README mentions hg19/GRCh37 only; STRhub reference BAMs are hg38"
+      ],
+      "unsupported": null,
+      "statements_file": null,
+      "how": "read",
+      "platform": "illumina",
+      "platform_how": "counted",
+      "statements": {
+        "inputs": [
+          {
+            "kind": "bam",
+            "line": 77,
+            "text": "FASTQ file or BAM-file from singe-end or paird-end sequencing platforms"
+          },
+          {
+            "kind": "fastq",
+            "line": 77,
+            "text": "FASTQ file or BAM-file from singe-end or paird-end sequencing platforms"
+          }
+        ],
+        "recommendation": null,
+        "platform": [],
+        "against": [],
+        "determined": true
+      }
+    },
+    "output": {
+      "format": "tsv",
+      "signals": {
+        "tsv": 24,
+        "vcf": 0,
+        "csv": 0,
+        "json": 0
+      }
+    },
+    "readme": {
+      "name": "README.md",
+      "gaps": [],
+      "sufficient_to_attempt": true
+    },
+    "readme_text": "### Overview\n\n &emsp;  &emsp; STRsearch is an end-to-end pipeline for targeted profiling of short tandem repeats (STRs) in massively parallel sequencing data. It is implemented using Python, supporting both version Python2 and Python3. \n\n ### Algorithm description: \n\n &emsp;  &emsp; Briefly, STRsearch employs an iterative algorithm to obtain the longest continuous interval composed by all motifs of STR sequence structure without a priori assumptions on allele size. The actual STR region is determined by comparing the position of repeat patterns with the best matching location of flanking sequences in reads. Ultimately, allele size is calculated not only for repeat patterns, but also indels that are actually in the STR region.  \n\n\n\n### Installation\n\nTo obtain STRsearch, use:\n\n```Git\ngit clone https://github.com/AnJingwd/STRsearch.git\n```\n\nor\n\n```shell\nwget https://github.com/AnJingwd/STRsearch/archive/master.zip\n```\n\n\n\n### Prerequisite\n\n &emsp;  &emsp; The following linux utilities are needed and the full path of  them on your  local machine  should be provided in conf.py file\n\n1. bwa  (v1.7 or higher) \n2. samtools  (v1.7 or higher) \n3. bamToFastq (v2.17.0 or higher)\n4. seqtk  (v1.2 or higher)\n5. usearch (v11 or higher)  [Download](https://www.drive5.com/usearch/download.html)\n\nAdditionally, the following Python modules are required.\n\n1. numpy\n2. argparse\n3. pathlib\n\n\n\n### Configuration file format:\n\n &emsp;  &emsp; The first step for  STR analysis with STRsearch is to create a configuration file with your custom set of STR loci. One way to do this is by referring to the most up-to-date revised forensic STR sequence guide  and a worksheet can be downloaded from [link](https://strider.online/bundles/strbaseclient/downloads/Forensic_STR_Sequence_Structure_Guide_v5.xlsx). You will need to make a configuration file with the following columns present: \n\n| Chr   | Start     | End       | Period | Reference allele | Marker  | STR       | STR sequence structure                                       | Stand | 5' Flanking  sequence | 3' Flanking  sequence |\n| ----- | --------- | --------- | ------ | ---------------- | ------- | --------- | ------------------------------------------------------------ | ----- | --------------------- | --------------------- |\n| chr1  | 7442891   | 7442934   | 4      | 11               | Marker1 | D1GATA113 | [GATA]n                                                      | +     | ACTTGCTTCCTAGAT       | TTCCTATAGCCTCAA       |\n| chr21 | 20554291  | 20554417  | 4      | 29               | Marker2 | D21S11    | [TCTA]n  [TCTG]n [TCTA]n ta [TCTA]n tca [TCTA]n tccata [TCTA]n TA [TCTA]n | +     | CCAAGTGAATTGCCT       | TCGTCTATCTATCCA       |\n| chrX  | 149710971 | 149711038 | 4      | 15               | Marker3 | DXS7423   | [TGGA]n aggacaga  [TGGA]n                                    | +     | AAATGAATGAGTATG       | TGGGGAGGAAATCTG       |\n| chrY  | 15752608  | 15752715  | 3      | 27               | Marker4 | DYS612    | [CCT]n CTT [TCT]n  CCT [TCT]n                                | +     | AGGTTCAGAGGTTTG       | GTCACTTTTCCAAAT       |\n| chrY  | 20842518  | 20842573  | 4      | 14               | Marker5 | DYS385a   | [TTTC]n                                                      | -     | TCCTTTCTTTTTCTC       | CCTTCCTTCCTTCCT       |\n\n1. Column 1 : chromosome  (must)\n2. Column 2 : start coordinate of the STR  (must)\n3. Column 3  : end coordinate of the STR  (must)\n4. Column 4  : period of the STR  (must)\n5. Column 5 : reference copy number (option)\n6. Column 6 : Marker name (option) \n7. Column 7 : STR name (option) \n8. Column 8 :   Reference Sequence repeat region sequence structure summary  (must)\n9. Column 9 : stand (\"+\" means positive stand;\"-\" means negative stand)  (must)\n10. Column 10 : 5' flanking sequence of repeat region  (must)\n11. Column 11 : 3' flanking sequence of repeat region  (must)\n\n\n\nNote some columns are not used. You can put any value in the non-required columns, just make sure there are at least 11 columns with the required information listed above. Importanly, flanking sequences are necessarily adjacent to STR repeat region.  \n\n\n\n### Inputs\n\nFASTQ file or BAM-file from singe-end or paird-end sequencing platforms\n\n### Output\n\n- genotypes.txt: genotypes on each targeted locus\n\n- multiple_alleles.txt: all alleles identified on each targeted locus\n\n- qc_matrix.txt:  a quality control matrix including several sequence properties (total bases, sequencing quality score, number of allocated reads, distance distribution of STR repeat sequence to end of reads, allele read depth)  \n\n\n\n### Usage examples\n\n**1. run with  default parameters**\n\nfor paired-end sequencing\n\n```shell\npython3 pipeline.py from_fastq \\\n--working_path example/test_results/ \\\n--sample test \\\n--fq1 example/test_data/test_R1.fastq \\\n--fq2 example/test_data/test_R2.fastq \\\n--ref ucsc.hg19.fasta\n```\n\n\n\n```shell\npython3 pipeline.py from_bam \\\n--working_path example/test_results \\\n--sample test \\\n--sex male \\\n--bam example/test_results/alignments/test.bam \\\n--ref_bed example/ref_test.bed \\\n--genotypes example/test_results/test_genotypes.txt \\\n--multiple_alleles example/test_results/test_multiple_alleles.txt \\\n--qc_matrix example/test_results/test_qc_matrix.txt\n```\n\n\n\nfor single-end sequencing\n\n```shell\npython3 pipeline.py  \\\n--type single \\\nfrom_fastq \\\n--working_path example/test_results/ \\\n--sample test \\\n--fq1 example/test_data/test_R1.fastq \\\n--ref ucsc.hg19.fasta\n```\n\n\n\n```shell\npython3 pipeline.py \\\n--type single \\\nfrom_bam \\\n--working_path example/test_results \\\n--sample test \\\n--sex male \\\n--bam example/test_results/alignments/test.bam \\\n--ref_bed example/ref_test.bed \\\n--genotypes example/test_results/test_genotypes.txt \\\n--multiple_alleles example/test_results/test_multiple_alleles.txt \\\n--qc_matrix example/test_results/test_qc_matrix.txt\n```\n\n\n\n**2. run with self-defined parameters**\n\n```shell\npython3 pipeline.py \\\n--assemble_pairs True \\\n--reads_threshold 50 \\\n--stutter_ratio 0.6 \\\n--num_threads 8 \\\n--num_processors 8 \\\nfrom_bam \\\n--working_path example/test_results \\\n--sample test \\\n--sex male \\\n--bam example/test_results/alignments/test.bam \\\n--ref_bed example/ref_test.bed \\\n--genotypes example/test_results/test_genotypes.txt \\\n--multiple_alleles example/test_results/test_multiple_alleles.txt \\\n--qc_matrix example/test_results/test_qc_matrix.txt\n```\n\n\n\n### Options\n\n**Default parameters**\n\n| Option            | Value Type | Default | Summary                                          |\n| ----------------- | ---------- | ------- | ------------------------------------------------ |\n| --help            |            | false   | display the help message                         |\n| --type            | str        | paired  | (option) The sequencing type                     |\n| --assemble_pairs  | bool       | False   | (option) if True, paired-end reads are assembled |\n| --reads_threshold | int        | 30      | (option) The analytical threshold for reads      |\n| --stutter_ratio   | float      | 0.5     | (option) The stutter ratio                       |\n| --num_threads     | int        | 4       | (option) The number of multiple threads          |\n| --num_processors  | int        | 4       | (option) The number of multiprocess              |\n\n**Sub command**\n\n1. from_bam\n\n| Option             | Value Type | Default | Summary                                      |\n| ------------------ | ---------- | ------- | -------------------------------------------- |\n| --help             |            | false   | display the help message                     |\n| --working_path     | str        | null    | (must) The working path                      |\n| --sample           | str        | null    | (must) The sample name                       |\n| --sex              | str        | null    | (must) The sample sex                        |\n| --bam              | str        | null    | (must) The input BAM-file                    |\n| --ref_bed          | str        | null    | (must) The configuration file of STRs        |\n| --genotypes        | str        | null    | (must) The output for STR genotypes          |\n| --multiple_alleles | str        | null    | (must) The output for multiple alleles       |\n| --qc_matrix        | str        | null    | (must) The output for quality control matrix |\n\n\n\n2. from_fastq\n\n\n| Option         | Value Type | Default | Summary                                                      |\n| -------------- | ---------- | ------- | ------------------------------------------------------------ |\n| --help         |            | false   | display the help message                                     |\n| --working_path | str        | null    | (must) The working path                                      |\n| --sample       | str        | null    | (must) The sample name                                       |\n| --fq1          | str        | null    | (must) The in1.fq                                            |\n| --fq2          | str        | null    | (option) The in2.fq for paired-end sequencing                |\n| --ref          | str        | null    | (must) The reference genome fasta and index file in the same path |\n\n\n\n### Run with Docker\n\nTo obtain STRsearch Docker image, use:\n\n```GO\ndocker pull anjing123/strsearch:latest\n```\n\n\n\n```\nLOCAL_PATH/app/\n\u251c\u2500\u2500 ref\n\u2502\u00a0\u00a0 \u251c\u2500\u2500 ucsc.hg19.fasta\n\u2502\u00a0\u00a0 \u251c\u2500\u2500 ucsc.hg19.fasta.amb\n\u2502\u00a0\u00a0 \u251c\u2500\u2500 ucsc.hg19.fasta.ann\n\u2502\u00a0\u00a0 \u251c\u2500\u2500 ucsc.hg19.fasta.bwt\n\u2502\u00a0\u00a0 \u251c\u2500\u2500 ucsc.hg19.fasta.pac\n\u2502\u00a0\u00a0 \u2514\u2500\u2500 ucsc.hg19.fasta.sa\n\u251c\u2500\u2500 ref_test.bed\n\u2514\u2500\u2500 test_data\n    \u251c\u2500\u2500 test.bam\n    \u251c\u2500\u2500 test_R1.fastq\n    \u2514\u2500\u2500 test_R2.fastq\n```\n\n\n\n```shell\ndocker run -v LOCAL_PATH/app/:/app/ -w /app/ -it anjing123/strsearch:latest from_fastq \\\n--working_path /app/test_results/ \\\n--sample test \\\n--fq1 /app/test_data/test_R1.fastq \\\n--fq2 /app/test_data/test_R2.fastq \\\n--ref /app/ref/ucsc.hg19.fasta\n```\n\n\n\n```shell\ndocker run -v LOCAL_PATH/app/:/app/ -w /app/ -it anjing123/strsearch:latest from_bam \\\n--working_path /app/test_results/ \\\n--sample test \\\n--sex male \\\n--bam /app/test_results/alignments/test.bam \\\n--ref_bed /app/ref_test.bed \\\n--genotypes /app/test_results/test_genotypes.txt \\\n--multiple_alleles /app/test_results/test_multiple_alleles.txt \\\n--qc_matrix /app/test_results/test_qc_matrix.txt\n```\n\n\n\n\n\n### Reference\n\n The STRsearch publication is available here:  [STRsearch: a new pipeline for targeted profiling of short tandem repeats in massively parallel sequencing data](https://hereditasjournal.biomedcentral.com/articles/10.1186/s41065-020-00120-6)\n\n\n\n### Contact\n\nDeveloper:  Dong Wang\n\n",
+    "known_issues": [],
+    "readme_name": "README.md",
+    "evidence": [
+      {
+        "claim": "install_method",
+        "kind": "tree",
+        "path": "Dockerfile",
+        "text": "dockerfile",
+        "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/Dockerfile"
+      },
+      {
+        "claim": "fallback_environment",
+        "kind": "readme",
+        "path": "README.md",
+        "line": 223,
+        "text": "docker pull anjing123/strsearch:latest",
+        "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L223"
+      },
+      {
+        "claim": "run_command",
+        "kind": "readme",
+        "path": "README.md",
+        "line": 107,
+        "text": "python3 pipeline.py from_bam \\",
+        "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L107"
+      },
+      {
+        "claim": "example_data",
+        "kind": "tree",
+        "path": "example/ref_test.bed",
+        "text": "bed",
+        "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/ref_test.bed"
+      },
+      {
+        "claim": "example_data",
+        "kind": "tree",
+        "path": "example/test_data/test.bam",
+        "text": "bam",
+        "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test.bam"
+      },
+      {
+        "claim": "example_data",
+        "kind": "tree",
+        "path": "example/test_data/test_R1.fastq",
+        "text": "fastq",
+        "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R1.fastq"
+      },
+      {
+        "claim": "example_data",
+        "kind": "tree",
+        "path": "example/test_data/test_R2.fastq",
+        "text": "fastq",
+        "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_data/test_R2.fastq"
+      },
+      {
+        "claim": "example_data",
+        "kind": "tree",
+        "path": "example/test_output/STRfq/Marker94_reads_test_sortByname.bam",
+        "text": "bam",
+        "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/example/test_output/STRfq/Marker94_reads_test_sortByname.bam"
+      },
+      {
+        "claim": "documented_input",
+        "kind": "readme",
+        "path": "README.md",
+        "line": 77,
+        "text": "FASTQ file or BAM-file from singe-end or paird-end sequencing platforms",
+        "url": "https://github.com/AnJingwd/STRsearch/blob/c70179b3b175adc82a7314409af06900b3861d61/README.md#L77"
+      }
+    ],
+    "example": {
+      "cmd": "python3 pipeline.py from_fastq --working_path example/test_results/ --sample test --fq1 example/test_data/test_R1.fastq --fq2 example/test_data/test_R2.fastq --ref ucsc.hg19.fasta",
+      "cwd": "/opt/tool",
+      "source": "detected",
+      "inputs_in_repo": [
+        "example/test_data/test_R1.fastq",
+        "example/test_data/test_R2.fastq",
+        "pipeline.py"
+      ]
+    },
+    "dockerfile": null,
+    "dockerfile_fallback": "# Proposed by STRhub Verified detect_recipe. The build IS the Installs gate.\nFROM anjing123/strsearch:latest\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n",
+    "limitations": []
+  }
+}

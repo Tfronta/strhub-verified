@@ -1,0 +1,225 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 655B done
+#1 DONE 0.0s
+
+#2 [auth] anjing123/strsearch:pull token for registry-1.docker.io
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/anjing123/strsearch:latest
+#3 DONE 0.8s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/7] FROM docker.io/anjing123/strsearch:latest@sha256:e1f5f57aea7c2b2fbd9077c8a2d86dfb5f020f878be3fc69ea1e497741e392cf
+#5 resolve docker.io/anjing123/strsearch:latest@sha256:e1f5f57aea7c2b2fbd9077c8a2d86dfb5f020f878be3fc69ea1e497741e392cf done
+#5 sha256:e1f5f57aea7c2b2fbd9077c8a2d86dfb5f020f878be3fc69ea1e497741e392cf 4.71kB / 4.71kB done
+#5 sha256:3d07b1124f982f6c5da7f1b85a0a12f9574d6ce7e8a84160cda939e5b3a1faad 0B / 170B 0.1s
+#5 sha256:e80174c8b43b97abb6bf8901cc5dade4897f16eb53b12674bef1eae6ae847451 0B / 44.14MB 0.1s
+#5 sha256:d1072db285cc5eb2f3415891381631501b3ad9b1a10da20ca2e932d7d8799988 529B / 529B 0.1s done
+#5 sha256:858453671e6769806e0374869acce1d9e5d97f5020f86139e0862c7ada6da621 0B / 849B 0.1s
+#5 sha256:157a3220374df4797744fc86bd4626bbd96f0536af1d8deaa951148c4e02dc5d 8.18kB / 8.18kB done
+#5 sha256:3d07b1124f982f6c5da7f1b85a0a12f9574d6ce7e8a84160cda939e5b3a1faad 170B / 170B 0.2s done
+#5 sha256:e80174c8b43b97abb6bf8901cc5dade4897f16eb53b12674bef1eae6ae847451 8.39MB / 44.14MB 0.3s
+#5 sha256:858453671e6769806e0374869acce1d9e5d97f5020f86139e0862c7ada6da621 849B / 849B 0.1s done
+#5 sha256:9dc3c29b34db75912c5c67e9c8665742ffbdc477b98897a87bb85147833f5604 0B / 51.82MB 0.3s
+#5 sha256:516e7912bff32fdf5d0997efdc029c2e474056192eeb979c6e6e3316874fc842 0B / 85.77MB 0.3s
+#5 sha256:e80174c8b43b97abb6bf8901cc5dade4897f16eb53b12674bef1eae6ae847451 32.51MB / 44.14MB 0.4s
+#5 sha256:e80174c8b43b97abb6bf8901cc5dade4897f16eb53b12674bef1eae6ae847451 44.14MB / 44.14MB 0.6s
+#5 sha256:9dc3c29b34db75912c5c67e9c8665742ffbdc477b98897a87bb85147833f5604 24.12MB / 51.82MB 0.6s
+#5 sha256:e80174c8b43b97abb6bf8901cc5dade4897f16eb53b12674bef1eae6ae847451 44.14MB / 44.14MB 0.7s done
+#5 sha256:9dc3c29b34db75912c5c67e9c8665742ffbdc477b98897a87bb85147833f5604 27.26MB / 51.82MB 0.7s
+#5 sha256:516e7912bff32fdf5d0997efdc029c2e474056192eeb979c6e6e3316874fc842 12.58MB / 85.77MB 0.7s
+#5 extracting sha256:e80174c8b43b97abb6bf8901cc5dade4897f16eb53b12674bef1eae6ae847451 0.1s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 0B / 292.22MB 0.7s
+#5 sha256:516e7912bff32fdf5d0997efdc029c2e474056192eeb979c6e6e3316874fc842 31.46MB / 85.77MB 0.8s
+#5 sha256:9dc3c29b34db75912c5c67e9c8665742ffbdc477b98897a87bb85147833f5604 32.51MB / 51.82MB 0.9s
+#5 sha256:516e7912bff32fdf5d0997efdc029c2e474056192eeb979c6e6e3316874fc842 52.43MB / 85.77MB 1.0s
+#5 sha256:9dc3c29b34db75912c5c67e9c8665742ffbdc477b98897a87bb85147833f5604 51.82MB / 51.82MB 1.2s
+#5 sha256:516e7912bff32fdf5d0997efdc029c2e474056192eeb979c6e6e3316874fc842 66.06MB / 85.77MB 1.2s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 18.87MB / 292.22MB 1.2s
+#5 sha256:516e7912bff32fdf5d0997efdc029c2e474056192eeb979c6e6e3316874fc842 85.77MB / 85.77MB 1.5s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 33.55MB / 292.22MB 1.5s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 71.30MB / 292.22MB 1.8s
+#5 sha256:9dc3c29b34db75912c5c67e9c8665742ffbdc477b98897a87bb85147833f5604 51.82MB / 51.82MB 1.8s done
+#5 sha256:516e7912bff32fdf5d0997efdc029c2e474056192eeb979c6e6e3316874fc842 85.77MB / 85.77MB 1.9s done
+#5 extracting sha256:e80174c8b43b97abb6bf8901cc5dade4897f16eb53b12674bef1eae6ae847451 1.1s done
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 89.13MB / 292.22MB 1.9s
+#5 extracting sha256:d1072db285cc5eb2f3415891381631501b3ad9b1a10da20ca2e932d7d8799988 done
+#5 sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 0B / 86.73MB 1.9s
+#5 sha256:882b3982a3ad710cd62dcc85d24e5c7d158c5cbfd764cb6422e1e76b90911d56 0B / 7.55MB 1.9s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 103.81MB / 292.22MB 2.2s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 127.93MB / 292.22MB 2.4s
+#5 sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 12.58MB / 86.73MB 2.4s
+#5 sha256:882b3982a3ad710cd62dcc85d24e5c7d158c5cbfd764cb6422e1e76b90911d56 7.55MB / 7.55MB 2.4s
+#5 sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 25.17MB / 86.73MB 2.5s
+#5 sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 31.46MB / 86.73MB 2.6s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 159.38MB / 292.22MB 2.8s
+#5 sha256:882b3982a3ad710cd62dcc85d24e5c7d158c5cbfd764cb6422e1e76b90911d56 7.55MB / 7.55MB 2.5s done
+#5 sha256:b71835cbb6307ce29999f2c6ad5d848bc3667ae5817422ac9875ac067bf84b00 0B / 699.14kB 2.8s
+#5 sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 60.82MB / 86.73MB 3.0s
+#5 sha256:b71835cbb6307ce29999f2c6ad5d848bc3667ae5817422ac9875ac067bf84b00 699.14kB / 699.14kB 3.0s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 186.65MB / 292.22MB 3.2s
+#5 sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 66.06MB / 86.73MB 3.2s
+#5 sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 71.30MB / 86.73MB 3.3s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 206.57MB / 292.22MB 3.5s
+#5 sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 86.73MB / 86.73MB 3.5s
+#5 sha256:b71835cbb6307ce29999f2c6ad5d848bc3667ae5817422ac9875ac067bf84b00 699.14kB / 699.14kB 3.2s done
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 233.83MB / 292.22MB 3.9s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 262.14MB / 292.22MB 4.1s
+#5 sha256:db085a146aff0f6f3e6479bedb912dcea1e087ab01f6bb9cc1c20b0137ebae1b 0B / 44.86kB 4.1s
+#5 sha256:db085a146aff0f6f3e6479bedb912dcea1e087ab01f6bb9cc1c20b0137ebae1b 44.86kB / 44.86kB 4.2s
+#5 sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 86.73MB / 86.73MB 4.2s done
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 291.60MB / 292.22MB 4.6s
+#5 sha256:3a1ec52c64c756a5920de5a2fb690447c0b20690e5ef6b0e4e4e52b4461f8fd0 0B / 3.91MB 4.6s
+#5 sha256:db085a146aff0f6f3e6479bedb912dcea1e087ab01f6bb9cc1c20b0137ebae1b 44.86kB / 44.86kB 4.5s done
+#5 sha256:3a1ec52c64c756a5920de5a2fb690447c0b20690e5ef6b0e4e4e52b4461f8fd0 1.05MB / 3.91MB 4.9s
+#5 sha256:3a1ec52c64c756a5920de5a2fb690447c0b20690e5ef6b0e4e4e52b4461f8fd0 3.91MB / 3.91MB 5.1s
+#5 sha256:25befece532628de483e37c1060921c38a894beef8231f1075d56906938b45b9 0B / 1.40MB 5.4s
+#5 sha256:3a1ec52c64c756a5920de5a2fb690447c0b20690e5ef6b0e4e4e52b4461f8fd0 3.91MB / 3.91MB 5.4s done
+#5 sha256:25befece532628de483e37c1060921c38a894beef8231f1075d56906938b45b9 1.40MB / 1.40MB 5.7s
+#5 sha256:08d601b16f221f5d91e96a31f9ae78f78b462291c39ced871628befff9f085b6 0B / 104B 6.1s
+#5 sha256:25befece532628de483e37c1060921c38a894beef8231f1075d56906938b45b9 1.40MB / 1.40MB 6.1s done
+#5 sha256:08d601b16f221f5d91e96a31f9ae78f78b462291c39ced871628befff9f085b6 104B / 104B 6.4s
+#5 sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 292.22MB / 292.22MB 6.3s done
+#5 sha256:08d601b16f221f5d91e96a31f9ae78f78b462291c39ced871628befff9f085b6 104B / 104B 6.6s done
+#5 sha256:caadfed65eeb8fa3e2f3b87d8e08736aacd8c0ad595f025f397174230a3f00f5 0B / 30.59MB 6.8s
+#5 sha256:fe41324db11eca8763fe4afd01567a9cf18303985a5421f41bd310e908c57de1 0B / 245B 6.8s
+#5 sha256:be246fdb19fde8d195aaa921964e969fdb09528b9c026d5fcf317129b4458205 0B / 1.38kB 6.8s
+#5 sha256:caadfed65eeb8fa3e2f3b87d8e08736aacd8c0ad595f025f397174230a3f00f5 4.19MB / 30.59MB 7.0s
+#5 sha256:fe41324db11eca8763fe4afd01567a9cf18303985a5421f41bd310e908c57de1 245B / 245B 6.9s done
+#5 sha256:be246fdb19fde8d195aaa921964e969fdb09528b9c026d5fcf317129b4458205 1.38kB / 1.38kB 7.0s
+#5 sha256:caadfed65eeb8fa3e2f3b87d8e08736aacd8c0ad595f025f397174230a3f00f5 25.17MB / 30.59MB 7.1s
+#5 sha256:be246fdb19fde8d195aaa921964e969fdb09528b9c026d5fcf317129b4458205 1.38kB / 1.38kB 7.1s done
+#5 sha256:4c032404003811d3406c656b9ba89ed77f422394abdc63b04b696d01e79df5f1 0B / 243B 7.2s
+#5 sha256:3ecd0255fa1520b9f56f649e39b83b96966a7c973d2095be11311ad433361bb9 0B / 245B 7.2s
+#5 sha256:caadfed65eeb8fa3e2f3b87d8e08736aacd8c0ad595f025f397174230a3f00f5 30.59MB / 30.59MB 7.3s
+#5 extracting sha256:858453671e6769806e0374869acce1d9e5d97f5020f86139e0862c7ada6da621 done
+#5 extracting sha256:3d07b1124f982f6c5da7f1b85a0a12f9574d6ce7e8a84160cda939e5b3a1faad
+#5 sha256:caadfed65eeb8fa3e2f3b87d8e08736aacd8c0ad595f025f397174230a3f00f5 30.59MB / 30.59MB 7.4s done
+#5 sha256:4c032404003811d3406c656b9ba89ed77f422394abdc63b04b696d01e79df5f1 243B / 243B 7.4s done
+#5 sha256:3ecd0255fa1520b9f56f649e39b83b96966a7c973d2095be11311ad433361bb9 245B / 245B 7.4s done
+#5 extracting sha256:3d07b1124f982f6c5da7f1b85a0a12f9574d6ce7e8a84160cda939e5b3a1faad done
+#5 sha256:18510f482f9a919c48da74f581c01dfff153cf76af03180749f4a600a733a6b1 0B / 245B 7.5s
+#5 sha256:87447bdca5dbdefe0a82f4750d946f3acce2640aa8eccb42b2dda6cc921eef56 0B / 237B 7.5s
+#5 extracting sha256:9dc3c29b34db75912c5c67e9c8665742ffbdc477b98897a87bb85147833f5604
+#5 sha256:18510f482f9a919c48da74f581c01dfff153cf76af03180749f4a600a733a6b1 245B / 245B 7.6s done
+#5 sha256:87447bdca5dbdefe0a82f4750d946f3acce2640aa8eccb42b2dda6cc921eef56 237B / 237B 7.6s done
+#5 extracting sha256:9dc3c29b34db75912c5c67e9c8665742ffbdc477b98897a87bb85147833f5604 0.9s done
+#5 extracting sha256:516e7912bff32fdf5d0997efdc029c2e474056192eeb979c6e6e3316874fc842
+#5 extracting sha256:516e7912bff32fdf5d0997efdc029c2e474056192eeb979c6e6e3316874fc842 1.4s done
+#5 extracting sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23
+#5 extracting sha256:953094607c25f72b8046ecd000de3b7c2e9c67d83cc2a57489374a8771fb8b23 2.7s done
+#5 extracting sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c
+#5 extracting sha256:fef4391e0808c56544b9423294390f46b929d277df5fa6d1a7cd823dd7a28c2c 1.6s done
+#5 extracting sha256:882b3982a3ad710cd62dcc85d24e5c7d158c5cbfd764cb6422e1e76b90911d56
+#5 extracting sha256:882b3982a3ad710cd62dcc85d24e5c7d158c5cbfd764cb6422e1e76b90911d56 0.1s done
+#5 extracting sha256:b71835cbb6307ce29999f2c6ad5d848bc3667ae5817422ac9875ac067bf84b00
+#5 extracting sha256:b71835cbb6307ce29999f2c6ad5d848bc3667ae5817422ac9875ac067bf84b00 done
+#5 extracting sha256:db085a146aff0f6f3e6479bedb912dcea1e087ab01f6bb9cc1c20b0137ebae1b done
+#5 extracting sha256:3a1ec52c64c756a5920de5a2fb690447c0b20690e5ef6b0e4e4e52b4461f8fd0 0.1s
+#5 extracting sha256:3a1ec52c64c756a5920de5a2fb690447c0b20690e5ef6b0e4e4e52b4461f8fd0 0.1s done
+#5 extracting sha256:25befece532628de483e37c1060921c38a894beef8231f1075d56906938b45b9
+#5 extracting sha256:25befece532628de483e37c1060921c38a894beef8231f1075d56906938b45b9 0.0s done
+#5 extracting sha256:08d601b16f221f5d91e96a31f9ae78f78b462291c39ced871628befff9f085b6 done
+#5 extracting sha256:caadfed65eeb8fa3e2f3b87d8e08736aacd8c0ad595f025f397174230a3f00f5 0.1s
+#5 extracting sha256:caadfed65eeb8fa3e2f3b87d8e08736aacd8c0ad595f025f397174230a3f00f5 0.1s done
+#5 extracting sha256:be246fdb19fde8d195aaa921964e969fdb09528b9c026d5fcf317129b4458205
+#5 extracting sha256:be246fdb19fde8d195aaa921964e969fdb09528b9c026d5fcf317129b4458205 done
+#5 extracting sha256:fe41324db11eca8763fe4afd01567a9cf18303985a5421f41bd310e908c57de1 done
+#5 extracting sha256:4c032404003811d3406c656b9ba89ed77f422394abdc63b04b696d01e79df5f1 done
+#5 extracting sha256:3ecd0255fa1520b9f56f649e39b83b96966a7c973d2095be11311ad433361bb9 done
+#5 extracting sha256:18510f482f9a919c48da74f581c01dfff153cf76af03180749f4a600a733a6b1 done
+#5 extracting sha256:87447bdca5dbdefe0a82f4750d946f3acce2640aa8eccb42b2dda6cc921eef56 done
+#5 DONE 24.5s
+
+#6 [2/7] RUN (apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*) || (apk add --no-cache git ca-certificates) || true
+#6 0.319 Get:1 http://archive.ubuntu.com/ubuntu xenial InRelease [247 kB]
+#6 0.488 Get:2 http://security.ubuntu.com/ubuntu xenial-security InRelease [106 kB]
+#6 0.576 Get:3 http://archive.ubuntu.com/ubuntu xenial-updates InRelease [106 kB]
+#6 0.637 Get:4 http://archive.ubuntu.com/ubuntu xenial-backports InRelease [106 kB]
+#6 0.683 Get:5 http://archive.ubuntu.com/ubuntu xenial/main amd64 Packages [1558 kB]
+#6 0.821 Get:6 http://archive.ubuntu.com/ubuntu xenial/restricted amd64 Packages [14.1 kB]
+#6 0.822 Get:7 http://archive.ubuntu.com/ubuntu xenial/universe amd64 Packages [9827 kB]
+#6 0.966 Get:8 http://archive.ubuntu.com/ubuntu xenial/multiverse amd64 Packages [176 kB]
+#6 0.969 Get:9 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 Packages [1596 kB]
+#6 0.983 Get:10 http://archive.ubuntu.com/ubuntu xenial-updates/restricted amd64 Packages [15.8 kB]
+#6 0.984 Get:11 http://archive.ubuntu.com/ubuntu xenial-updates/universe amd64 Packages [1471 kB]
+#6 1.002 Get:12 http://archive.ubuntu.com/ubuntu xenial-updates/multiverse amd64 Packages [24.9 kB]
+#6 1.002 Get:13 http://archive.ubuntu.com/ubuntu xenial-backports/main amd64 Packages [11.3 kB]
+#6 1.003 Get:14 http://archive.ubuntu.com/ubuntu xenial-backports/universe amd64 Packages [12.8 kB]
+#6 1.099 Get:15 http://security.ubuntu.com/ubuntu xenial-security/main amd64 Packages [1143 kB]
+#6 1.757 Get:16 http://security.ubuntu.com/ubuntu xenial-security/restricted amd64 Packages [15.3 kB]
+#6 1.757 Get:17 http://security.ubuntu.com/ubuntu xenial-security/universe amd64 Packages [920 kB]
+#6 1.832 Get:18 http://security.ubuntu.com/ubuntu xenial-security/multiverse amd64 Packages [8787 B]
+#6 1.869 Fetched 17.4 MB in 1s (9821 kB/s)
+#6 1.869 Reading package lists...
+#6 2.257 Reading package lists...
+#6 2.636 Building dependency tree...
+#6 2.691 Reading state information...
+#6 2.735 Suggested packages:
+#6 2.735   gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-el git-email
+#6 2.735   git-gui gitk gitweb git-arch git-cvs git-mediawiki git-svn
+#6 2.735 The following packages will be upgraded:
+#6 2.736   ca-certificates git
+#6 2.978 2 upgraded, 0 newly installed, 0 to remove and 76 not upgraded.
+#6 2.978 Need to get 3331 kB of archives.
+#6 2.978 After this operation, 30.7 kB disk space will be freed.
+#6 2.978 Get:1 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 ca-certificates all 20210119~16.04.1 [148 kB]
+#6 3.489 Get:2 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 git amd64 1:2.7.4-0ubuntu1.10 [3183 kB]
+#6 4.047 debconf: delaying package configuration, since apt-utils is not installed
+#6 4.055 Fetched 3331 kB in 1s (2618 kB/s)
+#6 4.063 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 11292 files and directories currently installed.)
+#6 4.066 Preparing to unpack .../ca-certificates_20210119~16.04.1_all.deb ...
+#6 4.067 Unpacking ca-certificates (20210119~16.04.1) over (20170717~16.04.2) ...
+#6 4.130 Preparing to unpack .../git_1%3a2.7.4-0ubuntu1.10_amd64.deb ...
+#6 4.136 Unpacking git (1:2.7.4-0ubuntu1.10) over (1:2.7.4-0ubuntu1.6) ...
+#6 4.630 Setting up ca-certificates (20210119~16.04.1) ...
+#6 4.661 debconf: unable to initialize frontend: Dialog
+#6 4.661 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#6 4.661 debconf: falling back to frontend: Readline
+#6 5.157 Setting up git (1:2.7.4-0ubuntu1.10) ...
+#6 5.162 Processing triggers for ca-certificates (20210119~16.04.1) ...
+#6 5.164 Updating certificates in /etc/ssl/certs...
+#6 6.000 31 added, 50 removed; done.
+#6 6.000 Running hooks in /etc/ca-certificates/update.d...
+#6 6.001 done.
+#6 DONE 6.1s
+
+#7 [3/7] WORKDIR /opt
+#7 DONE 0.0s
+
+#8 [4/7] RUN git clone https://github.com/AnJingwd/STRsearch.git tool     && cd tool && git checkout "c70179b3b175adc82a7314409af06900b3861d61"     && (git submodule update --init --recursive || true)
+#8 0.075 Cloning into 'tool'...
+#8 1.057 Note: checking out 'c70179b3b175adc82a7314409af06900b3861d61'.
+#8 1.057 
+#8 1.057 You are in 'detached HEAD' state. You can look around, make experimental
+#8 1.057 changes and commit them, and you can discard any commits you make in this
+#8 1.057 state without impacting any branches by performing another checkout.
+#8 1.057 
+#8 1.057 If you want to create a new branch to retain commits you create, you may
+#8 1.057 do so (now or later) by using -b with the checkout command again. Example:
+#8 1.057 
+#8 1.057   git checkout -b <new-branch-name>
+#8 1.057 
+#8 1.057 HEAD is now at c70179b... Update README.md
+#8 DONE 1.3s
+
+#9 [5/7] WORKDIR /opt/tool
+#9 DONE 0.0s
+
+#10 [6/7] RUN touch /tmp/.strhub_built
+#10 DONE 0.1s
+
+#11 [7/7] WORKDIR /work
+#11 DONE 0.0s
+
+#12 exporting to image
+#12 exporting layers
+#12 exporting layers 1.8s done
+#12 writing image sha256:a27468d0e041686c7e76ea57e522d1b891954099b1686a0ae3835202c629f55c done
+#12 naming to docker.io/library/toolimg:ci done
+#12 DONE 1.8s

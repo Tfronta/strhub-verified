@@ -1,0 +1,7 @@
+Step 4/12 : RUN wget https://drive.google.com/uc?id=1N20V6YV1t4-yqH_u8y_a -O usearch10.0.240_i86linux32
+--2026-11-06 16:38:12--  https://drive.google.com/uc?id=1N20V6YV1t4-yqH_u8y_a
+Resolving drive.google.com...
+Connecting to drive.google.com|142.250.74.206|:443... connected.
+HTTP request sent, awaiting response... 404 Not Found
+2026-11-06 16:38:13 ERROR 404: Not Found.
+The command '/bin/sh -c wget https://drive.google.com/uc?id=1N20V6YV1t4-yqH_u8y_a -O usearch10.0.240_i86linux32' returned a non-zero code: 8

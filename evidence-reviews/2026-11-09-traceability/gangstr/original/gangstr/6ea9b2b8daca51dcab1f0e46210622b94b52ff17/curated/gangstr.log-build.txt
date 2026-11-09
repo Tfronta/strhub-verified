@@ -1,0 +1,1784 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.10kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/continuumio/miniconda3:24.11.1-0
+#2 ...
+
+#3 [auth] continuumio/miniconda3:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/continuumio/miniconda3:24.11.1-0
+#2 DONE 0.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/8] FROM docker.io/continuumio/miniconda3:24.11.1-0@sha256:6a66425f001f739d4778dd732e020afeb06175f49478fafc3ec673658d61550b
+#5 resolve docker.io/continuumio/miniconda3:24.11.1-0@sha256:6a66425f001f739d4778dd732e020afeb06175f49478fafc3ec673658d61550b done
+#5 sha256:6a66425f001f739d4778dd732e020afeb06175f49478fafc3ec673658d61550b 2.36kB / 2.36kB done
+#5 sha256:bf95f579953e5bd7012a5b3c01404622410613c77169d29ddb4e2b9bd95a98d4 869B / 869B done
+#5 sha256:a085163b980c657c8d4174e7c549f879ee71c3d360136d1d9ee3c3cf529ae990 5.48kB / 5.48kB done
+#5 sha256:bc0965b23a04fe7f2d9fb20f597008fcf89891de1c705ffc1c80483a1f098e4f 7.34MB / 28.23MB 0.1s
+#5 sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 0B / 62.53MB 0.1s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 0B / 154.10MB 0.1s
+#5 sha256:bc0965b23a04fe7f2d9fb20f597008fcf89891de1c705ffc1c80483a1f098e4f 26.47MB / 28.23MB 0.2s
+#5 sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 9.44MB / 62.53MB 0.2s
+#5 extracting sha256:bc0965b23a04fe7f2d9fb20f597008fcf89891de1c705ffc1c80483a1f098e4f
+#5 sha256:bc0965b23a04fe7f2d9fb20f597008fcf89891de1c705ffc1c80483a1f098e4f 28.23MB / 28.23MB 0.2s done
+#5 sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 33.55MB / 62.53MB 0.3s
+#5 sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 60.82MB / 62.53MB 0.4s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 9.69MB / 154.10MB 0.4s
+#5 sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 62.53MB / 62.53MB 0.4s done
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 62.91MB / 154.10MB 0.6s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 97.52MB / 154.10MB 0.7s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 128.97MB / 154.10MB 0.8s
+#5 sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 154.10MB / 154.10MB 0.9s done
+#5 extracting sha256:bc0965b23a04fe7f2d9fb20f597008fcf89891de1c705ffc1c80483a1f098e4f 1.2s done
+#5 extracting sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 0.1s
+#5 extracting sha256:8be53c7108a0b45d080c9aaa4970e3505fbd08815201cef764f37454d835650c 2.0s done
+#5 extracting sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d
+#5 extracting sha256:ef307b4ab329c06a0024610766969dda318527bcba73ecbcbf0bb0a188289e5d 4.2s done
+#5 DONE 9.1s
+
+#6 [2/8] RUN apt-get update && apt-get install -y --no-install-recommends         git ca-certificates     && rm -rf /var/lib/apt/lists/*
+#6 0.271 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#6 0.281 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#6 0.281 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+#6 0.340 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+#6 0.395 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+#6 0.445 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [361 kB]
+#6 1.168 Fetched 9400 kB in 1s (10.4 MB/s)
+#6 1.168 Reading package lists...
+#6 1.635 Reading package lists...
+#6 2.097 Building dependency tree...
+#6 2.231 Reading state information...
+#6 2.330 The following additional packages will be installed:
+#6 2.331   git-man
+#6 2.332 Suggested packages:
+#6 2.332   gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+#6 2.332   gitk gitweb git-cvs git-mediawiki git-svn
+#6 2.332 Recommended packages:
+#6 2.332   patch less
+#6 2.359 The following packages will be upgraded:
+#6 2.360   ca-certificates git git-man
+#6 2.382 3 upgraded, 0 newly installed, 0 to remove and 73 not upgraded.
+#6 2.382 Need to get 9479 kB of archives.
+#6 2.382 After this operation, 7168 B of additional disk space will be used.
+#6 2.382 Get:1 http://deb.debian.org/debian-security bookworm-security/main amd64 ca-certificates all 20250419~deb12u2 [161 kB]
+#6 2.388 Get:2 http://deb.debian.org/debian bookworm/main amd64 git-man all 1:2.39.5-0+deb12u3 [2053 kB]
+#6 2.397 Get:3 http://deb.debian.org/debian bookworm/main amd64 git amd64 1:2.39.5-0+deb12u3 [7264 kB]
+#6 2.530 debconf: delaying package configuration, since apt-utils is not installed
+#6 2.559 Fetched 9479 kB in 0s (159 MB/s)
+#6 2.576 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 12332 files and directories currently installed.)
+#6 2.586 Preparing to unpack .../ca-certificates_20250419~deb12u2_all.deb ...
+#6 2.589 Unpacking ca-certificates (20250419~deb12u2) over (20230311) ...
+#6 2.737 Preparing to unpack .../git-man_1%3a2.39.5-0+deb12u3_all.deb ...
+#6 2.740 Unpacking git-man (1:2.39.5-0+deb12u3) over (1:2.39.5-0+deb12u1) ...
+#6 2.833 Preparing to unpack .../git_1%3a2.39.5-0+deb12u3_amd64.deb ...
+#6 2.850 Unpacking git (1:2.39.5-0+deb12u3) over (1:2.39.5-0+deb12u1) ...
+#6 3.304 Setting up ca-certificates (20250419~deb12u2) ...
+#6 3.380 debconf: unable to initialize frontend: Dialog
+#6 3.380 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#6 3.380 debconf: falling back to frontend: Readline
+#6 3.387 debconf: unable to initialize frontend: Readline
+#6 3.387 debconf: (This frontend requires a controlling tty.)
+#6 3.387 debconf: falling back to frontend: Teletype
+#6 5.083 Updating certificates in /etc/ssl/certs...
+#6 6.086 rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+#6 6.093 23 added, 15 removed; done.
+#6 6.108 Setting up git-man (1:2.39.5-0+deb12u3) ...
+#6 6.111 Setting up git (1:2.39.5-0+deb12u3) ...
+#6 6.120 Processing triggers for ca-certificates (20250419~deb12u2) ...
+#6 6.124 Updating certificates in /etc/ssl/certs...
+#6 6.762 0 added, 0 removed; done.
+#6 6.762 Running hooks in /etc/ca-certificates/update.d...
+#6 6.763 done.
+#6 DONE 6.8s
+
+#7 [3/8] WORKDIR /opt
+#7 DONE 0.0s
+
+#8 [4/8] RUN git clone https://github.com/gymreklab/gangstr.git tool     && cd tool && git checkout "6ea9b2b8daca51dcab1f0e46210622b94b52ff17"     && git submodule update --init --recursive
+#8 0.155 Cloning into 'tool'...
+#8 0.829 Note: switching to '6ea9b2b8daca51dcab1f0e46210622b94b52ff17'.
+#8 0.829 
+#8 0.829 You are in 'detached HEAD' state. You can look around, make experimental
+#8 0.829 changes and commit them, and you can discard any commits you make in this
+#8 0.829 state without impacting any branches by switching back to a branch.
+#8 0.829 
+#8 0.829 If you want to create a new branch to retain commits you create, you may
+#8 0.829 do so (now or later) by using -c with the switch command. Example:
+#8 0.829 
+#8 0.829   git switch -c <new-branch-name>
+#8 0.829 
+#8 0.829 Or undo this operation with:
+#8 0.829 
+#8 0.829   git switch -
+#8 0.829 
+#8 0.829 Turn off this advice by setting config variable advice.detachedHead to false
+#8 0.829 
+#8 0.829 HEAD is now at 6ea9b2b Added conda to readme
+#8 DONE 0.9s
+
+#9 [5/8] WORKDIR /opt/tool
+#9 DONE 0.0s
+
+#10 [6/8] RUN conda install -c bioconda -c conda-forge gangstr=2.5.0 --yes
+#10 0.737 Channels:
+#10 0.737  - bioconda
+#10 0.737  - conda-forge
+#10 0.737  - defaults
+#10 0.737 Platform: linux-64
+#10 0.737 Collecting package metadata (repodata.json): ...working... done
+#10 24.30 Solving environment: ...working... done
+#10 29.79 
+#10 29.79 ## Package Plan ##
+#10 29.79 
+#10 29.79   environment location: /opt/conda
+#10 29.79 
+#10 29.79   added / updated specs:
+#10 29.79     - gangstr=2.5.0
+#10 29.79 
+#10 29.79 
+#10 29.79 The following packages will be downloaded:
+#10 29.79 
+#10 29.79     package                    |            build
+#10 29.79     ---------------------------|-----------------
+#10 29.79     c-ares-1.34.9              |       hebe6cf0_0         228 KB  conda-forge
+#10 29.79     ca-certificates-2026.10.23 |       hbd8a1cb_0         127 KB  conda-forge
+#10 29.79     certifi-2026.10.23         |     pyhd8ed1ab_3          13 KB  conda-forge
+#10 29.79     conda-24.11.3              |  py312h7900ff3_0         1.1 MB  conda-forge
+#10 29.79     gangstr-2.5.0              |      h7337834_10         261 KB  bioconda
+#10 29.79     gsl-2.7                    |       he838d99_0         3.2 MB  conda-forge
+#10 29.79     htslib-1.23                |       h566b1c6_0         1.1 MB  bioconda
+#10 29.79     libarchive-3.7.7           |       h4585015_3         857 KB  conda-forge
+#10 29.79     libblas-3.11.0             |12_h4a7cf45_openblas          18 KB  conda-forge
+#10 29.79     libbrotlicommon-1.2.1      |       h39a168f_0          78 KB  conda-forge
+#10 29.79     libbrotlidec-1.2.1         |       ha411449_0          34 KB  conda-forge
+#10 29.79     libbrotlienc-1.2.1         |       h018ffa1_0         291 KB  conda-forge
+#10 29.79     libcblas-3.11.0            |12_h0358290_openblas          18 KB  conda-forge
+#10 29.79     libcurl-8.18.0             |       h3506a8c_0         486 KB
+#10 29.79     libdeflate-1.26            |       h351257e_0          73 KB  conda-forge
+#10 29.79     libexpat-2.6.4             |       h5888daf_0          72 KB  conda-forge
+#10 29.79     libgcc-16.2.0              |       ha9f2e26_7         1.0 MB  conda-forge
+#10 29.79     libgcc-ng-16.2.0           |       h69a702a_7          28 KB  conda-forge
+#10 29.79     libgfortran-16.2.0         |       h69a702a_7          28 KB  conda-forge
+#10 29.79     libgfortran5-16.2.0        |       h6b99dfc_7         2.4 MB  conda-forge
+#10 29.79     libgomp-16.2.0             |       he0feb66_7         626 KB  conda-forge
+#10 29.79     libidn2-2.3.8              |       hfac485b_1         136 KB  conda-forge
+#10 29.79     libkrb5-1.22.1             |       h6d2bf13_0         789 KB
+#10 29.79     liblapack-3.11.0           |12_h47877c9_openblas          18 KB  conda-forge
+#10 29.79     liblzma-5.8.3              |       hb03c661_1         110 KB  conda-forge
+#10 29.79     liblzma-devel-5.8.3        |       hb03c661_1         480 KB  conda-forge
+#10 29.79     libmamba-1.5.11            |       hfe524e5_1         1.9 MB
+#10 29.79     libmambapy-1.5.11          |  py312haf1ee3a_1         340 KB
+#10 29.79     libnghttp2-1.67.1          |       had1ee68_0         651 KB  conda-forge
+#10 29.79     libnsl-2.0.1               |       hb9d3cd8_1          33 KB  conda-forge
+#10 29.79     libopenblas-0.3.34         |pthreads_hf13c14d_2         6.5 MB  conda-forge
+#10 29.79     libsolv-0.7.41             |       h72ddc62_0         518 KB  conda-forge
+#10 29.79     libsqlite-3.51.1           |       h0c1763c_0         917 KB  conda-forge
+#10 29.79     libssh2-1.11.1             |       h6154650_1         299 KB  conda-forge
+#10 29.79     libstdcxx-16.2.0           |       h934c35e_7         6.3 MB  conda-forge
+#10 29.79     libstdcxx-ng-16.2.0        |       hdf11a46_7          28 KB  conda-forge
+#10 29.79     libunistring-0.9.10        |       h7f98852_0         1.4 MB  conda-forge
+#10 29.79     libuuid-2.42.4             |       hcfc3c73_1          35 KB  conda-forge
+#10 29.79     libxcrypt-4.4.38           |       h280c20c_0         100 KB  conda-forge
+#10 29.79     libxml2-2.13.9             |       h2c43086_0         669 KB
+#10 29.79     libzlib-1.3.2              |       h25fd6f3_3          62 KB  conda-forge
+#10 29.79     lmdb-0.9.35                |       h25c0377_0         290 KB  conda-forge
+#10 29.79     lz4-c-1.10.0               |       hee9eb32_2         178 KB  conda-forge
+#10 29.79     lzo-2.10                   |    hebe6cf0_1003         187 KB  conda-forge
+#10 29.79     ncurses-6.6                |       hdb14827_1         890 KB  conda-forge
+#10 29.79     nlopt-2.8.0                |  py312h69683c5_2         393 KB  conda-forge
+#10 29.79     numpy-2.5.4                |  py312he827f4e_0         8.8 MB  conda-forge
+#10 29.79     openssl-3.6.5              |       h781a0a9_0         3.0 MB  conda-forge
+#10 29.79     pcre2-10.49                |       h8b3dc9c_0         1.2 MB  conda-forge
+#10 29.79     python-3.12.9              |h9e4cc4f_1_cpython        30.2 MB  conda-forge
+#10 29.79     python_abi-3.12            |          9_cp312           7 KB  conda-forge
+#10 29.79     sqlite-3.51.1              |       hbc0de68_0         179 KB  conda-forge
+#10 29.79     tk-8.6.13                  | noxft_h1df4ec4_4         3.4 MB  conda-forge
+#10 29.79     xz-5.8.3                   |       ha02ee65_1          23 KB  conda-forge
+#10 29.79     xz-gpl-tools-5.8.3         |       ha02ee65_1          39 KB  conda-forge
+#10 29.79     xz-tools-5.8.3             |       hb03c661_1          94 KB  conda-forge
+#10 29.79     zlib-1.3.2                 |       h25fd6f3_3          94 KB  conda-forge
+#10 29.79     zstd-1.5.6                 |       ha6fb4c9_0         542 KB  conda-forge
+#10 29.79     ------------------------------------------------------------
+#10 29.79                                            Total:        82.7 MB
+#10 29.79 
+#10 29.79 The following NEW packages will be INSTALLED:
+#10 29.79 
+#10 29.79   gangstr            bioconda/linux-64::gangstr-2.5.0-h7337834_10 
+#10 29.79   gsl                conda-forge/linux-64::gsl-2.7-he838d99_0 
+#10 29.79   htslib             bioconda/linux-64::htslib-1.23-h566b1c6_0 
+#10 29.79   libblas            conda-forge/linux-64::libblas-3.11.0-12_h4a7cf45_openblas 
+#10 29.79   libbrotlicommon    conda-forge/linux-64::libbrotlicommon-1.2.1-h39a168f_0 
+#10 29.79   libbrotlidec       conda-forge/linux-64::libbrotlidec-1.2.1-ha411449_0 
+#10 29.79   libbrotlienc       conda-forge/linux-64::libbrotlienc-1.2.1-h018ffa1_0 
+#10 29.79   libcblas           conda-forge/linux-64::libcblas-3.11.0-12_h0358290_openblas 
+#10 29.79   libdeflate         conda-forge/linux-64::libdeflate-1.26-h351257e_0 
+#10 29.79   libexpat           conda-forge/linux-64::libexpat-2.6.4-h5888daf_0 
+#10 29.79   libgcc             conda-forge/linux-64::libgcc-16.2.0-ha9f2e26_7 
+#10 29.79   libgfortran        conda-forge/linux-64::libgfortran-16.2.0-h69a702a_7 
+#10 29.79   libgfortran5       conda-forge/linux-64::libgfortran5-16.2.0-h6b99dfc_7 
+#10 29.79   libidn2            conda-forge/linux-64::libidn2-2.3.8-hfac485b_1 
+#10 29.79   libkrb5            pkgs/main/linux-64::libkrb5-1.22.1-h6d2bf13_0 
+#10 29.79   liblapack          conda-forge/linux-64::liblapack-3.11.0-12_h47877c9_openblas 
+#10 29.79   liblzma            conda-forge/linux-64::liblzma-5.8.3-hb03c661_1 
+#10 29.79   liblzma-devel      conda-forge/linux-64::liblzma-devel-5.8.3-hb03c661_1 
+#10 29.79   libnsl             conda-forge/linux-64::libnsl-2.0.1-hb9d3cd8_1 
+#10 29.79   libopenblas        conda-forge/linux-64::libopenblas-0.3.34-pthreads_hf13c14d_2 
+#10 29.79   libsqlite          conda-forge/linux-64::libsqlite-3.51.1-h0c1763c_0 
+#10 29.79   libstdcxx          conda-forge/linux-64::libstdcxx-16.2.0-h934c35e_7 
+#10 29.79   libunistring       conda-forge/linux-64::libunistring-0.9.10-h7f98852_0 
+#10 29.79   libxcrypt          conda-forge/linux-64::libxcrypt-4.4.38-h280c20c_0 
+#10 29.79   libzlib            conda-forge/linux-64::libzlib-1.3.2-h25fd6f3_3 
+#10 29.79   lmdb               conda-forge/linux-64::lmdb-0.9.35-h25c0377_0 
+#10 29.79   lzo                conda-forge/linux-64::lzo-2.10-hebe6cf0_1003 
+#10 29.79   nlopt              conda-forge/linux-64::nlopt-2.8.0-py312h69683c5_2 
+#10 29.79   numpy              conda-forge/linux-64::numpy-2.5.4-py312he827f4e_0 
+#10 29.79   python_abi         conda-forge/noarch::python_abi-3.12-9_cp312 
+#10 29.79   xz-gpl-tools       conda-forge/linux-64::xz-gpl-tools-5.8.3-ha02ee65_1 
+#10 29.79   xz-tools           conda-forge/linux-64::xz-tools-5.8.3-hb03c661_1 
+#10 29.79 
+#10 29.79 The following packages will be UPDATED:
+#10 29.79 
+#10 29.79   c-ares                pkgs/main::c-ares-1.19.1-h5eee18b_0 --> conda-forge::c-ares-1.34.9-hebe6cf0_0 
+#10 29.79   ca-certificates    pkgs/main/linux-64::ca-certificates-2~ --> conda-forge/noarch::ca-certificates-2026.10.23-hbd8a1cb_0 
+#10 29.79   certifi            pkgs/main/linux-64::certifi-2024.8.30~ --> conda-forge/noarch::certifi-2026.10.23-pyhd8ed1ab_3 
+#10 29.79   conda              pkgs/main::conda-24.11.1-py312h06a430~ --> conda-forge::conda-24.11.3-py312h7900ff3_0 
+#10 29.79   libarchive         pkgs/main::libarchive-3.7.4-hfab0078_0 --> conda-forge::libarchive-3.7.7-h4585015_3 
+#10 29.79   libcurl                                  8.9.1-h251f7ec_0 --> 8.18.0-h3506a8c_0 
+#10 29.79   libgcc-ng          pkgs/main::libgcc-ng-11.2.0-h1234567_1 --> conda-forge::libgcc-ng-16.2.0-h69a702a_7 
+#10 29.79   libgomp              pkgs/main::libgomp-11.2.0-h1234567_1 --> conda-forge::libgomp-16.2.0-he0feb66_7 
+#10 29.79   libmamba                                1.5.11-hfe524e5_0 --> 1.5.11-hfe524e5_1 
+#10 29.79   libmambapy                         1.5.11-py312haf1ee3a_0 --> 1.5.11-py312haf1ee3a_1 
+#10 29.79   libnghttp2         pkgs/main::libnghttp2-1.57.0-h2d74bed~ --> conda-forge::libnghttp2-1.67.1-had1ee68_0 
+#10 29.79   libsolv              pkgs/main::libsolv-0.7.24-he621ea3_1 --> conda-forge::libsolv-0.7.41-h72ddc62_0 
+#10 29.79   libssh2              pkgs/main::libssh2-1.11.1-h251f7ec_0 --> conda-forge::libssh2-1.11.1-h6154650_1 
+#10 29.79   libstdcxx-ng       pkgs/main::libstdcxx-ng-11.2.0-h12345~ --> conda-forge::libstdcxx-ng-16.2.0-hdf11a46_7 
+#10 29.79   libuuid              pkgs/main::libuuid-1.41.5-h5eee18b_0 --> conda-forge::libuuid-2.42.4-hcfc3c73_1 
+#10 29.79   libxml2                                 2.13.5-hfdd30dd_0 --> 2.13.9-h2c43086_0 
+#10 29.79   lz4-c                   pkgs/main::lz4-c-1.9.4-h6a678d5_1 --> conda-forge::lz4-c-1.10.0-hee9eb32_2 
+#10 29.79   ncurses                 pkgs/main::ncurses-6.4-h6a678d5_0 --> conda-forge::ncurses-6.6-hdb14827_1 
+#10 29.79   openssl              pkgs/main::openssl-3.0.15-h5eee18b_0 --> conda-forge::openssl-3.6.5-h781a0a9_0 
+#10 29.79   pcre2                   pkgs/main::pcre2-10.42-hebb0a14_1 --> conda-forge::pcre2-10.49-h8b3dc9c_0 
+#10 29.79   python                pkgs/main::python-3.12.8-h5148396_0 --> conda-forge::python-3.12.9-h9e4cc4f_1_cpython 
+#10 29.79   sqlite                pkgs/main::sqlite-3.45.3-h5eee18b_0 --> conda-forge::sqlite-3.51.1-hbc0de68_0 
+#10 29.79   xz                         pkgs/main::xz-5.4.6-h5eee18b_1 --> conda-forge::xz-5.8.3-ha02ee65_1 
+#10 29.79   zlib                    pkgs/main::zlib-1.2.13-h5eee18b_1 --> conda-forge::zlib-1.3.2-h25fd6f3_3 
+#10 29.79 
+#10 29.79 The following packages will be SUPERSEDED by a higher-priority channel:
+#10 29.79 
+#10 29.79   tk                        pkgs/main::tk-8.6.14-h39e8969_0 --> conda-forge::tk-8.6.13-noxft_h1df4ec4_4 
+#10 29.79   zstd                     pkgs/main::zstd-1.5.6-hc292b87_0 --> conda-forge::zstd-1.5.6-ha6fb4c9_0 
+#10 29.79 
+#10 29.80 
+#10 29.80 
+#10 29.80 Downloading and Extracting Packages: ...working...python-3.12.9        | 30.2 MB   |            |   0% 
+#10 29.80 numpy-2.5.4          | 8.8 MB    |            |   0% [A
+#10 29.80 
+#10 29.80 libopenblas-0.3.34   | 6.5 MB    |            |   0% [A[A
+#10 29.80 
+#10 29.80 
+#10 29.80 libstdcxx-16.2.0     | 6.3 MB    |            |   0% [A[A[A
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 tk-8.6.13            | 3.4 MB    |            |   0% [A[A[A[A
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.80 
+#10 29.81 gsl-2.7              | 3.2 MB    |            |   0% [A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 openssl-3.6.5        | 3.0 MB    |            |   0% [A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 libgfortran5-16.2.0  | 2.4 MB    |            |   0% [A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 libmamba-1.5.11      | 1.9 MB    |            |   0% [A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 libunistring-0.9.10  | 1.4 MB    |            |   0% [A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 pcre2-10.49          | 1.2 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 htslib-1.23          | 1.1 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 conda-24.11.3        | 1.1 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 libgcc-16.2.0        | 1.0 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 libsqlite-3.51.1     | 917 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 ncurses-6.6          | 890 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 libarchive-3.7.7     | 857 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 libkrb5-1.22.1       | 789 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 libxml2-2.13.9       | 669 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81 
+#10 29.81  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 30.2 MB   | 3          |   3% 
+#10 29.90 numpy-2.5.4          | 8.8 MB    | #3         |  14% [A
+#10 29.90 
+#10 29.90 libopenblas-0.3.34   | 6.5 MB    | 5          |   6% [A[A
+#10 29.90 
+#10 29.90 
+#10 29.90 
+#10 29.90 tk-8.6.13            | 3.4 MB    | ##2        |  22% [A[A[A[A
+#10 29.90 
+#10 29.90 
+#10 29.90 libstdcxx-16.2.0     | 6.3 MB    | ##1        |  22% [A[A[Apython-3.12.9        | 30.2 MB   | #3         |  13% 
+#10 30.00 numpy-2.5.4          | 8.8 MB    | ####7      |  48% [A
+#10 30.00 
+#10 30.00 libopenblas-0.3.34   | 6.5 MB    | #####2     |  52% [A[A
+#10 30.00 
+#10 30.00 
+#10 30.00 libstdcxx-16.2.0     | 6.3 MB    | #######2   |  73% [A[A[A
+#10 30.07 
+#10 30.07 
+#10 30.07 
+#10 30.07 tk-8.6.13            | 3.4 MB    | ########## | 100% [A[A[A[A
+#10 30.07 
+#10 30.07 
+#10 30.07 
+#10 30.07 tk-8.6.13            | 3.4 MB    | ########## | 100% [A[A[A[Apython-3.12.9        | 30.2 MB   | ##5        |  25% 
+#10 30.10 numpy-2.5.4          | 8.8 MB    | ########7  |  87% [A
+#10 30.11 
+#10 30.11 
+#10 30.11 
+#10 30.11 
+#10 30.11 gsl-2.7              | 3.2 MB    |            |   0% [A[A[A[A[Apython-3.12.9        | 30.2 MB   | ###7       |  37% 
+#10 30.21 
+#10 30.21 
+#10 30.21 libstdcxx-16.2.0     | 6.3 MB    | ########## | 100% [A[A[A
+#10 30.24 
+#10 30.24 
+#10 30.24 
+#10 30.24 
+#10 30.24 
+#10 30.24 openssl-3.6.5        | 3.0 MB    |            |   1% [A[A[A[A[A[A
+#10 30.25 
+#10 30.25 libopenblas-0.3.34   | 6.5 MB    | ########## | 100% [A[A
+#10 30.25 
+#10 30.25 libopenblas-0.3.34   | 6.5 MB    | ########## | 100% [A[A
+#10 30.28 
+#10 30.28 
+#10 30.28 
+#10 30.28 
+#10 30.28 
+#10 30.28 
+#10 30.28 libgfortran5-16.2.0  | 2.4 MB    |            |   1% [A[A[A[A[A[A[A
+#10 30.29 
+#10 30.29 
+#10 30.29 
+#10 30.29 
+#10 30.29 gsl-2.7              | 3.2 MB    | ########## | 100% [A[A[A[A[A
+#10 30.29 
+#10 30.29 
+#10 30.29 
+#10 30.29 
+#10 30.29 gsl-2.7              | 3.2 MB    | ########## | 100% [A[A[A[A[Apython-3.12.9        | 30.2 MB   | ####8      |  48% 
+#10 30.34 
+#10 30.34 
+#10 30.34 
+#10 30.34 
+#10 30.34 
+#10 30.34 openssl-3.6.5        | 3.0 MB    | #########  |  91% [A[A[A[A[A[A
+#10 30.35 
+#10 30.35 
+#10 30.35 
+#10 30.35 
+#10 30.35 
+#10 30.35 
+#10 30.35 
+#10 30.35 libmamba-1.5.11      | 1.9 MB    |            |   1% [A[A[A[A[A[A[A[A
+#10 30.39 numpy-2.5.4          | 8.8 MB    | ########## | 100% [Apython-3.12.9        | 30.2 MB   | #####8     |  59% 
+#10 30.42 
+#10 30.42 
+#10 30.42 
+#10 30.42 
+#10 30.42 
+#10 30.42 
+#10 30.42 
+#10 30.42 
+#10 30.42 libunistring-0.9.10  | 1.4 MB    | 1          |   1% [A[A[A[A[A[A[A[A[A
+#10 30.45 
+#10 30.45 
+#10 30.45 
+#10 30.45 
+#10 30.45 
+#10 30.45 
+#10 30.45 libgfortran5-16.2.0  | 2.4 MB    | ########## | 100% [A[A[A[A[A[A[A
+#10 30.45 
+#10 30.45 
+#10 30.45 
+#10 30.45 
+#10 30.45 
+#10 30.45 
+#10 30.46 libgfortran5-16.2.0  | 2.4 MB    | ########## | 100% [A[A[A[A[A[A[A
+#10 30.46 
+#10 30.46 
+#10 30.46 
+#10 30.46 
+#10 30.46 
+#10 30.46 openssl-3.6.5        | 3.0 MB    | ########## | 100% [A[A[A[A[A[A
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 pcre2-10.49          | 1.2 MB    | 1          |   1% [A[A[A[A[A[A[A[A[A[A
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 libmamba-1.5.11      | 1.9 MB    | ########## | 100% [A[A[A[A[A[A[A[A
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 
+#10 30.48 libmamba-1.5.11      | 1.9 MB    | ########## | 100% [A[A[A[A[A[A[A[A
+#10 30.49 
+#10 30.49 
+#10 30.49 
+#10 30.49 
+#10 30.49 
+#10 30.49 
+#10 30.49 
+#10 30.49 
+#10 30.49 
+#10 30.49 
+#10 30.49 htslib-1.23          | 1.1 MB    | 1          |   1% [A[A[A[A[A[A[A[A[A[A[A
+#10 30.51 
+#10 30.51 
+#10 30.51 
+#10 30.51 
+#10 30.51 
+#10 30.51 
+#10 30.51 
+#10 30.51 
+#10 30.51 libunistring-0.9.10  | 1.4 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+#10 30.52 
+#10 30.52 
+#10 30.52 
+#10 30.52 
+#10 30.52 
+#10 30.52 
+#10 30.52 
+#10 30.52 
+#10 30.52 
+#10 30.52 
+#10 30.52 
+#10 30.52 conda-24.11.3        | 1.1 MB    | 1          |   1% [A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 30.2 MB   | ######8    |  69% 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 
+#10 30.54 libgcc-16.2.0        | 1.0 MB    | 1          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 htslib-1.23          | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 
+#10 30.57 pcre2-10.49          | 1.2 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+#10 30.58 
+#10 30.58 
+#10 30.58 
+#10 30.58 
+#10 30.58 
+#10 30.58 
+#10 30.58 
+#10 30.58 
+#10 30.58 
+#10 30.58 
+#10 30.58 
+#10 30.58 conda-24.11.3        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 
+#10 30.59 libsqlite-3.51.1     | 917 KB    | 1          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 libgcc-16.2.0        | 1.0 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 libarchive-3.7.7     | 857 KB    | 1          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.61 
+#10 30.62 ncurses-6.6          | 890 KB    | 1          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 30.2 MB   | #######9   |  80% 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 
+#10 30.66 libsqlite-3.51.1     | 917 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 libarchive-3.7.7     | 857 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 
+#10 30.67 libkrb5-1.22.1       | 789 KB    | 2          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 
+#10 30.68 ncurses-6.6          | 890 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71 
+#10 30.71  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 30.2 MB   | #########1 |  92% 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 
+#10 30.73 libkrb5-1.22.1       | 789 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76 
+#10 30.76  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 
+#10 30.78 libxml2-2.13.9       | 669 KB    | 2          |   2% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 
+#10 30.83 libxml2-2.13.9       | 669 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 30.96 
+#10 30.96 
+#10 30.96 libstdcxx-16.2.0     | 6.3 MB    | ########## | 100% [A[A[A
+#10 31.11 
+#10 31.11 libopenblas-0.3.34   | 6.5 MB    | ########## | 100% [A[Apython-3.12.9        | 30.2 MB   | ########## | 100% 
+#10 31.23 
+#10 31.23 
+#10 31.23 
+#10 31.23 tk-8.6.13            | 3.4 MB    | ########## | 100% [A[A[A[A
+#10 31.29 
+#10 31.29 
+#10 31.29 
+#10 31.29 
+#10 31.29 
+#10 31.29 
+#10 31.29 libgfortran5-16.2.0  | 2.4 MB    | ########## | 100% [A[A[A[A[A[A[A
+#10 31.45 
+#10 31.45 
+#10 31.45 
+#10 31.45 
+#10 31.45 
+#10 31.45 openssl-3.6.5        | 3.0 MB    | ########## | 100% [A[A[A[A[A[A
+#10 31.55 
+#10 31.55 
+#10 31.55 
+#10 31.55 
+#10 31.55 
+#10 31.55 
+#10 31.55 
+#10 31.55 libmamba-1.5.11      | 1.9 MB    | ########## | 100% [A[A[A[A[A[A[A[A
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 libunistring-0.9.10  | 1.4 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 
+#10 31.82 libunistring-0.9.10  | 1.4 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+#10 31.85 
+#10 31.85 
+#10 31.85 
+#10 31.85 
+#10 31.85 gsl-2.7              | 3.2 MB    | ########## | 100% [A[A[A[A[A
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 htslib-1.23          | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 
+#10 31.96 htslib-1.23          | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 pcre2-10.49          | 1.2 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 
+#10 32.14 pcre2-10.49          | 1.2 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 libgcc-16.2.0        | 1.0 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 
+#10 32.24 libgcc-16.2.0        | 1.0 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 
+#10 32.29 libsqlite-3.51.1     | 917 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 
+#10 32.30 libsqlite-3.51.1     | 917 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.30 numpy-2.5.4          | 8.8 MB    | ########## | 100% [A
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 libarchive-3.7.7     | 857 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 
+#10 32.43 libarchive-3.7.7     | 857 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 conda-24.11.3        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 
+#10 32.52 conda-24.11.3        | 1.1 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 libkrb5-1.22.1       | 789 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 
+#10 32.58 libkrb5-1.22.1       | 789 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64 
+#10 32.64  ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 libxml2-2.13.9       | 669 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 
+#10 32.80 libxml2-2.13.9       | 669 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 ncurses-6.6          | 890 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 
+#10 34.37 ncurses-6.6          | 890 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[Apython-3.12.9        | 30.2 MB   | ########## | 100% 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                       [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A                                                     
+#10 34.88                                                      [A
+#10 34.88 
+#10 34.88                                                      [A[A
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88                                                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 [A
+#10 34.88 
+#10 34.88 [A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 [A
+#10 34.88 
+#10 34.88 [A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 
+#10 34.88 [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A done
+#10 34.88 Preparing transaction: - \ done
+#10 35.08 Verifying transaction: / - \ | / - \ | / - \ | done
+#10 36.36 Executing transaction: - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
+#10 DONE 46.4s
+
+#11 [7/8] RUN command -v GangSTR
+#11 0.124 /opt/conda/bin/GangSTR
+#11 DONE 0.1s
+
+#12 [8/8] WORKDIR /work
+#12 DONE 0.0s
+
+#13 exporting to image
+#13 exporting layers
+#13 exporting layers 6.8s done
+#13 writing image sha256:46421f6bd0d0bd9b67408062dbcf45a28ee92863360ff650debf03f2fd0eba9f done
+#13 naming to docker.io/library/toolimg:ci done
+#13 DONE 6.8s

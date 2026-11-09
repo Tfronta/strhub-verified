@@ -1,0 +1,4 @@
+{
+  "retired": "2026-11-09T17:22:49Z",
+  "reason": "The published report links CI run 42254219171, which tested a curated recipe that installed and ran, rather than the claimed source-install failure. Recovered trials 42067018462 and 42483706971 used a published image and recorded successful installation with an undetermined source-commit verdict. They do not support the published usearch download failure. No exact originating artifact for that failure report and extract was established."
+}

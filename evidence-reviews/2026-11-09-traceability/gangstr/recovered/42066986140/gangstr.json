@@ -1,0 +1,373 @@
+{
+  "schema": "strhub-verified/1",
+  "mode": "trial",
+  "tool": {
+    "name": "GangSTR",
+    "version": "v2.5",
+    "contact": "https://github.com/gymreklab/gangstr/issues"
+  },
+  "submission": {
+    "by": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/gymreklab/gangstr",
+    "ref": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+    "ref_resolved": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+    "committed": "2021-04-19T19:30:11Z"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ],
+    "source": "generated",
+    "fallback": {
+      "dockerfile": "Dockerfile.fallback",
+      "reason": "the published image gymreklab/str-toolkit the README points at"
+    }
+  },
+  "generated": "2026-11-05T16:46:08+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42066986140",
+  "run": {
+    "cmd": "mkdir -p outprefix && GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out outprefix",
+    "cwd": "/opt/tool"
+  },
+  "instrument": "documented",
+  "recipe": {
+    "origin": "proposed"
+  },
+  "gates": {
+    "available": true,
+    "installs": false,
+    "runs": false,
+    "io": false,
+    "content": false
+  },
+  "level": "available",
+  "io_detail": {
+    "gate": "io",
+    "passed": false,
+    "outputs": [
+      {
+        "path": "**/*.vcf*",
+        "format": "vcf",
+        "checks": {
+          "confined": true,
+          "exists": false
+        },
+        "passed": false
+      }
+    ]
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": false,
+    "outputs": [
+      {
+        "path": "**/*.vcf*",
+        "passed": false,
+        "error": "output not found"
+      }
+    ]
+  },
+  "example_detail": null,
+  "datasets": [
+    {
+      "leg": "own",
+      "label": "STRhub fixture",
+      "available": false,
+      "io": false,
+      "content": false,
+      "passed": false,
+      "fixture_source": "none"
+    },
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-bam-hg38",
+      "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
+      "io": false,
+      "content": false,
+      "passed": false
+    },
+    {
+      "leg": "example",
+      "label": "Tool's own example",
+      "available": false,
+      "io": false,
+      "content": null,
+      "passed": false,
+      "matches_expected": null,
+      "produced_count": null
+    }
+  ],
+  "regions": {
+    "source": "strhub",
+    "panel_size": 24
+  },
+  "readme_check": {
+    "gate": "readme",
+    "advisory": true,
+    "score": 5,
+    "max": 5,
+    "checks": {
+      "install": {
+        "present": true,
+        "matched": "\\binstall(ation|ing|)\\b"
+      },
+      "command": {
+        "present": true,
+        "matched": "\\busage\\b"
+      },
+      "input": {
+        "present": true,
+        "matched": "\\binput\\b"
+      },
+      "output": {
+        "present": true,
+        "matched": "\\boutput\\b"
+      },
+      "dependencies": {
+        "present": true,
+        "matched": "\\bdependenc(y|ies)\\b"
+      }
+    },
+    "empty": false
+  },
+  "scope": "Executed end-to-end in the stated environment with output in the expected format. Concerns reproducible execution only; no claim of accuracy, casework fitness, or regulatory validation.",
+  "upstream": {
+    "checked": "2026-11-05T16:46:08+00:00",
+    "repo_exists": true,
+    "ref_exists": true,
+    "default_branch": "master",
+    "status": "identical",
+    "behind_by": 0
+  },
+  "needed_beyond_repo": [
+    "Test data: no sample from the repository was used, so a public reference sample stood in.",
+    "A container environment, built from the tool's declared install steps rather than from a recipe the repository ships."
+  ],
+  "evidence": [
+    {
+      "claim": "install_method",
+      "kind": "tree",
+      "path": "CMakeLists.txt",
+      "text": "cmake",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/CMakeLists.txt"
+    },
+    {
+      "claim": "fallback_environment",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 18,
+      "text": "A Docker with GangSTR plus the dumpSTR filtering tool installed is available at [gymreklab/str-toolkit](https://hub.docker.com/r/gymreklab/str-toolkit) from Docker hub.",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L18"
+    },
+    {
+      "claim": "run_command",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 101,
+      "text": "GangSTR --bam file.bam",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L101"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/HTT.bed",
+      "text": "bed",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/HTT.bed"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/alignment/nc190_25.sorted.bam",
+      "text": "bam",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc190_25.sorted.bam"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/alignment/nc10_25.sorted.bam",
+      "text": "bam",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc10_25.sorted.bam"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "test/alignment/nc30_15.sorted.bam",
+      "text": "bam",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/test/alignment/nc30_15.sorted.bam"
+    },
+    {
+      "claim": "example_data",
+      "kind": "tree",
+      "path": "experimental/supplement_bed/hg38_codis.bed",
+      "text": "bed",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/experimental/supplement_bed/hg38_codis.bed"
+    },
+    {
+      "claim": "documented_input",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 6,
+      "text": "GangSTR takes aligned reads (BAM) and a set of repeats in the reference genome as input and outputs a VCF file containing genotypes for each locus.",
+      "url": "https://github.com/gymreklab/gangstr/blob/6ea9b2b8daca51dcab1f0e46210622b94b52ff17/README.md#L6"
+    }
+  ],
+  "repo_test_data": {
+    "known": true,
+    "present": true,
+    "count": 10,
+    "examples": [
+      "test/HTT.bed",
+      "test/alignment/nc190_25.sorted.bam",
+      "test/alignment/nc10_25.sorted.bam",
+      "test/alignment/nc30_15.sorted.bam",
+      "experimental/supplement_bed/hg38_codis.bed"
+    ]
+  },
+  "caveats": {
+    "source": "detect_recipe",
+    "items": [
+      "Environment: generated by STRhub from the repository's CMakeLists.txt (cmake), at the pinned commit. If that build fails, the published image gymreklab/str-toolkit the README points at stands in, and the report says so.",
+      "Input: the README documents BAM (line 6); this run used STRhub's illumina-bam-hg38 reference data.",
+      "The output directory the command writes into (outprefix) was created first.",
+      "1 input path(s) in the README command replaced with /data/in/input.bam.",
+      "1 reference FASTA path(s) replaced with /data/ref/hg38.fa.",
+      "1 BED path(s) replaced with /data/in/regions.bed.",
+      "Run command: the README's own command, rewritten to STRhub's mounts; everything it created was captured as output.",
+      "Regions: STRhub's ready-made gangstr file for the dataset's panel loci (STRhub records the gangstr layout for a program of this name)."
+    ]
+  },
+  "logs": {
+    "build": "gangstr.log-build.txt"
+  },
+  "install_detail": {
+    "passed": false,
+    "diagnostics": [
+      {
+        "id": "autotools_aux_missing",
+        "severity": "error",
+        "title": "An autotools build is missing its auxiliary file: config.sub",
+        "count": 2,
+        "examples": [
+          "config.sub",
+          "config.guess"
+        ],
+        "suggestion": "The configure script needs 'config.sub', which `autoreconf -i` (or `automake --add-missing`) copies in from the automake package. The build runs autoconf without installing those files; running `autoreconf -fi` before `./configure` in that step fixes it."
+      }
+    ],
+    "faults": [
+      "author"
+    ]
+  },
+  "manual_verification": {
+    "eligible": false,
+    "basis": null,
+    "reason_code": null,
+    "reason": null
+  },
+  "procedure_review": {
+    "may_say_runs": true,
+    "basis": "gates",
+    "attribution": "tool",
+    "blocker": "ready",
+    "reason": "The repository states how to install (cmake) and STRhub holds the sample. The container is that install, packaged. If the documented command then fails, the failure is that command's.",
+    "amendments": [],
+    "install_method": "cmake",
+    "citable_install": false,
+    "input_type": "illumina-bam-hg38",
+    "output_glob": "**/*.vcf*"
+  },
+  "verdict": {
+    "code": "fails",
+    "title": "Fails",
+    "basis": "gates",
+    "reason": "The environment did not build from the declared install steps.",
+    "readme_gaps": [],
+    "blockers": [
+      {
+        "code": "build_failed",
+        "what": "The environment did not build from the install steps found in the repository.",
+        "self_fix": "edit_install",
+        "self_fix_text": "Adjust the install steps (or provide a Dockerfile) and try again.",
+        "ask_owner": {
+          "title": "Build fails from a clean checkout",
+          "body": "STRhub Verified tried to build the tool from a clean checkout at the pinned commit, following the repository's own install steps, and the build failed. The build log is linked from the run."
+        }
+      }
+    ]
+  },
+  "step1": {
+    "code": "does_not_run",
+    "headline": "As documented, it does not run.",
+    "body": "The environment did not build from the declared install steps. That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end. Fix the documentation, or the step that broke, and try the link again on the new commit.",
+    "missing": [],
+    "missing_text": [],
+    "guide": "docs/GUIA-PASO-1.md"
+  },
+  "certificate": {
+    "schema": "strhub-verified/certificate/1",
+    "label": "Does not run as documented: stops at install",
+    "reached": "Available",
+    "summary": {
+      "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
+      "result": "Does not run as documented: stops at install",
+      "reached": "Available, 1/5 gates passed",
+      "why": "The environment did not build from the declared install steps.",
+      "scope": "Installation, execution, and output structure verification.",
+      "not_evaluated": [
+        "Genotype accuracy",
+        "Concordance",
+        "Forensic validity",
+        "Regulatory compliance"
+      ]
+    },
+    "conclusion": [
+      {
+        "title": "Does not install",
+        "body": "The environment for GangSTR v2.5 could not be built from the declared install steps, so nothing further was attempted."
+      },
+      {
+        "title": "No output produced",
+        "body": "No file in the declared format was written, so nothing could be checked for structure or content. This says the run did not get that far; it is not a finding about the quality of the software."
+      },
+      {
+        "title": "Verdict: Fails",
+        "body": "The environment did not build from the declared install steps."
+      },
+      {
+        "title": "Repository test data not used",
+        "body": "The repository ships example data (10 file(s)), which this run did not use: the gates above ran on STRhub's reference dataset. STRhub Verified supplied Illumina BAM (hg38), NA12878 (autosomal, female) as the reference input for this verification run. Users replicating this result should use the same or equivalent publicly available reference material."
+      },
+      {
+        "title": "Reproducibility statement",
+        "body": "The exact command reported in Section 3, executed at the pinned commit in the described environment, is sufficient to reproduce this verification result independently."
+      }
+    ],
+    "out_of_scope": [
+      "Genotype correctness or accuracy",
+      "Concordance against known truth sets",
+      "Sensitivity, specificity, or stutter performance",
+      "Allele calling accuracy or forensic casework suitability",
+      "Regulatory compliance or ISO accreditation",
+      "Multi-laboratory or multi-dataset reproducibility"
+    ],
+    "limitations": [
+      "Single reference dataset per input type",
+      "Single containerized environment (Docker / ubuntu-22.04)",
+      "No truth-set comparison or ground-truth genotypes",
+      "No accuracy or concordance assessment",
+      "No forensic validation of results",
+      "Short-read limitations apply (very long STR alleles may not span reads)"
+    ],
+    "scope": {
+      "statement": "Independent automated verification of reproducible execution. It confirms the tool installs, runs end-to-end, and produces structurally valid output in a standardized environment.",
+      "not": "This is not an analytical validation. Genotype accuracy, concordance, forensic suitability, and regulatory compliance are out of scope.",
+      "disclaimer": "Each result is a dated snapshot, verified on the tool's public repository at a pinned commit. STRhub does not store tool source code."
+    }
+  }
+}

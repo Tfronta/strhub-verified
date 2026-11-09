@@ -1,0 +1,184 @@
+{
+  "schema": "strhub-verified/1",
+  "mode": "publish",
+  "tool": {
+    "name": "GangSTR",
+    "version": "v2.5",
+    "contact": "https://github.com/gymreklab/gangstr/issues"
+  },
+  "submission": {
+    "by": "third_party"
+  },
+  "source": {
+    "repo": "https://github.com/gymreklab/gangstr",
+    "ref": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+    "ref_resolved": "6ea9b2b8daca51dcab1f0e46210622b94b52ff17",
+    "committed": "2021-04-19T19:30:11Z"
+  },
+  "environment": {
+    "dockerfile": "Dockerfile",
+    "os": [
+      "ubuntu-22.04"
+    ],
+    "source": "generated"
+  },
+  "generated": "2026-11-08T16:00:00+00:00",
+  "ci_run": "https://github.com/Tfronta/strhub-verified/actions/runs/42253585030",
+  "run": {
+    "cmd": "GangSTR --bam /data/in/input.bam --ref /data/ref/hg38.fa --regions /data/in/regions.bed --out /data/out/output"
+  },
+  "instrument": "documented",
+  "recipe": {
+    "origin": "proposed"
+  },
+  "gates": {
+    "available": true,
+    "installs": false,
+    "runs": false,
+    "io": false,
+    "content": false,
+    "starts": false
+  },
+  "level": "available",
+  "io_detail": {
+    "gate": "io",
+    "passed": false,
+    "outputs": []
+  },
+  "content_detail": {
+    "gate": "content",
+    "applicable": true,
+    "passed": false,
+    "outputs": []
+  },
+  "example_detail": null,
+  "datasets": [
+    {
+      "leg": "external",
+      "label": "External data",
+      "available": true,
+      "type": "illumina-bam-hg38",
+      "dataset": "Illumina BAM (hg38), NA12878 (autosomal, female)",
+      "io": false,
+      "content": false,
+      "passed": false
+    }
+  ],
+  "install_detail": {
+    "gate": "installs",
+    "passed": false,
+    "diagnostics": [
+      {
+        "id": "autotools_aux_missing",
+        "severity": "error",
+        "title": "An autotools build is missing its auxiliary file: config.sub",
+        "count": 1,
+        "examples": [
+          "config.sub"
+        ],
+        "suggestion": "The configure script needs config.sub, which autoreconf -i (or automake --add-missing) copies in from the automake package. Running autoreconf -fi before ./configure in that step fixes it."
+      }
+    ]
+  },
+  "procedure_review": {
+    "may_say_runs": true,
+    "basis": "gates",
+    "attribution": "tool",
+    "blocker": "ready",
+    "reason": "The repository states how to install (cmake) and STRhub holds the sample. The container is that install, packaged. If the documented build fails, the failure is that build's.",
+    "amendments": [],
+    "install_method": "cmake",
+    "citable_install": true,
+    "input_type": "illumina-bam-hg38",
+    "output_glob": "**/*.vcf*"
+  },
+  "verdict": {
+    "code": "fails",
+    "title": "Fails",
+    "basis": "gates",
+    "reason": "The environment did not build from the declared install steps.",
+    "readme_gaps": [],
+    "blockers": [
+      {
+        "code": "build_failed",
+        "what": "The environment did not build from the declared install steps.",
+        "self_fix": "edit_build",
+        "self_fix_text": "Adjust the install steps and try again.",
+        "ask_owner": {
+          "title": "Documented CMake build fails at pinned commit",
+          "body": "STRhub Verified attempted to build GangSTR from source following the repository documentation at commit 6ea9b2b. The build fails in htslib because autoreconf is run without -i (config.sub missing)."
+        }
+      }
+    ]
+  },
+  "step1": {
+    "code": "does_not_run",
+    "headline": "As documented, it does not run.",
+    "body": "The environment did not build from the declared install steps. That does not mean the tool does not work. It means a third party following the README at this commit did not reach the end.",
+    "missing": [],
+    "missing_text": [],
+    "guide": "docs/GUIA-PASO-1.md"
+  },
+  "scope": "Executed in a standardized environment following the repository's declared build instructions. Concerns reproducible execution only.",
+  "certificate": {
+    "schema": "strhub-verified/certificate/1",
+    "label": "Does not run as documented: stops at install",
+    "reached": "Available",
+    "summary": {
+      "purpose": "Verify that the tool installs, runs end-to-end, and produces structurally valid output.",
+      "result": "Does not run as documented: stops at install",
+      "reached": "Available, 1/5 gates passed",
+      "why": "The environment did not build from the declared install steps.",
+      "scope": "Installation, execution, and output structure verification.",
+      "not_evaluated": [
+        "Genotype accuracy",
+        "Concordance",
+        "Forensic validity",
+        "Regulatory compliance"
+      ]
+    },
+    "conclusion": [
+      {
+        "title": "Does not install",
+        "body": "GangSTR v2.5 does not install in a clean ubuntu-22.04 environment at the pinned commit following the declared install steps (CMake build of bundled htslib fails)."
+      },
+      {
+        "title": "Execution and output gates not reached",
+        "body": "Because the tool did not install, execution on reference data was not attempted."
+      },
+      {
+        "title": "Verdict: Fails",
+        "body": "The environment did not build from the declared install steps."
+      },
+      {
+        "title": "Reproducibility statement",
+        "body": "The build instructions recorded in Section 3, executed at the pinned commit in the described environment, reproduce this failure."
+      }
+    ],
+    "out_of_scope": [
+      "Genotype correctness or accuracy",
+      "Concordance against known truth sets",
+      "Sensitivity, specificity, or stutter performance",
+      "Allele calling accuracy or forensic casework suitability",
+      "Regulatory compliance or ISO accreditation",
+      "Multi-laboratory or multi-dataset reproducibility"
+    ],
+    "limitations": [
+      "Single reference dataset per input type",
+      "Single containerized environment (Docker / ubuntu-22.04)",
+      "No truth-set comparison or ground-truth genotypes",
+      "No accuracy or concordance assessment",
+      "No forensic validation of results",
+      "Short-read limitations apply (very long STR alleles may not span reads)"
+    ],
+    "scope": {
+      "statement": "Independent automated verification of reproducible execution.",
+      "not": "This is not an analytical validation.",
+      "disclaimer": "Each result is a dated snapshot."
+    }
+  },
+  "logs": {
+    "build": "gangstr.log-build.txt",
+    "external": "gangstr.log-external.txt"
+  }
+}

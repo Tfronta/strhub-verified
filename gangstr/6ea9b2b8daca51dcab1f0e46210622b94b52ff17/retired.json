@@ -1,0 +1,4 @@
+{
+  "retired": "2026-11-09T17:22:49Z",
+  "reason": "The published report links CI run 42253585030, which tested a curated recipe, rather than evidence for the documented failure it describes. Run 42066986140 contains a real build failure at the same tool commit, but its recorded command and full log differ from this publication. No exact originating artifact for the published report and extract was established. The publication's execution claim is withdrawn; this does not assert that the reported build error is fabricated."
+}
