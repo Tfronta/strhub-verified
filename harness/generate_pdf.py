@@ -25,6 +25,7 @@ import tempfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import diagnose_log  # noqa: E402
+from command_record import presentation as command_presentation  # noqa: E402
 from certificate_text import (  # noqa: E402
     conclusion_items_for, install_meaning, instrument_of_report, workaround_lines, headline,
     AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, NOT_DOCUMENTED, display_name,
@@ -730,14 +731,12 @@ def build_body(cfg):
 
 
     # §3 Run command
-    els.append(section_num(str(sec), "Exact Run Command"))
+    command_heading, command_lead = cfg.get("command_presentation") or command_presentation(None)
+    els.append(section_num(str(sec), command_heading))
     sec += 1
-    # One claim only. The second sentence used to invite the reader to swap the
-    # input paths for their own, which left it ambiguous whether what follows is
-    # what ran or a template to adapt. It is what ran, verbatim, and that is the
-    # whole point of the section.
+    # The wording follows recorded step evidence, never command presence alone.
     els.append(Paragraph(
-        "This is the command that was executed, verbatim, in the CI environment.",
+        command_lead,
         ST["body"]))
     els.append(vspace(3))
     cmd_content = [Paragraph(line, ST["mono"]) for line in cfg.get("cmd_lines", ["# Command not available"])]
@@ -1218,8 +1217,9 @@ def load_config(manifest_path: str, datasets_path: str | None = None,
     level = report.get("level", "none")
 
     # Run command
-    raw_cmd = (m.get("run", {}).get("cmd") or
-               report.get("run", {}).get("cmd") or
+    recorded_run = report.get("run") or {}
+    raw_cmd = (recorded_run.get("effective_cmd") or recorded_run.get("cmd") or
+               m.get("run", {}).get("cmd") or
                m.get("run", {}).get("command") or "")
     env_note = f"# Environment: {(m.get('environment', {}).get('os') or ['ubuntu-22.04'])[0]}  ·  {tool_display}  ·  commit {commit[:7]}"
     cmd_lines = [env_note, ""] + _format_cmd(raw_cmd)
@@ -1297,6 +1297,7 @@ def load_config(manifest_path: str, datasets_path: str | None = None,
         "gates":          gates,
         "level":          level,
         "cmd_lines":      cmd_lines,
+        "command_presentation": command_presentation(recorded_run),
         "container_os":   (m.get("environment", {}).get("os") or ["ubuntu-22.04"])[0],
         "panel":          PANEL_MAP.get(input_type, input_type or "STR"),
         "stats":          stats,

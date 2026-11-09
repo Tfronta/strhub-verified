@@ -277,6 +277,8 @@ def headline(report: dict) -> tuple[str, str]:
       Out of scope                                the free runner cannot provide something
       Not verified as documented                  the run is of a recipe STRhub wrote
     """
+    if report.get("record_type") == "editorial_review":
+        return "Evidence insufficient", "lightgrey"
     if instrument_of_report(report) not in BADGE_INSTRUMENTS:
         return NOT_DOCUMENTED, "lightgrey"
     code = (report.get("verdict") or {}).get("code")

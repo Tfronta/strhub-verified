@@ -131,6 +131,8 @@ def _summary_entry(slug: str, r: dict) -> dict:
         "source_repo": r.get("source", {}).get("repo"),
         "source_ref": ref,
         "ci_run": r.get("ci_run"),
+        **({"record_type": "editorial_review", "evidence_review": r["evidence_review"]}
+           if r.get("record_type") == "editorial_review" else {}),
         "distinct_str_loci": stats.get("distinct_str_loci", stats.get("distinct_loci")),
         "distinct_snp_markers": stats.get("distinct_snp_markers"),
         "total_reads": stats.get("total_reads"),
