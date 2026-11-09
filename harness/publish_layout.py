@@ -256,6 +256,12 @@ def write_alias(site: pathlib.Path, slug: str) -> tuple[str, str] | None:
                 settle(site, slug, d.name)
     src = alias_source(site, slug)
     if not src:
+        # A withdrawal must not leave the former result at the root when
+        # every run is retired. A separately authored editorial notice stays.
+        current = _read(site / f"{slug}.json")
+        if not current or current.get("record_type") != "editorial_review":
+            for f in report_files(site, slug):
+                f.unlink()
         return None
     sha, instrument, _ = src
     for f in report_files(site, slug):

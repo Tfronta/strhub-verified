@@ -21,6 +21,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import _manifest  # noqa: E402
 import diagnose_log  # noqa: E402
+from command_record import presentation as command_presentation  # noqa: E402
 from prepare import unwrap_example  # noqa: E402
 from certificate_text import (  # noqa: E402
     install_meaning, instrument_of, instrument_of_report, workaround_lines, headline,
@@ -76,10 +77,6 @@ NEEDED_LEAD = ("The result above describes a run configured as follows. Anyone "
 CAVEATS_LEAD = ("Recorded automatically from the tool's public files when this run was "
                 "configured. Not verified by execution, and not part of the gates "
                 "above. Useful for what to check by hand.")
-RUN_LEAD = ("Executed verbatim inside the container, at the pinned commit. Paths "
-            "under /data are STRhub's mounts: the input sample, the reference "
-            "genome and the output directory.")
-
 def _status(flag: str) -> bool:
     # Accept GitHub Actions step outcomes ("success") alongside our own words.
     return str(flag).lower() in ("pass", "true", "ok", "1", "success")
@@ -231,15 +228,18 @@ def _primary_build_log(path: str) -> str:
     return p.read_text(errors="replace").split(FALLBACK_MARKER, 1)[0]
 
 
-def _run_record(m: dict) -> dict | None:
-    """`run.cmd` for the report: the tool's own command, out of the wrapper a
-    proposed recipe puts around it, and the directory it ran from when the
-    wrapper named one."""
+def _run_record(m: dict, outcome: str | None = None) -> dict | None:
+    """Record the configured command and, when supplied, the run step outcome.
+
+    Preserve the full wrapper as effective_cmd; cmd/cwd remain compatible
+    with older readers. A command alone never establishes execution.
+    """
     cmd = (m.get("run") or {}).get("cmd")
     if not cmd:
         return None
     inner, cwd = unwrap_example(cmd)
-    return {"cmd": inner, **({"cwd": cwd} if cwd else {})}
+    return {"cmd": inner, **({"cwd": cwd} if cwd else {}),
+            **({"effective_cmd": cmd, "step_outcome": outcome} if outcome is not None else {})}
 
 
 def _summary_md(report: dict, slug: str) -> str:
@@ -335,7 +335,8 @@ def _summary_md(report: dict, slug: str) -> str:
     # How: the command the gates ran, and the logs.
     run = report.get("run") or {}
     if run.get("cmd"):
-        lines += ["", "### Command that ran", "", RUN_LEAD, "", "```", run["cmd"], "```"]
+        heading, lead = command_presentation(run)
+        lines += ["", f"### {heading}", "", lead, "", "```", run.get("effective_cmd", run["cmd"]), "```"]
     for leg, fname in (report.get("logs") or {}).items():
         lines.append(f"- Log ({leg}): [`{fname}`]({fname})")
 
@@ -571,9 +572,10 @@ def _summary_html(report: dict, slug: str) -> str:
 
     # The command the gates ran — the certificate's "Exact Run Command".
     run = report.get("run") or {}
+    command_heading, command_lead = command_presentation(run)
     run_block = (
-        f"<h3>Command that ran</h3><p>{esc(RUN_LEAD)}</p>"
-        f"<pre><code>{esc(run['cmd'])}</code></pre>"
+        f"<h3>{esc(command_heading)}</h3><p>{esc(command_lead)}</p>"
+        f"<pre><code>{esc(run.get('effective_cmd', run['cmd']))}</code></pre>"
         if run.get("cmd") else ""
     )
 
@@ -1078,11 +1080,9 @@ def main() -> int:
                         if args.environment_built == "fallback" else m["environment"]),
         "generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "ci_run": args.run_url,
-        # What the gates ran, as the tool saw it. The certificate has printed
-        # the command since the start; the page could not, because the JSON
-        # never carried it, so a reader of a published attestation had to open
-        # the log to learn what was executed.
-        "run": _run_record(m),
+        # The configured command and the selected run step's outcome. A failed
+        # build leaves a planned command, not a claim that this command ran.
+        "run": _run_record(m, args.runs),
         # Which instrument this is, and — for a recipe somebody wrote — what it
         # does that the repository's instructions do not. The badge may rest
         # only on `documented` or `maintainer`; `curated` is STRhub's note.

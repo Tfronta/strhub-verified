@@ -1,0 +1,33 @@
+{
+  "schema": "strhub-verified/editorial-review-plan/1",
+  "reviews": {
+    "gangstr": {
+      "id": "2026-11-09-traceability",
+      "reviewed_at": "2026-11-09T17:22:49Z",
+      "prepared_by": "Codex",
+      "approved_by": null,
+      "source_publication_commit": "b2815e3ac0eb3bf0da3a5a47304f1a155d2c7a94",
+      "status": "insufficient_evidence",
+      "scope": "Review of the publication's provenance, not a new execution or certification of recipe fidelity.",
+      "original_report_sha256": "5e921fc8809551c37cc888d59eb763768d0ce6c14466ad0287bfdf68389ba67e",
+      "reason": "The published report links CI run 42253585030, which tested a curated recipe, rather than evidence for the documented failure it describes. Run 42066986140 contains a real build failure at the same tool commit, but its recorded command and full log differ from this publication. No exact originating artifact for the published report and extract was established. The publication's execution claim is withdrawn; this does not assert that the reported build error is fabricated.",
+      "recovered_evidence_note": "Original artifacts from runs 41308001752, 42066986140, 42216592702 and 42488855247 are preserved independently with their recipes and logs. Run 42066986140 failed at commit 6ea9b2b8daca51dcab1f0e46210622b94b52ff17. The two later trials tested e368b9f4dbf7ab7585036a5ff2e68480d0623c80. None is substituted for the unsupported publication. Their historical conclusions have not been re-certified against the new strict policy.",
+      "archive_url": "https://github.com/Tfronta/strhub-verified/tree/gh-pages/evidence-reviews/2026-11-09-traceability/gangstr/original",
+      "review_url": "https://github.com/Tfronta/strhub-verified/blob/gh-pages/evidence-reviews/2026-11-09-traceability/gangstr/review.json"
+    },
+    "strsearch": {
+      "id": "2026-11-09-traceability",
+      "reviewed_at": "2026-11-09T17:22:49Z",
+      "prepared_by": "Codex",
+      "approved_by": null,
+      "source_publication_commit": "b2815e3ac0eb3bf0da3a5a47304f1a155d2c7a94",
+      "status": "insufficient_evidence",
+      "scope": "Review of the publication's provenance, not a new execution or certification of recipe fidelity.",
+      "original_report_sha256": "d488ea15d96b1a9ba6356825d126fc75ae3e690e8975be159f54360e7eadc97b",
+      "reason": "The published report links CI run 42254219171, which tested a curated recipe that installed and ran, rather than the claimed source-install failure. Recovered trials 42067018462 and 42483706971 used a published image and recorded successful installation with an undetermined source-commit verdict. They do not support the published usearch download failure. No exact originating artifact for that failure report and extract was established.",
+      "recovered_evidence_note": "Original artifacts from runs 41308009228, 42067018462 and 42483706971 are preserved independently with their recipes and logs. The latter two use anjing123/strsearch:latest, installed successfully, and classify source-commit execution as undetermined. These different procedures cannot be presented as evidence of the source-build failure. Their historical conclusions have not been re-certified against the new strict policy.",
+      "archive_url": "https://github.com/Tfronta/strhub-verified/tree/gh-pages/evidence-reviews/2026-11-09-traceability/strsearch/original",
+      "review_url": "https://github.com/Tfronta/strhub-verified/blob/gh-pages/evidence-reviews/2026-11-09-traceability/strsearch/review.json"
+    }
+  }
+}

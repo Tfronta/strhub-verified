@@ -221,3 +221,4 @@ def test_a_retired_run_stays_where_it_is_but_is_never_the_alias(tmp_path):
     # A tool whose every run is retired has no alias at all.
     pl.retire(site, SLUG, OLD, "curated", "same", when="2026-09-20T00:00:00+00:00")
     assert pl.alias_source(site, SLUG) is None
+    assert not pl.report_files(site, SLUG)
