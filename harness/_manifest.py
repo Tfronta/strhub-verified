@@ -1,31 +1,42 @@
-"""Load and (optionally) validate a tool manifest against the JSON schema.
-
-Dependencies are intentionally minimal (pyyaml; jsonschema optional) so the
-harness itself is trivially reproducible — the thing doing the certifying must
-be more reproducible than the things it certifies.
-"""
+"""Load a manifest with mandatory schema and path validation before use."""
 from __future__ import annotations
 import json
 import pathlib
 import sys
 import yaml
+import _paths
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCHEMA = ROOT / "schema" / "manifest.schema.json"
 
 
-def load(manifest_path: str) -> dict:
-    path = pathlib.Path(manifest_path)
-    data = yaml.safe_load(path.read_text())
+def validate(data: dict) -> dict:
     try:
-        import jsonschema  # optional
-        jsonschema.validate(data, json.loads(SCHEMA.read_text()))
-    except ImportError:
-        pass  # validation is a nicety; absence must not block a run
-    except Exception as exc:  # noqa: BLE001
-        print(f"::error::manifest failed schema validation: {exc}", file=sys.stderr)
-        raise
+        import jsonschema
+    except ImportError as exc:
+        raise RuntimeError("jsonschema is required; manifest validation cannot be skipped") from exc
+    jsonschema.validate(data, json.loads(SCHEMA.read_text()))
+    env = data["environment"]
+    for value in (env["dockerfile"], env.get("from_repo"), (env.get("fallback") or {}).get("dockerfile")):
+        if value is not None:
+            _paths.relative(value)
+    inputs = data.get("inputs") or {}
+    for item in (inputs.get("fixture"), inputs.get("regions")):
+        if isinstance(item, str):
+            _paths.relative(item)
+        elif isinstance(item, dict) and "repo" in item:
+            _paths.raw_url(item)
+        elif isinstance(item, dict) and "path" in item:
+            _paths.relative(item["path"])
     return data
+
+
+def loads(text: str) -> dict:
+    return validate(yaml.safe_load(text))
+
+
+def load(manifest_path: str) -> dict:
+    return loads(pathlib.Path(manifest_path).read_text())
 
 
 if __name__ == "__main__":

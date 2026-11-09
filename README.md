@@ -43,6 +43,10 @@ or execute it. See [the policy and regression checks](docs/NO-ADAPTIVE-RETRIES.m
 
 ### Verification entry points
 
+Manifest validation is mandatory before input staging. Local paths and symlink
+targets must stay in their declared roots; unsafe paths stop preparation.
+See [Input boundary](docs/INPUT-BOUNDARY.md) for the policy and regression checks.
+
 1. **1-Click URL Trial**: Evaluates a tool directly from its public repository URL. The harness inspects the README, repository tree, and dependency files to propose an install procedure and command, evaluating it immediately in CI.
 2. **Curated Catalogue Verification**: Evaluates curated configurations under `tools/<slug>/` against open reference datasets (Illumina STR FASTQ, ONT BAM, PacBio HiFi BAM).
 

@@ -38,6 +38,7 @@ import yaml
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import datasets as datasets_lib  # noqa: E402
 import regions_library  # noqa: E402
+import _manifest  # noqa: E402
 from prepare import example_wrapper  # noqa: E402
 
 INPUT_TOKEN = re.compile(r"(?<![\w/])[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\b", re.I)
@@ -881,6 +882,7 @@ def main() -> int:
     args = ap.parse_args()
     proposal = json.loads(pathlib.Path(args.proposal).read_text())
     r = build(proposal, args.slug, args.submitted_by, args.ref_label)
+    _manifest.loads(r["manifest_yml"])
     # The limitations travel back into the proposal file so the report's verdict
     # can read them alongside the README gaps.
     proposal["limitations"] = r["limitations"]
