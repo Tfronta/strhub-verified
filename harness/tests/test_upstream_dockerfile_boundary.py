@@ -19,7 +19,7 @@ def test_checked_out_dockerfile_symlink_cannot_be_read_or_built(tmp_path):
         'if [ "$1" = clone ]; then\n'
         '  mkdir -p "$5"\n'
         '  ln -s "$SENTINEL" "$5/Dockerfile"\n'
-        'elif [ "$4" = rev-parse ]; then echo "$TOOL_REF"; fi\n'
+        'elif [ "$3" = rev-parse ]; then echo "$TOOL_REF"; fi\n'
     )
     git.chmod(0o755)
     docker = bindir / "docker"
