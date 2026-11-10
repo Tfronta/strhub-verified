@@ -619,6 +619,7 @@ def main() -> int:
         "ref": m["source"]["ref"],
         "procedure_ready": "1" if procedure_ready else "0",
         "install_ready": "1" if install_ready else "0",
+        "installation_profile": (review.get("installation") or {}).get("profile", ""),
         # Whether the installed program starts at all: its --help, in the
         # built image, before anything is asked of it (the Starts check).
         # No inferred --help invocation: it is a command too. A future explicit

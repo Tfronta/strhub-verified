@@ -1,0 +1,37 @@
+{
+  "scope": "Read-only detection and procedure classification of the existing pinned clone; no GitHub fetch, Docker, install or STR invocation",
+  "repo": "https://github.com/tfwillems/HipSTR",
+  "ref": "b2033bfbb5cf55496b776463bdf2993fa763a4be",
+  "install_ready": false,
+  "may_say_runs": false,
+  "blocker": "install_profile_unsupported",
+  "installation": {
+    "profile": "strhub-upstream-procedure/1",
+    "ready": false,
+    "method": "make",
+    "source_file": null,
+    "reason": "This evaluator has no proven installation profile for this recipe; no dependencies, compiler options or environment fixes may be supplied by STRhub."
+  },
+  "amendments": [
+    {
+      "code": "working_directory_changed",
+      "what": "The command was moved from the upstream image's working directory; this profile does not establish that change."
+    },
+    {
+      "code": "command_evidence_missing",
+      "what": "The complete command and prerequisite must be established at the cited lines of this same pinned upstream commit; wiki text or a recipe label is not proof."
+    },
+    {
+      "code": "command_profile_unsupported",
+      "what": "input list cardinality is not changed to fit one available sample"
+    },
+    {
+      "code": "input_not_substituted",
+      "what": "This evaluator cannot establish that the cited command reads the declared reference input; no config or input list was rewritten to make it do so."
+    },
+    {
+      "code": "install_profile_unsupported",
+      "what": "This evaluator has no proven installation profile for this recipe; no dependencies, compiler options or environment fixes may be supplied by STRhub."
+    }
+  ]
+}

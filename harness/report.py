@@ -1159,6 +1159,13 @@ def main() -> int:
             f"{_fallback_reason(m['environment'])} was built instead. What ran is the "
             "version that environment holds, not necessarily the pinned commit."
         )
+    elif env_source == "documented":
+        needed.append(
+            "A fixed evaluator container for a cited source-installation transcript. "
+            "The container definition is supplied by STRhub and requires its separate "
+            "source-profile review. Base-image and package versions are not frozen "
+            "by the transcript."
+        )
     elif env_source == "generated":
         needed.append(
             "A container environment, built from the tool's declared install "

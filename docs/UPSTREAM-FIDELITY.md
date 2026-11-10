@@ -60,7 +60,7 @@ The generic Dockerfile generator has therefore been removed. This also removes
 its generic packages, HTTPS protocol rewrites, symlinks, library-path changes,
 tolerated submodule failures and generated fallback installations.
 
-Profile 1 admits an **upstream Dockerfile**, unchanged, with a cited literal
+The original installation profile admits an **upstream Dockerfile**, unchanged, with a cited literal
 `docker build` command using repository-root context. The supported build
 arguments are an optional literal Dockerfile and image tag; other arguments,
 contexts or submodule setups are evaluator limits. The evaluator's local image
@@ -80,6 +80,11 @@ STRhub does not replace the image entrypoint. A documented image outside this
 profile can have a valid installation procedure; the evaluator cannot certify
 its execution through this profile.
 
+The separately versioned [literal source-installation profile](SOURCE-INSTALLATION.md)
+now supports one complete cited Ubuntu 22.04 APT + make transcript. It has no
+tool-specific rules and does not relax this document's command policy. CI and
+the local runner re-derive its container definition from checked source bytes;
+no submitted descriptor or earlier successful experiment can authorize it.
 Other source installations, release binaries and published packages/images
 remain unsupported until a separate profile establishes every effective step.
 An unsupported proposal contains a non-runnable descriptor, not installation

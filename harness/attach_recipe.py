@@ -28,6 +28,8 @@ def main() -> int:
     ap.add_argument("tool")
     ap.add_argument("--dockerdir", required=True, help="where manifest.yml and Dockerfile were read from")
     ap.add_argument("--proposal", default="", help="detect_recipe output, when the recipe was proposed")
+    ap.add_argument("--procedure-review", default="", help="pre-execution review bound to the effective manifest")
+    ap.add_argument("--source-install-dockerfile", default="", help="verified source-installation carrier selected for the build")
     ap.add_argument("--reports", default=str(ROOT / "reports"))
     args = ap.parse_args()
 
@@ -51,6 +53,27 @@ def main() -> int:
             recipe["proposal"] = json.loads(pathlib.Path(args.proposal).read_text())
         except Exception:  # noqa: BLE001
             pass
+    if (m.get("environment") or {}).get("source") == "documented":
+        import fidelity
+        import source_install
+        reviewed = json.loads(pathlib.Path(args.procedure_review).read_text()) if args.procedure_review else {}
+        install = source_install.installation(recipe.get("proposal") or {}, m)
+        if (not install.get("ready") or install != reviewed.get("installation")
+                or reviewed.get("profile") != fidelity.PROFILE
+                or reviewed.get("manifest_sha256") != fidelity.digest(json.dumps(m, sort_keys=True))):
+            raise ValueError("cannot attach a source-installation recipe without matching evidence")
+        # Retain a submission's descriptor, but never describe it as the file
+        # used by CI: the builder independently materialises the cited carrier.
+        recipe["submitted_dockerfile"] = recipe["dockerfile"]
+        recipe["dockerfile"] = ""
+        recipe["source_installation"] = install
+        if args.source_install_dockerfile:
+            selected = pathlib.Path(args.source_install_dockerfile)
+            if selected.is_file():
+                text = selected.read_bytes().decode("utf-8")
+                if text != install["carrier_dockerfile"]:
+                    raise ValueError("selected installation carrier differs from the reviewed transcript")
+                recipe["dockerfile"] = text
     out = pathlib.Path(args.reports)
     out.mkdir(exist_ok=True)
     (out / f"{slug}.recipe.json").write_text(json.dumps(recipe, indent=2))

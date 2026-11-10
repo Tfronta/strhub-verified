@@ -124,7 +124,7 @@ def classify(proposal: dict, manifest: dict, limitations: list[str],
         amendments.append({"code": "regions_profile_unsupported", "what": "A tool-name lookup or generated region layout is not upstream procedure evidence; this profile does not establish that input conversion."})
     installation = fidelity.installation(proposal, manifest)
     citable = installation["ready"]
-    if installation["ready"] and not fidelity.image_invocation_supported(proposal):
+    if installation["ready"] and not fidelity.image_invocation_supported(proposal, installation):
         amendments.append({"code": "image_invocation_unsupported", "what": "The upstream image does not declare the shell entrypoint this evaluator needs; ENTRYPOINT is not overridden or repaired."})
     if not installation["ready"]:
         amendments.append({"code": "install_profile_unsupported", "what": installation["reason"]})

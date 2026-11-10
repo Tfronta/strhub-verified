@@ -1791,7 +1791,7 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
         "commands": commands,
         "source_documents": command_sources(readme, readme_name, docs),
         "upstream_files": ({build["file"]: files[build["file"]]}
-                           if build.get("method") == "dockerfile" and files.get(build.get("file")) else {}),
+                           if build.get("method") in ("dockerfile", "make") and files.get(build.get("file")) else {}),
         "input_type": input_type,
         "output": output,
         "readme": rd,

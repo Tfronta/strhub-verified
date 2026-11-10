@@ -523,6 +523,7 @@ jobs:
           DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
           DOCKER_FILE: ${{ steps.m.outputs.dockerfile }}
           DOCKER_FROM_REPO: ${{ steps.m.outputs.dockerfile_from_repo }}
+          INSTALLATION_PROFILE: ${{ steps.m.outputs.installation_profile }}
         run: |
           # pipefail, or `tee` would swallow docker's exit status and a failed
           # build would be recorded as a passed gate — the one bug this step
@@ -531,31 +532,30 @@ jobs:
           mkdir -p work
           : > work/log_build.txt
           echo "source_evidence=unverified" >> "$GITHUB_OUTPUT"
-          [ -n "$DOCKER_FROM_REPO" ] || { echo '::error::no proven upstream installation'; exit 1; }
-          CONTEXT="$DOCKER_DIR"
+          [ -n "$DOCKER_FROM_REPO" ] || [ "${INSTALLATION_PROFILE:-}" = 'strhub-source-install/1' ] \
+            || { echo '::error::no proven upstream installation'; exit 1; }
+          # Obtain the immutable source once for either supported profile.
+          NAME=$(basename "${TOOL_REPO%.git}")
+          rm -rf work/ctx && mkdir -p work/ctx
+          SRC="work/ctx/$NAME"
+          git clone -q -- "$TOOL_REPO" "$SRC"
+          git -C "$SRC" checkout -q "$TOOL_REF"
+          want=$(git -C "$SRC" rev-parse "${TOOL_REF}^{commit}")
+          [ "$(git -C "$SRC" rev-parse HEAD)" = "$want" ] \
+            || { echo "::error::checked out $(git -C "$SRC" rev-parse HEAD), not $TOOL_REF"; exit 1; }
+          CONTEXT="$SRC"
           if [ -n "$DOCKER_FROM_REPO" ]; then
-            # The repository ships its own Dockerfile: build THAT, at the pinned
-            # ref. The author's own statement of the environment, taken at its word.
-            # Profile 1 requires the documented repository-root build context.
-            # No parent context is inferred to work around a missing COPY.
-            NAME=$(basename "${TOOL_REPO%.git}")
-            rm -rf work/ctx && mkdir -p work/ctx
-            SRC="work/ctx/$NAME"
-            # Each command on its own line: inside an `a && b && c` list, bash -e
-            # does not stop when `b` fails, and a failed checkout went on to
-            # build the default branch under the pinned commit's name.
-            git clone -q -- "$TOOL_REPO" "$SRC"
-            git -C "$SRC" checkout -q "$TOOL_REF"
-            want=$(git -C "$SRC" rev-parse "${TOOL_REF}^{commit}")
-            [ "$(git -C "$SRC" rev-parse HEAD)" = "$want" ] \
-              || { echo "::error::checked out $(git -C "$SRC" rev-parse HEAD), not $TOOL_REF"; exit 1; }
-            DOCKER_DIR="$SRC"; DOCKER_FILE="$DOCKER_FROM_REPO"; CONTEXT="$SRC"
+            DOCKER_DIR="$SRC"; DOCKER_FILE="$DOCKER_FROM_REPO"
             python harness/_paths.py "$SRC" "$DOCKER_FILE"
-            # No context inference, submodule repair, generated dependencies
-            # or build-argument overrides. Check the actual pinned files.
             python harness/fidelity.py --checkout "$SRC" --review work/procedure_review.json
-            echo "source_evidence=verified" >> "$GITHUB_OUTPUT"
+          else
+            # Re-derive every command from checked source bytes. Never build a
+            # submitted/generated descriptor or select packages by tool name.
+            DOCKER_DIR="$PWD/work"; DOCKER_FILE='source-install.Dockerfile'
+            python harness/fidelity.py --checkout "$SRC" --review work/procedure_review.json \
+              --source-install-dockerfile "$DOCKER_DIR/$DOCKER_FILE"
           fi
+          echo "source_evidence=verified" >> "$GITHUB_OUTPUT"
           build() {  # $1 Dockerfile, $2 its directory, $3 context
             docker build \
               -f "$2/$1" \
@@ -940,7 +940,9 @@ jobs:
         if: always() && env.MODE == 'trial' && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
         env:
           DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
-        run: python harness/attach_recipe.py "$TOOL" --dockerdir "$DOCKER_DIR" --proposal recipe_proposal.json
+        run: >-
+          python harness/attach_recipe.py "$TOOL" --dockerdir "$DOCKER_DIR" --proposal recipe_proposal.json
+          --procedure-review work/procedure_review.json --source-install-dockerfile work/source-install.Dockerfile
 
       - name: Generate PDF report
         if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'

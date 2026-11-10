@@ -144,12 +144,15 @@ def cite(proposal: dict, candidate: dict) -> dict:
 
 
 def installation(proposal: dict, manifest: dict) -> dict:
-    """Until other install profiles exist, execute only an upstream Dockerfile.
+    """Review an upstream Dockerfile or a separately versioned source transcript.
 
-    A Makefile, package name or release link is discovery evidence, not proof
+    A Makefile, package name or release link alone is discovery evidence, not proof
     of every dependency, compiler option and environment setting we might add.
     """
     env, build = manifest.get("environment") or {}, proposal.get("build") or {}
+    if env.get("source") == "documented":
+        import source_install
+        return source_install.installation(proposal, manifest)
     ready = (env.get("source") == "repository" and build.get("method") == "dockerfile"
              and bool(env.get("from_repo")) and env.get("from_repo") == build.get("file")
              and re.fullmatch(r"[0-9a-f]{40}", str(proposal.get("ref") or ""))
@@ -200,8 +203,11 @@ def installation(proposal: dict, manifest: dict) -> dict:
     return result
 
 
-def image_invocation_supported(proposal: dict) -> bool:
+def image_invocation_supported(proposal: dict, installation_review: dict | None = None) -> bool:
     """Do not replace ENTRYPOINT or add shell options the image did not state."""
+    import source_install
+    if installation_review and installation_review.get("profile") == source_install.PROFILE:
+        return bool(installation_review.get("ready") and source_install.discover(proposal) == installation_review)
     filename = (proposal.get("build") or {}).get("file")
     text = (proposal.get("upstream_files") or {}).get(filename, "")
     # Decline heredocs, alternate escaping and multiple stages rather than
@@ -233,9 +239,15 @@ def verify_checkout(root, review: dict) -> None:
     install = review.get("installation") or {}
     if review.get("profile") != PROFILE or not install.get("ready"):
         raise ValueError("no proven installation profile; Docker must not run")
-    checks = [(install.get("source_file"), install.get("dockerfile_sha256"))]
-    citations = [install.get("citation") or {}] + ((review.get("command_review") or {}).get("citations") or [])
-    checks += [(c.get("path"), c.get("document_sha256")) for c in citations]
+    import source_install
+    if install.get("profile") == source_install.PROFILE:
+        source_install.verify_checkout(root, install)
+        citations = (review.get("command_review") or {}).get("citations") or []
+        checks = [(c.get("path"), c.get("document_sha256")) for c in citations]
+    else:
+        checks = [(install.get("source_file"), install.get("dockerfile_sha256"))]
+        citations = [install.get("citation") or {}] + ((review.get("command_review") or {}).get("citations") or [])
+        checks += [(c.get("path"), c.get("document_sha256")) for c in citations]
     for relative, expected in checks:
         if not relative or not expected:
             raise ValueError("incomplete upstream file evidence")
@@ -252,5 +264,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check upstream evidence before Docker")
     parser.add_argument("--checkout", required=True)
     parser.add_argument("--review", required=True)
+    parser.add_argument("--source-install-dockerfile", help="Materialise only a verified source-installation carrier")
     args = parser.parse_args()
-    verify_checkout(pathlib.Path(args.checkout), json.loads(pathlib.Path(args.review).read_text()))
+    review = json.loads(pathlib.Path(args.review).read_text())
+    verify_checkout(pathlib.Path(args.checkout), review)
+    if args.source_install_dockerfile:
+        import source_install
+        source_install.materialise(pathlib.Path(args.checkout), review["installation"],
+                                   pathlib.Path(args.source_install_dockerfile))

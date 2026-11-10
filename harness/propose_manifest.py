@@ -219,6 +219,8 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     from_repo = build_info.get("method") == "dockerfile"
     caveat_items: list[str] = []
     dockerfile_fallback_text: str | None = None
+    import source_install
+    source_plan = source_install.discover(proposal) if not from_repo else {"ready": False}
 
     # --- environment
     if from_repo:
@@ -229,6 +231,12 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         cwd = "."
         caveat = f"Environment: the repository's own {build_info['file']} is selected as-is, subject to the evidence check."
         caveat_items.append(caveat)
+    elif source_plan["ready"]:
+        # One generic transcript: no tool names, prior results or package guesses.
+        dockerfile_text = source_plan["carrier_dockerfile"]
+        env = {"dockerfile": "Dockerfile", "os": ["ubuntu-22.04"], "source": "documented"}
+        cwd = "."
+        caveat_items.append("Environment: a fixed evaluator carrier transcribes the single complete cited installation block unchanged; its operating system is explicitly named by that block's heading.")
     else:
         # Non-runnable: never infer dependencies, interpreters or library paths.
         dockerfile_text = "# Installation profile not established; must not be built.\nFROM scratch\n"
