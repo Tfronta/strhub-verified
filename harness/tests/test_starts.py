@@ -4,6 +4,7 @@ import json
 import check_starts
 import prepare
 import verdict
+from procedure_context import decide
 
 
 def test_exit_zero_or_a_printed_usage_is_starting():
@@ -39,13 +40,13 @@ def test_the_verdict_says_whether_the_program_starts_when_nothing_ran_to_the_end
     gaps = {"schema": "strhub-verified/recipe-proposal/1",
             "readme": {"gaps": [{"item": "command", "text": "no command"}], "sufficient_to_attempt": False}}
     g = {"available": True, "installs": True, "runs": False, "io": False, "content": False}
-    v = verdict.decide({**g, "starts": True}, recipe_proposal=gaps)
+    v = decide({**g, "starts": True}, recipe_proposal=gaps)
     assert v["code"] == "undetermined" and v["reason"].endswith("The installed program starts: it answers --help.")
-    v = verdict.decide({**g, "starts": False})
+    v = decide({**g, "starts": False})
     assert v["code"] == "fails" and v["reason"].endswith("The installed program does not start: --help fails.")
     # A run that produced its output needs no such sentence.
     ok = {"available": True, "installs": True, "runs": True, "io": True, "content": True, "starts": True}
-    assert "--help" not in verdict.decide(ok)["reason"]
+    assert "--help" not in decide(ok)["reason"]
 
 
 def test_a_readme_with_no_command_does_not_authorize_an_invented_help_invocation(tmp_path):

@@ -28,14 +28,14 @@ from certificate_text import (  # noqa: E402
     AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, FULL_RUN_HEADING, COLOR_HEX,
     certificate_for, display_name, LIMITATIONS, OUT_OF_SCOPE,
     INSTRUMENT_LINE, BADGE_INSTRUMENTS, CURATED_HEADING, CURATED_LEAD, CURATED_NEEDED,
-    step1_says,
+    step1_says, execution_finding_established,
 )
 import verdict as verdict_lib  # noqa: E402
 import upstream  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SCOPE = ("Executed end-to-end in the stated environment with output in the "
-         "expected format. Concerns reproducible execution only; no claim of "
+SCOPE = ("Assessment of documented execution in the stated environment and "
+         "output format. Concerns reproducible execution only; no claim of "
          "accuracy, casework fitness, or regulatory validation.")
 
 # Highest gate cleared, in order. The badge reflects the furthest green gate.
@@ -882,6 +882,7 @@ def _certificate_cfg(report: dict, m: dict) -> dict:
         "tool_name": name,
         "gates": report.get("gates") or {},
         "verdict": report.get("verdict") or {},
+        "execution_finding_established": execution_finding_established(report),
         "stats": stats,
         "declared_format": (declared.get("format") or "—").upper(),
         "dataset": {"name": ds_name} if ds_name else {},
@@ -1093,6 +1094,7 @@ def main() -> int:
                    **({"workarounds": m["recipe"]["workarounds"]}
                       if (m.get("recipe") or {}).get("workarounds") else {})},
         "gates": gates,
+        "input_contract": m.get("inputs", {}),
         "level": level,
         "io_detail": io_detail,
         "content_detail": content_detail,
@@ -1339,24 +1341,34 @@ def main() -> int:
                              and int(o.get("called_records", o.get("records", 0)) or 0) == 0
                              and int(o.get("records_without_gt") or 0) == 0 for o in outputs):
             strhub_fault = "the structurally valid output VCF contains no called genotypes; this run does not establish why"
-    procedure = (proposal or {}).get("procedure")
+    import authorization
+    procedure = authorization.rejection("The mandatory pre-execution procedure review was not supplied.")
+    review_validation = authorization.Validation(False, procedure["reason"])
     if args.procedure_review:
-        import fidelity
-        procedure = {"may_say_runs": False, "basis": "strhub", "attribution": "strhub",
-                     "blocker": "procedure_evidence_missing", "reason": "The pre-execution procedure review is missing, invalid or belongs to another manifest."}
         try:
             reviewed = json.loads(pathlib.Path(args.procedure_review).read_text())
-            if reviewed.get("profile") == fidelity.PROFILE and reviewed.get("manifest_sha256") == fidelity.digest(json.dumps(m, sort_keys=True)):
-                procedure = reviewed
+            review_validation = authorization.validate(reviewed, m)
+            if review_validation.valid:
+                binding = authorization.binding_validation(report, m)
+                if not binding.valid:
+                    review_validation = binding
+            if review_validation.valid:
+                procedure = review_validation.review
+            else:
+                procedure = authorization.rejection(review_validation.reason)
+                report["rejected_procedure_review"] = reviewed
         except (OSError, ValueError, AttributeError):
-            pass
-    if procedure:
-        report["procedure_review"] = procedure
+            review_validation = authorization.Validation(False, "The mandatory procedure review could not be read.")
+            procedure = authorization.rejection(review_validation.reason)
+    report["procedure_review"] = procedure
+    report["procedure_validation"] = {"schema": authorization.SCHEMA, "valid": review_validation.valid,
+                                      "reason": review_validation.reason}
     report["verdict"] = verdict_lib.decide(
         gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
         fallback_used=args.environment_built == "fallback",
         strhub_fault=strhub_fault,
         procedure=procedure,
+        manifest=m,
     )
 
     # Step 1 in the three sentences a maintainer is owed, with the block of

@@ -199,6 +199,14 @@ def test_report_cannot_certify_invalid_or_unsupported_vcf(tmp_path, text, expect
         manifest.write_text(yaml.safe_dump(m))
         (tmp_path / "out/notes.txt").write_text("independent valid output\n")
         io = check_io.check(str(manifest), str(tmp_path / "out"))
+    # Isolate the format verdict behind a complete synthetic cited contract.
+    # Keep the malformed/unsupported output bytes and declared outputs intact.
+    from procedure_context import context
+    outputs = yaml.safe_load(manifest.read_text())["outputs"]
+    _, cited_manifest, reviewed = context(manifest_fields={"outputs": outputs})
+    manifest.write_text(yaml.safe_dump(cited_manifest))
+    review_path = tmp_path / "review.json"
+    review_path.write_text(json.dumps(reviewed))
     (tmp_path / "io.json").write_text(json.dumps(io))
     # Even an independently passing plausibility check cannot override IO.
     (tmp_path / "content.json").write_text('{"passed": true}')
@@ -206,7 +214,8 @@ def test_report_cannot_certify_invalid_or_unsupported_vcf(tmp_path, text, expect
     monkeypatch.setattr(report_module, "ROOT", tmp_path)
     monkeypatch.setattr(sys, "argv", ["report.py", "--manifest", str(manifest),
                                      "--available", "pass", "--installs", "pass", "--runs", "pass",
-                                     "--io", "io.json", "--content", "content.json", "--mode", "trial"])
+                                     "--io", "io.json", "--content", "content.json", "--mode", "trial",
+                                     "--procedure-review", str(review_path)])
     assert report_module.main() == 0
     report = json.loads(capsys.readouterr().out)
     assert report["verdict"]["code"] == expected

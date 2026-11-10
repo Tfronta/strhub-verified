@@ -361,6 +361,20 @@ def test_data_item(cfg: dict, ds_name: str) -> tuple[str, str]:
             f"{cfg['tool_name']} ships no test or demo data of its own. {used}")
 
 
+def execution_finding_established(report: dict) -> bool | None:
+    """Presentation status for new reports; historical blocks remain unchanged.
+
+    This is not authorization. The engine/publisher separately revalidate the
+    full evidence; a rendering flag never grants permission to execute.
+    """
+    if "procedure_validation" not in report:
+        return None
+    return bool((report.get("procedure_validation") or {}).get("valid")
+                and (report.get("procedure_review") or {}).get("may_say_runs") is True
+                and (report.get("verdict") or {}).get("code") in ("runs", "fails")
+                and (report.get("verdict") or {}).get("basis") != "strhub")
+
+
 def conclusion_items_for(cfg: dict) -> list[tuple[str, str]]:
     """The certificate's closing claims, each one derived from a gate.
 
@@ -371,6 +385,17 @@ def conclusion_items_for(cfg: dict) -> list[tuple[str, str]]:
     had run. A PDF travels on its own, detached from the page and the log; it
     may not say the opposite of the report it renders.
     """
+    if cfg.get("execution_finding_established") is False:
+        items = [("Procedure not established",
+                  "The recorded gate observations do not establish whether the documented procedure succeeded or failed."),
+                 ("Observations retained",
+                  "The supplied run and output observations remain in the report; they do not replace procedure evidence.")]
+        verdict = cfg.get("verdict") or {}
+        if verdict.get("title") and verdict.get("reason"):
+            items.append((f"Verdict: {verdict['title']}", verdict["reason"]))
+        items.append(("Reproducibility not established",
+                      "These observations are insufficient to establish a reproducible documented execution finding."))
+        return items
     stats = cfg.get("stats") or {}
     top_loci = stats.get("top_loci_by_depth", [])
     n_loci = stats.get("distinct_str_loci", 0)

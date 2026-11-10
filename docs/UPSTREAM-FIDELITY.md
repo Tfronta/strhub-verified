@@ -105,14 +105,16 @@ rejected or mismatched review passed to reporting yields `undetermined`, even
 if the supplied gates are green. Pre-build evidence failures are attributed to
 the evaluator, not to the tool.
 
-This closes the production execution paths' use of generated installations and
-loose command comparison. **Step 5 remains**: unify durable evidence retrieval
-for saved/submitted recipes and every reporting/publication entry point, remove
-remaining origin/identity shortcuts and audit standalone legacy report calls.
-Saved recipes currently lacking proof remain blocked; they are not silently
-grandfathered. Existing published attestations are unchanged pending the planned
-catalogue transition. This profile does not validate biological correctness,
-all input compatibility, or the complete execution/evidence supply chain.
+The [mandatory evidence capsule](MANDATORY-PROCEDURE-EVIDENCE.md) now binds the
+effective manifest and source evidence, with a full decision recomputation at
+build/report/verdict/publication boundaries. Standalone report calls cannot
+substitute cached proposal decisions. Origin/identity labels and unreviewed
+historical records cannot authorize a new publication or alias. Saved recipes
+currently lacking retrievable proof remain blocked rather than grandfathered.
+No published catalogue was rewritten by this change. Advanced web generation,
+broader generic documentation reading and the remaining execution/evidence
+supply chain are subsequent work. This profile does not establish biological
+correctness or all input compatibility.
 
 ## Read-only review of the five current recipes
 

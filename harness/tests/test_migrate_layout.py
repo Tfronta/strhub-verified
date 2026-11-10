@@ -77,7 +77,7 @@ def test_a_dry_run_changes_nothing(tmp_path):
     assert sorted(p.relative_to(site).as_posix() for p in site.rglob("*")) == before
 
 
-def test_applying_lays_every_tool_out_by_commit_with_aliases_on_the_newest(tmp_path):
+def test_migration_preserves_commit_history_without_granting_legacy_reports_new_authority(tmp_path):
     site = _site(tmp_path)
     done = ml.migrate(site, resolve=_resolve, apply=True)
     assert done["unknown"] == []
@@ -91,14 +91,12 @@ def test_applying_lays_every_tool_out_by_commit_with_aliases_on_the_newest(tmp_p
     assert (site / "hipstr" / E12E9 / "hipstr.json").exists()      # the bare root set, folded in
     assert (site / "hipstr-y" / B2033 / "curated" / "hipstr-y.json").exists()
     assert (site / "straitrazor" / B618 / "curated" / "straitrazor.json").exists()
-    # The alias is the newest commit AMONG THE RUNS THAT MAY STAND BEHIND THE BADGE:
-    # hipstr's documented run at 12e989b, not the later-verified curated v0.7.
-    alias = json.loads((site / "hipstr.json").read_text())
-    assert alias["source"]["ref_resolved"] == E12E9 and alias["source"]["committed"] == DATES[E12E9]
-    assert alias["caveats"]["source"] == "detect_recipe"
-    # A tool with only curated runs keeps a curated alias, marked as such.
-    y = json.loads((site / "hipstr-y.json").read_text())
-    assert y["source"]["ref_resolved"] == B2033 and pl.instrument_of_report(y) == "curated"
+    # Neither a proposed origin nor curated history substitutes for the
+    # mandatory proof. Keep their records, without promoting a new badge alias.
+    assert not (site / "hipstr.json").exists()
+    assert not (site / "hipstr-y.json").exists()
+    historic = json.loads((site / "hipstr" / E12E9 / "hipstr.json").read_text())
+    assert historic["caveats"]["source"] == "detect_recipe"
 
 
 def test_moved_sets_are_renamed_inside_and_out(tmp_path):
@@ -120,18 +118,12 @@ def test_moved_sets_are_renamed_inside_and_out(tmp_path):
     assert not (d / "hipstr-b2033bf.json").exists() and not list(site.glob("hipstr-b2033bf.*"))
 
 
-def test_the_index_afterwards_lists_only_todays_slugs_with_their_history(tmp_path):
+def test_migrating_unreviewed_history_does_not_create_new_catalogue_entries(tmp_path):
     site = _site(tmp_path)
     ml.migrate(site, resolve=_resolve, apply=True)
     cat = build_index.build_catalogue(site)
-    assert sorted(t["slug"] for t in cat["tools"]) == ["gangstr", "hipstr", "hipstr-y", "strait-razor-forenseq",
-                                                       "strait-razor-powerseq", "straitrazor", "strsearch", "strspy-ont"]
-    hipstr = next(t for t in cat["tools"] if t["slug"] == "hipstr")
-    assert [(v["sha"], v["instrument"]) for v in hipstr["versions"]] == [(E12E9, "documented"), (B2033, "curated")]
-    assert hipstr["versions"][1]["version"] == "v0.7" and hipstr["versions"][1]["committed"] == DATES[B2033]
-    assert hipstr["versions"][1]["report"] == f"hipstr/{B2033}/curated/hipstr.json"
-    assert hipstr["instrument"] == "documented"
-    assert next(t for t in cat["tools"] if t["slug"] == "strspy-ont")["instrument"] == "curated"
+    assert cat["tools"] == []
+    assert [(sha, instrument) for sha, instrument, _ in pl.scan(site, "hipstr")] == [(E12E9, "documented"), (B2033, "curated")]
 
 
 def test_a_slug_the_table_does_not_know_is_reported_and_left_alone(tmp_path):
@@ -150,7 +142,7 @@ def test_running_it_twice_is_harmless(tmp_path):
     assert sorted(p.relative_to(site).as_posix() for p in site.rglob("*")) == snapshot
 
 
-def test_a_deploy_after_the_migration_lands_beside_the_migrated_commits(tmp_path):
+def test_a_legacy_report_cannot_be_resubmitted_after_migration_without_proof(tmp_path):
     """The layout the migration leaves is the one publish_layout keeps: a new
     run of hipstr at an older commit lands below and moves nothing."""
     site = _site(tmp_path)
@@ -163,6 +155,8 @@ def test_a_deploy_after_the_migration_lands_beside_the_migrated_commits(tmp_path
         "source": {"repo": "https://github.com/x/hipstr", "ref": older, "ref_resolved": older, "committed": "2018-01-01T00:00:00Z"},
         "generated": "2026-09-19T00:00:00+00:00", "gates": {}, "scope": "x"}))
     (run / "hipstr.html").write_text("x")
-    done = pl.place(site, run, "hipstr", resolve=_resolve)
-    assert done["alias"] == E12E9 and done["alias_instrument"] == "documented"
-    assert done["versions"] == [(E12E9, "documented"), (B2033, "curated"), (older, "documented")]
+    before = {p.relative_to(site).as_posix(): p.read_bytes() for p in site.rglob("*") if p.is_file()}
+    import pytest
+    with pytest.raises(SystemExit, match="mandatory procedure evidence"):
+        pl.place(site, run, "hipstr", resolve=_resolve)
+    assert before == {p.relative_to(site).as_posix(): p.read_bytes() for p in site.rglob("*") if p.is_file()}

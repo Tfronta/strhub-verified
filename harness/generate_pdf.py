@@ -27,7 +27,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import diagnose_log  # noqa: E402
 from command_record import presentation as command_presentation  # noqa: E402
 from certificate_text import (  # noqa: E402
-    conclusion_items_for, install_meaning, instrument_of_report, workaround_lines, headline,
+    conclusion_items_for, install_meaning, instrument_of_report, workaround_lines, headline, execution_finding_established,
     AS_IS_HEADING, STRHUB_DID_HEADING, STRHUB_DID_LEAD, NOT_DOCUMENTED, display_name,
     PURPOSE, EXEC_SCOPE, NOT_EVALUATED, SCOPE_STATEMENT, SCOPE_NOT, DISCLAIMER, OUT_OF_SCOPE, LIMITATIONS,
 )
@@ -1316,6 +1316,7 @@ def load_config(manifest_path: str, datasets_path: str | None = None,
         # The one sentence the web leads with. A certificate that omits it can
         # read as a pass while the report it renders says "Fails".
         "verdict":        report.get("verdict") or {},
+        "execution_finding_established": execution_finding_established(report),
         "step1":          report.get("step1") or {},
         # Whether the repository ships example data, when a run actually read
         # the tree to find out. Absent means nobody looked.

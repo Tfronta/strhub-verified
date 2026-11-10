@@ -524,6 +524,7 @@ jobs:
           DOCKER_FILE: ${{ steps.m.outputs.dockerfile }}
           DOCKER_FROM_REPO: ${{ steps.m.outputs.dockerfile_from_repo }}
           INSTALLATION_PROFILE: ${{ steps.m.outputs.installation_profile }}
+          MANIFEST: ${{ steps.m.outputs.manifest }}
         run: |
           # pipefail, or `tee` would swallow docker's exit status and a failed
           # build would be recorded as a passed gate — the one bug this step
@@ -547,12 +548,12 @@ jobs:
           if [ -n "$DOCKER_FROM_REPO" ]; then
             DOCKER_DIR="$SRC"; DOCKER_FILE="$DOCKER_FROM_REPO"
             python harness/_paths.py "$SRC" "$DOCKER_FILE"
-            python harness/fidelity.py --checkout "$SRC" --review work/procedure_review.json
+            python harness/fidelity.py --checkout "$SRC" --review work/procedure_review.json --manifest "${MANIFEST:-}"
           else
             # Re-derive every command from checked source bytes. Never build a
             # submitted/generated descriptor or select packages by tool name.
             DOCKER_DIR="$PWD/work"; DOCKER_FILE='source-install.Dockerfile'
-            python harness/fidelity.py --checkout "$SRC" --review work/procedure_review.json \
+            python harness/fidelity.py --checkout "$SRC" --review work/procedure_review.json --manifest "${MANIFEST:-}" \
               --source-install-dockerfile "$DOCKER_DIR/$DOCKER_FILE"
           fi
           echo "source_evidence=verified" >> "$GITHUB_OUTPUT"

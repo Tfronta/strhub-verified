@@ -14,6 +14,7 @@ import fidelity
 import prepare
 import procedure
 import verdict
+import authorization
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 CITED = 'tool --reads x.bam --threshold 30 --label "two  spaces" --output out.vcf'
@@ -36,9 +37,7 @@ def case():
 
 
 def review(proposal, manifest):
-    result = procedure.classify(proposal, manifest, [], [])
-    result["manifest_sha256"] = fidelity.digest(json.dumps(manifest, sort_keys=True))
-    return result
+    return authorization.prepare_review(proposal, manifest, [], [])
 
 
 def test_full_citation_and_closed_path_substitution_can_establish_a_procedure():
@@ -49,7 +48,7 @@ def test_full_citation_and_closed_path_substitution_can_establish_a_procedure():
         "replacement": "/data/in/input.bam", "role": "read_path", "basis": "declared dataset mount"}]
     assert '"two  spaces"' in r["command_review"]["executed"]
     assert r["installation"]["citation"]["verified"]
-    assert verdict.decide(dict.fromkeys(["available", "installs", "runs", "io", "content"], True), procedure=r)["code"] == "runs"
+    assert verdict.decide(dict.fromkeys(["available", "installs", "runs", "io", "content"], True), procedure=r, manifest=m)["code"] == "runs"
 
 
 @pytest.mark.parametrize("change", [
@@ -75,7 +74,7 @@ def test_complete_command_changes_are_blocked_even_with_green_gates(change):
     r = review(p, m)
     assert not r["may_say_runs"]
     assert any(a["code"] == "command_changed" for a in r["amendments"])
-    assert verdict.decide(dict.fromkeys(["available", "installs", "runs", "io", "content"], True), procedure=r)["code"] == "undetermined"
+    assert verdict.decide(dict.fromkeys(["available", "installs", "runs", "io", "content"], True), procedure=r, manifest=m)["code"] == "undetermined"
 
 
 def test_same_flags_with_changed_threshold_reproduces_the_audit_finding():
@@ -176,15 +175,15 @@ def test_checked_out_evidence_is_read_only_and_every_cited_file_is_checked(tmp_p
     for name, text in {**p["upstream_files"], "README.md": p["source_documents"][0]["text"]}.items():
         (tmp_path / name).write_text(text)
     before = {f.name: f.read_bytes() for f in tmp_path.iterdir()}
-    fidelity.verify_checkout(tmp_path, r)
+    fidelity.verify_checkout(tmp_path, r, m)
     assert before == {f.name: f.read_bytes() for f in tmp_path.iterdir()}
     (tmp_path / "README.md").write_text("changed documentation\n")
     with pytest.raises(ValueError, match="evidence differs"):
-        fidelity.verify_checkout(tmp_path, r)
+        fidelity.verify_checkout(tmp_path, r, m)
     (tmp_path / "README.md").write_bytes(before["README.md"])
     (tmp_path / "Dockerfile").write_text("FROM a-different-image\n")
     with pytest.raises(ValueError, match="evidence differs"):
-        fidelity.verify_checkout(tmp_path, r)
+        fidelity.verify_checkout(tmp_path, r, m)
 
 
 def test_preparation_recomputes_instead_of_trusting_a_forged_ready_flag(tmp_path):
@@ -232,6 +231,7 @@ def test_real_install_shell_checks_sources_and_never_repairs_a_failed_build(tmp_
     p, m = case()
     (tmp_path / "work").mkdir()
     (tmp_path / "work/procedure_review.json").write_text(json.dumps(review(p, m)))
+    (tmp_path / "manifest.yml").write_text(yaml.safe_dump(m))
     (tmp_path / "harness").symlink_to(ROOT / "harness", target_is_directory=True)
     bindir = tmp_path / "bin"
     bindir.mkdir()
@@ -253,7 +253,7 @@ def test_real_install_shell_checks_sources_and_never_repairs_a_failed_build(tmp_
              "TEST_DOCUMENT": "altered\n" if tamper else p["source_documents"][0]["text"],
              "TEST_DOCKERFILE": DOCKERFILE,
              "TOOL_REF": p["ref"], "TOOL_REPO": p["repo"], "DOCKER_DIR": "unused",
-             "DOCKER_FILE": "Dockerfile", "DOCKER_FROM_REPO": "Dockerfile", "GITHUB_OUTPUT": str(tmp_path / "output")})
+             "DOCKER_FILE": "Dockerfile", "DOCKER_FROM_REPO": "Dockerfile", "MANIFEST": str(tmp_path / "manifest.yml"), "GITHUB_OUTPUT": str(tmp_path / "output")})
     assert result.returncode != 0
     calls = (tmp_path / "builds.txt").read_text().splitlines() if (tmp_path / "builds.txt").exists() else []
     assert len(calls) == expected_builds

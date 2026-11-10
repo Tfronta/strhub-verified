@@ -26,6 +26,25 @@ def _conclusion(cfg):
     return [f"{t} :: {b}" for t, b in certificate_text.conclusion_items_for(cfg)]
 
 
+def test_unvalidated_green_observations_do_not_certify_execution_or_reproducibility():
+    cfg = _cfg(gates=dict.fromkeys(("available", "installs", "runs", "io", "content"), True),
+               execution_finding_established=False,
+               verdict={"title": "Could not be determined", "reason": "Missing procedure evidence."})
+    text = " ".join(_conclusion(cfg))
+    assert "Procedure not established" in text
+    assert "Reproducibility not established" in text
+    assert "installs and executes without error" not in text
+    assert "generated a structurally valid" not in text
+
+
+def test_unvalidated_red_observations_do_not_blame_the_tool():
+    cfg = _cfg(execution_finding_established=False,
+               verdict={"title": "Could not be determined", "reason": "Missing procedure evidence."})
+    text = " ".join(_conclusion(cfg))
+    assert "Does not install" not in text and "Does not run end-to-end" not in text
+    assert "Procedure not established" in text
+
+
 def test_a_run_that_stopped_is_not_certified_as_running():
     text = " ".join(_conclusion(_cfg()))
     assert "Does not run end-to-end" in text

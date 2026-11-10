@@ -524,7 +524,7 @@ def main() -> int:
 
     # Recompute the review against the actual manifest. Cached may_say_runs
     # or an origin label is not authorization to build or run a procedure.
-    import procedure as procedure_lib
+    import authorization
     proposal_data = {}
     prop_path = pathlib.Path(args.proposal) if args.proposal else (ROOT / "recipe_proposal.json")
     if prop_path.is_file():
@@ -534,7 +534,7 @@ def main() -> int:
                 proposal_data = {}
         except (ValueError, OSError):
             proposal_data = {}
-    review = procedure_lib.classify(proposal_data, m, proposal_data.get("limitations") or [],
+    review = authorization.prepare_review(proposal_data, m, proposal_data.get("limitations") or [],
                                     (m.get("caveats") or {}).get("items") or [])
     procedure_ready = review["may_say_runs"]
     install_ready = review["install_ready"]

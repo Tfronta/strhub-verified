@@ -1,13 +1,16 @@
 """What goes to the catalogue. A failure of the tool does; a fault of ours, a
 trial handed a recipe, and a trial landing on another repository's card do not."""
 import publish_gate
+from procedure_context import report as bound_report
 
 INDEX = {"tools": [{"slug": "hipstr", "source_repo": "https://github.com/tfwillems/HipSTR"}]}
 
 
 def report(code="fails", basis="gates", slug="hipstr", repo="https://github.com/tfwillems/HipSTR"):
-    return {"verdict": {"code": code, "basis": basis},
-            "report": {"slug": slug}, "source": {"repo": repo}}
+    result = bound_report("runs" if code == "runs" else "fails", repo=repo)
+    result["verdict"].update(code=code, basis=basis)
+    result["report"] = {"slug": slug}
+    return result
 
 
 def decide(r, **kw):

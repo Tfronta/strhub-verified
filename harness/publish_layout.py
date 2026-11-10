@@ -206,7 +206,11 @@ def scan(site: pathlib.Path, slug: str) -> list[tuple[str, str, dict]]:
 def alias_source(site: pathlib.Path, slug: str) -> tuple[str, str, dict] | None:
     """The run the root alias copies: the newest commit among the runs that
     may stand behind the badge; failing any, the newest curated run."""
-    runs = [r for r in scan(site, slug) if not r[2].get("retired")]
+    import publish_gate
+    # Historical files remain readable; they do not acquire authority simply
+    # by being on disk or carrying an origin/maintainer label.
+    runs = [r for r in scan(site, slug) if not r[2].get("retired")
+            and publish_gate.validated_finding(r[2]).valid]
     eligible = [r for r in runs if r[1] in BADGE_INSTRUMENTS]
     return (eligible or runs or [None])[0]
 
@@ -219,6 +223,10 @@ def place(site: pathlib.Path, reports: pathlib.Path, slug: str,
     report = _read(run_json)
     if not report:
         raise SystemExit(f"{run_json}: not an attestation report")
+    import publish_gate
+    checked = publish_gate.validated_finding(report)
+    if not checked.valid:
+        raise SystemExit("mandatory procedure evidence rejected before publication: " + checked.reason)
     sha = sha_of(report)
     if not sha:
         raise SystemExit(f"{run_json}: no pinned commit (source.ref_resolved)")

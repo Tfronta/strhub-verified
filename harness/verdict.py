@@ -252,8 +252,9 @@ def _procedure_block(procedure: dict | None, gaps: list) -> dict | None:
     """An amended procedure, or one we cannot feed, is not a result about the
     tool — including when the gates came back green. Success does not confirm
     a guess. See docs/PLAN-Unamended-Procedure.md."""
-    if not procedure or procedure.get("may_say_runs", True):
+    if isinstance(procedure, dict) and procedure.get("may_say_runs") is True:
         return None
+    procedure = procedure or {}
     return {"code": "undetermined", "title": TITLES["undetermined"],
             "basis": procedure.get("basis") or "procedure",
             "reason": procedure.get("reason")
@@ -264,9 +265,25 @@ def _procedure_block(procedure: dict | None, gaps: list) -> dict | None:
 def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
             manual_verification: dict | None = None, recipe_proposal: dict | None = None,
             declared_compatibility: dict | None = None, fallback_used: bool = False,
-            strhub_fault: str | None = None, procedure: dict | None = None) -> dict:
+            strhub_fault: str | None = None, procedure: dict | None = None,
+            manifest: dict | None = None) -> dict:
     """Return {code, title, reason, readme_gaps, basis}."""
+    import authorization
+    checked = authorization.validate(procedure, manifest)
+    if not checked.valid:
+        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "strhub",
+                "reason": checked.reason, "readme_gaps": []}
+    procedure = checked.review
+    recipe_proposal = procedure["evidence"]["proposal"]
+    recipe_proposal = {**recipe_proposal, "limitations": procedure["evidence"]["limitations"]}
+    declared_compatibility = manifest.get("compatibility")
     gates = gates or {}
+    if any(type(gates.get(key)) is not bool for key in ("available", "installs", "runs", "io", "content")):
+        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "strhub",
+                "reason": "The execution gate observations are missing or malformed.", "readme_gaps": []}
+    if gates["runs"] and not (gates["available"] and gates["installs"]):
+        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "strhub",
+                "reason": "The execution gate observations contradict the installation or source availability.", "readme_gaps": []}
     mv = manual_verification or {}
     proposal = recipe_proposal or {}
     gaps = [g for g in (proposal.get("readme") or {}).get("gaps", []) if g.get("item") != "example_data"]
@@ -283,13 +300,9 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     # Plan B does not rescue the commit. The image, when one was tried, is a
     # different claim and must not flip this verdict to runs.
     if fallback_used:
-        blocked = _procedure_block(procedure, gaps)
-        if blocked:
-            return blocked
-        return {"code": "fails", "title": TITLES["fails"], "basis": "gates",
-                "reason": "The build from the pinned commit failed. A published image "
-                          "was not counted as that commit running.",
-                "readme_gaps": gaps}
+        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "strhub",
+                "reason": "Fallback execution is outside the reviewed source procedure; its outcome cannot establish the pinned procedure's result.",
+                "readme_gaps": []}
 
     blocked = _procedure_block(procedure, gaps)
     if blocked:
@@ -373,10 +386,14 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
 def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
            manual_verification: dict | None = None, recipe_proposal: dict | None = None,
            declared_compatibility: dict | None = None, fallback_used: bool = False,
-           strhub_fault: str | None = None, procedure: dict | None = None) -> dict:
+           strhub_fault: str | None = None, procedure: dict | None = None,
+           manifest: dict | None = None) -> dict:
     """The verdict, plus the blockers a reader can act on when it is not 'runs'."""
     v = _decide(gates, diagnostics, manual_verification, recipe_proposal, declared_compatibility,
-                fallback_used, strhub_fault, procedure)
+                fallback_used, strhub_fault, procedure, manifest)
+    if v.get("basis") == "strhub":
+        v["blockers"] = []
+        return v
     # Whether the installed program starts, when the run did not get to the
     # end: installed and starting, but nobody could tell how to run it, is a
     # different finding from a program that does not start at all.
@@ -391,8 +408,9 @@ def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     if v["code"] in ("runs", "out_of_scope") or v.get("basis") == "strhub":
         v["blockers"] = []
         return v
-    proposal = recipe_proposal or {}
-    limits = [l for l in proposal.get("limitations", []) if l in LIMITATION_TEXT]
+    evidence = (procedure or {}).get("evidence") or {}
+    proposal = evidence.get("proposal") or {}
+    limits = [l for l in evidence.get("limitations", []) if l in LIMITATION_TEXT]
     gaps = [g for g in (proposal.get("readme") or {}).get("gaps", []) if g.get("item") != "example_data"]
     v["blockers"] = blockers_for(gates or {}, limits, gaps, _ids(diagnostics))
     raised = _raised(diagnostics)

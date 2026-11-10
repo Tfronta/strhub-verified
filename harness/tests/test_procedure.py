@@ -54,12 +54,12 @@ def test_missing_input_is_not_a_failure_of_the_tool():
     v = verdict.decide(G_OK, recipe_proposal={**PROPOSAL, "limitations": ["no_reference_dataset"]},
                        procedure=got)
     assert v["code"] == "undetermined"
-    assert "nothing was executed" in v["reason"] or "reference sample" in v["reason"]
+    assert v["basis"] == "strhub" and "evidence" in v["reason"]
 
 
 def test_a_file_appearing_does_not_confirm_a_guessed_input():
     v = verdict.decide(G_OK, recipe_proposal={**PROPOSAL, "limitations": ["input_type_guessed"]})
-    assert v["code"] == "undetermined" and v["basis"] == "recipe"
+    assert v["code"] == "undetermined" and v["basis"] == "strhub"
 
 
 def test_mkdir_is_not_silently_excused_as_plumbing():

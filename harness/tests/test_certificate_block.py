@@ -45,7 +45,9 @@ def test_the_report_carries_the_certificate_and_the_badge_says_the_same(tmp_path
     written, badge, md, html, _ = _run_report(tmp_path)
     cert = written["certificate"]
     assert cert["schema"] == ct.CERTIFICATE_SCHEMA
-    assert cert["label"] == badge["message"] == "Does not run as documented: stops at run"
+    # The historical recipe has no mandatory procedure evidence. Synthetic
+    # gate outcomes cannot turn it into a documented execution finding.
+    assert cert["label"] == badge["message"] == "Could not be determined"
     assert cert["reached"] == "Installs"
     assert cert["summary"]["reached"] == "Installs, 2/5 gates passed"
     assert cert["summary"]["why"] == written["verdict"]["reason"]
@@ -53,8 +55,8 @@ def test_the_report_carries_the_certificate_and_the_badge_says_the_same(tmp_path
     assert cert["out_of_scope"] == ct.OUT_OF_SCOPE and cert["limitations"] == ct.LIMITATIONS
     assert cert["scope"] == {"statement": ct.SCOPE_STATEMENT, "not": ct.SCOPE_NOT, "disclaimer": ct.DISCLAIMER}
     titles = [c["title"] for c in cert["conclusion"]]
-    assert titles[:2] == ["Does not run end-to-end", "No output produced"]
-    assert any(t.startswith("Verdict: Fails") for t in titles)
+    assert titles[:2] == ["Procedure not established", "Observations retained"]
+    assert any(t.startswith("Verdict: Could not be determined") for t in titles)
     # The copies print the same closing lists.
     for text in (md, html):
         for item in ct.OUT_OF_SCOPE + ct.LIMITATIONS:

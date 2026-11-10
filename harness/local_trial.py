@@ -195,6 +195,9 @@ def upstream_build_command(manifest: dict, review: dict, checkout: pathlib.Path,
     """Resolve only the cited upstream build; never build the proposed stub."""
     import fidelity
     import _paths
+    import authorization
+    if not authorization.validate(review, manifest).valid:
+        raise ValueError("no proven upstream installation for this effective manifest")
     if (not (review.get("installation") or {}).get("ready")
             or review.get("manifest_sha256") != fidelity.digest(json.dumps(manifest, sort_keys=True))):
         raise ValueError("no proven upstream installation for this manifest")
@@ -204,7 +207,7 @@ def upstream_build_command(manifest: dict, review: dict, checkout: pathlib.Path,
     head = subprocess.run(["git", "-C", str(checkout), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
     if head != source["ref"]:
         raise ValueError("checkout is not the cited immutable commit")
-    fidelity.verify_checkout(checkout, review)
+    fidelity.verify_checkout(checkout, review, manifest)
     import source_install
     if review["installation"].get("profile") == source_install.PROFILE:
         path = checkout.parent / "source-install.Dockerfile"

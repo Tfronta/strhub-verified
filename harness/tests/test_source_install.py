@@ -14,6 +14,7 @@ import prepare
 import procedure
 import propose_manifest
 import source_install
+import authorization
 
 ROOT = Path(__file__).resolve().parents[2]
 COMMAND = "./analyzer --input sample.bam --threshold 30 --output result.vcf"
@@ -47,9 +48,7 @@ def checkout(root, document=DOCUMENT):
 
 
 def review(p, m):
-    result = procedure.classify(p, m, [])
-    result["manifest_sha256"] = fidelity.digest(json.dumps(m, sort_keys=True))
-    return result
+    return authorization.prepare_review(p, m, [], [])
 
 
 @pytest.mark.parametrize("repo,name", [("group/first", "First"), ("other/unrelated", "Unrelated"), ("tfwillems/HipSTR", "HipSTR")])
@@ -63,7 +62,7 @@ def test_admission_does_not_depend_on_repository_or_tool_name(repo, name, tmp_pa
     assert [c["text"] for c in r["installation"]["commands"]] == BLOCK.splitlines()
     assert [c["argv"] for c in r["installation"]["commands"]] == [line.split() for line in BLOCK.splitlines()]
     checkout(tmp_path)
-    fidelity.verify_checkout(tmp_path, r)
+    fidelity.verify_checkout(tmp_path, r, m)
     target = tmp_path / "carrier"
     source_install.materialise(tmp_path, r["installation"], target)
     assert "RUN [\"apt-get\", \"install\", \"-y\", \"make\", \"g++\", \"zlib1g-dev\"]" in target.read_text()
@@ -192,6 +191,7 @@ def test_real_ci_install_shell_checks_the_transcript_and_builds_once(tmp_path, t
     p, m = case()
     (tmp_path / "work").mkdir()
     (tmp_path / "work/procedure_review.json").write_text(json.dumps(review(p, m)))
+    (tmp_path / "manifest.yml").write_text(yaml.safe_dump(m))
     (tmp_path / "harness").symlink_to(ROOT / "harness", target_is_directory=True)
     bindir = tmp_path / "bin"
     bindir.mkdir()
@@ -213,7 +213,7 @@ def test_real_ci_install_shell_checks_the_transcript_and_builds_once(tmp_path, t
              "TEST_DOCUMENT": DOCUMENT.replace("g++", "clang") if tamper else DOCUMENT,
              "TEST_MAKEFILE": MAKEFILE, "TOOL_REF": p["ref"], "TOOL_REPO": p["repo"],
              "DOCKER_DIR": "unused", "DOCKER_FILE": "Dockerfile", "DOCKER_FROM_REPO": "",
-             "INSTALLATION_PROFILE": source_install.PROFILE, "GITHUB_OUTPUT": str(tmp_path / "output")})
+             "INSTALLATION_PROFILE": source_install.PROFILE, "MANIFEST": str(tmp_path / "manifest.yml"), "GITHUB_OUTPUT": str(tmp_path / "output")})
     assert result.returncode != 0
     calls = (tmp_path / "builds.txt").read_text().splitlines() if (tmp_path / "builds.txt").exists() else []
     assert len(calls) == expected_builds

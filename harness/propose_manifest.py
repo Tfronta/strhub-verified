@@ -352,8 +352,8 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         manifest["caveats"] = {"source": "detect_recipe", "items": [c[:300] for c in caveat_items[:8]]}
     # Not a manifest field: the schema rejects anything it does not name, and
     # this is a review of the proposal, not a step the container runs.
-    import procedure as procedure_lib
-    reviewed = procedure_lib.classify(proposal, manifest, limitations, caveat_items)
+    import authorization
+    reviewed = authorization.prepare_review(proposal, manifest, limitations, caveat_items)
 
     header = ("# STRhub Verified candidate, proposed by detect_recipe.\n"
               "# Requires pinned upstream evidence and a strict procedure review.\n"

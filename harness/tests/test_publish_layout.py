@@ -8,6 +8,7 @@ import json
 import pathlib
 
 import publish_layout as pl
+from procedure_context import report as bound_report
 
 SLUG = "hipstr"
 REPO = "https://github.com/tfwillems/HipSTR"
@@ -15,10 +16,8 @@ OLD, NEW, NEWER = "a" * 40, "b" * 40, "c" * 40
 
 
 def _report(sha, committed, generated, level="content", instrument="documented"):
-    r = {"schema": "strhub-verified/1", "tool": {"name": "HipSTR"}, "level": level,
-         "source": {"repo": REPO, "ref": sha, "ref_resolved": sha},
-         "generated": generated, "gates": {}, "scope": "x", "instrument": instrument,
-         "logs": {"external": f"{SLUG}.log-external.txt"}}
+    r = {**bound_report(repo=REPO, ref=sha, instrument=instrument), "level": level,
+         "generated": generated, "scope": "x", "logs": {"external": f"{SLUG}.log-external.txt"}}
     if committed:
         r["source"]["committed"] = committed
     return r

@@ -56,9 +56,11 @@ def main() -> int:
     if (m.get("environment") or {}).get("source") == "documented":
         import fidelity
         import source_install
+        import authorization
         reviewed = json.loads(pathlib.Path(args.procedure_review).read_text()) if args.procedure_review else {}
         install = source_install.installation(recipe.get("proposal") or {}, m)
-        if (not install.get("ready") or install != reviewed.get("installation")
+        if (not authorization.validate(reviewed, m).valid
+                or not install.get("ready") or install != reviewed.get("installation")
                 or reviewed.get("profile") != fidelity.PROFILE
                 or reviewed.get("manifest_sha256") != fidelity.digest(json.dumps(m, sort_keys=True))):
             raise ValueError("cannot attach a source-installation recipe without matching evidence")

@@ -53,6 +53,18 @@ def card_owner(index: dict, slug: str) -> str | None:
     return None
 
 
+def validated_finding(report: dict):
+    """The common evidence gate, including for direct layout/alias writers."""
+    import authorization
+    checked = authorization.report_validation(report)
+    if not checked.valid:
+        return checked
+    verdict = report.get("verdict") or {}
+    if verdict.get("code") not in PUBLISHED_VERDICTS or verdict.get("basis") == "strhub":
+        return authorization.Validation(False, "The report is not an attributable publication finding.")
+    return checked
+
+
 def decide(report: dict, *, mode: str, url_trial: bool, trial_publish: bool,
            event_name: str, index: dict | None) -> tuple[bool, str]:
     """(publishable, why). `why` is one sentence for the run summary."""
@@ -64,6 +76,9 @@ def decide(report: dict, *, mode: str, url_trial: bool, trial_publish: bool,
         return False, f"verdict '{code or 'none'}' is not a finding about the tool"
     if verdict.get("basis") == "strhub":
         return False, "STRhub's own infrastructure failed; the run has to be repeated"
+    checked = validated_finding(report)
+    if not checked.valid:
+        return False, "mandatory procedure evidence rejected: " + checked.reason
     if mode == "trial":
         if not url_trial:
             return False, "a trial handed a recipe never publishes"

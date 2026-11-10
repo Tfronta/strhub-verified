@@ -233,9 +233,14 @@ def image_invocation_supported(proposal: dict, installation_review: dict | None 
         return False
 
 
-def verify_checkout(root, review: dict) -> None:
+def verify_checkout(root, review: dict, manifest: dict | None = None) -> None:
     """Check the documents and Dockerfile against the actual pinned checkout."""
     import _paths
+    import authorization
+    checked = authorization.validate(review, manifest)
+    if not checked.valid:
+        raise ValueError("no proven procedure for the effective manifest: " + checked.reason)
+    review = checked.review
     install = review.get("installation") or {}
     if review.get("profile") != PROFILE or not install.get("ready"):
         raise ValueError("no proven installation profile; Docker must not run")
@@ -264,10 +269,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check upstream evidence before Docker")
     parser.add_argument("--checkout", required=True)
     parser.add_argument("--review", required=True)
+    parser.add_argument("--manifest", required=True, help="actual effective manifest, not a cached contract")
     parser.add_argument("--source-install-dockerfile", help="Materialise only a verified source-installation carrier")
     args = parser.parse_args()
     review = json.loads(pathlib.Path(args.review).read_text())
-    verify_checkout(pathlib.Path(args.checkout), review)
+    import _manifest
+    verify_checkout(pathlib.Path(args.checkout), review, _manifest.load(args.manifest))
     if args.source_install_dockerfile:
         import source_install
         source_install.materialise(pathlib.Path(args.checkout), review["installation"],
