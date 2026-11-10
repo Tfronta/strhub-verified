@@ -1,0 +1,1236 @@
+{
+  "autosomal": {
+    "exit_code": 0,
+    "seconds": 18.125,
+    "attempts": 1,
+    "sample_expected": "NA12878",
+    "requested_rows": 24,
+    "vcf_validation": {
+      "profile": "strhub-vcf-structure/1",
+      "status": "valid_within_profile",
+      "version": "4.1",
+      "records": 22,
+      "called_records": 22,
+      "uncalled_rows": 0,
+      "records_without_gt": 0
+    },
+    "samples_observed": [
+      "NA12878"
+    ],
+    "records": [
+      {
+        "id": "D1S1656",
+        "chrom": "chr1",
+        "pos": 230769616,
+        "start": 230769616,
+        "end": 230769683,
+        "GT": "1|2",
+        "DP": "359",
+        "GB": "-12|-5",
+        "filter": "."
+      },
+      {
+        "id": "D10S1248",
+        "chrom": "chr10",
+        "pos": 129294244,
+        "start": 129294244,
+        "end": 129294295,
+        "GT": "1|2",
+        "DP": "309",
+        "GB": "8|12",
+        "filter": "."
+      },
+      {
+        "id": "TH01",
+        "chrom": "chr11",
+        "pos": 2171088,
+        "start": 2171088,
+        "end": 2171115,
+        "GT": "0|1",
+        "DP": "275",
+        "GB": "0|11",
+        "filter": "."
+      },
+      {
+        "id": "vWA",
+        "chrom": "chr12",
+        "pos": 5983969,
+        "start": 5983969,
+        "end": 5984044,
+        "GT": "1|2",
+        "DP": "456",
+        "GB": "-8|0",
+        "filter": "."
+      },
+      {
+        "id": "D12S391",
+        "chrom": "chr12",
+        "pos": 12297020,
+        "start": 12297020,
+        "end": 12297095,
+        "GT": "1|2",
+        "DP": "349",
+        "GB": "-12|-8",
+        "filter": "."
+      },
+      {
+        "id": "D13S317",
+        "chrom": "chr13",
+        "pos": 82148025,
+        "start": 82148025,
+        "end": 82148068,
+        "GT": "0|1",
+        "DP": "316",
+        "GB": "0|4",
+        "filter": "."
+      },
+      {
+        "id": "PentaE",
+        "chrom": "chr15",
+        "pos": 96831014,
+        "start": 96831014,
+        "end": 96831039,
+        "GT": "1|2",
+        "DP": "401",
+        "GB": "10|35",
+        "filter": "."
+      },
+      {
+        "id": "D16S539",
+        "chrom": "chr16",
+        "pos": 86352702,
+        "start": 86352702,
+        "end": 86352745,
+        "GT": "0|1",
+        "DP": "371",
+        "GB": "0|-4",
+        "filter": "."
+      },
+      {
+        "id": "D18S51",
+        "chrom": "chr18",
+        "pos": 63281667,
+        "start": 63281667,
+        "end": 63281738,
+        "GT": "1|2",
+        "DP": "517",
+        "GB": "-8|-4",
+        "filter": "."
+      },
+      {
+        "id": "D19S433",
+        "chrom": "chr19",
+        "pos": 29926235,
+        "start": 29926235,
+        "end": 29926298,
+        "GT": "0|1",
+        "DP": "289",
+        "GB": "0|-8",
+        "filter": "."
+      },
+      {
+        "id": "TPOX",
+        "chrom": "chr2",
+        "pos": 1489653,
+        "start": 1489653,
+        "end": 1489684,
+        "GT": "0|0",
+        "DP": "255",
+        "GB": "0|0",
+        "filter": "."
+      },
+      {
+        "id": "D2S441",
+        "chrom": "chr2",
+        "pos": 68011947,
+        "start": 68011947,
+        "end": 68011994,
+        "GT": "1|2",
+        "DP": "428",
+        "GB": "-4|8",
+        "filter": "."
+      },
+      {
+        "id": "D2S1338",
+        "chrom": "chr2",
+        "pos": 218014859,
+        "start": 218014859,
+        "end": 218014950,
+        "GT": "1|2",
+        "DP": "263",
+        "GB": "-24|-12",
+        "filter": "."
+      },
+      {
+        "id": "PentaD",
+        "chrom": "chr21",
+        "pos": 43636210,
+        "start": 43636210,
+        "end": 43636269,
+        "GT": "0|1",
+        "DP": "431",
+        "GB": "0|-10",
+        "filter": "."
+      },
+      {
+        "id": "D22S1045",
+        "chrom": "chr22",
+        "pos": 37140287,
+        "start": 37140287,
+        "end": 37140337,
+        "GT": "1|2",
+        "DP": "414",
+        "GB": "-12|-6",
+        "filter": "."
+      },
+      {
+        "id": "D3S1358",
+        "chrom": "chr3",
+        "pos": 45540739,
+        "start": 45540739,
+        "end": 45540802,
+        "GT": "1|2",
+        "DP": "419",
+        "GB": "0|4",
+        "filter": "."
+      },
+      {
+        "id": "FGA",
+        "chrom": "chr4",
+        "pos": 154587736,
+        "start": 154587736,
+        "end": 154587823,
+        "GT": "0|1",
+        "DP": "477",
+        "GB": "0|8",
+        "filter": "."
+      },
+      {
+        "id": "D5S818",
+        "chrom": "chr5",
+        "pos": 123775556,
+        "start": 123775556,
+        "end": 123775599,
+        "GT": "1|1",
+        "DP": "399",
+        "GB": "4|4",
+        "filter": "."
+      },
+      {
+        "id": "CSF1PO",
+        "chrom": "chr5",
+        "pos": 150076324,
+        "start": 150076324,
+        "end": 150076375,
+        "GT": "1|2",
+        "DP": "275",
+        "GB": "-12|-8",
+        "filter": "."
+      },
+      {
+        "id": "D6S1043",
+        "chrom": "chr6",
+        "pos": 91740225,
+        "start": 91740225,
+        "end": 91740272,
+        "GT": "0|1",
+        "DP": "360",
+        "GB": "0|-4",
+        "filter": "."
+      },
+      {
+        "id": "D7S820",
+        "chrom": "chr7",
+        "pos": 84160226,
+        "start": 84160226,
+        "end": 84160277,
+        "GT": "2|1",
+        "DP": "405",
+        "GB": "-12|-20",
+        "filter": "."
+      },
+      {
+        "id": "D8S1179",
+        "chrom": "chr8",
+        "pos": 124894865,
+        "start": 124894865,
+        "end": 124894916,
+        "GT": "1|1",
+        "DP": "346",
+        "GB": "-4|-4",
+        "filter": "."
+      }
+    ],
+    "gt_allele_slot_counts": {
+      "2": 22
+    },
+    "vcf_sha256": "a147c5f81641a44696418ff88d64611ce061dbc2f5679bd8e1e98d6aee8f77b2",
+    "log_sha256": "318ef2516286103fabe235f95323b5379c3784518471ce4eaf089d2cc619d9d7",
+    "region_outcomes": [
+      {
+        "id": "D1S1656",
+        "chrom": "chr1",
+        "start": 230769616,
+        "end": 230769683,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D1S1656",
+            "chrom": "chr1",
+            "pos": 230769616,
+            "start": 230769616,
+            "end": 230769683,
+            "GT": "1|2",
+            "DP": "359",
+            "GB": "-12|-5",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "TPOX",
+        "chrom": "chr2",
+        "start": 1489653,
+        "end": 1489684,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "TPOX",
+            "chrom": "chr2",
+            "pos": 1489653,
+            "start": 1489653,
+            "end": 1489684,
+            "GT": "0|0",
+            "DP": "255",
+            "GB": "0|0",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D2S441",
+        "chrom": "chr2",
+        "start": 68011947,
+        "end": 68011994,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D2S441",
+            "chrom": "chr2",
+            "pos": 68011947,
+            "start": 68011947,
+            "end": 68011994,
+            "GT": "1|2",
+            "DP": "428",
+            "GB": "-4|8",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D2S1338",
+        "chrom": "chr2",
+        "start": 218014859,
+        "end": 218014950,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D2S1338",
+            "chrom": "chr2",
+            "pos": 218014859,
+            "start": 218014859,
+            "end": 218014950,
+            "GT": "1|2",
+            "DP": "263",
+            "GB": "-24|-12",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D3S1358",
+        "chrom": "chr3",
+        "start": 45540739,
+        "end": 45540802,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D3S1358",
+            "chrom": "chr3",
+            "pos": 45540739,
+            "start": 45540739,
+            "end": 45540802,
+            "GT": "1|2",
+            "DP": "419",
+            "GB": "0|4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "FGA",
+        "chrom": "chr4",
+        "start": 154587736,
+        "end": 154587823,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "FGA",
+            "chrom": "chr4",
+            "pos": 154587736,
+            "start": 154587736,
+            "end": 154587823,
+            "GT": "0|1",
+            "DP": "477",
+            "GB": "0|8",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D5S818",
+        "chrom": "chr5",
+        "start": 123775556,
+        "end": 123775599,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D5S818",
+            "chrom": "chr5",
+            "pos": 123775556,
+            "start": 123775556,
+            "end": 123775599,
+            "GT": "1|1",
+            "DP": "399",
+            "GB": "4|4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "CSF1PO",
+        "chrom": "chr5",
+        "start": 150076324,
+        "end": 150076375,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "CSF1PO",
+            "chrom": "chr5",
+            "pos": 150076324,
+            "start": 150076324,
+            "end": 150076375,
+            "GT": "1|2",
+            "DP": "275",
+            "GB": "-12|-8",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "SE33",
+        "chrom": "chr6",
+        "start": 88277144,
+        "end": 88277245,
+        "status": "omitted",
+        "records": [],
+        "log_reasons": [
+          {
+            "line": 760,
+            "message": "Skipping region as the reference allele length exceeds the threshold (102 vs 100)"
+          }
+        ]
+      },
+      {
+        "id": "D6S1043",
+        "chrom": "chr6",
+        "start": 91740225,
+        "end": 91740272,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D6S1043",
+            "chrom": "chr6",
+            "pos": 91740225,
+            "start": 91740225,
+            "end": 91740272,
+            "GT": "0|1",
+            "DP": "360",
+            "GB": "0|-4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D7S820",
+        "chrom": "chr7",
+        "start": 84160226,
+        "end": 84160277,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D7S820",
+            "chrom": "chr7",
+            "pos": 84160226,
+            "start": 84160226,
+            "end": 84160277,
+            "GT": "2|1",
+            "DP": "405",
+            "GB": "-12|-20",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D8S1179",
+        "chrom": "chr8",
+        "start": 124894865,
+        "end": 124894916,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D8S1179",
+            "chrom": "chr8",
+            "pos": 124894865,
+            "start": 124894865,
+            "end": 124894916,
+            "GT": "1|1",
+            "DP": "346",
+            "GB": "-4|-4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D10S1248",
+        "chrom": "chr10",
+        "start": 129294244,
+        "end": 129294295,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D10S1248",
+            "chrom": "chr10",
+            "pos": 129294244,
+            "start": 129294244,
+            "end": 129294295,
+            "GT": "1|2",
+            "DP": "309",
+            "GB": "8|12",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "TH01",
+        "chrom": "chr11",
+        "start": 2171088,
+        "end": 2171115,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "TH01",
+            "chrom": "chr11",
+            "pos": 2171088,
+            "start": 2171088,
+            "end": 2171115,
+            "GT": "0|1",
+            "DP": "275",
+            "GB": "0|11",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "vWA",
+        "chrom": "chr12",
+        "start": 5983969,
+        "end": 5984044,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "vWA",
+            "chrom": "chr12",
+            "pos": 5983969,
+            "start": 5983969,
+            "end": 5984044,
+            "GT": "1|2",
+            "DP": "456",
+            "GB": "-8|0",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D12S391",
+        "chrom": "chr12",
+        "start": 12297020,
+        "end": 12297095,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D12S391",
+            "chrom": "chr12",
+            "pos": 12297020,
+            "start": 12297020,
+            "end": 12297095,
+            "GT": "1|2",
+            "DP": "349",
+            "GB": "-12|-8",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D13S317",
+        "chrom": "chr13",
+        "start": 82148025,
+        "end": 82148068,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D13S317",
+            "chrom": "chr13",
+            "pos": 82148025,
+            "start": 82148025,
+            "end": 82148068,
+            "GT": "0|1",
+            "DP": "316",
+            "GB": "0|4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "PentaE",
+        "chrom": "chr15",
+        "start": 96831014,
+        "end": 96831039,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "PentaE",
+            "chrom": "chr15",
+            "pos": 96831014,
+            "start": 96831014,
+            "end": 96831039,
+            "GT": "1|2",
+            "DP": "401",
+            "GB": "10|35",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D16S539",
+        "chrom": "chr16",
+        "start": 86352702,
+        "end": 86352745,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D16S539",
+            "chrom": "chr16",
+            "pos": 86352702,
+            "start": 86352702,
+            "end": 86352745,
+            "GT": "0|1",
+            "DP": "371",
+            "GB": "0|-4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D18S51",
+        "chrom": "chr18",
+        "start": 63281667,
+        "end": 63281738,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D18S51",
+            "chrom": "chr18",
+            "pos": 63281667,
+            "start": 63281667,
+            "end": 63281738,
+            "GT": "1|2",
+            "DP": "517",
+            "GB": "-8|-4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D19S433",
+        "chrom": "chr19",
+        "start": 29926235,
+        "end": 29926298,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D19S433",
+            "chrom": "chr19",
+            "pos": 29926235,
+            "start": 29926235,
+            "end": 29926298,
+            "GT": "0|1",
+            "DP": "289",
+            "GB": "0|-8",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D21S11",
+        "chrom": "chr21",
+        "start": 19181973,
+        "end": 19182099,
+        "status": "omitted",
+        "records": [],
+        "log_reasons": [
+          {
+            "line": 524,
+            "message": "Skipping region as the reference allele length exceeds the threshold (127 vs 100)"
+          }
+        ]
+      },
+      {
+        "id": "PentaD",
+        "chrom": "chr21",
+        "start": 43636210,
+        "end": 43636269,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "PentaD",
+            "chrom": "chr21",
+            "pos": 43636210,
+            "start": 43636210,
+            "end": 43636269,
+            "GT": "0|1",
+            "DP": "431",
+            "GB": "0|-10",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "D22S1045",
+        "chrom": "chr22",
+        "start": 37140287,
+        "end": 37140337,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "D22S1045",
+            "chrom": "chr22",
+            "pos": 37140287,
+            "start": 37140287,
+            "end": 37140337,
+            "GT": "1|2",
+            "DP": "414",
+            "GB": "-12|-6",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      }
+    ],
+    "records_match_requested_regions": true,
+    "region_status_counts": {
+      "vcf_record": 22,
+      "omitted": 2
+    }
+  },
+  "y": {
+    "exit_code": 0,
+    "seconds": 1.407,
+    "attempts": 1,
+    "sample_expected": "HG002",
+    "requested_rows": 17,
+    "vcf_validation": {
+      "profile": "strhub-vcf-structure/1",
+      "status": "valid_within_profile",
+      "version": "4.1",
+      "records": 11,
+      "called_records": 11,
+      "uncalled_rows": 0,
+      "records_without_gt": 0
+    },
+    "samples_observed": [
+      "HG002"
+    ],
+    "records": [
+      {
+        "id": "DYS393",
+        "chrom": "chrY",
+        "pos": 3263111,
+        "start": 3263111,
+        "end": 3263158,
+        "GT": "0",
+        "DP": "158",
+        "GB": "0",
+        "filter": "."
+      },
+      {
+        "id": "DYS456",
+        "chrom": "chrY",
+        "pos": 4402919,
+        "start": 4402919,
+        "end": 4402978,
+        "GT": "1",
+        "DP": "194",
+        "GB": "8",
+        "filter": "."
+      },
+      {
+        "id": "DYS458",
+        "chrom": "chrY",
+        "pos": 7999839,
+        "start": 7999839,
+        "end": 7999902,
+        "GT": "1",
+        "DP": "192",
+        "GB": "2",
+        "filter": "."
+      },
+      {
+        "id": "DYS391",
+        "chrom": "chrY",
+        "pos": 11982089,
+        "start": 11982089,
+        "end": 11982132,
+        "GT": "1",
+        "DP": "193",
+        "GB": "-4",
+        "filter": "."
+      },
+      {
+        "id": "DYS635",
+        "chrom": "chrY",
+        "pos": 12258860,
+        "start": 12258860,
+        "end": 12258951,
+        "GT": "1",
+        "DP": "258",
+        "GB": "-8",
+        "filter": "."
+      },
+      {
+        "id": "DYS389I",
+        "chrom": "chrY",
+        "pos": 12500448,
+        "start": 12500448,
+        "end": 12500495,
+        "GT": "1",
+        "DP": "198",
+        "GB": "4",
+        "filter": "."
+      },
+      {
+        "id": "DYS389II.1",
+        "chrom": "chrY",
+        "pos": 12500448,
+        "start": 12500448,
+        "end": 12500516,
+        "GT": "1",
+        "DP": "217",
+        "GB": "4",
+        "filter": "."
+      },
+      {
+        "id": "DYS438",
+        "chrom": "chrY",
+        "pos": 12825899,
+        "start": 12825899,
+        "end": 12825948,
+        "GT": "1",
+        "DP": "200",
+        "GB": "-5",
+        "filter": "."
+      },
+      {
+        "id": "DYS390",
+        "chrom": "chrY",
+        "pos": 15163067,
+        "start": 15163067,
+        "end": 15163162,
+        "GT": "1",
+        "DP": "217",
+        "GB": "4",
+        "filter": "."
+      },
+      {
+        "id": "Y-GATA-A10",
+        "chrom": "chrY",
+        "pos": 16607009,
+        "start": 16607009,
+        "end": 16607060,
+        "GT": "0",
+        "DP": "192",
+        "GB": "0",
+        "filter": "."
+      },
+      {
+        "id": "DYS392",
+        "chrom": "chrY",
+        "pos": 20471987,
+        "start": 20471987,
+        "end": 20472025,
+        "GT": "0",
+        "DP": "187",
+        "GB": "0",
+        "filter": "."
+      }
+    ],
+    "gt_allele_slot_counts": {
+      "1": 11
+    },
+    "vcf_sha256": "561a130e2b49c7b95bb2d7e6e3c49da4363aa05f367fef5056dc15a4cf48736e",
+    "log_sha256": "fac63b67ae6ffedf3a9c03d88038bbdb7bf225ccbb52f2818a5391c1293869c9",
+    "region_outcomes": [
+      {
+        "id": "DYS393",
+        "chrom": "chrY",
+        "start": 3263111,
+        "end": 3263158,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS393",
+            "chrom": "chrY",
+            "pos": 3263111,
+            "start": 3263111,
+            "end": 3263158,
+            "GT": "0",
+            "DP": "158",
+            "GB": "0",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "DYS456",
+        "chrom": "chrY",
+        "start": 4402919,
+        "end": 4402978,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS456",
+            "chrom": "chrY",
+            "pos": 4402919,
+            "start": 4402919,
+            "end": 4402978,
+            "GT": "1",
+            "DP": "194",
+            "GB": "8",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "DYS458",
+        "chrom": "chrY",
+        "start": 7999839,
+        "end": 7999902,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS458",
+            "chrom": "chrY",
+            "pos": 7999839,
+            "start": 7999839,
+            "end": 7999902,
+            "GT": "1",
+            "DP": "192",
+            "GB": "2",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "DYS19/DYS394",
+        "chrom": "chrY",
+        "start": 9684380,
+        "end": 9684443,
+        "status": "omitted",
+        "records": [],
+        "log_reasons": [
+          {
+            "line": 134,
+            "message": "Aborting genotyping of the locus as the sequence downstream of the repeat is too repetitive for accurate genotyping"
+          }
+        ]
+      },
+      {
+        "id": "DYS391",
+        "chrom": "chrY",
+        "start": 11982089,
+        "end": 11982132,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS391",
+            "chrom": "chrY",
+            "pos": 11982089,
+            "start": 11982089,
+            "end": 11982132,
+            "GT": "1",
+            "DP": "193",
+            "GB": "-4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "DYS635",
+        "chrom": "chrY",
+        "start": 12258860,
+        "end": 12258951,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS635",
+            "chrom": "chrY",
+            "pos": 12258860,
+            "start": 12258860,
+            "end": 12258951,
+            "GT": "1",
+            "DP": "258",
+            "GB": "-8",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "DYS389I",
+        "chrom": "chrY",
+        "start": 12500448,
+        "end": 12500495,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS389I",
+            "chrom": "chrY",
+            "pos": 12500448,
+            "start": 12500448,
+            "end": 12500495,
+            "GT": "1",
+            "DP": "198",
+            "GB": "4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "DYS389II.1",
+        "chrom": "chrY",
+        "start": 12500448,
+        "end": 12500516,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS389II.1",
+            "chrom": "chrY",
+            "pos": 12500448,
+            "start": 12500448,
+            "end": 12500516,
+            "GT": "1",
+            "DP": "217",
+            "GB": "4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "DYS389II.2",
+        "chrom": "chrY",
+        "start": 12500564,
+        "end": 12500611,
+        "status": "omitted",
+        "records": [],
+        "log_reasons": [
+          {
+            "line": 315,
+            "message": "Aborting genotyping of the locus as the sequence upstream of the repeat is too repetitive for accurate genotyping"
+          }
+        ]
+      },
+      {
+        "id": "DYS438",
+        "chrom": "chrY",
+        "start": 12825899,
+        "end": 12825948,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS438",
+            "chrom": "chrY",
+            "pos": 12825899,
+            "start": 12825899,
+            "end": 12825948,
+            "GT": "1",
+            "DP": "200",
+            "GB": "-5",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "DYS390",
+        "chrom": "chrY",
+        "start": 15163067,
+        "end": 15163162,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS390",
+            "chrom": "chrY",
+            "pos": 15163067,
+            "start": 15163067,
+            "end": 15163162,
+            "GT": "1",
+            "DP": "217",
+            "GB": "4",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "Y-GATA-A10",
+        "chrom": "chrY",
+        "start": 16607009,
+        "end": 16607060,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "Y-GATA-A10",
+            "chrom": "chrY",
+            "pos": 16607009,
+            "start": 16607009,
+            "end": 16607060,
+            "GT": "0",
+            "DP": "192",
+            "GB": "0",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "Y-GATA-H4",
+        "chrom": "chrY",
+        "start": 16631635,
+        "end": 16631756,
+        "status": "omitted",
+        "records": [],
+        "log_reasons": [
+          {
+            "line": 446,
+            "message": "Skipping region as the reference allele length exceeds the threshold (122 vs 100)"
+          }
+        ]
+      },
+      {
+        "id": "DYS385_2",
+        "chrom": "chrY",
+        "start": 18680513,
+        "end": 18680687,
+        "status": "omitted",
+        "records": [],
+        "log_reasons": [
+          {
+            "line": 449,
+            "message": "Skipping region as the reference allele length exceeds the threshold (175 vs 100)"
+          }
+        ]
+      },
+      {
+        "id": "DYS392",
+        "chrom": "chrY",
+        "start": 20471987,
+        "end": 20472025,
+        "status": "vcf_record",
+        "records": [
+          {
+            "id": "DYS392",
+            "chrom": "chrY",
+            "pos": 20471987,
+            "start": 20471987,
+            "end": 20472025,
+            "GT": "0",
+            "DP": "187",
+            "GB": "0",
+            "filter": "."
+          }
+        ],
+        "log_reasons": []
+      },
+      {
+        "id": "DYS448.1",
+        "chrom": "chrY",
+        "start": 22218923,
+        "end": 22218996,
+        "status": "omitted",
+        "records": [],
+        "log_reasons": [
+          {
+            "line": 507,
+            "message": "Aborting genotyping of the locus as the sequence downstream of the repeat is too repetitive for accurate genotyping"
+          }
+        ]
+      },
+      {
+        "id": "DYS448.2",
+        "chrom": "chrY",
+        "start": 22219031,
+        "end": 22219078,
+        "status": "omitted",
+        "records": [],
+        "log_reasons": [
+          {
+            "line": 540,
+            "message": "Aborting genotyping of the locus as the sequence upstream of the repeat is too repetitive for accurate genotyping"
+          }
+        ]
+      }
+    ],
+    "records_match_requested_regions": true,
+    "region_status_counts": {
+      "vcf_record": 11,
+      "omitted": 6
+    }
+  }
+}

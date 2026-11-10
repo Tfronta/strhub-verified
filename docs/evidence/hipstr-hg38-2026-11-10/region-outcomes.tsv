@@ -1,0 +1,42 @@
+case	locus	chrom	start_1based	end_inclusive	status	GT	reason
+autosomal	D1S1656	chr1	230769616	230769683	vcf_record	1|2	.
+autosomal	TPOX	chr2	1489653	1489684	vcf_record	0|0	.
+autosomal	D2S441	chr2	68011947	68011994	vcf_record	1|2	.
+autosomal	D2S1338	chr2	218014859	218014950	vcf_record	1|2	.
+autosomal	D3S1358	chr3	45540739	45540802	vcf_record	1|2	.
+autosomal	FGA	chr4	154587736	154587823	vcf_record	0|1	.
+autosomal	D5S818	chr5	123775556	123775599	vcf_record	1|1	.
+autosomal	CSF1PO	chr5	150076324	150076375	vcf_record	1|2	.
+autosomal	SE33	chr6	88277144	88277245	omitted	.	Skipping region as the reference allele length exceeds the threshold (102 vs 100)
+autosomal	D6S1043	chr6	91740225	91740272	vcf_record	0|1	.
+autosomal	D7S820	chr7	84160226	84160277	vcf_record	2|1	.
+autosomal	D8S1179	chr8	124894865	124894916	vcf_record	1|1	.
+autosomal	D10S1248	chr10	129294244	129294295	vcf_record	1|2	.
+autosomal	TH01	chr11	2171088	2171115	vcf_record	0|1	.
+autosomal	vWA	chr12	5983969	5984044	vcf_record	1|2	.
+autosomal	D12S391	chr12	12297020	12297095	vcf_record	1|2	.
+autosomal	D13S317	chr13	82148025	82148068	vcf_record	0|1	.
+autosomal	PentaE	chr15	96831014	96831039	vcf_record	1|2	.
+autosomal	D16S539	chr16	86352702	86352745	vcf_record	0|1	.
+autosomal	D18S51	chr18	63281667	63281738	vcf_record	1|2	.
+autosomal	D19S433	chr19	29926235	29926298	vcf_record	0|1	.
+autosomal	D21S11	chr21	19181973	19182099	omitted	.	Skipping region as the reference allele length exceeds the threshold (127 vs 100)
+autosomal	PentaD	chr21	43636210	43636269	vcf_record	0|1	.
+autosomal	D22S1045	chr22	37140287	37140337	vcf_record	1|2	.
+y	DYS393	chrY	3263111	3263158	vcf_record	0	.
+y	DYS456	chrY	4402919	4402978	vcf_record	1	.
+y	DYS458	chrY	7999839	7999902	vcf_record	1	.
+y	DYS19/DYS394	chrY	9684380	9684443	omitted	.	Aborting genotyping of the locus as the sequence downstream of the repeat is too repetitive for accurate genotyping
+y	DYS391	chrY	11982089	11982132	vcf_record	1	.
+y	DYS635	chrY	12258860	12258951	vcf_record	1	.
+y	DYS389I	chrY	12500448	12500495	vcf_record	1	.
+y	DYS389II.1	chrY	12500448	12500516	vcf_record	1	.
+y	DYS389II.2	chrY	12500564	12500611	omitted	.	Aborting genotyping of the locus as the sequence upstream of the repeat is too repetitive for accurate genotyping
+y	DYS438	chrY	12825899	12825948	vcf_record	1	.
+y	DYS390	chrY	15163067	15163162	vcf_record	1	.
+y	Y-GATA-A10	chrY	16607009	16607060	vcf_record	0	.
+y	Y-GATA-H4	chrY	16631635	16631756	omitted	.	Skipping region as the reference allele length exceeds the threshold (122 vs 100)
+y	DYS385_2	chrY	18680513	18680687	omitted	.	Skipping region as the reference allele length exceeds the threshold (175 vs 100)
+y	DYS392	chrY	20471987	20472025	vcf_record	0	.
+y	DYS448.1	chrY	22218923	22218996	omitted	.	Aborting genotyping of the locus as the sequence downstream of the repeat is too repetitive for accurate genotyping
+y	DYS448.2	chrY	22219031	22219078	omitted	.	Aborting genotyping of the locus as the sequence upstream of the repeat is too repetitive for accurate genotyping
