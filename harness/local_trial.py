@@ -281,6 +281,7 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
 
         log_ext = tmp_path / "log_external.txt"
         log_build = tmp_path / "log_build.txt"
+        log_ex = tmp_path / "log_example.txt"
         io_json = tmp_path / "io_external.json"
         content_json = tmp_path / "content_external.json"
         example_json = tmp_path / "no-example.json"
@@ -313,9 +314,12 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
                 except (ValueError, OSError, subprocess.CalledProcessError) as exc:
                     infra_failure = "upstream installation evidence could not be established at the pinned checkout"
                     b_res = subprocess.CompletedProcess([], 1, "", str(exc))
+                    log_build.write_text(b_res.stderr)
                 else:
-                    b_res = subprocess.run(build_cmd, cwd=str(ROOT), capture_output=True, text=True)
-                log_build.write_text((b_res.stdout or "") + ("\n" + b_res.stderr if b_res.stderr else ""))
+                    b_res = subprocess.run(
+                        ["bash", str(ROOT / "harness" / "record_terminal.sh"), str(log_build), *build_cmd],
+                        cwd=str(ROOT), capture_output=True, text=True,
+                    )
                 if b_res.returncode == 0:
                     installs_flag = "pass"
                     hardening = [
@@ -360,7 +364,6 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
                         out_ex = work_dir / "out_example"
                         out_ex.mkdir(parents=True, exist_ok=True)
                         out_ex.chmod(0o777)
-                        log_ex = tmp_path / "log_example.txt"
                         example_json = tmp_path / "example.json"
                         subprocess.run([
                             "bash", str(ROOT / "harness" / "run_container.sh"),
@@ -431,10 +434,12 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         shutil.copy2(reports_dir / f"{cat_slug}.recipe.json", out_dir / "recipe.json")
         shutil.copy2(reports_dir / f"{cat_slug}.summary.md", out_dir / "summary.md")
         shutil.copy2(reports_dir / f"{cat_slug}.html", out_dir / "report.html")
-        if log_build.is_file() and log_build.stat().st_size > 0:
-            shutil.copy2(log_build, out_dir / "log-build.txt")
-        if log_ext.is_file() and log_ext.stat().st_size > 0:
-            shutil.copy2(log_ext, out_dir / "log-external.txt")
+        for leg, log in (("build", log_build), ("external", log_ext), ("example", log_ex)):
+            if log.is_file() and log.stat().st_size > 0:
+                shutil.copy2(log, out_dir / f"log-{leg}.txt")
+            transcript = log.with_suffix(log.suffix + ".terminal")
+            if transcript.is_file() and transcript.stat().st_size > 0:
+                shutil.copy2(transcript, out_dir / f"terminal-{leg}.txt")
 
         for p in reports_dir.glob(f"{cat_slug}.*"):
             p.unlink(missing_ok=True)

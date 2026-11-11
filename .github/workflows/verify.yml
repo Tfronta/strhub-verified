@@ -558,10 +558,10 @@ jobs:
           fi
           echo "source_evidence=verified" >> "$GITHUB_OUTPUT"
           build() {  # $1 Dockerfile, $2 its directory, $3 context
-            docker build \
+            bash harness/record_terminal.sh work/log_build.txt docker build \
               -f "$2/$1" \
               -t toolimg:ci \
-              "$3" 2>&1 | tee -a work/log_build.txt
+              "$3"
           }
           if build "$DOCKER_FILE" "$DOCKER_DIR" "$CONTEXT"; then
             echo "environment=primary" >> "$GITHUB_OUTPUT"

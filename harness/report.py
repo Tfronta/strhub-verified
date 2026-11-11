@@ -1244,6 +1244,7 @@ def main() -> int:
 
     import shutil
     logs = {}
+    terminals = {}
     # The build log rides along with the run logs. A reader told the build failed
     # will want the same thing a reader told a run failed wants: the output.
     for leg, flag in [("own", args.log_own), ("external", args.log_external),
@@ -1255,8 +1256,15 @@ def main() -> int:
             dest = f"{slug}.log-{leg}.txt"
             shutil.copy2(lp, reports / dest)
             logs[leg] = dest
+        transcript = lp.with_suffix(lp.suffix + ".terminal")
+        if transcript.is_file() and transcript.stat().st_size > 0:
+            dest = f"{slug}.terminal-{leg}.txt"
+            shutil.copy2(transcript, reports / dest)
+            terminals[leg] = dest
     if logs:
         report["logs"] = logs
+    if terminals:
+        report["terminals"] = terminals
 
     # Why the environment did not build.
     #

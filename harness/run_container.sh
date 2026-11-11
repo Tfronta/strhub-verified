@@ -16,6 +16,7 @@
 # diagnose_log to read, one for the time limit and one for the memory ceiling.
 # The exit status is the container's, or 124 when the limit stopped it.
 set -uo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/record_terminal.sh"
 
 name=$1; minutes=$2; log=$3; shift 3
 trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT
@@ -23,8 +24,8 @@ trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT
 limit=$(( minutes * 60 ))
 start=$SECONDS
 # --init: signals reach the tool's processes instead of stopping at bash.
-timeout --kill-after=20 "$limit" docker run --init --name "$name" "$@" 2>&1 | tee "$log"
-rc=${PIPESTATUS[0]}
+rc=0
+record_terminal "$log" timeout --kill-after=20 "$limit" docker run --init --name "$name" "$@" || rc=$?
 elapsed=$(( SECONDS - start ))
 
 if [ "$elapsed" -ge "$limit" ]; then
