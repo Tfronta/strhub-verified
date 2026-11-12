@@ -7,7 +7,7 @@ them in order and writes a RunRecord, the one document report.py reads.
 
 The runner records; it does not rescue. No gate retries, no gate edits the
 recipe or the clone, and a gate that cannot run says why (`not_run` with a
-reason) instead of being skipped in silence. Tanda 1 is a faithful port: the
-forensic→medical slice retry on the external leg is carried over as it was,
-marked for removal in tanda 2.
+reason) instead of being skipped in silence. When the loci a tool genotypes
+are unknown, the forensic and medical slices are two legs planned up front,
+both run and both reported; the record states which one the badge rests on.
 """

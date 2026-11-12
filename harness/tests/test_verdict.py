@@ -97,12 +97,17 @@ def test_readme_gaps_become_blockers_without_duplicates():
     assert [b["code"] for b in v["blockers"]] == ["no_command", "build_failed"]
 
 
-def test_a_published_image_does_not_make_the_commit_a_run():
-    v = verdict.decide(G_OK, fallback_used=True)
-    assert v["code"] == "fails"
-    assert "pinned commit failed" in v["reason"]
-    assert "not counted" in v["reason"]
-    assert verdict.decide(G_OK)["code"] == "runs"
+def test_an_output_of_uncalled_loci_is_undetermined_about_the_input_not_a_fault_of_ours():
+    gates = {"available": True, "installs": True, "runs": True, "io": False, "content": False}
+    v = verdict.decide(gates, uncalled_rows=99)
+    assert v["code"] == "undetermined" and v["basis"] == "input"
+    assert "99 locus row(s) with no genotype call" in v["reason"]
+    assert "not established" in v["reason"]
+    assert [b["code"] for b in v["blockers"]] == ["no_calls"]
+    assert v["blockers"][0]["self_fix"] == "upload_regions"
+    # Without uncalled rows the same gates are the plain "no output" failure.
+    plain = verdict.decide(gates)
+    assert plain["code"] == "fails" and [b["code"] for b in plain["blockers"]] == ["no_output"]
 
 
 def test_nothing_executed_is_undetermined_with_an_ask_for_example_data():

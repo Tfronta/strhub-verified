@@ -7,9 +7,11 @@ where the workflow put them (logs under <work>/, check results next to the
 repository root) so report.py reads the same paths it always did.
 
 What a gate must never do: run a thing twice, edit the recipe directory or the
-clone, or decide anything about the verdict. The one carried-over exception is
-the forensic→medical slice retry in `runs_external`, kept exactly as it was for
-tanda 1 and marked for removal.
+clone, or decide anything about the verdict. When the loci a tool genotypes
+could not be read off its repository, the forensic and the medical slices are
+two legs planned before anything runs (`runs_external`, `runs_external_med`),
+each with its own log and checks; which one the badge rests on is the
+runner's rule, stated in the record.
 """
 from __future__ import annotations
 
@@ -222,7 +224,14 @@ def starts(ctx: Ctx, installs_result: StageResult) -> StageResult:
     rc = ctx.exe.run(argv, timeout=STARTS_BACKSTOP_MINUTES * 60, cwd=ctx.root)
     check = [ctx.python, ctx.harness("check_starts.py"), "--rc", str(rc), "--log", str(log), "--json", "starts.json"]
     check_rc = ctx.exe.run(check, cwd=ctx.root)
-    return st.finish(rc, argv, starts_json="starts.json", check_exit_code=check_rc)
+    # The gate is check_starts's judgement of the log (a program that prints
+    # its usage and exits 1 still starts), so the stage's status follows it;
+    # the container's own exit status stays in the record as it was.
+    judged = _load(ctx.root / "starts.json") or {}
+    st.finish(rc, argv, starts_json="starts.json", check_exit_code=check_rc)
+    if judged.get("applicable"):
+        st.status = "passed" if judged.get("passed") else "failed"
+    return st
 
 
 # --- Run legs ----------------------------------------------------------------
@@ -277,63 +286,46 @@ def runs_example(ctx: Ctx, installs_result: StageResult) -> StageResult:
     return st.finish(rc, argv)
 
 
-def _io_probe(ctx: Ctx, out_dir: pathlib.Path, json_path: pathlib.Path) -> bool:
-    argv = [ctx.python, ctx.harness("check_io.py"), ctx.manifest, str(out_dir), "--json", str(json_path)]
-    return ctx.exe.run(argv, cwd=ctx.root) == 0
-
-
 def runs_external(ctx: Ctx, installs_result: StageResult) -> StageResult:
-    """Runs (external data): STRhub's typed reference dataset.
-
-    CARRIED OVER FOR TANDA 1, TO BE REMOVED IN TANDA 2: the forensic→medical
-    slice retry. If the forensic slice produces no called records and a medical
-    slice of the same platform was staged, the identical command is run again
-    on it; if that passes, the retry's outputs and log REPLACE the first
-    attempt's, the manifest is rewritten in place (inputs.type, report.slug, a
-    caveat) and the exit status is set to 0. The record keeps both attempts.
-    """
+    """Runs (external data): STRhub's typed reference dataset, the forensic
+    slice of the declared input type."""
     if not ctx.ready("external_ready"):
         return StageResult.not_run("runs_external", "no reference dataset of the kind this tool reads is held")
     if not installs_result.passed:
         return StageResult.not_run("runs_external", "no image was built")
     log = ctx.work / "log_external.txt"
     st = StageResult.start("runs_external", log)
-    out_dir, in_dir = ctx.work / "out_external", ctx.work / "in_external"
-    rc, argv = _run_leg(ctx, "external", ctx.plan["cmd"], in_dir, out_dir, log)
-    outputs: dict = {}
-    io_ok = rc == 0 and _io_probe(ctx, out_dir, ctx.work / "io_forensic_probe.json")
-    med_in = ctx.work / "in_external_med"
-    if not io_ok and ctx.ready("med_fallback_ready") and (ctx.root / med_in).is_dir():
-        med_type = ctx.plan.get("med_input_type", "")
-        _say(None, f"Forensic slice produced no called records (rc={rc}); retrying identical command "
-                   f"on medical STR slice ({med_type})...")
-        med_out, med_log = ctx.work / "out_external_med", ctx.work / "log_external_med.txt"
-        rc_med, argv_med = _run_leg(ctx, "external_med", ctx.plan["cmd"], med_in, med_out, med_log)
-        retry = {"stage": "runs_external_med", "command": argv_med, "exit_code": rc_med,
-                 "log": str(med_log), "promoted": False}
-        if rc_med == 0 and _io_probe(ctx, med_out, ctx.work / "io_med_probe.json"):
-            shutil.rmtree(ctx.root / out_dir)
-            (ctx.root / med_out).rename(ctx.root / out_dir)
-            (ctx.root / med_log).rename(ctx.root / log)
-            shutil.rmtree(ctx.root / in_dir)
-            (ctx.root / med_in).rename(ctx.root / in_dir)
-            ctx.exe.run([ctx.python, ctx.harness("prepare.py"), "--promote-medical", ctx.manifest, med_type],
-                        cwd=ctx.root)
-            retry["promoted"] = True
-            outputs["med_used"] = "1"
-            rc = 0
-        outputs["retry"] = retry
-    return st.finish(rc, argv, **outputs)
+    rc, argv = _run_leg(ctx, "external", ctx.plan["cmd"], ctx.work / "in_external", ctx.work / "out_external", log)
+    return st.finish(rc, argv)
+
+
+def runs_external_med(ctx: Ctx, installs_result: StageResult) -> StageResult:
+    """Runs (external data, medical STR panel): the medical slice of the same
+    sample, staged by prepare.py only when the loci the tool genotypes could
+    not be read off its repository. A leg of its own, planned before the run,
+    with its own input, output and log: never a retry of the forensic one."""
+    if not ctx.ready("med_leg_ready"):
+        return StageResult.not_run("runs_external_med",
+                                   "no medical-panel leg was planned: the loci the tool genotypes were "
+                                   "read off its repository, or no medical slice exists for this input type")
+    if not installs_result.passed:
+        return StageResult.not_run("runs_external_med", "no image was built")
+    log = ctx.work / "log_external_med.txt"
+    st = StageResult.start("runs_external_med", log)
+    rc, argv = _run_leg(ctx, "external_med", ctx.plan["cmd"], ctx.work / "in_external_med",
+                        ctx.work / "out_external_med", log)
+    return st.finish(rc, argv)
 
 
 # --- Checks on what a leg left behind --------------------------------------
 
-def check_io(ctx: Ctx, leg: str, out_dir: pathlib.Path, json_name: str) -> StageResult:
+def check_io(ctx: Ctx, leg: str, out_dir: pathlib.Path, json_name: str,
+             ready_key: str | None = None) -> StageResult:
     """Expected IO: non-empty files in the declared formats. Conditioned on the
     leg being staged, not on its run having passed: an empty directory is a
     result too, and the check says so."""
     stage = f"io_{leg}"
-    if not ctx.ready(f"{leg}_ready"):
+    if not ctx.ready(ready_key or f"{leg}_ready"):
         return StageResult.not_run(stage, f"the {leg} leg was not staged")
     st = StageResult.start(stage)
     argv = [ctx.python, ctx.harness("check_io.py"), ctx.manifest, str(out_dir), "--json", json_name]
@@ -341,11 +333,11 @@ def check_io(ctx: Ctx, leg: str, out_dir: pathlib.Path, json_name: str) -> Stage
 
 
 def check_content(ctx: Ctx, leg: str, out_dir: pathlib.Path, in_dir: pathlib.Path,
-                  json_name: str, supported_loci: str) -> StageResult:
+                  json_name: str, supported_loci: str, ready_key: str | None = None) -> StageResult:
     """Content: the loci this leg was given are a regions BED, or a JSON
     catalog (ExpansionHunter's) staged as regions.json."""
     stage = f"content_{leg}"
-    if not ctx.ready(f"{leg}_ready"):
+    if not ctx.ready(ready_key or f"{leg}_ready"):
         return StageResult.not_run(stage, f"the {leg} leg was not staged")
     st = StageResult.start(stage)
     reg = in_dir / "regions.bed"
@@ -377,7 +369,7 @@ def _load(path: pathlib.Path):
         return None
 
 
-def matrix(ctx: Ctx, med_used: bool) -> list[dict]:
+def matrix(ctx: Ctx) -> list[dict]:
     """matrix.json: one row per leg, read by report.py."""
     import json
     root = ctx.root
@@ -395,12 +387,23 @@ def matrix(ctx: Ctx, med_used: bool) -> list[dict]:
     legs.append({
         "leg": "external", "label": "External data",
         "available": ctx.ready("external_ready"),
-        "type": (ctx.plan.get("med_input_type") if med_used else ctx.plan.get("input_type")) or None,
-        "dataset": (ctx.plan.get("med_dataset_name") if med_used else ctx.plan.get("dataset_name")) or None,
+        "type": ctx.plan.get("input_type") or None,
+        "dataset": ctx.plan.get("dataset_name") or None,
         "io": bool(ext_io and ext_io.get("passed")),
         "content": bool(ext_ct and ext_ct.get("passed")),
         "passed": bool(ext_io and ext_io.get("passed")),
     })
+    if ctx.ready("med_leg_ready"):
+        med_io, med_ct = _load(root / "io_external_med.json"), _load(root / "content_external_med.json")
+        legs.append({
+            "leg": "external_med", "label": "External data (medical STR panel)",
+            "available": True,
+            "type": ctx.plan.get("med_input_type") or None,
+            "dataset": ctx.plan.get("med_dataset_name") or None,
+            "io": bool(med_io and med_io.get("passed")),
+            "content": bool(med_ct and med_ct.get("passed")),
+            "passed": bool(med_io and med_io.get("passed")),
+        })
     ex = _load(root / "example.json")
     legs.append({
         "leg": "example", "label": "Tool's own example",

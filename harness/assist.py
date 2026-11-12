@@ -583,8 +583,6 @@ def main() -> int:
     catalogue_slug = built["manifest"]["report"]["slug"]
     trials = GitHubTrials(args.engine_ref, os.environ.get("GITHUB_RUN_ID", ""))
     documented_recipe = {"manifest_yml": built["manifest_yml"], "dockerfile": built["dockerfile"]}
-    if built.get("dockerfile_fallback"):
-        documented_recipe["dockerfile_fallback"] = built["dockerfile_fallback"]
     print("attempt 0: the documented recipe")
     documented = {"recipe": documented_recipe,
                   "result": trials.run(documented_recipe, f"assist-{catalogue_slug}", 0)}

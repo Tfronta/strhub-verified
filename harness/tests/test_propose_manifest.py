@@ -2,6 +2,8 @@
 import json
 import pathlib
 
+import pytest
+
 import _manifest
 import detect_recipe as dr
 import propose_manifest as pm
@@ -85,25 +87,27 @@ def test_a_list_of_input_files_becomes_one_canonical_input(tmp_path):
     assert cmd == "./HipSTR --bams /data/in/input.bam --fasta /data/ref/hg38.fa"
 
 
-def test_gangstr_recipe_declares_the_published_image_as_plan_b(tmp_path):
+def test_gangstr_recipe_builds_the_pinned_commit_and_declares_no_plan_b(tmp_path):
     r = pm.build(_proposal("gangstr"), "gangstr-trial")
-    m = _valid(r["manifest_yml"], tmp_path)  # environment.fallback is schema-valid
+    m = _valid(r["manifest_yml"], tmp_path)
     assert m["environment"]["source"] == "generated"
-    assert m["environment"]["fallback"] == {
-        "dockerfile": "Dockerfile.fallback",
-        "reason": "the published image gymreklab/str-toolkit the README points at",
-    }
+    assert "fallback" not in m["environment"]
     assert "FROM ubuntu:22.04" in r["dockerfile"]
-    assert "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
+    assert "dockerfile_fallback" not in r
     env_caveat = next(c for c in m["caveats"]["items"] if c.startswith("Environment:"))
-    assert "at the pinned commit" in env_caveat and "If that build fails" in env_caveat
+    assert "at the pinned commit" in env_caveat and "stands in" not in env_caveat
 
 
-def test_a_recipe_without_a_plan_b_declares_none(tmp_path):
+def test_a_manifest_declaring_a_plan_b_is_no_longer_schema_valid(tmp_path):
+    """`environment` admits no unknown keys, so a manifest from before the plan
+    B was removed fails loudly instead of carrying a Dockerfile nobody builds."""
+    import jsonschema
     r = pm.build(_proposal("hipstr"), "hipstr-trial")
     m = _valid(r["manifest_yml"], tmp_path)
-    assert "fallback" not in m["environment"]
-    assert r["dockerfile_fallback"] is None
+    m["environment"]["fallback"] = {"dockerfile": "Dockerfile.fallback"}
+    schema = json.loads(_manifest.SCHEMA.read_text())
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(m, schema)
 
 
 def test_strspy_runs_on_the_input_type_strhub_has_data_for(tmp_path):

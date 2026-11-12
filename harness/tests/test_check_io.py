@@ -71,10 +71,12 @@ def test_vcf_uncalled_rows_do_not_count_as_called_records(tmp_path):
     assert result2["outputs"][0]["records"] == 1
 
 
-def test_uncalled_vcf_on_slice_is_strhub_limitation_not_runs_or_fails(tmp_path):
+def test_uncalled_vcf_on_slice_is_undetermined_about_the_input_not_runs_fails_or_ours(tmp_path):
     """A tool that ran to completion and wrote a VCF of uncalled loci (./.) on
-    STRhub's slice must be classified as undetermined (basis='strhub',
-    step1='ours'), never as 'runs' or 'fails'."""
+    STRhub's slice is 'undetermined' with basis 'input': neither a run nor a
+    failure was established, and nothing established a fault of STRhub's
+    either (the old 'basis: strhub' said the slice had no reads there, which
+    nobody had checked, and unpublished the run as something to repeat)."""
     import json
     import subprocess
     import sys
@@ -114,8 +116,10 @@ def test_uncalled_vcf_on_slice_is_strhub_limitation_not_runs_or_fails(tmp_path):
         ], cwd=str(root), check=True, capture_output=True, text=True)
         report = json.loads(res.stdout)
         assert report["verdict"]["code"] == "undetermined"
-        assert report["verdict"]["basis"] == "strhub"
-        assert report["step1"]["code"] == "ours"
+        assert report["verdict"]["basis"] == "input"
+        assert "99 locus row(s) with no genotype call" in report["verdict"]["reason"]
+        assert [b["code"] for b in report["verdict"]["blockers"]] == ["no_calls"]
+        assert report["step1"]["code"] != "ours"
     finally:
         for p in (root / "reports").glob("test-uncalled-vcf.*"):
             p.unlink(missing_ok=True)

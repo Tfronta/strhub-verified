@@ -191,6 +191,22 @@ BLOCKERS = {
                     "from the run.",
         },
     },
+    "no_calls": {
+        # The output exists and parses; every locus row in it is uncalled. Nothing
+        # here says whether the reference slice held reads at those coordinates.
+        "what": "The tool ran to completion and wrote locus rows with no genotype call. Whether "
+                "STRhub's reference slice holds reads at the coordinates it targets was not "
+                "established, so this run is not taken as a result about the tool.",
+        "self_fix": "upload_regions",
+        "self_fix_text": "Provide a regions file for loci STRhub's reference slice covers and try again.",
+        "ask_owner": {
+            "title": "Document which loci the tool genotypes",
+            "body": "STRhub Verified ran the documented command on a public hg38 reference sample "
+                    "covering forensic and medical STR loci; the output listed loci with no genotype "
+                    "call. A documented list of the loci the tool targets, or a shipped catalog, would "
+                    "let a user (and STRhub) pick a sample that covers them.",
+        },
+    },
     "no_output": {
         "what": "The tool ran to completion but produced no output file in the documented format.",
         "self_fix": "edit_output",
@@ -205,7 +221,8 @@ BLOCKERS = {
 }
 
 
-def blockers_for(gates: dict, limits: list[str], gaps: list[dict], ids: set[str]) -> list[dict]:
+def blockers_for(gates: dict, limits: list[str], gaps: list[dict], ids: set[str],
+                 uncalled: bool = False) -> list[dict]:
     """The blockers that apply, most actionable first, at most three."""
     out: list[str] = []
     for l in limits:
@@ -224,7 +241,7 @@ def blockers_for(gates: dict, limits: list[str], gaps: list[dict], ids: set[str]
             and "regions_format_unknown" not in out:
         out.append("run_stopped" if "run_timeout" in ids else "run_failed")
     elif gates.get("runs") and not gates.get("io"):
-        out.append("no_output")
+        out.append("no_calls" if uncalled else "no_output")
     seen: list[str] = []
     for code in out:
         if code not in seen:
@@ -263,7 +280,7 @@ def _procedure_block(procedure: dict | None, gaps: list) -> dict | None:
 
 def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
             manual_verification: dict | None = None, recipe_proposal: dict | None = None,
-            declared_compatibility: dict | None = None, fallback_used: bool = False,
+            declared_compatibility: dict | None = None, uncalled_rows: int = 0,
             strhub_fault: str | None = None, procedure: dict | None = None) -> dict:
     """Return {code, title, reason, readme_gaps, basis}."""
     gates = gates or {}
@@ -279,17 +296,6 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     # reference sample.
     ran = bool(gates.get("runs")) and bool(gates.get("io"))
     produced = ran
-
-    # Plan B does not rescue the commit. The image, when one was tried, is a
-    # different claim and must not flip this verdict to runs.
-    if fallback_used:
-        blocked = _procedure_block(procedure, gaps)
-        if blocked:
-            return blocked
-        return {"code": "fails", "title": TITLES["fails"], "basis": "gates",
-                "reason": "The build from the pinned commit failed. A published image "
-                          "was not counted as that commit running.",
-                "readme_gaps": gaps}
 
     blocked = _procedure_block(procedure, gaps)
     if blocked:
@@ -327,6 +333,19 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
                 "reason": "STRhub's own infrastructure failed before the tool could be tested ("
                           + strhub_fault + "). Nothing here is a finding about the software; "
                           "the run has to be repeated.",
+                "readme_gaps": []}
+
+    # It ran to the end and wrote its file, and every locus row in that file is
+    # uncalled. Whether STRhub's slice holds reads where the tool looked was
+    # never checked, so neither "runs" nor "fails" is established. Said as
+    # that, published as that, and never as a fault of STRhub's: repeating
+    # the run would change nothing.
+    if uncalled_rows and gates.get("runs") and not gates.get("io"):
+        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "input",
+                "reason": f"The tool ran to completion and wrote {uncalled_rows} locus row(s) with no "
+                          "genotype call. Whether STRhub's reference slice holds reads at the "
+                          "coordinates it targets was not established, so this run is not taken "
+                          "as a result about the tool.",
                 "readme_gaps": []}
 
     declared = {k for k, v in (declared_compatibility or {}).items() if v}
@@ -372,11 +391,11 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
 
 def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
            manual_verification: dict | None = None, recipe_proposal: dict | None = None,
-           declared_compatibility: dict | None = None, fallback_used: bool = False,
+           declared_compatibility: dict | None = None, uncalled_rows: int = 0,
            strhub_fault: str | None = None, procedure: dict | None = None) -> dict:
     """The verdict, plus the blockers a reader can act on when it is not 'runs'."""
     v = _decide(gates, diagnostics, manual_verification, recipe_proposal, declared_compatibility,
-                fallback_used, strhub_fault, procedure)
+                uncalled_rows, strhub_fault, procedure)
     # Whether the installed program starts, when the run did not get to the
     # end: installed and starting, but nobody could tell how to run it, is a
     # different finding from a program that does not start at all.
@@ -394,7 +413,7 @@ def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     proposal = recipe_proposal or {}
     limits = [l for l in proposal.get("limitations", []) if l in LIMITATION_TEXT]
     gaps = [g for g in (proposal.get("readme") or {}).get("gaps", []) if g.get("item") != "example_data"]
-    v["blockers"] = blockers_for(gates or {}, limits, gaps, _ids(diagnostics))
+    v["blockers"] = blockers_for(gates or {}, limits, gaps, _ids(diagnostics), uncalled=bool(uncalled_rows))
     raised = _raised(diagnostics)
     if raised:
         # What to fix, in the issue the author is asked to read.

@@ -1996,12 +1996,9 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
                                  docs),
         "example": propose_example(commands, paths, examples),
         "dockerfile": generate_dockerfile(slug, ref, build, files=files),
-        # Plan B, built only if the one above fails: the published environment
-        # the README points at. Same layout (the clone at /opt/tool, bash
-        # entrypoint), so the command and the example run unchanged on it.
-        "dockerfile_fallback": (generate_dockerfile(slug, ref, build["fallback"],
-                                                    image_layout=build["method"] == "dockerfile", files=files)
-                                if build.get("fallback") else None),
+        # No second Dockerfile for the published environment the README points
+        # at (`build.fallback`): that is evidence about the README, cited in
+        # the report, never something the engine builds in the commit's place.
     }
 
 

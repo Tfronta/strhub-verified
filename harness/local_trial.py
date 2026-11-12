@@ -227,8 +227,6 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         dockerfile_path = prop_dir / "Dockerfile"
         manifest_path.write_text(built["manifest_yml"])
         dockerfile_path.write_text(built["dockerfile"])
-        if built.get("dockerfile_fallback"):
-            (prop_dir / "Dockerfile.fallback").write_text(built["dockerfile_fallback"])
 
         proposal_json = tmp_path / "recipe_proposal.json"
         proposal_json.write_text(json.dumps(proposal, indent=2))
@@ -236,8 +234,6 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         # --- Step 1: Pre-flight (prepare.py) ---
         import base64
         recipe_payload = {"manifest_yml": built["manifest_yml"], "dockerfile": built["dockerfile"]}
-        if built.get("dockerfile_fallback"):
-            recipe_payload["dockerfile_fallback"] = built["dockerfile_fallback"]
         recipe_b64 = base64.b64encode(json.dumps(recipe_payload).encode()).decode()
         work_dir = tmp_path / "work"
         prep_env = {**os.environ, "RECIPE_B64": recipe_b64}

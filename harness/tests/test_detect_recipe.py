@@ -60,12 +60,12 @@ def test_strsearch_ships_dockerfile_and_examples_and_warns_about_hg19():
     assert sorted(i["kind"] for i in r["input_type"]["statements"]["inputs"]) == ["bam", "fastq"]
 
 
-def test_gangstr_builds_the_pinned_commit_and_keeps_the_published_image_as_plan_b():
+def test_gangstr_builds_the_pinned_commit_and_cites_the_published_image():
     r = _detect("gangstr")
     # The README points at a published Docker image (gymreklab/str-toolkit)
     # and installs from Bioconda, but the tree can be built with CMake. What
     # the report names is the pinned commit, so that is what gets built; the
-    # image holds whatever was last pushed to it and is kept as the fallback.
+    # image is recorded as evidence of what the README points at, and never built.
     assert r["build"]["method"] == "cmake" and r["build"]["file"] == "CMakeLists.txt"
     fb = r["build"]["fallback"]
     assert (fb["method"], fb["image"]) == ("docker_image", "gymreklab/str-toolkit")
@@ -77,7 +77,7 @@ def test_gangstr_builds_the_pinned_commit_and_keeps_the_published_image_as_plan_
     # built is put on the PATH.
     assert "FROM ubuntu:22.04" in r["dockerfile"] and "cmake -S . -B build" in r["dockerfile"]
     assert "/usr/local/bin/" in r["dockerfile"]
-    assert r["dockerfile_fallback"].startswith("# Proposed") and "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
+    assert "dockerfile_fallback" not in r
     assert r["commands"][0]["invokes"] == "GangSTR"
     # One option per line in the README, no backslashes: all of them are kept.
     assert "--regions" in r["commands"][0]["cmd"] and "--out" in r["commands"][0]["cmd"]
@@ -133,9 +133,8 @@ def test_example_is_proposed_only_when_the_command_runs_on_shipped_data():
 
 def test_generated_dockerfiles_never_mask_a_failed_clone():
     import re
-    for name in ("hipstr", "straitrazor", "gangstr", "strspy", "gangstr:fallback"):
-        name, _, which = name.partition(":")
-        df = _detect(name)["dockerfile_fallback" if which else "dockerfile"]
+    for name in ("hipstr", "straitrazor", "gangstr", "strspy"):
+        df = _detect(name)["dockerfile"]
         assert df, name
         for line in df.splitlines():
             # A bare `|| true` at the end of a RUN chain hides every earlier
@@ -147,44 +146,41 @@ README_WITH_IMAGE = "## Install\n\nA Docker image is available at [x](https://hu
 
 
 def test_a_published_docker_image_is_the_environment_only_when_nothing_builds_the_commit():
-    # Nothing in the tree to build from: the image is all there is, and no plan B.
+    # Nothing in the tree to build from: the image is all there is.
     r = dr.detect("gymreklab/gangstr", "abc", {"tree": [], "truncated": False}, README_WITH_IMAGE, "README.md")
     assert r["build"]["method"] == "docker_image" and r["build"]["image"] == "gymreklab/str-toolkit"
-    assert r["build"]["fallback"] is None and r["dockerfile_fallback"] is None
+    assert r["build"]["fallback"] is None
     assert r["dockerfile"].startswith("# Proposed") and "FROM gymreklab/str-toolkit" in r["dockerfile"]
 
 
-def test_a_source_build_outranks_the_published_image_which_becomes_plan_b():
+def test_a_source_build_outranks_the_published_image_which_is_cited_not_built():
     tree = {"tree": [{"path": "CMakeLists.txt", "type": "blob", "size": 1}], "truncated": False}
     r = dr.detect("gymreklab/gangstr", "abc", tree, README_WITH_IMAGE, "README.md")
     assert r["build"]["method"] == "cmake"
     assert r["build"]["fallback"]["image"] == "gymreklab/str-toolkit"
     assert "FROM ubuntu:22.04" in r["dockerfile"]
-    assert "FROM gymreklab/str-toolkit" in r["dockerfile_fallback"]
-    # Both lay the tool out the same way, so one command runs on either.
-    for df in (r["dockerfile"], r["dockerfile_fallback"]):
-        assert "git clone https://github.com/gymreklab/gangstr.git tool" in df
-        assert df.rstrip().endswith('ENTRYPOINT ["/bin/bash", "-lc"]')
+    assert "git clone https://github.com/gymreklab/gangstr.git tool" in r["dockerfile"]
+    assert r["dockerfile"].rstrip().endswith('ENTRYPOINT ["/bin/bash", "-lc"]')
+    # No second Dockerfile: what runs is the pinned commit's build, or nothing.
+    assert "dockerfile_fallback" not in r
 
 
-def test_the_repositorys_own_dockerfile_is_built_first_and_the_documented_image_is_plan_b():
+def test_the_repositorys_own_dockerfile_is_built_and_the_documented_image_is_cited():
     """STRsearch ships a Dockerfile and tells readers to `docker pull` its image.
-    The Dockerfile is the author's word and is built first; when it does not
-    build, the image the README documents is the author's word too."""
+    The Dockerfile is the author's word and is what gets built; the image the
+    README documents is recorded as the README's evidence."""
     tree = {"tree": [{"path": "Dockerfile", "type": "blob", "size": 1}, {"path": "CMakeLists.txt", "type": "blob", "size": 1}], "truncated": False}
     r = dr.detect("gymreklab/gangstr", "abc", tree, README_WITH_IMAGE, "README.md")
     assert r["build"]["method"] == "dockerfile"
     assert r["build"]["fallback"]["method"] == "docker_image"
-    # The command was written for the image's layout: the stand-in keeps it.
-    assert r["dockerfile_fallback"].splitlines()[1:] == [
-        "FROM gymreklab/str-toolkit", 'ENTRYPOINT ["/bin/bash", "-lc"]']
+    assert "dockerfile_fallback" not in r
 
 
-def test_a_repository_dockerfile_without_a_documented_image_has_no_plan_b():
+def test_a_repository_dockerfile_without_a_documented_image_cites_none():
     tree = {"tree": [{"path": "Dockerfile", "type": "blob", "size": 1}], "truncated": False}
     r = dr.detect("someone/tool", "abc", tree, "# tool\n\n```\ntool --in x.bam\n```\n", "README.md")
     assert r["build"]["method"] == "dockerfile"
-    assert r["build"]["fallback"] is None and r["dockerfile_fallback"] is None
+    assert r["build"]["fallback"] is None
 
 
 def test_source_builds_bring_the_autotools():

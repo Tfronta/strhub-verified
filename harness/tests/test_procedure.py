@@ -82,10 +82,3 @@ def test_a_command_still_pointing_at_the_repos_files_is_not_our_sample():
     got = procedure.classify(proposal, manifest, [], [])
     assert got["blocker"] == "input_not_substituted"
     assert got["may_say_runs"] is False
-
-
-def test_plan_b_after_a_generated_build_is_ours():
-    procedure_review = {"may_say_runs": False, "basis": "strhub",
-                        "reason": "The environment would be a container STRhub generated."}
-    v = verdict.decide(G_OK, fallback_used=True, procedure=procedure_review)
-    assert v["code"] == "undetermined" and v["basis"] == "strhub"

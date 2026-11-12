@@ -51,33 +51,9 @@ def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
     assert kv["regions_missing"] == "0"
     assert (tmp_path / "in_external" / "regions.bed").is_file()
     assert all("\n" not in v for v in kv.values())
-    # No plan B declared: the Installs step must not look for one.
-    assert kv["dockerfile_fallback"] == ""
+    assert "dockerfile_fallback" not in kv
 
 
-def test_trial_recipe_with_a_plan_b_stages_the_fallback_dockerfile(tmp_path):
-    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "gangstr"
-    manifest = src.joinpath("manifest.yml").read_text()
-    manifest = manifest.replace("environment:\n", "environment:\n  fallback:\n    dockerfile: Dockerfile.fallback\n    reason: the published image gymreklab/str-toolkit the README points at\n", 1)
-    recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text(),
-              "dockerfile_fallback": "FROM gymreklab/str-toolkit\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n"}
-    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["gangstr", "--work", str(tmp_path), "--recipe-b64", b64])
-    assert rc == 0, err
-    assert kv["dockerfile_fallback"] == "Dockerfile.fallback"
-    assert (tmp_path / "recipe" / "gangstr" / "Dockerfile.fallback").read_text().startswith("FROM gymreklab/str-toolkit")
-
-
-def test_a_declared_plan_b_that_is_missing_is_a_warning_not_a_silent_nothing(tmp_path):
-    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "gangstr"
-    manifest = src.joinpath("manifest.yml").read_text()
-    manifest = manifest.replace("environment:\n", "environment:\n  fallback:\n    dockerfile: Dockerfile.fallback\n", 1)
-    recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text()}
-    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["gangstr", "--work", str(tmp_path), "--recipe-b64", b64])
-    assert rc == 0, err
-    assert kv["dockerfile_fallback"] == ""
-    assert "::warning::fallback Dockerfile declared but not found" in err
 
 
 def test_garbage_recipe_stops_the_run(tmp_path):
@@ -141,10 +117,24 @@ def test_shipped_example_still_runs_when_strhub_sample_is_not_ready(tmp_path):
     assert kv2["example_ready"] == "0"
 
 
-def test_forensic_bam_run_stages_medical_fallback_and_promote_updates_manifest(tmp_path):
-    """A forensic BAM trial with STRhub library regions stages in_external_med
-    so the workflow can fall back to the medical STR slice when the forensic
-    slice produces no called records."""
+def test_a_recipe_carrying_a_plan_b_is_staged_without_it(tmp_path):
+    """The web still sends dockerfile_fallback; the engine builds no plan B,
+    so the file is not materialised and the manifest must not declare one."""
+    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "gangstr"
+    recipe = {"manifest_yml": src.joinpath("manifest.yml").read_text(),
+              "dockerfile": src.joinpath("Dockerfile").read_text(),
+              "dockerfile_fallback": "FROM gymreklab/str-toolkit\n"}
+    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
+    rc, kv, err = _run(["gangstr", "--work", str(tmp_path), "--recipe-b64", b64])
+    assert rc == 0, err
+    assert "dockerfile_fallback" in err and "ignored" in err
+    assert not (tmp_path / "recipe" / "gangstr" / "Dockerfile.fallback").exists()
+
+
+def test_forensic_bam_run_plans_the_medical_leg_when_the_loci_are_unknown(tmp_path):
+    """A forensic BAM trial with STRhub library regions (so nothing says which
+    loci the tool genotypes) stages in_external_med as a second external leg,
+    planned before anything runs. Nothing promotes or rewrites the manifest."""
     src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "hipstr"
     manifest = src.joinpath("manifest.yml").read_text()
     manifest = manifest.replace(
@@ -156,16 +146,13 @@ def test_forensic_bam_run_stages_medical_fallback_and_promote_updates_manifest(t
     b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
     rc, kv, err = _run(["hipstr", "--work", str(tmp_path), "--recipe-b64", b64])
     assert rc == 0, err
-    assert kv["med_fallback_ready"] == "1"
+    assert kv["med_leg_ready"] == "1"
     assert kv["med_input_type"] == "illumina-bam-hg38-med"
     assert kv["med_supported_loci"] == "datasets/illumina-bam-hg38-med/loci.bed"
     assert (tmp_path / "in_external_med" / "input.bam").is_file()
     assert (tmp_path / "in_external_med" / "regions.bed").is_file()
-
-    # Promoting the manifest updates inputs.type and appends the panel caveat.
+    # The manifest the run reads is the one that was handed in: no promotion.
     mf_path = tmp_path / "recipe" / "hipstr" / "manifest.yml"
-    rc_prom, _, err_prom = _run(["--promote-medical", str(mf_path), "illumina-bam-hg38-med"])
-    assert rc_prom == 0, err_prom
-    updated = mf_path.read_text()
-    assert "illumina-bam-hg38-med" in updated
-    assert "medical STR slice" in updated
+    assert "illumina-bam-hg38-med" not in mf_path.read_text()
+    rc2, _, err2 = _run(["--promote-medical", str(mf_path), "illumina-bam-hg38-med"])
+    assert rc2 != 0

@@ -107,7 +107,7 @@ def certificate_for(report: dict, cfg: dict) -> dict:
     rung, the executive summary, the closing lists and the conclusion — so
     the PDF, the copies and the web page print one text, and a test can hold
     them to it. `cfg` is what conclusion_items_for reads (tool_display, gates,
-    verdict, stats, declared_format, dataset, fallback_used, repo_test_data)."""
+    verdict, stats, declared_format, dataset, repo_test_data)."""
     label, _ = headline(report)
     level = report.get("level", "none")
     gates = dict(report.get("gates") or {})
@@ -136,8 +136,6 @@ def errors_reported(report: dict) -> bool:
     return any(i.get("severity") == "error"
                for issues in (report.get("diagnostics") or {}).values() for i in issues)
 
-
-RUNS_FALLBACK = "Runs from its published image; the pinned commit does not build"
 
 #: The four blocks docs/GUIA-PASO-1.md asks for, in its words. A report that
 #: says a block is missing uses the same name the guide gives it, so correcting
@@ -270,8 +268,6 @@ def headline(report: dict) -> tuple[str, str]:
 
       Runs as documented                          the documented run produced its output
       Runs as documented (errors reported)        … and the tool's log reported errors
-      Runs from its published image; the pinned   plan B: the commit did not build, the
-        commit does not build                     image the README points at ran
       Does not run as documented: stops at run   the documented run did not, and where
       Could not be determined                     nobody knew how to attempt it (the README)
       Out of scope                                the free runner cannot provide something
@@ -285,10 +281,6 @@ def headline(report: dict) -> tuple[str, str]:
         return "Could not be determined", "lightgrey"
     if code == "out_of_scope":
         return "Out of scope", "lightgrey"
-    # The published image is a different claim. It does not make the commit
-    # a run, whatever the gates recorded after the fallback build.
-    if (report.get("environment") or {}).get("fallback_used"):
-        return "Does not run as documented: stops at install", "red"
     runs = code == "runs" if code else level in ("io", "content")
     if runs:
         if errors_reported(report):
@@ -377,10 +369,7 @@ def conclusion_items_for(cfg: dict) -> list[tuple[str, str]]:
     fmt = (cfg.get("declared_format") or "").strip()
     fmt_label = f"{fmt} " if fmt and fmt != "—" else ""
     ds_name = (cfg.get("dataset") or {}).get("name") or "a public reference dataset"
-    where = (f"an environment built from {cfg.get('fallback_reason')}, after the build "
-             "from the pinned commit failed"
-             if cfg.get("fallback_used") else
-             "a clean ubuntu-22.04 environment at the pinned commit")
+    where = "a clean ubuntu-22.04 environment at the pinned commit"
     gates = dict(cfg.get("gates") or {})
     verdict = cfg.get("verdict") or {}
 
@@ -425,32 +414,20 @@ def conclusion_items_for(cfg: dict) -> list[tuple[str, str]]:
     return items
 
 
-def install_meaning(fallback_used: bool, faults: list[str]) -> list[tuple[str, str]]:
+def install_meaning(faults: list[str]) -> list[tuple[str, str]]:
     """What a failed build means for each reader, in their own terms.
 
-    The report used to say "plan B: the published image ... after the build
-    from the pinned commit failed" and stop. That is the mechanism, in the
-    engine's words, and nobody who opens a certificate asked about the
-    mechanism. Three readers do open it — someone about to run the tool, a
+    Three readers open a certificate — someone about to run the tool, a
     reviewer holding a manuscript, its maintainer — and each needs one
     sentence in their own terms. The maintainer's is the fault sentence, which
     already says whose side the cause is on; the other two claim only what
-    the run established: that a build from source stopped, and (on plan B)
-    that the ready-made environment ran.
+    the run established: that a build from source stopped.
     """
-    if fallback_used:
-        run = ("A build from source at this commit fails in a clean environment; the "
-               "cause is below. The ready-made environment the README points at does "
-               "work: it is what this run used.")
-        review = ("This result describes the software inside that environment, whatever "
-                  "its publisher last put there, and not the pinned commit, which is the "
-                  "version a manuscript would cite.")
-    else:
-        run = ("A build from source at this commit fails in a clean environment; the "
-               "cause and a suggested fix are below.")
-        review = ("Nothing ran, so this says nothing about the software's output. It "
-                  "records that this attempt to build it stopped, and whose side the "
-                  "cause is on.")
+    run = ("A build from source at this commit fails in a clean environment; the "
+           "cause and a suggested fix are below.")
+    review = ("Nothing ran, so this says nothing about the software's output. It "
+              "records that this attempt to build it stopped, and whose side the "
+              "cause is on.")
     return [("If you are trying to run it", run),
             ("If you are reviewing a paper", review),
             ("If you maintain it", diagnose_log.install_fault_sentence(faults))]

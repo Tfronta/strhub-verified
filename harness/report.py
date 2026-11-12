@@ -41,7 +41,6 @@ SCOPE = ("Executed end-to-end in the stated environment with output in the "
 LADDER = ["available", "installs", "runs", "io", "content"]
 #: Written into the build log by the Installs step between the attempt that
 #: failed and the plan-B build that followed it (see verify.yml).
-FALLBACK_MARKER = "==== STRhub: the build above failed; building the fallback environment"
 LABELS = {"available": "Available", "installs": "Installs",
           "runs": "Runs", "io": "Runs + Expected IO",
           "content": "Runs + Plausible output"}
@@ -190,45 +189,23 @@ def _verdict_md(report: dict) -> list[str]:
     return lines
 
 
-def _fallback_reason(env: dict) -> str:
-    fb = env.get("fallback") or {}
-    return fb.get("reason") or "the fallback environment the manifest declares"
-
-
 def _environment_line(env: dict, code=lambda t: f"`{t}`") -> str:
-    """'ubuntu-22.04 (`Dockerfile`)', plus plan B when that is what ran.
-    `code` wraps a file name: backticks for markdown, <code> for HTML."""
-    line = f"{', '.join(env.get('os', []))} ({code(env['dockerfile'])})"
-    if env.get("fallback_used"):
-        fb = env.get("fallback") or {}
-        line += (f"; plan B: {_fallback_reason(env)} ({code(fb.get('dockerfile', 'Dockerfile.fallback'))}), "
-                 "after the build from the pinned commit failed")
-    return line
+    """'ubuntu-22.04 (`Dockerfile`)'. `code` wraps a file name: backticks for
+    markdown, <code> for HTML."""
+    return f"{', '.join(env.get('os', []))} ({code(env['dockerfile'])})"
 
 
 def _install_heading(inst: dict) -> str:
     # Plain words, not the mechanism: "why the pinned commit did not build"
     # told a reader who did not know what a pinned commit was that something
     # with a name they did not know had failed.
-    return ("It did not build from source; the run used the README's ready-made environment"
-            if inst.get("fallback_used") else "It did not build from source")
+    return "It did not build from source"
 
 
 def _install_lead(inst: dict, env: dict) -> str:
     tried = ("STRhub tried to build the tool from its source at the pinned commit, "
              "following the build steps the repository declares, and the build failed.")
-    if inst.get("fallback_used"):
-        return (f"{tried} {_fallback_reason(env)[0].upper()}{_fallback_reason(env)[1:]} "
-                "was used instead, and every gate below ran on it.")
     return f"{tried} Nothing below the Installs gate ran."
-
-
-def _primary_build_log(path: str) -> str:
-    """The build log up to the plan-B marker: the attempt on the pinned commit."""
-    p = pathlib.Path(path)
-    if not p.exists():
-        return ""
-    return p.read_text(errors="replace").split(FALLBACK_MARKER, 1)[0]
 
 
 def _run_record(m: dict) -> dict | None:
@@ -286,7 +263,7 @@ def _summary_md(report: dict, slug: str) -> str:
                   "",
                   "What this means:", ""]
         lines += [f"- **{who}:** {what}" for who, what in
-                  install_meaning(bool(inst.get("fallback_used")), inst.get("faults") or [])]
+                  install_meaning(inst.get("faults") or [])]
         lines += ["", "What failed:", "",
                   "| What happened | Times | Suggested fix |",
                   "|---|---|---|"]
@@ -400,6 +377,10 @@ def _summary_md(report: dict, slug: str) -> str:
                 f"{'yes' if avail else 'N/A'} | {status} | {err} | "
                 f"{leg.get('dataset', leg.get('type', '—'))} |"
             )
+
+    ladder = report.get("ladder") or {}
+    if ladder.get("leg") == "external_med" and ladder.get("reason"):
+        lines += ["", f"The badge rests on the medical STR panel leg: {ladder['reason']}"]
 
     # Who chose the regions, and the fact that the dataset is a slice. A
     # coordinate-based tool only calls where its BED points, so both are material.
@@ -526,7 +507,7 @@ def _summary_html(report: dict, slug: str) -> str:
                     if build_log else "")
         meaning = "".join(
             f"<li><b>{esc(who)}:</b> {esc(what)}</li>" for who, what in
-            install_meaning(bool(inst.get("fallback_used")), inst.get("faults") or []))
+            install_meaning(inst.get("faults") or []))
         install_block = (
             f"<h3>{esc(_install_heading(inst))}</h3>"
             f"<p>{esc(_install_lead(inst, report['environment']))}</p>"
@@ -866,15 +847,17 @@ def _certificate_cfg(report: dict, m: dict) -> dict:
     declared = (m.get("outputs") or [{}])[0]
     outs = (report.get("content_detail") or {}).get("outputs") or []
     stats = outs[0].get("stats") or {} if outs and isinstance(outs[0], dict) else {}
+    # The dataset of the leg the ladder rests on: the external one, or the
+    # medical-panel leg when the engine's record says the badge sits there.
+    ladder_leg = (report.get("ladder") or {}).get("leg") or "external"
     ds_name = next((d.get("dataset") for d in (report.get("datasets") or [])
-                    if d.get("leg") == "external" and d.get("dataset")), None)
+                    if d.get("leg") == ladder_leg and d.get("dataset")), None)
     if not ds_name:
         try:
             index = json.loads((ROOT / "datasets" / "index.json").read_text())
             ds_name = (index.get("datasets", {}).get((m.get("inputs") or {}).get("type", "")) or {}).get("name")
         except (OSError, json.JSONDecodeError):
             ds_name = None
-    env = report.get("environment") or {}
     return {
         "tool_display": f"{name} {m['tool'].get('version', '')}".strip(),
         "tool_name": name,
@@ -883,8 +866,6 @@ def _certificate_cfg(report: dict, m: dict) -> dict:
         "stats": stats,
         "declared_format": (declared.get("format") or "—").upper(),
         "dataset": {"name": ds_name} if ds_name else {},
-        "fallback_used": bool(env.get("fallback_used")),
-        "fallback_reason": (env.get("fallback") or {}).get("reason") or "the fallback environment the manifest declares",
         "repo_test_data": report.get("repo_test_data") or {},
     }
 
@@ -913,6 +894,7 @@ def apply_engine_record(args, path: str) -> dict | None:
     args.environment_built = rec.get("environment_built") or ""
     if not args.supported_loci:
         args.supported_loci = ladder.get("supported_loci", "")
+    args.ladder = {k: ladder[k] for k in ("leg", "reason", "input_type", "dataset") if ladder.get(k)}
     return rec
 
 
@@ -939,10 +921,9 @@ def main() -> int:
                     help="run_record.json from harness/engine: supplies --available, --installs, "
                          "--runs, --io, --content, --example-runs, --environment-built and "
                          "--supported-loci from the record, in place of step outcomes")
-    ap.add_argument("--environment-built", default="", choices=["", "primary", "fallback"],
-                    help="which Dockerfile produced the image the gates ran on: 'fallback' "
-                         "when the pinned commit did not build and the manifest's plan B "
-                         "(environment.fallback) was built instead")
+    ap.add_argument("--environment-built", default="", choices=["", "primary"],
+                    help="which Dockerfile produced the image the gates ran on: 'primary' "
+                         "(the recipe's) or empty when nothing built")
     ap.add_argument("--check-upstream", action="store_true",
                     help="ask GitHub how far the pinned ref has fallen behind the "
                          "repository's default branch, and whether it still exists")
@@ -976,6 +957,7 @@ def main() -> int:
                     help="path to the dataset's loci.bed — panel size fallback when "
                          "no validation ran (STRhub-supplied BEDs skip the pre-flight)")
     args = ap.parse_args()
+    args.ladder = {}
     if args.engine_record:
         apply_engine_record(args, args.engine_record)
 
@@ -1104,11 +1086,7 @@ def main() -> int:
         # handles by naming nobody.
         "submission": m.get("submission"),
         "source": {**m["source"], "ref_resolved": args.ref or m["source"]["ref"]},
-        # Plan B is recorded on the environment itself: a reader of the JSON
-        # must not have to open the build log to learn that what ran was not
-        # built from the pinned commit.
-        "environment": ({**m["environment"], "fallback_used": True}
-                        if args.environment_built == "fallback" else m["environment"]),
+        "environment": m["environment"],
         "generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "ci_run": args.run_url,
         # What the gates ran, as the tool saw it. The certificate has printed
@@ -1185,13 +1163,7 @@ def main() -> int:
         except Exception:  # noqa: BLE001
             proposal = None
     env_source = (m.get("environment") or {}).get("source")
-    if args.environment_built == "fallback":
-        needed.append(
-            f"A container environment: the build from the pinned commit failed, so "
-            f"{_fallback_reason(m['environment'])} was built instead. What ran is the "
-            "version that environment holds, not necessarily the pinned commit."
-        )
-    elif env_source == "generated":
+    if env_source == "generated":
         needed.append(
             "A container environment, built from the tool's declared install "
             "steps rather than from a recipe the repository ships."
@@ -1290,20 +1262,7 @@ def main() -> int:
     # happened. It is its own thing, and only meaningful when Installs failed:
     # a warning in a build that succeeded is not news.
     install_detail = None
-    if args.log_build and args.environment_built == "fallback" and gates["installs"]:
-        # The gate passed on plan B; why the pinned commit did not build is
-        # still the finding a maintainer wants, so the first attempt's log is
-        # diagnosed on its own, cut at the marker the Installs step wrote.
-        issues = diagnose_log.diagnose(_primary_build_log(args.log_build))
-        install_detail = {
-            "passed": True,
-            "fallback_used": True,
-            "diagnostics": issues,
-            "faults": sorted({
-                f for f in (diagnose_log.fault_of(i["id"]) for i in issues) if f
-            }),
-        }
-    elif args.log_build and not gates["installs"]:
+    if args.log_build and not gates["installs"]:
         issues = diagnose_log.diagnose_file(args.log_build)
         install_detail = {
             "passed": False,
@@ -1353,17 +1312,22 @@ def main() -> int:
             & diagnose_log.STRHUB_FIXABLE
         if ours:
             strhub_fault = ", ".join(sorted(ours))
-    if not strhub_fault and gates["runs"] and not gates["io"]:
+    # An output of locus rows none of which carries a genotype call. Not a
+    # fault of ours (nothing established that the slice lacks reads there) and
+    # not a result about the tool either: the verdict says exactly that.
+    uncalled = 0
+    if gates["runs"] and not gates["io"]:
         uncalled = sum(int(o.get("uncalled_rows") or 0) for o in (io_detail or {}).get("outputs") or [])
-        if uncalled > 0:
-            strhub_fault = (f"the output VCF contained {uncalled} uncalled locus row(s) (./.) and 0 called "
-                            "genotypes, because STRhub's reference slice carries no reads at the target coordinates")
     procedure = (proposal or {}).get("procedure")
     if procedure:
         report["procedure_review"] = procedure
+    if args.ladder:
+        # Which leg the badge rests on, and why, when the engine chose between
+        # the forensic and the medical-panel leg (both ran; neither was retried).
+        report["ladder"] = args.ladder
     report["verdict"] = verdict_lib.decide(
         gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
-        fallback_used=args.environment_built == "fallback",
+        uncalled_rows=uncalled,
         strhub_fault=strhub_fault,
         procedure=procedure,
     )

@@ -264,10 +264,11 @@ def materialise_recipe(tool: str, recipe_b64: str, work: pathlib.Path) -> pathli
     """Write a dispatched recipe to <work>/recipe/<tool>/ and return that dir.
 
     The recipe is a base64 JSON object: {"manifest_yml": str, "dockerfile": str,
-    "dockerfile_fallback": str?, "regions_bed": str?}. It is laid out exactly as
-    tools/<tool>/ would be, so every later step (docker build context, the BED
-    under assets/, the plan-B Dockerfile) works the same for a trial as for a
-    committed tool.
+    "regions_bed": str?}. It is laid out exactly as tools/<tool>/ would be, so
+    every later step (docker build context, the BED under assets/) works the
+    same for a trial as for a committed tool. A `dockerfile_fallback` (the plan
+    B the engine used to build when the first Dockerfile failed) is ignored
+    with a warning: what runs is the pinned commit's build, or nothing.
     """
     if len(recipe_b64) > RECIPE_MAX_BYTES * 4 // 3 + 4:
         raise SystemExit(f"::error::trial recipe exceeds {RECIPE_MAX_BYTES} bytes")
@@ -284,7 +285,8 @@ def materialise_recipe(tool: str, recipe_b64: str, work: pathlib.Path) -> pathli
     (d / "manifest.yml").write_text(recipe["manifest_yml"])
     (d / "Dockerfile").write_text(recipe["dockerfile"])
     if recipe.get("dockerfile_fallback"):
-        (d / "Dockerfile.fallback").write_text(recipe["dockerfile_fallback"])
+        print("::warning::the recipe carries a dockerfile_fallback; the engine no longer builds "
+              "a plan B and ignored it", file=sys.stderr)
     if recipe.get("regions_bed"):
         (d / "assets").mkdir()
         (d / "assets" / REGIONS_CANONICAL).write_text(recipe["regions_bed"])
@@ -380,40 +382,22 @@ def _output_value(value) -> str:
     return " ".join(str(value if value is not None else "").split())
 
 
-#: The medical-STR slice counterpart of each forensic BAM slice. Used at
-#: runtime when a tool's target loci could not be inspected beforehand and the
-#: forensic slice produces no called records.
-MEDICAL_FALLBACK = {
+#: The medical-STR slice of the same sample as each forensic BAM slice. When
+#: the loci a tool genotypes could not be read off its repository (no shipped
+#: catalog), the engine runs BOTH as two planned legs, external and
+#: external_med, and reports both; nothing is retried and nothing is rewritten.
+#: When the catalog could be read, propose_manifest.medical_panel_for already
+#: chose one slice before anything ran, and only that one is staged.
+MEDICAL_LEG = {
     "illumina-bam-hg38": "illumina-bam-hg38-med",
     "pacbio-hifi-bam-hg38": "pacbio-hifi-bam-hg38-med",
     "ont-bam-hg38": "ont-bam-hg38-med",
 }
 
 
-def promote_medical_slice(manifest_path: pathlib.Path, med_input_type: str) -> None:
-    """Update manifest.yml in place when the runtime medical-slice fallback succeeds."""
-    import propose_manifest as pm
-    m = yaml.safe_load(manifest_path.read_text())
-    old_type = (m.get("inputs") or {}).get("type", "")
-    m.setdefault("inputs", {})["type"] = med_input_type
-    name = (m.get("tool") or {}).get("name", "tool")
-    if "report" in m and isinstance(m["report"], dict):
-        m["report"]["slug"] = pm.catalogue_slug(name, med_input_type)
-    note = (
-        f"Panel: this run tried the forensic STR slice ({old_type}) first and "
-        f"then ran the identical command on the medical STR slice of the same "
-        f"sample ({med_input_type})."
-    )
-    caveats = m.setdefault("caveats", {"source": "detect_recipe", "items": []})
-    items = caveats.setdefault("items", [])
-    if note not in items:
-        items.append(note)
-    manifest_path.write_text(yaml.safe_dump(m, sort_keys=False, allow_unicode=True, width=1000))
-
-
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("tool", nargs="?", default="")
+    ap.add_argument("tool")
     ap.add_argument("--work", default="work")
     ap.add_argument("--recipe-b64", default=os.environ.get("RECIPE_B64", ""),
                     help="trial run: the recipe as base64 JSON instead of tools/<tool>/")
@@ -421,14 +405,7 @@ def main() -> int:
                     help="path to recipe_proposal.json when the recipe was proposed in this run")
     ap.add_argument("--plan-out", default="",
                     help="also write the step outputs as JSON: the plan harness/engine runs")
-    ap.add_argument("--promote-medical", nargs=2, metavar=("MANIFEST", "MED_INPUT_TYPE"),
-                    help="promote manifest.yml to the medical slice after runtime fallback succeeds")
     args = ap.parse_args()
-    if args.promote_medical:
-        promote_medical_slice(pathlib.Path(args.promote_medical[0]), args.promote_medical[1])
-        return 0
-    if not args.tool:
-        ap.error("tool is required unless --promote-medical is given")
 
     work = pathlib.Path(args.work)
     if args.recipe_b64.strip():
@@ -538,18 +515,19 @@ def main() -> int:
             supported_loci = ds_rec.get("supported_loci", "") or ""
             min_loci = str(ds_rec.get("min_loci", "") or "")
 
-    # Stage the medical-STR slice counterpart (`work/in_external_med`) when the
-    # run uses STRhub's forensic BAM slice and no author-uploaded BED pinned it
-    # to forensic coordinates. If the forensic run produces no called records,
-    # the workflow retries the identical command on the medical slice.
-    med_fallback_ready = False
-    med_input_type = MEDICAL_FALLBACK.get(input_type or "", "")
+    # Stage the medical-STR slice of the same sample (`work/in_external_med`)
+    # as a second external leg when the run uses STRhub's forensic BAM slice
+    # and no author-uploaded BED pinned it to forensic coordinates: the loci
+    # the tool genotypes are not known, so both panels are tried, each as its
+    # own leg with its own log, and the report shows both.
+    med_leg_ready = False
+    med_input_type = MEDICAL_LEG.get(input_type or "", "")
     med_dataset_name = ""
     med_supported_loci = ""
     if external_ready and med_input_type and regions_source != "tool":
         med_leg = work / "in_external_med"
-        med_fallback_ready, med_dataset_name = stage_external(med_input_type, med_leg)
-        if med_fallback_ready:
+        med_leg_ready, med_dataset_name = stage_external(med_input_type, med_leg)
+        if med_leg_ready:
             if assets_dir.is_dir():
                 for f in assets_dir.iterdir():
                     if f.is_file():
@@ -574,16 +552,6 @@ def main() -> int:
     example_ready = bool(example.get("cmd"))
     example_cwd = example.get("cwd") or "/opt/tool"
 
-    # Plan B for the Installs gate: built only if the first Dockerfile fails.
-    # Declared in the manifest, so it works the same for a committed tool and
-    # for a trial recipe. A declared file that is not here is our fault, not
-    # the author's, and must not become a silent "no plan B": say so.
-    fallback = (m["environment"].get("fallback") or {}).get("dockerfile", "")
-    if fallback and not (tool_dir / fallback).is_file():
-        print(f"::warning::fallback Dockerfile declared but not found: {tool_dir / fallback}",
-              file=sys.stderr)
-        fallback = ""
-
     if not install_ready:
         example_ready = False
     if not procedure_ready:
@@ -607,7 +575,6 @@ def main() -> int:
         # clones the repository and builds that file with the clone as context,
         # and the run legs use the image's own entrypoint.
         "dockerfile_from_repo": (m["environment"].get("from_repo") or "") if m["environment"].get("source") == "repository" else "",
-        "dockerfile_fallback": fallback,
         "timeout": min(int(m["run"].get("timeout_minutes", 30)), 120),
         # The step's own ceiling, a little above the run's: harness/run_container.sh
         # enforces `timeout` and writes why into the log; this is only a backstop.
@@ -627,10 +594,10 @@ def main() -> int:
         "regions_declared": (regions.get("path") or regions.get("library") or "") if isinstance(regions, dict) else (regions or ""),
         "supported_loci": supported_loci,
         "min_loci": min_loci,
-        "med_fallback_ready": "1" if med_fallback_ready else "0",
-        "med_input_type": med_input_type if med_fallback_ready else "",
-        "med_dataset_name": med_dataset_name if med_fallback_ready else "",
-        "med_supported_loci": med_supported_loci if med_fallback_ready else "",
+        "med_leg_ready": "1" if med_leg_ready else "0",
+        "med_input_type": med_input_type if med_leg_ready else "",
+        "med_dataset_name": med_dataset_name if med_leg_ready else "",
+        "med_supported_loci": med_supported_loci if med_leg_ready else "",
     }
     # Every value is flattened to one line: this goes to $GITHUB_OUTPUT, where a
     # newline starts a new key. Only `cmd` used to be flattened.
