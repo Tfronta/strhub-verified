@@ -106,9 +106,7 @@ def binding_validation(report: dict, manifest: dict) -> Validation:
         return Validation(False, "The report source does not match its effective manifest.")
     if not isinstance(report.get("environment"), dict):
         return Validation(False, "The report environment is malformed.")
-    environment = dict(report["environment"])
-    environment.pop("fallback_used", None)
-    if environment != manifest["environment"]:
+    if report["environment"] != manifest["environment"]:
         return Validation(False, "The report environment does not match its effective manifest.")
     command, cwd = unwrap_example(manifest["run"]["cmd"])
     run = report.get("run") or {}
@@ -150,7 +148,6 @@ def report_validation(report: dict) -> Validation:
     import verdict
     expected = verdict.decide(gates, report.get("diagnostics"), report.get("manual_verification"),
                               declared_compatibility=manifest.get("compatibility"),
-                              fallback_used=bool((report.get("environment") or {}).get("fallback_used")),
                               procedure=result.review, manifest=manifest)
     supplied = report.get("verdict") or {}
     if not isinstance(supplied, dict):

@@ -79,7 +79,6 @@ def collect(tag: str) -> list[dict]:
                     row.update({"installs": g.get("installs"), "runs": g.get("runs"), "io": g.get("io"),
                                 "example": g.get("example"), "level": rep.get("level"),
                                 "verdict": v.get("code"), "basis": v.get("basis"),
-                                "fallback_used": (rep.get("environment") or {}).get("fallback_used", False),
                                 "reason": (v.get("reason") or "")[:200]})
         rows.append(row)
     return rows
@@ -100,8 +99,7 @@ def main() -> int:
     print(f"{'tool':22} {'installs':8} {'runs':5} {'example':7} {'level':9} verdict")
     for r in rows:
         print(f"{r['name']:22} {mark[r.get('installs')]:8} {mark[r.get('runs')]:5} {mark[r.get('example')]:7} "
-              f"{str(r.get('level')):9} {r.get('verdict')}/{r.get('basis')}"
-              + (" (plan B)" if r.get("fallback_used") else ""))
+              f"{str(r.get('level')):9} {r.get('verdict')}/{r.get('basis')}")
     if args.json:
         pathlib.Path(args.json).write_text(json.dumps(rows, indent=1))
     return 0

@@ -602,24 +602,17 @@ def build_body(cfg):
     # their software.
     inst = cfg.get("install_detail") or {}
     if inst.get("diagnostics"):
-        # Plan B: the gate passed on the published environment the README
-        # points at, and this section explains the build that failed before it.
         tried = ("STRhub tried to build the tool from its source at the pinned commit, "
                  "following the build steps the repository declares, and the build failed.")
-        if inst.get("fallback_used"):
-            els.append(section_num(str(sec), "Not Built From Source: the README's Ready-Made Environment Ran"))
-            reason = cfg.get("fallback_reason") or "the fallback environment"
-            lead = f"{tried} {reason[0].upper()}{reason[1:]} was used instead, and every gate below ran on it."
-        else:
-            els.append(section_num(str(sec), "Not Built From Source"))
-            lead = f"{tried} Nothing below the Installs gate ran."
+        els.append(section_num(str(sec), "Not Built From Source"))
+        lead = f"{tried} Nothing below the Installs gate ran."
         sec += 1
         els.append(Paragraph(lead, ST["body"]))
         els.append(vspace(2))
         # In the reader's own terms, before the table of causes: what it means
         # for someone running it, a reviewer holding a manuscript, its maintainer.
         meaning_els = [Paragraph("<b>What this means</b>", ST["body"])]
-        for who, what in install_meaning(bool(inst.get("fallback_used")), inst.get("faults") or []):
+        for who, what in install_meaning(inst.get("faults") or []):
             meaning_els.append(Paragraph(
                 f'<font color="#9ca3af">–</font>  <b>{esc(who)}:</b> {esc(what)}',
                 S("im", fontSize=8.5, textColor=GRAY, leading=14, leftIndent=10, spaceAfter=1)))
@@ -1327,11 +1320,6 @@ def load_config(manifest_path: str, datasets_path: str | None = None,
         # Unmarked, the PDF of a run that was not published is indistinguishable
         # from an attestation anyone may circulate.
         "is_trial":       not _published,
-        # Plan B ran: the pinned commit did not build and the manifest's fallback
-        # environment (the published image or package the README points at) did.
-        "fallback_used":  bool((report.get("environment") or {}).get("fallback_used")),
-        "fallback_reason": ((report.get("environment") or {}).get("fallback") or {}).get("reason")
-                           or "the fallback environment the manifest declares",
         # "maintainer" | "third_party" | "" — who filled in the submission. Kept
         # apart from the maintainer named in the manifest, who answers for the
         # software: the two are the same person only when a tool's own maintainer

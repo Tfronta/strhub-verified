@@ -118,7 +118,11 @@ y no decía nada sobre el PR. Quién decide está en `harness/pick_tools.py`:
 
 ## Paso 4 — Leer el resultado
 
-Entrá al run que apareció. Vas a ver los pasos = las compuertas:
+Entrá al run que apareció. Las compuertas corren dentro de un solo paso,
+`Gates · Available, Installs, Starts, Example, Runs, IO, Content` (`harness/engine`),
+que imprime una línea `[engine] <compuerta>: passed|failed|not_run` por cada una y
+deja `run_record.json` en el artifact con el comando exacto, el exit code y el log
+de cada compuerta. Las compuertas:
 
 | Paso en Actions | Compuerta |
 |---|---|
@@ -238,9 +242,9 @@ build time).
    fixture BYOR sea público; si el repo es nuevo, queda **pendiente de aprobación**.
 3. Admin aprueba el repo nuevo: `POST /api/verify/approve` con `Authorization:
    Bearer <jwt>` y `{ "repo": "https://github.com/owner/tool" }`. El autor reenvía.
-4. Repos aprobados: la web commitea `tools/<slug>/{manifest.yml,Dockerfile}` (y
-   `Dockerfile.fallback` si la receta trae plan B) y dispara `verify.yml` con un
-   `dispatch_id` único.
+4. Repos aprobados: la web commitea `tools/<slug>/{manifest.yml,Dockerfile}` y
+   dispara `verify.yml` con un `dispatch_id` único. (Un `dockerfile_fallback` en
+   la receta ya no tiene lugar: el schema no admite `environment.fallback`.)
 5. `run-name` del workflow incluye el `dispatch_id`; `GET /api/verify/status?
    dispatchId=` lo encuentra filtrando los runs y muestra el progreso en vivo.
 
@@ -355,8 +359,9 @@ Dockerfile generado, y **los huecos del README** (qué no dice).
 **Entorno: una instalación seleccionada antes de ejecutar.** Installs construye
 el Dockerfile principal una sola vez. Si falla, conserva el fallo; no intenta
 una imagen publicada, Bioconda ni otro Dockerfile para recuperar la ejecución.
-Los campos históricos `environment.fallback` y `Dockerfile.fallback` pueden
-seguir presentes como metadatos de recetas antiguas, pero no se ejecutan.
+`environment.fallback` y `Dockerfile.fallback` ya no existen: el schema del
+manifest no admite el campo, y un manifest antiguo que lo declare falla la
+validación en vez de arrastrar un Dockerfile que nadie construye.
 
 `harness/propose_manifest.py proposal.json --slug X` lo convierte en receta:
 comando del README reescrito a los mounts de STRhub (`/data/in/sample.fastq`,

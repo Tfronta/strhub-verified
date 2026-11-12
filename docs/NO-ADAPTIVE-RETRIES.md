@@ -27,8 +27,9 @@ Historical revisions are for inspection, not for launching repairs.
 
 `harness/assist_report.py` remains a read-only renderer for existing historical
 reports and labels them as such. Existing reports, fixtures and upstream source
-code are not modified. Legacy fallback metadata can still be read; it is not
-an executable fallback in the verification workflow.
+code are not modified. `environment.fallback` (a second Dockerfile older recipes
+declared) is no longer part of the manifest schema: nothing reads it, nothing
+builds it, and a manifest that declares it fails validation.
 
 ## Regression checks
 

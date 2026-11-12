@@ -264,7 +264,7 @@ def _procedure_block(procedure: dict | None, gaps: list) -> dict | None:
 
 def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
             manual_verification: dict | None = None, recipe_proposal: dict | None = None,
-            declared_compatibility: dict | None = None, fallback_used: bool = False,
+            declared_compatibility: dict | None = None,
             strhub_fault: str | None = None, procedure: dict | None = None,
             manifest: dict | None = None) -> dict:
     """Return {code, title, reason, readme_gaps, basis}."""
@@ -296,13 +296,6 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
     # reference sample.
     ran = bool(gates.get("runs")) and bool(gates.get("io"))
     produced = ran
-
-    # Plan B does not rescue the commit. The image, when one was tried, is a
-    # different claim and must not flip this verdict to runs.
-    if fallback_used:
-        return {"code": "undetermined", "title": TITLES["undetermined"], "basis": "strhub",
-                "reason": "Fallback execution is outside the reviewed source procedure; its outcome cannot establish the pinned procedure's result.",
-                "readme_gaps": []}
 
     blocked = _procedure_block(procedure, gaps)
     if blocked:
@@ -385,12 +378,12 @@ def _decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
 
 def decide(gates: dict, diagnostics: dict[str, list[dict]] | None = None,
            manual_verification: dict | None = None, recipe_proposal: dict | None = None,
-           declared_compatibility: dict | None = None, fallback_used: bool = False,
+           declared_compatibility: dict | None = None,
            strhub_fault: str | None = None, procedure: dict | None = None,
            manifest: dict | None = None) -> dict:
     """The verdict, plus the blockers a reader can act on when it is not 'runs'."""
     v = _decide(gates, diagnostics, manual_verification, recipe_proposal, declared_compatibility,
-                fallback_used, strhub_fault, procedure, manifest)
+                strhub_fault, procedure, manifest)
     if v.get("basis") == "strhub":
         v["blockers"] = []
         return v

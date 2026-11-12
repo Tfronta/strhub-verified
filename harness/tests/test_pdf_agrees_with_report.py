@@ -16,7 +16,7 @@ def _cfg(**over):
         "tool_display": "STRspy dafdee7", "tool_name": "STRspy",
         "declared_format": "TSV", "dataset": {"name": "ONT slice"},
         "stats": {}, "datasets": [{"leg": "external", "available": True, "passed": False}],
-        "is_trial": True, "fallback_used": False,
+        "is_trial": True,
     }
     cfg.update(over)
     return cfg

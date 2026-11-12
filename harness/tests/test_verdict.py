@@ -96,12 +96,6 @@ def test_readme_gaps_become_blockers_without_duplicates():
     assert [b["code"] for b in v["blockers"]] == ["no_command", "build_failed"]
 
 
-def test_a_published_image_does_not_establish_the_pinned_procedures_result():
-    v = decide(G_OK, fallback_used=True)
-    assert v["code"] == "undetermined" and v["basis"] == "strhub"
-    assert "Fallback execution" in v["reason"]
-    assert decide(G_OK)["code"] == "runs"
-
 
 def test_nothing_executed_is_undetermined_with_an_ask_for_example_data():
     proposal = {**PROPOSAL_OK, "limitations": ["no_reference_dataset"]}

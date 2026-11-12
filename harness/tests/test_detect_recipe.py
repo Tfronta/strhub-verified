@@ -65,7 +65,7 @@ def test_gangstr_builds_the_pinned_commit_and_keeps_the_published_image_as_plan_
     # The README points at a published Docker image (gymreklab/str-toolkit)
     # and installs from Bioconda, but the tree can be built with CMake. What
     # the report names is the pinned commit, so that is what gets built; the
-    # image holds whatever was last pushed to it and is kept as the fallback.
+    # image holds whatever was last pushed to it and is cited as evidence, never built.
     assert r["build"]["method"] == "cmake" and r["build"]["file"] == "CMakeLists.txt"
     fb = r["build"]["fallback"]
     assert (fb["method"], fb["image"]) == ("docker_image", "gymreklab/str-toolkit")
@@ -76,7 +76,7 @@ def test_gangstr_builds_the_pinned_commit_and_keeps_the_published_image_as_plan_
     # Out of the source tree, as CMake projects document it, and whatever it
     # built is put on the PATH.
     assert r["dockerfile"] is None
-    assert r["dockerfile_fallback"] is None
+    assert "dockerfile_fallback" not in r
     assert r["commands"][0]["invokes"] == "GangSTR"
     # One option per line in the README, no backslashes: all of them are kept.
     assert "--regions" in r["commands"][0]["cmd"] and "--out" in r["commands"][0]["cmd"]
@@ -134,7 +134,7 @@ def test_discovery_never_generates_primary_or_retry_installations():
     for name in ("hipstr", "straitrazor", "gangstr", "strspy", "strsearch"):
         proposal = _detect(name)
         assert proposal["dockerfile"] is None
-        assert proposal["dockerfile_fallback"] is None
+        assert "dockerfile_fallback" not in proposal
 
 
 README_WITH_IMAGE = "## Install\n\nA Docker image is available at [x](https://hub.docker.com/r/gymreklab/str-toolkit).\n\n```\nGangSTR --bam file.bam --ref ref.fa --regions r.bed --out o\n```\n"
@@ -144,7 +144,7 @@ def test_a_published_docker_image_is_the_environment_only_when_nothing_builds_th
     # Nothing in the tree to build from: the image is all there is, and no plan B.
     r = dr.detect("gymreklab/gangstr", "abc", {"tree": [], "truncated": False}, README_WITH_IMAGE, "README.md")
     assert r["build"]["method"] == "docker_image" and r["build"]["image"] == "gymreklab/str-toolkit"
-    assert r["build"]["fallback"] is None and r["dockerfile_fallback"] is None
+    assert r["build"]["fallback"] is None and "dockerfile_fallback" not in r
     assert r["dockerfile"] is None
 
 
@@ -154,7 +154,7 @@ def test_a_source_build_outranks_the_published_image_which_becomes_plan_b():
     assert r["build"]["method"] == "cmake"
     assert r["build"]["fallback"]["image"] == "gymreklab/str-toolkit"
     assert r["dockerfile"] is None
-    assert r["dockerfile_fallback"] is None
+    assert "dockerfile_fallback" not in r
 
 
 def test_the_repositorys_own_dockerfile_is_built_first_and_the_documented_image_is_plan_b():
@@ -166,14 +166,14 @@ def test_the_repositorys_own_dockerfile_is_built_first_and_the_documented_image_
     assert r["build"]["method"] == "dockerfile"
     assert r["build"]["fallback"]["method"] == "docker_image"
     # The command was written for the image's layout: the stand-in keeps it.
-    assert r["dockerfile_fallback"] is None
+    assert "dockerfile_fallback" not in r
 
 
 def test_a_repository_dockerfile_without_a_documented_image_has_no_plan_b():
     tree = {"tree": [{"path": "Dockerfile", "type": "blob", "size": 1}], "truncated": False}
     r = dr.detect("someone/tool", "abc", tree, "# tool\n\n```\ntool --in x.bam\n```\n", "README.md")
     assert r["build"]["method"] == "dockerfile"
-    assert r["build"]["fallback"] is None and r["dockerfile_fallback"] is None
+    assert r["build"]["fallback"] is None and "dockerfile_fallback" not in r
 
 
 def test_source_builds_do_not_add_undocumented_autotools():

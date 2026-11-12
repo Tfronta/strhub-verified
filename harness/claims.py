@@ -121,11 +121,9 @@ REGISTER: dict[str, tuple[str, str]] = {
     "cbc9c7684db7": ("propose_manifest", "readme"),  # Input: the README documents {kinds} (line N); this run used…
     # The documented command names the file and the tree at the pinned ref does not hold it.
     "99be0d39da1f": ("verdict", "readme"),           # no sentence in the README says what the tool takes as input…
-    # A failed build, in plain words. Both rest on the Installs gate: the
-    # build STRhub ran from the repository's declared steps stopped, and (on
-    # plan B) the ready-made environment is the one every gate then ran on.
+    # A failed build, in plain words, resting on the Installs gate: the build
+    # STRhub ran from the repository's declared steps stopped.
     "dbdbe7fb4255": ("report", "gates"),             # STRhub tried to build the tool from its source at the pinned commit, following the build steps…
-    "35f9c68e90d8": ("certificate_text", "gates"),   # A build from source at this commit fails in a clean environment; … the ready-made environment … does work
     # A curated recipe is STRhub's own configuration, and the sentences say
     # so: what STRhub had to do to run the tool is STRhub's work, listed as
     # recommendations, and it never changes the label (tanda 5c).

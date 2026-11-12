@@ -104,10 +104,7 @@ def preflight(m: dict, tool_dir: pathlib.Path, tool: str, work: pathlib.Path) ->
             # that a previous attempt left at a canonical destination filename.
             for child in dest.rglob("*"):
                 _paths.destination(work, str(child.relative_to(work)))
-    for value in (m["environment"]["dockerfile"],
-                  (m["environment"].get("fallback") or {}).get("dockerfile")):
-        if value:
-            _paths.confined(tool_dir, value)
+    _paths.confined(tool_dir, m["environment"]["dockerfile"])
     assets = _paths.confined(tool_dir, "assets")
     if assets.is_dir():
         _check_source(assets, tool_dir)
@@ -482,15 +479,6 @@ def main() -> int:
     example_ready = install_ready and procedure_ready and bool(fidelity.example_citation(proposal_data, m))
     example = m.get("example") or {}
 
-    # Legacy fallback metadata is preserved for historical recipes only.
-    # The Installs gate builds the selected primary Dockerfile once; it never
-    # executes this alternative after a failure.
-    fallback = (m["environment"].get("fallback") or {}).get("dockerfile", "")
-    if fallback and not (tool_dir / fallback).is_file():
-        print(f"::warning::fallback Dockerfile declared but not found: {tool_dir / fallback}",
-              file=sys.stderr)
-        fallback = ""
-
     values = {
         "ref": m["source"]["ref"],
         "procedure_ready": "1" if procedure_ready else "0",
@@ -510,7 +498,6 @@ def main() -> int:
         # clones the repository and builds that file with the clone as context,
         # and the run legs use the image's own entrypoint.
         "dockerfile_from_repo": (m["environment"].get("from_repo") or "") if m["environment"].get("source") == "repository" else "",
-        "dockerfile_fallback": fallback,
         "timeout": min(int(m["run"].get("timeout_minutes", 30)), 120),
         # The step's own ceiling, a little above the run's: harness/run_container.sh
         # enforces `timeout` and writes why into the log; this is only a backstop.

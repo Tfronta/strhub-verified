@@ -256,8 +256,6 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         dockerfile_path = prop_dir / "Dockerfile"
         manifest_path.write_text(built["manifest_yml"])
         dockerfile_path.write_text(built["dockerfile"])
-        if built.get("dockerfile_fallback"):
-            (prop_dir / "Dockerfile.fallback").write_text(built["dockerfile_fallback"])
 
         proposal_json = tmp_path / "recipe_proposal.json"
         proposal_json.write_text(json.dumps(proposal, indent=2))

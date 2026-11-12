@@ -187,7 +187,6 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
             limitations.append("input_type_guessed")
     from_repo = build_info.get("method") == "dockerfile"
     caveat_items: list[str] = []
-    dockerfile_fallback_text: str | None = None
     import source_install
     source_plan = source_install.discover(proposal) if not from_repo else {"ready": False}
 
@@ -290,7 +289,6 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         "manifest": manifest,
         "manifest_yml": header + yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True, width=1000),
         "dockerfile": dockerfile_text,
-        "dockerfile_fallback": dockerfile_fallback_text,
         "limitations": limitations,
         "readme_gaps": (proposal.get("readme") or {}).get("gaps", []),
         "procedure": reviewed,
@@ -369,16 +367,6 @@ def check_documented_files(run_cmd: str, proposal: dict, input_type: str,
     return list(dict.fromkeys(out))
 
 
-def published_environment(fallback: dict) -> str:
-    """How the report names a plan-B environment: what it is and where the
-    README points."""
-    if fallback.get("method") == "docker_image":
-        return f"the published image {fallback.get('image')} the README points at"
-    if fallback.get("method") == "bioconda":
-        return f"the Bioconda package '{fallback.get('package')}' the README installs"
-    return "the published environment the README points at"
-
-
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("proposal", help="detect_recipe.py --json output")
@@ -401,8 +389,6 @@ def main() -> int:
         d.mkdir(parents=True, exist_ok=True)
         (d / "manifest.yml").write_text(r["manifest_yml"])
         (d / "Dockerfile").write_text(r["dockerfile"])
-        if r["dockerfile_fallback"]:
-            (d / "Dockerfile.fallback").write_text(r["dockerfile_fallback"])
     print(json.dumps({"slug": args.slug, "catalogue_slug": r["manifest"]["report"]["slug"],
                       "limitations": r["limitations"],
                       "example": bool(r["manifest"].get("example")),

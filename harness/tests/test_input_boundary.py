@@ -17,12 +17,10 @@ CASES = json.loads((pathlib.Path(__file__).parents[1] / "testdata/input_path_cas
 
 @pytest.mark.parametrize("case", CASES)
 def test_manifest_path_contract_matches_web_cases(case):
-    for field in ("fixture", "regions", "dockerfile", "from_repo", "fallback"):
+    for field in ("fixture", "regions", "dockerfile", "from_repo"):
         m = manifest()
         if field in ("fixture", "regions"):
             m["inputs"] = {field: case["path"]}
-        elif field == "fallback":
-            m["environment"]["fallback"] = {"dockerfile": case["path"]}
         else:
             m["environment"][field] = case["path"]
         if case["valid"]:

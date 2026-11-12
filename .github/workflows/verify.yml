@@ -601,7 +601,6 @@ jobs:
           dest="tools/$SLUG"
           mkdir -p "$dest"
           cp "$DOCKER_DIR/manifest.yml" "$DOCKER_DIR/Dockerfile" "$dest/"
-          [ -f "$DOCKER_DIR/Dockerfile.fallback" ] && cp "$DOCKER_DIR/Dockerfile.fallback" "$dest/" || true
           [ -d "$DOCKER_DIR/assets" ] && cp -r "$DOCKER_DIR/assets" "$dest/" || true
           remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git config user.name "github-actions[bot]"

@@ -703,9 +703,9 @@ def detect_build(paths: list[str], readme: str, files: dict[str, str] | None = N
     # the pinned commit (conda, pip, cmake, make, ...), in tier order: what the
     # report names is what ran. A published image or Bioconda package comes
     # after: it is the author's environment too, but holds whatever version was
-    # last pushed to it. A published one is kept as the FALLBACK for a source
-    # build, so a toolchain we guessed wrong does not end the trial (see
-    # `fallback`); the report then says which of the two ran.
+    # last pushed to it. A published one is kept under `fallback` as EVIDENCE
+    # of what the README points at (cited in the report); the engine never
+    # builds it in the commit's place.
     # Source builds keep the order they were found in (BUILD_FILES first:
     # an environment.yml at the root before pyproject before CMake before
     # make), so a stray environment file one level down does not outrank the
@@ -1808,12 +1808,6 @@ def detect(slug: str, ref: str, tree_resp: dict, readme: str, readme_name: str |
                                  docs),
         "example": propose_example(commands, paths, examples),
         "dockerfile": generate_dockerfile(slug, ref, build, files=files),
-        # Plan B, built only if the one above fails: the published environment
-        # the README points at. Same layout (the clone at /opt/tool, bash
-        # entrypoint), so the command and the example run unchanged on it.
-        "dockerfile_fallback": (generate_dockerfile(slug, ref, build["fallback"],
-                                                    image_layout=build["method"] == "dockerfile", files=files)
-                                if build.get("fallback") else None),
     }
 
 

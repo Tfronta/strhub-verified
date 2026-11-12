@@ -2,6 +2,8 @@
 import json
 import pathlib
 
+import pytest
+
 import _manifest
 import detect_recipe as dr
 import propose_manifest as pm
@@ -87,20 +89,26 @@ def test_a_list_of_input_files_is_not_reduced_to_one_available_sample(tmp_path):
 
 def test_gangstr_recipe_does_not_manufacture_a_primary_or_fallback_install(tmp_path):
     r = pm.build(_proposal("gangstr"), "gangstr-trial")
-    m = _valid(r["manifest_yml"], tmp_path)  # environment.fallback is schema-valid
+    m = _valid(r["manifest_yml"], tmp_path)
     assert m["environment"]["source"] == "generated"
     assert "fallback" not in m["environment"]
     assert r["dockerfile"].endswith("FROM scratch\n")
-    assert r["dockerfile_fallback"] is None
+    assert "dockerfile_fallback" not in r
     env_caveat = next(c for c in m["caveats"]["items"] if c.startswith("Environment:"))
     assert "no proven installation profile" in env_caveat
 
 
-def test_a_recipe_without_a_plan_b_declares_none(tmp_path):
+def test_a_recipe_declares_no_plan_b_and_the_schema_admits_none(tmp_path):
+    import jsonschema
     r = pm.build(_proposal("hipstr"), "hipstr-trial")
     m = _valid(r["manifest_yml"], tmp_path)
     assert "fallback" not in m["environment"]
-    assert r["dockerfile_fallback"] is None
+    assert "dockerfile_fallback" not in r
+    # `environment` admits no unknown keys: a manifest from before the plan B
+    # was removed fails loudly instead of carrying a Dockerfile nobody builds.
+    m["environment"]["fallback"] = {"dockerfile": "Dockerfile.fallback"}
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(m, json.loads(_manifest.SCHEMA.read_text()))
 
 
 def test_strspy_runs_on_the_input_type_strhub_has_data_for(tmp_path):
