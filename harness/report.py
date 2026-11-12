@@ -889,6 +889,33 @@ def _certificate_cfg(report: dict, m: dict) -> dict:
     }
 
 
+def apply_engine_record(args, path: str) -> dict | None:
+    """The gate outcomes from the engine's RunRecord (harness/engine), in place
+    of the step outcomes the workflow used to pass one flag at a time.
+
+    No record means the gates never ran (a step of STRhub's own failed before
+    them): every outcome is "skipped", as a skipped step's would have been, and
+    `--infra-failure` says why."""
+    p = pathlib.Path(path)
+    if not p.is_file():
+        args.available = args.installs = args.runs = args.example_runs = "skipped"
+        args.environment_built = ""
+        return None
+    rec = json.loads(p.read_text())
+    outcomes = rec.get("outcomes") or {}
+    ladder = rec.get("ladder") or {}
+    args.available = outcomes.get("available", "skipped")
+    args.installs = outcomes.get("installs", "skipped")
+    args.example_runs = outcomes.get("runs_example", "skipped")
+    args.runs = ladder.get("runs", "skipped")
+    args.io = ladder.get("io") or args.io
+    args.content = ladder.get("content") or args.content
+    args.environment_built = rec.get("environment_built") or ""
+    if not args.supported_loci:
+        args.supported_loci = ladder.get("supported_loci", "")
+    return rec
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", required=True)
@@ -908,6 +935,10 @@ def main() -> int:
                     help="path to captured stdout+stderr from external-data run")
     ap.add_argument("--log-build", default="",
                     help="path to captured output from the docker build (Installs)")
+    ap.add_argument("--engine-record", default="",
+                    help="run_record.json from harness/engine: supplies --available, --installs, "
+                         "--runs, --io, --content, --example-runs, --environment-built and "
+                         "--supported-loci from the record, in place of step outcomes")
     ap.add_argument("--environment-built", default="", choices=["", "primary", "fallback"],
                     help="which Dockerfile produced the image the gates ran on: 'fallback' "
                          "when the pinned commit did not build and the manifest's plan B "
@@ -945,6 +976,8 @@ def main() -> int:
                     help="path to the dataset's loci.bed — panel size fallback when "
                          "no validation ran (STRhub-supplied BEDs skip the pre-flight)")
     args = ap.parse_args()
+    if args.engine_record:
+        apply_engine_record(args, args.engine_record)
 
     m = _manifest.load(args.manifest)
     io_detail = {}

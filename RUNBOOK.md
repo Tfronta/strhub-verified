@@ -118,18 +118,23 @@ y no decía nada sobre el PR. Quién decide está en `harness/pick_tools.py`:
 
 ## Paso 4 — Leer el resultado
 
-Entrá al run que apareció. Vas a ver los pasos = las compuertas:
+Entrá al run que apareció. Las compuertas corren dentro de un solo paso,
+`Gates · Available, Installs, Starts, Runs, IO, Content, Example`
+(`harness/engine`), que imprime una línea `[engine] <compuerta>: passed|failed|not_run`
+por cada una y deja `run_record.json` con el comando exacto, el exit code y el
+log de cada compuerta:
 
-| Paso en Actions | Compuerta |
+| Compuerta | Pregunta |
 |---|---|
-| `Gate · Available` | el ref público existe |
-| `Gate · Installs` | **`docker build`** — ¿resuelve el env viejo de STRspy? |
-| `Gate · Runs` | **`docker run`** sobre tu BAM |
-| `Gate · Expected IO` | ¿produjo una tabla no vacía? |
-| `Build attestation + badge` | arma `reports/strspy.json` + el badge |
+| `available` | el ref público existe |
+| `installs` | **`docker build`** — ¿resuelve el env viejo de STRspy? |
+| `runs_own` / `runs_external` | **`docker run`** sobre tu BAM / sobre el dataset de STRhub |
+| `io_*` | ¿produjo una tabla no vacía? |
+| `Build attestation + badge` (paso aparte) | arma `reports/strspy.json` + el badge |
 
 Descargá el artifact **`attestation-strspy`** (sección Artifacts del run):
-adentro está `reports/strspy.json` (la atestación) y `reports/strspy.badge.json`.
+adentro está `reports/strspy.json` (la atestación), `reports/strspy.badge.json`
+y `run_record.json` (qué corrió cada compuerta y cómo terminó).
 
 ---
 
