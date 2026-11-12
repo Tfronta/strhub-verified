@@ -1,8 +1,17 @@
-"""Auto-diagnose tool execution logs to suggest fixes for common failures.
+"""Read a verification log and say what it establishes: nothing more.
 
-Scans stdout+stderr captured from a verification run and matches known error
-patterns. Returns structured diagnostics that the report embeds and the web
-dashboard renders as actionable suggestions.
+Scans the stdout+stderr captured from a build or a run and matches known error
+patterns. Each match becomes a structured entry the report embeds: an id, a
+severity, a title quoting the line, how often it occurred, examples, and one
+sentence on what the log establishes and whose side the class falls on.
+
+That sentence is an observation, not a recipe. STRhub verifies whether a
+tool runs as its repository documents it; a diagnostic that told the reader
+which flag to add, which pin to relax or which package to install would be
+the harness proposing a change to the procedure under test, which is the one
+thing it must not do. What the author does with a finding is theirs; what
+the log shows is ours to state faithfully. (The JSON key is still
+`suggestion`, the name the web reads; its content is the observation.)
 
 Usage (standalone):
   python harness/diagnose_log.py work/log_own.txt [--json diag.json]
@@ -17,14 +26,16 @@ import json
 import pathlib
 import re
 
-# Each rule: (compiled regex, severity, short id, human title, suggestion).
+# Each rule: (compiled regex, severity, short id, human title, observation).
+# The observation is what the matched line establishes, and no more: never an
+# instruction to change the command, the recipe or the image.
 # Regexes are matched against each line OR the full text (for multi-line).
 _RULES: list[tuple[re.Pattern, str, str, str, str]] = []
 
 
-def _rule(pattern: str, severity: str, rid: str, title: str, suggestion: str,
+def _rule(pattern: str, severity: str, rid: str, title: str, observation: str,
           flags: int = re.IGNORECASE):
-    _RULES.append((re.compile(pattern, flags), severity, rid, title, suggestion))
+    _RULES.append((re.compile(pattern, flags), severity, rid, title, observation))
 
 
 # --- Unrecognized / invalid options -----------------------------------------
@@ -32,22 +43,24 @@ _rule(
     r"(?:^|error\b[^\n]{0,40}?|:\s*)unrecognized option ['\"]?--([\w-]+)",
     "error", "bad_option",
     "Unrecognized command-line option: --{0}",
-    "The flag '--{0}' does not exist in this tool version. "
-    "Check the tool's --help or README for the correct option name.",
+    "The program rejected '--{0}' as an option it does not know. The option is "
+    "part of the command as cited; nothing was substituted for it.",
 )
 
 _rule(
     r"(?:^|error\b[^\n]{0,40}?|:\s*)unknown option ['\"]?--([\w-]+)",
     "error", "bad_option",
     "Unknown option: --{0}",
-    "The flag '--{0}' is not recognized. Check --help for valid options.",
+    "The program rejected '--{0}' as an option it does not know. The option is "
+    "part of the command as cited.",
 )
 
 _rule(
     r"(?:^|error\b[^\n]{0,40}?|:\s*)invalid option ['\"]?--([\w-]+)",
     "error", "bad_option",
     "Invalid option: --{0}",
-    "The flag '--{0}' is not valid. Check --help for valid options.",
+    "The program rejected '--{0}' as an invalid option. The option is part of "
+    "the command as cited.",
 )
 
 # --- File not found ---------------------------------------------------------
@@ -55,22 +68,25 @@ _rule(
     r"(?:file|path)\s+(?:for\s+)?['\"]?(/data/\S+)['\"]?\s+(?:does not exist|not found|doesn'?t exist)",
     "error", "file_not_found",
     "File not found: {0}",
-    "The tool expected a file at '{0}' but it was not staged. "
-    "Check the manifest inputs, fixture path, and output path.",
+    "The program looked for '{0}' and the container held no such file. Paths "
+    "under /data are what STRhub mounts, under names it chooses; any other "
+    "path is the command's own.",
 )
 
 _rule(
     r"No such file or directory:\s*['\"]?(/data/[^'\"\s]+)",
     "error", "file_not_found",
     "File not found: {0}",
-    "Check that the input path '{0}' matches the manifest and that the fixture was staged correctly.",
+    "The program looked for '{0}' and the container held no such file. Paths "
+    "under /data are what STRhub mounts; any other path is the command's own.",
 )
 
 _rule(
     r"(?:cannot open|failed to open|unable to open)\s+['\"]?(/\S+)",
     "error", "cannot_open",
     "Cannot open file: {0}",
-    "The tool could not open '{0}'. Verify the path exists and the file format is correct.",
+    "The program could not open '{0}'. This line does not say whether the path, "
+    "the permissions or the format was the cause.",
 )
 
 # --- BAM/CRAM issues -------------------------------------------------------
@@ -78,15 +94,18 @@ _rule(
     r"(?:BAM|CRAM) files? (?:don'?t|do not) contain read groups",
     "error", "no_read_groups",
     "BAM/CRAM missing read groups (@RG)",
-    "Add read groups with: samtools addreplacerg -r '@RG\\tID:sample\\tSM:sample\\tLB:lib\\tPL:ILLUMINA' input.bam -o output.bam",
+    "The program requires read-group (@RG) headers and the input BAM/CRAM carries "
+    "none. STRhub's reference slices are mounted as they are; nothing was added "
+    "to their headers.",
 )
 
 _rule(
     r"(?:not? |in)valid BAM|truncated file|EOF marker is absent",
     "error", "bad_bam",
     "Invalid or truncated BAM file",
-    "The BAM file may be corrupted or incomplete. Re-download or re-index it. "
-    "If it was sliced, ensure the slice command completed successfully.",
+    "The program reported the BAM as invalid or truncated. Whether the file or "
+    "the reader is at fault is not established by this line; the mounted file's "
+    "digest is in the record.",
 )
 
 # --- VCF output issues ------------------------------------------------------
@@ -94,8 +113,8 @@ _rule(
     r"(?:path|output)\s+.*(?:must end|should end)\s+(?:in|with)\s+\.gz",
     "error", "vcf_gz_required",
     "Output path must end in .gz",
-    "This tool requires the VCF output path to end in .gz (bgzipped). "
-    "Change the output path in the manifest to e.g. result.vcf.gz",
+    "The program requires its VCF output path to end in .gz (bgzipped), and the "
+    "command as cited names one that does not.",
 )
 
 # --- Too few reads / loci skipped ------------------------------------------
@@ -103,17 +122,17 @@ _rule(
     r"[Ss]kipp(?:ed|ing)\s+(?:(\d+)\s+)?loci\s+with\s+too\s+few\s+reads|[Ss]kipping\s+(?:region|locus)\s+(?:\S+\s+)?with\s+too\s+few\s+reads",
     "warning", "too_few_reads",
     "Loci skipped (too few reads)",
-    "Some loci had insufficient reads after quality filtering. Try lowering "
-    "--min-reads or relaxing quality filters (e.g. --read-qual-trim for HipSTR). "
-    "The input BAM may also need more coverage at STR regions.",
+    "Loci were skipped for having too few reads after the program's own "
+    "filtering, at the program's own thresholds. On STRhub's reference slice "
+    "this can reflect the sample's coverage at those loci.",
 )
 
 _rule(
     r"[Ss]kipping\s+(?:region|locus).*(?:allele\s+)?length\s+exceeds.*(?:threshold|maximum)\s*\((\d+)\s+vs\s+(\d+)\)",
     "warning", "str_too_long",
     "Locus skipped: reference allele too long ({0} vs max {1})",
-    "Some STR loci have reference alleles longer than the tool's maximum. "
-    "Increase the max length threshold (e.g. --max-str-len for HipSTR).",
+    "Loci were skipped because their reference allele exceeds the program's "
+    "maximum length. The threshold is the program's own and was not changed.",
 )
 
 # --- Low base quality filtering (HipSTR specific) --------------------------
@@ -121,9 +140,8 @@ _rule(
     r"(\d+)\s+(?:reads\s+)?had low base quality scores",
     "info", "low_bq_reads",
     "Reads filtered by base quality",
-    "Many reads are being removed by the base quality filter. For HipSTR, "
-    "use --read-qual-trim '!' to lower the quality trimming threshold. "
-    "Also consider --def-stutter-model if too few reads remain.",
+    "Reads were removed by the program's base-quality filter, at the program's "
+    "own threshold.",
 )
 
 # --- No mate pair (BAM slice issue) ----------------------------------------
@@ -131,9 +149,9 @@ _rule(
     r"(\d+)\s+(?:reads\s+)?did not have a mate pair",
     "info", "unpaired_reads",
     "Reads filtered (no mate pair)",
-    "Reads without mate pairs are being filtered. This is common with BAM slices "
-    "where mates fall outside the sliced region. Use --use-unpaired (HipSTR) "
-    "or equivalent to allow unpaired reads.",
+    "Reads without a mate pair were filtered by the program. The mates of a "
+    "slice's reads can fall outside the sliced region; the slice was mounted "
+    "as it is.",
 )
 
 # --- Genotyping summary ---------------------------------------------------
@@ -151,8 +169,8 @@ _rule(
     r"[Ss]egmentation fault|(?<![\w-])SIGSEGV(?![\w-])|core dump",
     "error", "segfault",
     "Tool crashed (segmentation fault)",
-    "The tool crashed with a segfault. This may indicate incompatible input data, "
-    "a bug in the tool, or insufficient memory. Check the input file format.",
+    "The program crashed with a segmentation fault. This line does not establish "
+    "whether the input, the build or the program is the cause.",
 )
 
 _rule(
@@ -162,17 +180,17 @@ _rule(
     r"STRhub: the run was stopped at the time limit of (\d+) minutes",
     "error", "run_timeout",
     "The run did not finish within its time limit ({0} minutes)",
-    "The container was stopped at the run's time limit. If the tool needs longer on "
-    "this data, raise run.timeout_minutes (at most 120); if it should have finished, "
-    "it may be waiting for input or stuck.",
+    "The container was stopped at the run's time limit, the one the recipe "
+    "declares (run.timeout_minutes, at most 120). Whether the program hangs or "
+    "needs longer on this data is not established here.",
 )
 
 _rule(
     r"[Oo]ut of memory|Cannot allocate memory|MemoryError|std::bad_alloc",
     "error", "oom",
     "Out of memory",
-    "The tool ran out of memory. Try reducing the input data size or "
-    "increasing the timeout. Consider using a smaller BAM slice.",
+    "The program exceeded the automated runner's memory ceiling. That is a limit "
+    "of the free environment, not a finding about the program.",
 )
 
 _rule(
@@ -183,9 +201,9 @@ _rule(
     "tool with large intermediate files may not fit the automated environment.",
 )
 
-# --- Environment ceilings the author cannot lift from the form ---------------
-# These are what separate "fix your submission and re-run for free" from "the
-# automated path structurally cannot express this tool". See HARNESS_INCOMPATIBLE.
+# --- Environment ceilings nobody lifts from a repository --------------------
+# These separate "the cited procedure stopped" from "the automated path
+# structurally cannot express this tool". See HARNESS_INCOMPATIBLE.
 
 _rule(
     r"[Tt]emporary failure in name resolution|[Cc]ould not resolve host"
@@ -193,9 +211,9 @@ _rule(
     r"|Failed to establish a new connection|getaddrinfo failed",
     "error", "runtime_network",
     "Network access attempted during the run",
-    "The tool tried to reach the network while running. Verification is a pinned "
-    "snapshot, so anything fetched at run time cannot be recorded or reproduced. "
-    "Vendor the data into the image at build time, or request manual verification.",
+    "The program tried to reach the network while running, with none available. "
+    "A pinned verification cannot record or reproduce what would be fetched; a "
+    "manual verification can cover it.",
 )
 
 _rule(
@@ -203,8 +221,9 @@ _rule(
     r"|QXcbConnection|[Cc]annot open display|GtkWindow|TclError: no display",
     "error", "requires_gui",
     "Tool requires a graphical display",
-    "The tool tried to open a GUI. The automated runner is headless, so an "
-    "interactive step cannot be executed or evidenced. Request manual verification.",
+    "The program tried to open a graphical display. The automated runner is "
+    "headless, so an interactive step cannot be executed or evidenced here; a "
+    "manual verification can cover it.",
 )
 
 _rule(
@@ -213,8 +232,8 @@ _rule(
     r"|torch\.cuda\.is_available\(\) *(?:is |== *)?False|Found no NVIDIA driver",
     "error", "requires_gpu",
     "Tool requires a GPU",
-    "The tool needs CUDA hardware. Public CI runners are CPU-only, so this cannot "
-    "run on the automated path. Request manual verification.",
+    "The program needs CUDA hardware. Public CI runners are CPU-only, so this "
+    "cannot run on the automated path; a manual verification can cover it.",
 )
 
 _rule(
@@ -222,16 +241,17 @@ _rule(
     r"|[Nn]o valid license|FLEXlm|FlexNet|LM_LICENSE_FILE",
     "error", "requires_license",
     "Tool requires a license or licensed data",
-    "The tool needs a license or licensed reference data that cannot be published "
-    "in a public verification run. Request manual verification.",
+    "The program needs a license or licensed reference data that a public "
+    "verification run cannot hold; a manual verification can cover it.",
 )
 
 _rule(
     r"[Pp]ermission denied",
     "error", "permission_denied",
     "Permission denied",
-    "A file or directory could not be accessed. This is likely a container "
-    "permissions issue. Check that output paths are under /data/out/.",
+    "A file or directory could not be accessed. The container runs with every "
+    "capability dropped and can write only under /data/out; a write anywhere "
+    "else fails this way.",
 )
 
 # --- Command not found ------------------------------------------------------
@@ -242,11 +262,11 @@ _rule(
     r"(\S+):\s+command not found|exec: ['\"]?([^'\"\s]+)['\"]?: executable file not found|(?:^|/)sh:\s+\d+:\s+(\S+):\s+not found",
     "error", "cmd_not_found",
     "Command not found: {0}",
-    "The binary '{0}' was not found in the container. Check the Dockerfile "
-    "installs it and that the PATH includes its location.",
+    "No '{0}' executable was found on the container's PATH. The image is the "
+    "one the review admits; nothing was added to it.",
 )
 # The docker form of cmd_not_found captures in group 2; fold it into group 1 so
-# the title, suggestion and examples read the same either way.
+# the title, observation and examples read the same either way.
 _CMD_NOT_FOUND_FOLD = "cmd_not_found"
 
 # --- Python/runtime errors --------------------------------------------------
@@ -254,14 +274,16 @@ _rule(
     r"ModuleNotFoundError:\s+No module named ['\"](\S+)['\"]",
     "error", "missing_module",
     "Python module not found: {0}",
-    "Install the missing module in the Dockerfile: pip install {0}",
+    "The Python module '{0}' is not installed in the image. The image is the one "
+    "the review admits; nothing was added to it.",
 )
 
 _rule(
     r"ImportError:\s+.*['\"](\S+)['\"]",
     "error", "import_error",
     "Import error: {0}",
-    "A required library failed to import. Check the Dockerfile installs all dependencies.",
+    "A library failed to import inside the image. The image is the one the "
+    "review admits; nothing was added to it.",
 )
 
 _rule(
@@ -281,8 +303,9 @@ _rule(
     r"Genotyping succeeded for 0/0 loci",
     "error", "zero_genotyped",
     "No loci were genotyped",
-    "The tool produced no genotype calls. All loci were filtered out. "
-    "Check read quality filters, minimum read thresholds, and input data coverage.",
+    "The program reported no genotyped loci: every locus was filtered out by its "
+    "own thresholds, on STRhub's reference slice. Whether coverage or the "
+    "program is the cause is not established here.",
 )
 
 
@@ -300,17 +323,16 @@ _rule(
     r"satisfies the requirement)\s+(\S+)",
     "error", "pip_unresolvable",
     "pip cannot resolve a pinned dependency: {0}",
-    "The version of '{0}' named in the build no longer exists on PyPI, or is "
-    "incompatible with this base image's Python. Relax the pin or pin a version "
-    "that is still published.",
+    "pip could not resolve '{0}' as pinned: that version is not on PyPI, or is "
+    "incompatible with the base image's Python. The pin is the build's as cited.",
 )
 
 _rule(
     r"E: Unable to locate package (\S+)",
     "error", "apt_no_package",
     "apt cannot find a package: {0}",
-    "The Debian/Ubuntu package '{0}' does not exist in this base image's "
-    "repositories. Check the name, or install it another way.",
+    "apt found no package '{0}' in the base image's repositories. The name is "
+    "the build's as cited.",
 )
 
 _rule(
@@ -326,36 +348,35 @@ _rule(
     r"configure(?:\.ac)?: error: required file '([\w./-]+)' not found",
     "error", "autotools_aux_missing",
     "An autotools build is missing its auxiliary file: {0}",
-    "The configure script needs '{0}', which `autoreconf -i` (or `automake "
-    "--add-missing`) copies in from the automake package. The build runs "
-    "autoconf without installing those files; running `autoreconf -fi` before "
-    "`./configure` in that step fixes it.",
+    "configure needs '{0}', which `autoreconf -i` (or `automake --add-missing`) "
+    "copies in from the automake package; the build as cited runs autoconf "
+    "without installing those files, and was run that way.",
 )
 
 _rule(
     r"fatal error:\s+(\S+\.h(?:pp)?):\s+No such file or directory",
     "error", "missing_header",
     "A C/C++ header is missing at build time: {0}",
-    "The build needs the development package that provides '{0}'. Add it to the "
-    "build step (for example the -dev package for that library).",
+    "The build needs the development package that provides '{0}', and the image "
+    "does not hold it. The build steps were run as cited.",
 )
 
 _rule(
     r"(?:COPY failed|ADD failed)[^\n]*|failed to compute cache key[^\n]*not found",
     "error", "build_file_missing",
     "The build referenced a file that is not in the build context",
-    "A COPY/ADD line names a file the build cannot see. The container is built "
-    "from the tool's directory, and the repository is cloned inside the image, "
-    "so paths from your own machine are not available.",
+    "A COPY/ADD line names a file the build context does not hold. The context "
+    "is the repository checkout at the pinned commit; a file from the author's "
+    "own machine is not in it.",
 )
 
 _rule(
     r"unzip:\s+cannot find or open (\S+?),",
     "error", "repo_file_missing",
     "A file the build reads is not in the repository at this commit: {0}",
-    "The build step opens '{0}' from the checkout, and this commit does not have "
-    "it. If a documented install step generates or downloads it, that step has to "
-    "run first; if it was added to the repository later, this commit predates it.",
+    "The build reads '{0}' from the checkout, and this commit does not hold it. "
+    "Either a documented step that generates or downloads it did not run first, "
+    "or the file was added to the repository after this commit.",
 )
 
 _rule(
@@ -363,8 +384,9 @@ _rule(
     r"(?:manifest for \S+ not found|manifest unknown|pull access denied for (?!toolimg))",
     "error", "base_image_missing",
     "The base image could not be pulled",
-    "STRhub chooses the base image for a generated container, so this is ours to "
-    "fix, not the tool's. Nothing to change on the submission.",
+    "The base image named by the Dockerfile could not be pulled from the "
+    "registry. A pull that fails says nothing about the program; the run has "
+    "to be repeated.",
 )
 
 _rule(
@@ -375,17 +397,17 @@ _rule(
     r"process \"/bin/sh -c [^\"]*?\b(?:wget|curl)\b[^\"]*?(https?://[^\s\"]+)[^\"]*\" did not complete successfully",
     "error", "build_download_failed",
     "A download in the build failed: {0}",
-    "The build fetches that address and did not get the file. If the link is dead or needs a "
-    "licence, the install steps need a new source for it; if the server was down, trying again "
-    "will tell.",
+    "The build fetches that address and did not get the file. A dead link, a "
+    "licence wall and a server that was down look the same here; the address is "
+    "the build's as cited.",
 )
 
 _rule(
     r"CMake Error: Problem extracting tar:\s*(\S+)",
     "error", "build_download_failed",
     "A download in the build failed: {0}",
-    "CMake fetched an external dependency archive that could not be extracted "
-    "(often because the upstream download URL in CMakeLists.txt is dead or redirected to an HTML page).",
+    "CMake fetched an external dependency archive that could not be extracted: "
+    "the download URL in CMakeLists.txt did not yield an archive.",
 )
 
 _rule(
@@ -394,8 +416,8 @@ _rule(
     r"(?:toomanyrequests|You have reached your (?:unauthenticated )?pull rate limit)",
     "error", "registry_rate_limited",
     "The container registry refused the pull (rate limit)",
-    "The registry throttled STRhub's runner. This is ours, not the tool's: the "
-    "run has to be repeated. Nothing to change on the submission.",
+    "The registry throttled STRhub's runner. This is ours, not the program's: "
+    "the run has to be repeated.",
 )
 
 _rule(
@@ -403,9 +425,9 @@ _rule(
     r"repository '[^']+' not found)[^\n]*",
     "error", "checkout_failed",
     "The pinned commit could not be checked out",
-    "The container clones the public repository at the pinned ref. Check that "
-    "the commit or tag still exists and is reachable. A force-push or a deleted "
-    "branch can strand a ref that once resolved.",
+    "The clone of the public repository at the pinned ref failed: the commit, "
+    "tag or repository was not reachable. A force-push or a deleted branch can "
+    "strand a ref that once resolved.",
 )
 
 #: How many distinct examples to keep per rule. Enough to show the scale and the
@@ -448,7 +470,7 @@ def diagnose(log_text: str) -> list[dict]:
         if not line or _HELP_LINE.match(line):
             continue
         warned = bool(_WARN_LINE.match(line))
-        for pattern, severity, rid, title_tmpl, suggestion_tmpl in _RULES:
+        for pattern, severity, rid, title_tmpl, observation_tmpl in _RULES:
             m = pattern.search(line)
             if not m:
                 continue
@@ -459,7 +481,7 @@ def diagnose(log_text: str) -> list[dict]:
             entry = by_rule.get(rid)
             if entry is None:
                 title = title_tmpl.format(*groups) if groups else title_tmpl
-                suggestion = suggestion_tmpl.format(*groups) if groups else suggestion_tmpl
+                observation = observation_tmpl.format(*groups) if groups else observation_tmpl
                 entry = {
                     "id": rid,
                     "severity": sev,
@@ -467,8 +489,9 @@ def diagnose(log_text: str) -> list[dict]:
                     "count": 0,
                     "examples": [],
                 }
-                if suggestion:
-                    entry["suggestion"] = suggestion
+                if observation:
+                    # `suggestion` is the key the web and older reports read.
+                    entry["suggestion"] = observation
                 by_rule[rid] = entry
                 order.append(rid)
             elif sev == "error" and entry["severity"] == "warning":
@@ -578,11 +601,12 @@ STRUCTURAL = {"cannot_open", "bad_option", "vcf_gz_required",
 # emitted by this module from the run's own evidence, and the web can only offer
 # level 2 on a report that carries one. Two sets do the separating.
 
-# Fixable by the author, for free, by correcting the submission and re-running.
-# The auto-run works fine for these tools — the manifest or Dockerfile is simply
-# wrong, and every one of these ids already ships a `suggestion` saying how to fix
-# it. Routing them to a paid tier would be monetising our own form's friction, so
-# they are named here explicitly and can never trigger level 2.
+# Classes that sit in the cited procedure itself: its pins, package names, build
+# steps or command. The automated path can express these tools; what stopped is
+# what the repository states, and the author is the one who can change that and
+# have it verified again, for free. Routing them to a paid tier would be
+# monetising the repository's own friction, so they are named here explicitly
+# and can never trigger level 2.
 AUTHOR_FIXABLE = {"bad_option", "cmd_not_found", "missing_module", "import_error",
                   "vcf_gz_required", "file_not_found",
                   # Build failures that live in what the submission declared:
@@ -653,7 +677,7 @@ def install_fault_sentence(faults: list[str]) -> str:
 
 
 def configuration_fault_sentence() -> str:
-    """What the "fix these" advice is actually addressed to: the configuration.
+    """What the rows above are about: the configuration, not the software.
 
     Never "corrections to the submission": a reader takes that to mean the
     software's authors sent something wrong, and the configuration is most
@@ -664,10 +688,10 @@ def configuration_fault_sentence() -> str:
     configuration produces false negatives, almost never false positives. A green
     result is sound whoever configured it; a red one is not.
     """
-    return ("These are corrections to the configuration this run used, not to "
-            "the software: a result that stops for one of them says less about "
-            "the tool than about the setup. Re-verifying after correcting them "
-            "is free. Each row above carries its suggested fix.")
+    return ("These rows describe the configuration this run used, not the "
+            "software: a result that stops for one of them says less about "
+            "the tool than about the setup. Re-verifying after it changes "
+            "is free. Each row above says what the log establishes.")
 
 
 def fault_of(issue_id: str) -> str | None:
@@ -742,8 +766,8 @@ def manual_eligibility(diagnostics: dict[str, list[dict]],
        should not have to burn CI to be told the runner is headless.
     3. A detected ceiling (trigger B) qualifies on the evidence of the log.
     4. Everything else does not. In particular a run that failed only on
-       AUTHOR_FIXABLE errors stays on the free path, where the diagnostics
-       already carry the fix.
+       AUTHOR_FIXABLE errors stays on the free path: those sit in the cited
+       procedure, and a changed repository is verified again at no cost.
     """
     none = {"eligible": False, "basis": None, "reason_code": None, "reason": None}
 
@@ -769,7 +793,7 @@ def manual_eligibility(diagnostics: dict[str, list[dict]],
                 "reason_code": f"detected_incompat:{rid}",
                 "reason": _DETECTED_REASONS.get(rid, REVIEW_LABELS.get(rid, rid))}
 
-    # 4. Failed, but on something the author can fix and re-run for free.
+    # 4. Failed on something that sits in the cited procedure itself.
     return none
 
 
@@ -788,12 +812,13 @@ def _is_strhub_staged(path: str) -> bool:
 
 
 def author_fixable_ids(diagnostics: dict[str, list[dict]]) -> list[str]:
-    """Error classes in this run the author can correct themselves, for free.
+    """Error classes in this run that sit in the cited procedure itself.
 
     The counterpart to `manual_eligibility`: when a run fails on these, the
-    honest answer is "fix the submission and re-run at no cost", and the report
-    should say so plainly rather than leaving a dead end that reads like a reason
-    to pay for help.
+    honest answer is that the repository's own steps stopped here and a changed
+    repository is verified again at no cost, and the report should say so
+    plainly rather than leaving a dead end that reads like a reason to pay for
+    help.
 
     A missing file is the one class that can belong to either side. Everything
     under `/data/in` and `/data/ref` is staged by us under names we choose, so a
@@ -822,8 +847,8 @@ def external_leg_notes(diagnostics: dict[str, list[dict]]) -> list[str]:
     sample yields fewer reads, but it cannot make a file fail to open or a build be
     incomplete. So we split the errors — hedging on the ones a slice could cause,
     stating plainly that the structural ones are not ours — instead of blanketing
-    every failure with a coverage excuse. The closing line stays actionable: ship
-    demo data so the tool can also be run against the author's complete sample.
+    every failure with a coverage excuse. The closing line names what would let a
+    verification run on the author's own sample as well: shipped test data.
     """
     external = diagnostics.get("external", [])
     error_ids = {i["id"] for i in external if i.get("severity") == "error"}

@@ -58,13 +58,16 @@ REGISTER: dict[str, tuple[str, str]] = {
     # not work, because neither run established that (docs/PLAN-Paso-1.md).
     "9bb264480cf8": ("certificate_text", "gates"),  # That does not mean the tool does not work. It means a third party following the README at this co
     "f65b34dd9bd8": ("certificate_text", "readme"),  # Nothing was executed. That does not mean the tool does not work: what the guide asks for is miss
-    "d2192e04fc10": ("diagnose_log", "run"),  # The container was stopped at the run's time limit. If the tool needs longer on this data, raise run.
     "ef1d9f98ef6e": ("verdict", "run"),  # The tool did not finish within the run's time limit, so it was stopped.
     "bd3265ea8d34": ("verdict", "tree"),  # the loci the documented command genotypes, from a file the repository ships, are not in STRhub's ref
     "25a65b298a9c": ("verdict", "tree"),  # The loci the documented command genotypes, from a file the repository ships, are not in STRhub's ref
     "06e75c4bbbd2": ("verdict", "tree"),  # The documented command reads a file that is not in the repository at this commit and that STRhub doe
     "e48aa747fbd5": ("verdict", "tree"),  # STRhub Verified tried the documented command on a public hg38 sample that covers the forensic STR lo
-    "4c03a857bb23": ("diagnose_log", "log"),  # A COPY/ADD line names a file the build cannot see. The container is built from the tool's direc
+    # The one diagnostic sentence that still speaks about the author's side: a
+    # COPY/ADD of a file the checkout does not hold. It rests on the build log
+    # line and on the context being the pinned checkout (tanda 4: every other
+    # diagnostic now states what the log establishes, in STRhub's own voice).
+    "a1ac00cc3c30": ("diagnose_log", "log"),  # A COPY/ADD line names a file the build context does not hold. The context is the repository checkout…
     "86baeea971be": ("diagnose_log", "run"),  # At least one cause is STRhub's, not the tool's: the container recipe for a generated environmen
     "fbfdadb79781": ("diagnose_log", "manifest"),  # Every cause identified sits in this run's configuration — the pinned versions, package names or buil
     "f87ad4ad59ea": ("diagnose_log", "manifest"),  # The tool declares a binary or proprietary output with no text or tabular export, so the IO and 
@@ -73,12 +76,8 @@ REGISTER: dict[str, tuple[str, str]] = {
     "4b6b45793ca4": ("diagnose_log", "manifest"),  # The tool declares it needs GPU hardware. Public CI runners are CPU-only.
     "b1468dcdb3d3": ("diagnose_log", "manifest"),  # The tool declares it needs an OS the automated runner does not provide.
     "fb768926c8c4": ("diagnose_log", "manifest"),  # The tool declares it needs licensed or restricted reference data that cannot be published in a 
-    "042eb41b7ca6": ("diagnose_log", "log"),  # The tool expected a file at '{0}' but it was not staged. Check the manifest inputs, fixture pat
-    "f7faa0cc2ec7": ("diagnose_log", "log"),  # The tool needs CUDA hardware. Public CI runners are CPU-only, so this cannot run on the automat
     "94e9a73cf514": ("diagnose_log", "manifest"),  # The tool needs CUDA hardware. Public CI runners are CPU-only.
     "3d053d897ca4": ("diagnose_log", "manifest"),  # The tool needs a license or licensed data that cannot be published in a public verification run
-    "92129cab0cf3": ("diagnose_log", "log"),  # The tool needs a license or licensed reference data that cannot be published in a public verifi
-    "997283df285e": ("diagnose_log", "log"),  # This tool requires the VCF output path to end in .gz (bgzipped). Change the output path in the 
     "dc6dbb4a5df8": ("generate_pdf", "tree"),  # Recorded automatically from the tool's public files when this run was configured. Not verified 
     "6b4450723321": ("generate_pdf", "tree"),  # This tool ships no demo or test data of its own. STRhub ran the verification using the public r
     "831100e24df2": ("propose_manifest", "tree"),  # # The repository ships its own Dockerfile (

@@ -449,7 +449,7 @@ def install_meaning(faults: list[str]) -> list[tuple[str, str]]:
     the run established: that a build from source stopped.
     """
     run = ("A build from source at this commit fails in a clean environment; the "
-           "cause and a suggested fix are below.")
+           "cause, as the build log states it, is below.")
     review = ("Nothing ran, so this says nothing about the software's output. It "
               "records that this attempt to build it stopped, and whose side the "
               "cause is on.")

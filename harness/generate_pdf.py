@@ -621,7 +621,7 @@ def build_body(cfg):
         els.append(Paragraph("<b>What failed</b>", ST["body"]))
         els.append(vspace(2))
         ihead = [Paragraph(f"<b>{h}</b>", ST["tbl_cell"])
-                 for h in ("What happened", "Suggested fix")]
+                 for h in ("What happened", "What the log establishes")]
         irows = [ihead]
         for issue in inst["diagnostics"]:
             irows.append([

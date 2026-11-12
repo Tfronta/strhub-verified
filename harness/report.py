@@ -265,7 +265,7 @@ def _summary_md(report: dict, slug: str) -> str:
         lines += [f"- **{who}:** {what}" for who, what in
                   install_meaning(inst.get("faults") or [])]
         lines += ["", "What failed:", "",
-                  "| What happened | Times | Suggested fix |",
+                  "| What happened | Times | What the log establishes |",
                   "|---|---|---|"]
         for issue in inst["diagnostics"]:
             fix = issue.get("suggestion", "—").replace("\n", " ")
@@ -511,7 +511,7 @@ def _summary_html(report: dict, slug: str) -> str:
             f"<p><b>What this means</b></p><ul class='stats'>{meaning}</ul>"
             "<p><b>What failed</b></p>"
             "<table><thead><tr><th>What happened</th><th>Times</th>"
-            "<th>Suggested fix</th></tr></thead>"
+            "<th>What the log establishes</th></tr></thead>"
             f"<tbody>{irows}</tbody></table>{log_link}"
         )
 
