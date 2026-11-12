@@ -1,5 +1,4 @@
 """Runner-boundary regressions with inert files; never Docker or STR software."""
-import base64
 import builtins
 import json
 import pathlib
@@ -39,11 +38,6 @@ def manifest():
             "environment": {"dockerfile": "Dockerfile"},
             "run": {"cmd": "not executed"},
             "outputs": [{"path": "result.txt", "format": "text"}]}
-
-
-def encoded(m, **extra):
-    return base64.b64encode(json.dumps({"manifest_yml": yaml.safe_dump(m),
-                                       "dockerfile": "FROM scratch\n", **extra}).encode()).decode()
 
 
 def committed(tmp_path, monkeypatch, m=None):
@@ -105,44 +99,13 @@ def test_local_regions_symlink_escape_is_rejected(tmp_path, monkeypatch):
     assert not work.exists()
 
 
-@pytest.mark.parametrize("field", ["fixture", "regions", "dockerfile", "from_repo", "fallback"])
-def test_trial_path_rejected_before_materialisation_or_existing_recipe_deletion(tmp_path, field):
-    m = manifest()
-    if field in ("fixture", "regions"):
-        m["inputs"] = {field: "../sentinel"}
-    elif field == "fallback":
-        m["environment"]["fallback"] = {"dockerfile": "../sentinel"}
-    else:
-        m["environment"][field] = "../sentinel"
-    old = tmp_path / "recipe" / "example"
-    old.mkdir(parents=True)
-    (old / "sentinel").write_text("previous evidence")
-    before = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
-    with pytest.raises((ValueError, ValidationError)):
-        prepare.materialise_recipe("example", encoded(m), tmp_path)
-    assert {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()} == before
-
-
-@pytest.mark.parametrize("broken", [None, [], {"tool": {"name": "incomplete"}}])
-def test_schema_failure_precedes_trial_writes(tmp_path, broken):
-    with pytest.raises(ValidationError):
-        prepare.materialise_recipe("example", encoded(broken), tmp_path / "new-work")
-    assert not (tmp_path / "new-work").exists()
-
-
-def test_report_filename_cannot_escape_before_recipe_materialisation(tmp_path):
-    m = manifest()
-    m["report"] = {"slug": "../../outside"}
-    with pytest.raises(ValidationError):
-        prepare.materialise_recipe("example", encoded(m), tmp_path / "work")
-    assert not (tmp_path / "work").exists()
-
-
 @pytest.mark.parametrize("tool", ["../outside", "/tmp/outside", "a/b", ".git"])
-def test_tool_identifier_cannot_select_another_root(tmp_path, tool):
+def test_tool_identifier_cannot_select_another_root(tmp_path, monkeypatch, tool):
+    work = tmp_path / "work"
+    monkeypatch.setattr(sys, "argv", ["prepare.py", tool, "--work", str(work), "--trial"])
     with pytest.raises(ValueError, match="safe directory"):
-        prepare.materialise_recipe(tool, encoded(manifest()), tmp_path / "work")
-    assert not (tmp_path / "work").exists()
+        prepare.main()
+    assert not work.exists()
 
 
 def test_dataset_index_cannot_introduce_an_external_source(tmp_path, monkeypatch):

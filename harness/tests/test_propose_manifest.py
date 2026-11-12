@@ -20,7 +20,7 @@ def _valid(manifest_yml, tmp_path):
     return _manifest.load(str(p))  # raises on schema violation
 
 
-def test_hipstr_recipe_is_generated_and_rewritten_to_strhub_mounts(tmp_path):
+def test_hipstr_proposal_preserves_the_documented_fasta_and_read_list(tmp_path):
     r = pm.build(_proposal("hipstr"), "hipstr-trial")
     m = _valid(r["manifest_yml"], tmp_path)
     assert m["environment"]["source"] == "generated"
@@ -28,11 +28,10 @@ def test_hipstr_recipe_is_generated_and_rewritten_to_strhub_mounts(tmp_path):
     assert not r["procedure"]["install_ready"]
     assert m["inputs"]["type"] == "illumina-bam-hg38"
     assert "run1.bam,run2.bam,run3.bam,run4.bam" in m["run"]["cmd"]
-    assert "--fasta /data/ref/hg38.fa" in " ".join(m["run"]["cmd"].split())
+    assert "--fasta genome.fa" in " ".join(m["run"]["cmd"].split())
     assert "str_regions.bed" in m["run"]["cmd"]
     assert m["run"]["cmd"].startswith("cd '/opt/tool' && touch /tmp/.strhub_mark")
     assert m["outputs"][0] == {"path": "**/*.vcf*", "format": "vcf", "min_records": 1}
-    # HipSTR reads the hipstr layout: the library file is used, no limitation.
     assert "regions" not in m["inputs"]
     assert "install_profile_unsupported" in r["limitations"]
     assert m["caveats"]["source"] == "detect_recipe"
@@ -83,7 +82,7 @@ def test_recipe_round_trips_through_json():
 
 def test_a_list_of_input_files_is_not_reduced_to_one_available_sample(tmp_path):
     cmd, _ = pm.rewrite_for_strhub("./HipSTR --bams run1.bam,run2.bam,run3.bam --fasta g.fa", "illumina-bam-hg38")
-    assert cmd == "./HipSTR --bams run1.bam,run2.bam,run3.bam --fasta /data/ref/hg38.fa"
+    assert cmd == "./HipSTR --bams run1.bam,run2.bam,run3.bam --fasta g.fa"
 
 
 def test_gangstr_recipe_does_not_manufacture_a_primary_or_fallback_install(tmp_path):
@@ -289,32 +288,7 @@ def test_shipped_bed_is_not_replaced_with_panel_bed():
 
 
 
-def test_a_shipped_disease_catalog_moves_the_run_to_the_medical_slice():
-    """ExpansionHunter's catalog is 31 disease loci, none forensic: on the
-    forensic slice it would have nothing to genotype, on the medical one it does.
-    The catalog is the tool's own and stays as documented."""
-    proposal = {"shipped_loci": {"variant_catalog/hg38/variant_catalog.json": [
-        ["chr4", 3074876, 3074933], ["chrX", 147912050, 147912111]]}}
-    cmd = ("ExpansionHunter --reads input.bam --reference hg38.fa "
-           "--variant-catalog variant_catalog/hg38/variant_catalog.json --output-prefix out")
-    assert pm.medical_panel_for(cmd, proposal, "illumina-bam-hg38") == "illumina-bam-hg38-med"
-    assert pm.medical_panel_for(cmd, proposal, "pacbio-hifi-bam-hg38") == "pacbio-hifi-bam-hg38-med"
-    assert pm.medical_panel_for(cmd, proposal, "ont-bam-hg38") == "ont-bam-hg38-med"
-    # No medical slice of a Y-STR or FASTQ assay: the original type stays.
-    assert pm.medical_panel_for(cmd, proposal, "illumina-bam-hg38-y") is None
-
-
-def test_a_forensic_tool_is_never_moved_to_the_medical_slice():
-    proposal = {"shipped_loci": {"regions/codis.bed": [["chr18", 63281666, 63281739]]}}  # D18S51
-    cmd = "HipSTR --bams input.bam --fasta hg38.fa --regions regions/codis.bed --str-vcf out.vcf.gz"
-    assert pm.medical_panel_for(cmd, proposal, "illumina-bam-hg38") is None
-    # Nothing shipped to read: nothing to decide on.
-    assert pm.medical_panel_for(cmd, {}, "illumina-bam-hg38") is None
-
-
-def test_medical_slice_routing_does_not_flag_input_swapped():
-    """Routing to a medical slice of the same platform is panel routing, not
-    substituting an input kind for lack of sample."""
+def test_shipped_catalog_does_not_select_a_different_dataset():
     proposal = {
         "repo": "Illumina/ExpansionHunter",
         "ref": "9f5db1d4ab72016b2d93330b9792842d71582622",
@@ -336,7 +310,9 @@ def test_medical_slice_routing_does_not_flag_input_swapped():
         "shipped_loci": {"catalog.json": [["chr4", 3074876, 3074933]]},
     }
     r = pm.build(proposal, "eh-test")
-    assert r["manifest"]["inputs"]["type"] == "illumina-bam-hg38-med"
+    assert r["manifest"]["inputs"] == {"type": "illumina-bam-hg38"}
+    assert "loci_outside_panel" in r["limitations"]
+    assert "--variant-catalog catalog.json" in r["manifest"]["run"]["cmd"]
     caveats = r["manifest"]["caveats"]["items"]
     assert not any("holds no reference sample" in c for c in caveats)
     assert not any("other documented kind was used" in c for c in caveats)

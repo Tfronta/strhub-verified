@@ -63,9 +63,7 @@ def test_each_blocker_of_the_commit_maps_onto_one_named_block():
 
 
 def test_a_limitation_of_ours_is_not_told_as_a_gap_of_theirs():
-    """STRhub holding no sample of that kind, or our own reader rewriting the
-    command, is ours. It asks for an example file; it does not ask the author
-    to fix a README that is not at fault."""
+    """The report attributes evaluator limitations to STRhub."""
     for blocker in ("missing_input", "loci_outside_panel", "flag_dropped", "regions_guessed"):
         s = ct.step1_says(_report("undetermined", blocker=blocker, reason="."))
         assert s["code"] == "ours", blocker

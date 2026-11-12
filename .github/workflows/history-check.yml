@@ -36,10 +36,8 @@ jobs:
           python-version: "3.11"
       - run: pip install -q pyyaml
 
-      # One trial per case. A `committed` case re-points tools/<slug>/ at the
-      # commit (never publishes); a `proposed` case is a trial from the URL,
-      # which publishes on the usual terms and lands in the tool's history.
-      - name: Dispatch one trial per case
+      # Dispatch URL trials for documented cases. Curated cases are archived.
+      - name: Dispatch documented cases
         env:
           GH_TOKEN: ${{ github.token }}
           CASES: ${{ github.event.inputs.cases }}

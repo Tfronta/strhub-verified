@@ -15,10 +15,8 @@ import datasets as datasets_lib
 PROFILE = "strhub-upstream-procedure/1"
 TOKEN = re.compile(r"'[^']*'|\"(?:\\.|[^\"\\])*\"|<[^<>\n]+>|[^\s'\";&|<>()]+|[;&|<>()]+")
 INPUT_FLAGS = {"--in", "--input", "--bam", "--bams", "--reads", "--fastq", "-i", "-b"}
-REFERENCE_FLAGS = {"--ref", "--reference", "--fasta", "--genome"}
 OUTPUT_FLAGS = {"--out", "--output", "--output-prefix", "--out-dir", "-o"}
 READ_PATH = re.compile(r"[\w./-]+\.(?:bam|cram|f(?:ast)?q)(?:\.gz)?\Z", re.I)
-REF_PATH = re.compile(r"[\w./-]+\.(?:fa|fasta|fna)(?:\.gz)?\Z", re.I)
 
 
 def digest(text: str) -> str:
@@ -52,7 +50,7 @@ def tokens(command: str) -> list[str]:
 
 
 def rewrite(command: str, input_type: str | None) -> dict:
-    """Only standalone read/reference paths and explicit output placeholders.
+    """Only standalone read paths and explicit output placeholders.
 
     No executable changes, defaults, config selection, region conversion,
     list reduction, synopsis expansion, shell-variable filling or mkdir.
@@ -71,7 +69,10 @@ def rewrite(command: str, input_type: str | None) -> dict:
         return result
     ds = datasets_lib.resolve(input_type) if input_type else None
     canonical = (ds or {}).get("canonical_input")
-    reference = ((ds or {}).get("reference_genome") or {}).get("mount_path")
+    if ((ds or {}).get("reference") == "hg38"
+            and re.search(r"(?:hg19|grch37|hg18|ncbi36|t2t|chm13)(?![a-z0-9])", command, re.I)):
+        result["limitations"].append("the command names a different assembly from the registered hg38 dataset")
+        return result
     changes = []
     for i, m in enumerate(TOKEN.finditer(command)):
         raw = m.group()
@@ -83,7 +84,6 @@ def rewrite(command: str, input_type: str | None) -> dict:
         target, role = None, None
         angle = value.startswith("<") and value.endswith(">")
         read_placeholder = angle and bool(re.search(r"bam|cram|fastq|reads|input", value, re.I))
-        ref_placeholder = angle and bool(re.search(r"fasta|reference|genome", value, re.I))
         if previous in INPUT_FLAGS and canonical and (READ_PATH.fullmatch(value) or read_placeholder):
             kind = lambda path: "fastq" if re.search(r"\.f(?:ast)?q(?:\.gz)?$", path, re.I) else "cram" if re.search(r"\.cram(?:\.gz)?$", path, re.I) else "bam"
             compatible = (not READ_PATH.fullmatch(value) or
@@ -97,11 +97,6 @@ def rewrite(command: str, input_type: str | None) -> dict:
                 result["limitations"].append("the declared sample does not have the documented read-file kind")
         elif previous in INPUT_FLAGS and "," in value:
             result["limitations"].append("input list cardinality is not changed to fit one available sample")
-        elif previous in REFERENCE_FLAGS and reference and (REF_PATH.fullmatch(value) or ref_placeholder):
-            if not REF_PATH.fullmatch(value) or value.endswith(".gz") == reference.endswith(".gz"):
-                target, role = reference, "reference_path"
-            else:
-                result["limitations"].append("reference compression was not changed to fit the available file")
         elif previous in OUTPUT_FLAGS and angle and re.search(r"output|prefix|directory", value, re.I):
             target, role = "sample", "output_placeholder"
         elif i and previous not in OUTPUT_FLAGS and READ_PATH.fullmatch(value) and value != f"/data/in/{canonical}":
@@ -113,10 +108,19 @@ def rewrite(command: str, input_type: str | None) -> dict:
             changes.append((m.start(), m.end(), replacement))
             result["substitutions"].append({"token": i, "original": raw,
                 "replacement": replacement, "role": role, "basis": "declared dataset mount" if role != "output_placeholder" else "explicit output-path placeholder"})
+    if len(result["read_bindings"]) > 1:
+        result["limitations"].append("multiple read inputs cannot be mapped to a single shared sample")
+        return result
     rewritten = command
     for start, end, value in reversed(changes):
         rewritten = rewritten[:start] + value + rewritten[end:]
     result["command"] = rewritten
+    declared_paths = {f"/data/in/{canonical}"} if canonical else set()
+    if canonical and (ds or {}).get("format") == "bam":
+        declared_paths.add(f"/data/in/{canonical}.bai")
+    mounted_paths = set(re.findall(r"/data/(?:in|ref)(?:/[\w./-]+)?", rewritten))
+    if mounted_paths - declared_paths:
+        result["limitations"].append("the command requires a runner input outside the shared dataset; no reference, catalog or configuration is supplied to fill that path")
     if re.search(r"<[^<>]+>|\b(?:configFile|fastqfile)\b", rewritten, re.I):
         result["limitations"].append("unresolved placeholder; no value was invented")
     return result
@@ -141,6 +145,20 @@ def cite(proposal: dict, candidate: dict) -> dict:
             return out
     out["reason"] = "the complete command is not established at the cited repository line"
     return out
+
+
+def example_citation(proposal: dict, manifest: dict) -> dict | None:
+    """An example uses the literal command and the files in the upstream image."""
+    example = manifest.get("example") or {}
+    cmd = example.get("cmd")
+    if not cmd or example.get("cwd") != "." or rewrite(cmd, None)["limitations"]:
+        return None
+    for candidate in proposal.get("commands", []):
+        if candidate.get("cmd") == cmd:
+            evidence = cite(proposal, candidate)
+            if evidence["verified"]:
+                return evidence
+    return None
 
 
 def installation(proposal: dict, manifest: dict) -> dict:
@@ -253,6 +271,9 @@ def verify_checkout(root, review: dict, manifest: dict | None = None) -> None:
         checks = [(install.get("source_file"), install.get("dockerfile_sha256"))]
         citations = [install.get("citation") or {}] + ((review.get("command_review") or {}).get("citations") or [])
         checks += [(c.get("path"), c.get("document_sha256")) for c in citations]
+    example = example_citation(review["evidence"]["proposal"], manifest) if review["may_say_runs"] else None
+    if example:
+        checks.append((example["path"], example["document_sha256"]))
     for relative, expected in checks:
         if not relative or not expected:
             raise ValueError("incomplete upstream file evidence")

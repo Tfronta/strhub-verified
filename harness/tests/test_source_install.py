@@ -1,5 +1,4 @@
 """A source profile must never become a collection of per-tool repairs."""
-import base64
 import json
 import os
 from pathlib import Path
@@ -173,10 +172,12 @@ def test_proposal_and_preparation_recompute_the_same_plan_without_using_submitte
     assert built["procedure"]["may_say_runs"]
     proposal = tmp_path / "proposal.json"
     proposal.write_text(json.dumps(p))
-    payload = base64.b64encode(json.dumps({"manifest_yml": built["manifest_yml"],
-                                         "dockerfile": "FROM attacker\nRUN repair\n"}).encode()).decode()
+    descriptor = tmp_path / "work/proposal"
+    descriptor.mkdir(parents=True)
+    (descriptor / "manifest.yml").write_text(built["manifest_yml"])
+    (descriptor / "Dockerfile").write_text("FROM attacker\nRUN repair\n")
     result = subprocess.run([sys.executable, str(ROOT / "harness/prepare.py"), "analyzer", "--work", str(tmp_path / "work"),
-                             "--proposal", str(proposal), "--recipe-b64", payload], capture_output=True, text=True)
+                             "--proposal", str(proposal), "--trial"], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
     values = dict(line.split("=", 1) for line in result.stdout.splitlines())
     assert values["install_ready"] == values["procedure_ready"] == "1"

@@ -21,13 +21,13 @@ Only explicit shell line continuations are accepted when establishing the
 citation. Separate flag lines are never joined to manufacture a command, and
 a `Usage:` prefix is not removed to turn a synopsis into an executable line.
 
-The closed table currently permits standalone read-file arguments after
-`--in`, `--input`, `--bam`, `--bams`, `--reads`, `--fastq`, `-i` or `-b`, and
-reference FASTA arguments after `--ref`, `--reference`, `--fasta` or `--genome`.
-The file extension or explicit placeholder must establish the read-file kind;
-BAM, CRAM and FASTQ are not interchanged to fit an available sample. Read or
-reference compression is not changed. Explicit output-path placeholders may use the fixed
-output name `sample`; existing output values are kept.
+The closed table permits one standalone read-file argument after `--in`,
+`--input`, `--bam`, `--bams`, `--reads`, `--fastq`, `-i` or `-b`. The file
+extension or explicit placeholder must establish the read-file kind. BAM, CRAM
+and FASTQ are not interchanged. A command requiring multiple read files cannot
+use the single-sample mount. Reference FASTA, catalog and config arguments keep
+their original paths in the upstream procedure. Explicit output-path
+placeholders may use the fixed output name `sample`.
 
 Each substitution records its source token, replacement, role and basis in the
 declared dataset. A path in an unrelated argument is not proof that the command
@@ -97,6 +97,22 @@ writes `work/procedure_review.json`, bound to its manifest digest. It never
 trusts a cached ready flag. Missing or malformed proposal evidence disables
 installation and all execution legs. Unsupported examples cannot bypass this
 control. No automatic `--help` invocation is proposed or executed.
+
+A URL trial accepts the repository and ref. CI generates its internal
+descriptor from that source. Separate fixtures, uploaded regions and historical
+tool assets cannot enter the container. The repository's own example has no
+runner-supplied input mount. The external leg uses the dataset registered for
+the documented input type without switching to a different assay or panel.
+
+Before staging, the registry and data files must match the evaluator's Git
+commit. Immediately before the external launch, the runner checks the command
+against the review and compares every mounted file against the registered data.
+Missing, added or changed files stop the launch. The report JSON contains
+`mounted_inputs`, with the evaluator commit, source paths, SHA-256 digests and
+container paths. When the registry stores compressed data for a plain FASTQ
+mount, the report records both hashes and the decompression. The terminal keeps
+the actual process invocation, output and exit status separately. The runner
+does not download or mount a separate reference FASTA.
 
 CI requires `install_ready == 1`. The local runner uses the same preparation
 and source checks; it builds the actual upstream checkout, never the proposed

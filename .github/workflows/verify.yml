@@ -25,29 +25,14 @@ on:
         type: string
         required: false
         default: ""
-      # A trial runs a recipe that is not committed anywhere, through the same
-      # gates as a real verification. Whether it is PUBLISHED is not decided
-      # here but by the deploy gate, on the verdict: a trial from a bare URL
-      # (recipe derived in this run from the public repository) whose verdict
-      # is attributable to the tool is published like any other run, and its
-      # recipe committed under tools/. A trial handed a `recipe` by whoever
-      # dispatched it never publishes, whatever it finds. Every trial's result
-      # also lives in this run's artifact (30 days).
+      # A trial reads the installation and command from the pinned repository.
       mode:
         description: "publish (default) or trial"
         type: choice
         options: [publish, trial]
         default: publish
-      recipe:
-        description: "Trial only: base64 JSON {manifest_yml, dockerfile, regions_bed?}"
-        type: string
-        required: false
-        default: ""
-      # A trial from nothing but a URL: the recipe is PROPOSED here, in CI, from
-      # the repository's tree and README (harness/detect_recipe.py), and the
-      # report's verdict says whether what could be worked out was enough.
       repo:
-        description: "Trial from URL: public GitHub repository (no recipe needed)"
+        description: "Trial from URL: public GitHub repository"
         type: string
         required: false
         default: ""
@@ -182,8 +167,8 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   # Monthly, alongside the refresh of the stalest published tools: has any
-  # verified tool published a release since? If so, the committed recipe is
-  # re-run against the new commit as a TRIAL (nothing published) and an issue
+  # verified tool published a release since? If so, start a private trial of
+  # the procedure documented at the new commit, and an issue
   # on this repository says so. See harness/upstream_refresh.py.
   upstream:
     if: github.event_name == 'schedule'
@@ -261,9 +246,9 @@ jobs:
     env:
       TOOL: ${{ matrix.tool }}
       MODE: ${{ github.event.inputs.mode || 'publish' }}
-      # The tool runs as a container built from a submitted Dockerfile with a
-      # submitted command. Everything it needs is mounted: inputs, the reference
-      # genome, an output directory. So it gets no network (the manifest's
+      # The tool runs the cited upstream command in the documented environment.
+      # The external leg receives only the verified shared dataset and an
+      # output directory. The container gets no network (the manifest's
       # `runtime_network` compatibility flag routes tools that need one to manual
       # verification instead), a memory and CPU ceiling, a process cap, and no
       # capabilities. Unquoted on purpose where it is used: it is a flag list.
@@ -289,35 +274,32 @@ jobs:
           python-version: "3.11"
       - run: pip install pyyaml jsonschema reportlab pillow
 
-      # --- Prepare: read manifest, resolve external dataset, stage inputs -----
-      # prepare.py stages each matrix leg: work/in_own (BYOR, local or remote)
-      # and work/in_external (typed dataset from datasets/, or N/A).
+      # Derive a descriptor from the repository. Dispatch cannot supply one.
       - id: propose
-        name: "Propose a recipe from the repository (trial from URL)"
-        if: github.event.inputs.mode == 'trial' && github.event.inputs.recipe == '' && github.event.inputs.repo != ''
+        name: "Read the documented procedure from the repository"
+        if: github.event.inputs.mode == 'trial'
         env:
           GH_TOKEN: ${{ github.token }}
           TRIAL_REPO: ${{ github.event.inputs.repo }}
           TRIAL_REF: ${{ github.event.inputs.ref }}
           TRIAL_REF_LABEL: ${{ github.event.inputs.ref_label }}
         run: |
+          test -n "$TRIAL_REPO" || { echo '::error::a trial requires a public GitHub repository'; exit 1; }
           mkdir -p work
           python harness/detect_recipe.py "$TRIAL_REPO" "$TRIAL_REF" --tag "$TRIAL_REF_LABEL" \
             --json recipe_proposal.json
           python harness/propose_manifest.py recipe_proposal.json --slug "$TOOL" \
             --ref-label "$TRIAL_REF_LABEL" \
-            --out-dir work/proposal --recipe-b64-out work/recipe.b64
+            --out-dir work/proposal
 
       - id: m
-        name: Prepare run (manifest + dataset matrix)
-        env:
-          # Only set for a trial. Read by prepare.py from the environment rather
-          # than the command line: it is author-supplied and can be large.
-          RECIPE_B64: ${{ github.event.inputs.mode == 'trial' && github.event.inputs.recipe || '' }}
+        name: Prepare the procedure and shared dataset
         run: |
-          # A recipe proposed in the step above takes the place of a dispatched one.
-          if [ -f work/recipe.b64 ]; then RECIPE_B64="$(cat work/recipe.b64)"; export RECIPE_B64; fi
-          python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
+          if [ "$MODE" = "trial" ]; then
+            python harness/prepare.py "$TOOL" --work work --trial --proposal recipe_proposal.json >> "$GITHUB_OUTPUT"
+          else
+            python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
+          fi
 
       # Reading the tool's repository, for the evidence a report rests on: the
       # sections where the author documents a known bug, and whether the
@@ -344,142 +326,6 @@ jobs:
           fi
           python harness/detect_recipe.py "$TOOL_REPO" "$TOOL_REF" --json repo_read.json \
             || echo "::warning::could not read $TOOL_REPO at $TOOL_REF; the report will say less"
-
-      # --- Pre-flight: the BED the manifest names must actually be here --------
-      # STRhub's fault, not the author's, and it must STOP the run.
-      #
-      # This used to pass silently. The pre-flight below is conditioned on a BED
-      # having been staged, so a missing one left it SKIPPED rather than failed;
-      # the guard on every reporting step tests for 'failure', so the whole run
-      # continued. The tool then ran with no BED, targeted nothing, failed its
-      # gates, and was published at `installs` with a diagnostics line telling the
-      # author to "check the manifest inputs" — for a file they had uploaded
-      # correctly and we had not committed. Failing here is what keeps a fault in
-      # our pipeline from being published as a finding about someone's software.
-      - id: regions_guard
-        name: "Pre-flight · Regions BED staged"
-        if: steps.m.outputs.regions_missing == '1'
-        env:
-          REGIONS_DECLARED: ${{ steps.m.outputs.regions_declared }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          python harness/rejection.py \
-            --tool "$TOOL" \
-            --reason regions_not_staged \
-            --detail "$REGIONS_DECLARED" \
-            --run-url "$RUN_URL"
-          exit 1
-
-      # --- Pre-flight: author-supplied regions BED must reach the slice's panel -
-      # NOT a gate. STRhub's reference BAMs are slices; a BED reaching fewer than
-      # min_loci of the panel loci would make a healthy tool look broken. Intervals
-      # outside the panel are allowed (a shipped catalog may list more loci than the
-      # slice holds) and the report states them as not assessed. A BED below the
-      # minimum is a REJECTED SUBMISSION: this step has no continue-on-error, so it
-      # ABORTS the run — no gates, no report, no badge. Only author-provided BEDs
-      # (regions_source == 'tool') are checked; STRhub-committed BEDs are trusted.
-      #
-      # Every reporting step below is additionally guarded on this step's
-      # conclusion: they run `if: always()`, which by itself would survive this
-      # abort and emit a red "not run" badge for a tool that never ran.
-      # Every manifest-derived value below reaches the shell through `env:`, never
-      # through `${{ }}` inside a `run:` block. The manifest is author-supplied, and
-      # `${{ }}` is a TEXT substitution performed before bash sees the script: a
-      # value containing $(...), a backtick or a quote would run on the RUNNER, which
-      # holds a `contents: write` token. Referenced as "$VAR", bash expands the value
-      # without re-parsing it, so it stays data. `if:` and `timeout-minutes:` are
-      # GitHub expression contexts, not shell, and are safe as they are.
-      - id: preflight
-        name: "Pre-flight · Regions within panel"
-        if: steps.m.outputs.regions_source == 'tool' && steps.m.outputs.supported_loci != ''
-        env:
-          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
-          MIN_LOCI: ${{ steps.m.outputs.min_loci || '5' }}
-        run: |
-          python harness/validate_bed.py \
-            --bed work/in_external/regions.bed \
-            --supported "$SUPPORTED_LOCI" \
-            --min-loci "$MIN_LOCI" \
-            --json regions_validation.json
-
-      # The author's counterpart to the guard above: their BED is here, it just
-      # does not fit the slice. Same obligation — say what happened and who can
-      # fix it — but this one IS actionable by them, and free to correct.
-      - name: "Rejection notice · regions outside panel"
-        if: always() && steps.preflight.conclusion == 'failure'
-        env:
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          python harness/rejection.py \
-            --tool "$TOOL" \
-            --reason regions_outside_panel \
-            --validation regions_validation.json \
-            --run-url "$RUN_URL"
-
-      # A stopped run publishes no attestation, so the notice is the only thing
-      # the submitter can be shown. Commit it on main and always upload it, or
-      # the explanation dies with the runner.
-      - name: "Publish rejection notice"
-        if: always() && (steps.regions_guard.conclusion == 'failure' || steps.preflight.conclusion == 'failure')
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -e
-          if [ "$MODE" != "trial" ] && [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-            git add "state/rejections/$TOOL.json"
-            git commit -m "verified: rejection notice $TOOL" || exit 0
-            # Retried like the gh-pages deploy below. A push that loses a race
-            # with another run used to end here, and the notice, the only thing
-            # a stopped run leaves the submitter, would never exist. The loop
-            # used to end in a `sleep` that exits 0, so three lost races still
-            # painted this step green; now running out of attempts fails it.
-            pushed=0
-            for i in 1 2 3; do
-              if git push "$remote" HEAD:main; then pushed=1; break; fi
-              git pull --rebase "$remote" main || true
-              sleep 3
-            done
-            if [ "$pushed" != 1 ]; then
-              echo "::error::could not publish the rejection notice for $TOOL after 3 attempts"
-              exit 1
-            fi
-          fi
-
-      - name: "Upload rejection notice"
-        if: always() && (steps.regions_guard.conclusion == 'failure' || steps.preflight.conclusion == 'failure')
-        uses: actions/upload-artifact@v7
-        with:
-          name: rejection-${{ env.TOOL }}
-          path: state/rejections/
-
-      # --- Reference genome (for BAM-based tools needing --fasta) -------------
-      - name: Cache reference genome
-        if: steps.m.outputs.ref_genome_url != ''
-        uses: actions/cache@v4
-        id: ref-cache
-        with:
-          path: work/ref
-          key: ref-${{ steps.m.outputs.ref_genome_filename }}-v1
-
-      - name: Download + index reference genome
-        id: ref_dl
-        if: steps.m.outputs.ref_genome_url != '' && steps.ref-cache.outputs.cache-hit != 'true'
-        env:
-          REF_GENOME_URL: ${{ steps.m.outputs.ref_genome_url }}
-          REF_GENOME_FILE: ${{ steps.m.outputs.ref_genome_filename }}
-        run: |
-          mkdir -p work/ref
-          echo "::group::Downloading $REF_GENOME_FILE"
-          curl -fsSL "$REF_GENOME_URL" | gunzip > "work/ref/$REF_GENOME_FILE"
-          echo "::endgroup::"
-          echo "::group::Indexing with samtools faidx"
-          sudo apt-get install -y -qq samtools >/dev/null 2>&1
-          samtools faidx "work/ref/$REF_GENOME_FILE"
-          echo "::endgroup::"
-          ls -lh work/ref/
 
       # --- Gate: Available ----------------------------------------------------
       - id: available
@@ -587,68 +433,6 @@ jobs:
             $DOCKER_HARDENING $ENTRY toolimg:ci $ENTRY_ARGS "$STARTS_CMD" || rc=$?
           python harness/check_starts.py --rc "$rc" --log work/log_starts.txt --json starts.json
 
-      # --- Matrix leg: own data (the badge ladder uses THIS leg) -------------
-      # No image, no run. Without the second condition on each run leg, a
-      # failed build was followed by `docker run toolimg:ci`, whose "pull
-      # access denied" was then diagnosed as a base image STRhub could not
-      # pull: a fault of ours, reported on a run that never happened.
-      - id: runs
-        name: "Gate · Runs (own data)"
-        if: steps.m.outputs.own_ready == '1' && steps.installs.outcome == 'success'
-        continue-on-error: true
-        # A backstop: run_container.sh stops the container at the manifest's
-        # limit and says so in the log; this only catches a hung script.
-        timeout-minutes: ${{ fromJSON(steps.m.outputs.step_timeout) }}
-        env:
-          # The author's own command. It is meant to run INSIDE the container (the
-          # image entrypoint is `bash -lc`), so it is passed as a single argument
-          # here and never evaluated by the runner's shell.
-          # The strict profile already established a compatible upstream
-          # entrypoint. Neither ENTRYPOINT nor its arguments are overridden.
-          TOOL_CMD: ${{ steps.m.outputs.cmd }}
-          RUN_MINUTES: ${{ steps.m.outputs.timeout }}
-          ENTRY: ""
-          ENTRY_ARGS: ""
-        run: |
-          set -o pipefail
-          mkdir -p work/out_own
-          # World-writable on purpose. The container runs with every capability
-          # dropped, so its root has no CAP_DAC_OVERRIDE and cannot write to a
-          # directory the runner user owns. Every tool failed with 'Permission
-          # denied' on /data/out the first time the hardening ran (PR #19).
-          chmod 0777 work/out_own
-          REF_MOUNT=""
-          [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
-          bash harness/run_container.sh strhub_own "$RUN_MINUTES" work/log_own.txt \
-            $DOCKER_HARDENING $ENTRY \
-            -v "$PWD/work/in_own:/data/in:ro" \
-            -v "$PWD/work/out_own:/data/out" \
-            $REF_MOUNT \
-            toolimg:ci \
-            $ENTRY_ARGS "$TOOL_CMD"
-
-      - id: io
-        name: "Gate · Expected IO (own)"
-        if: steps.m.outputs.own_ready == '1'
-        continue-on-error: true
-        env:
-          MANIFEST: ${{ steps.m.outputs.manifest }}
-        run: python harness/check_io.py "$MANIFEST" work/out_own --json io_own.json
-
-      - id: content
-        name: "Gate · Content (own)"
-        if: steps.m.outputs.own_ready == '1'
-        continue-on-error: true
-        env:
-          MANIFEST: ${{ steps.m.outputs.manifest }}
-          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
-        # The loci this leg was given: a regions BED, or a JSON catalog
-        # (ExpansionHunter's) staged as regions.json.
-        run: |
-          REG=work/in_own/regions.bed
-          [ -f "$REG" ] || REG=work/in_own/regions.json
-          python harness/check_content.py "$MANIFEST" work/out_own --json content_own.json --regions "$REG" --panel "$SUPPORTED_LOCI"
-
       # --- Leg: the tool's OWN example (the reviewer's gate) ------------------
       # The README's command on the repository's data, inside the image, with
       # nothing from STRhub. prepare.py wraps it so that everything it creates
@@ -676,12 +460,9 @@ jobs:
           # directory the runner user owns. Every tool failed with 'Permission
           # denied' on /data/out the first time the hardening ran (PR #19).
           chmod 0777 work/out_example
-          REF_MOUNT=""
-          [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
           bash harness/run_container.sh strhub_example "$RUN_MINUTES" work/log_example.txt \
             $DOCKER_HARDENING $ENTRY \
             -v "$PWD/work/out_example:/data/out" \
-            $REF_MOUNT \
             toolimg:ci \
             $ENTRY_ARGS "$EXAMPLE_CMD"
 
@@ -702,27 +483,26 @@ jobs:
         # limit and says so in the log; this only catches a hung script.
         timeout-minutes: ${{ fromJSON(steps.m.outputs.step_timeout) }}
         env:
+          MANIFEST: ${{ steps.m.outputs.manifest }}
           TOOL_CMD: ${{ steps.m.outputs.cmd }}
           RUN_MINUTES: ${{ steps.m.outputs.timeout }}
           ENTRY: ""
           ENTRY_ARGS: ""
-          MANIFEST: ${{ steps.m.outputs.manifest }}
         run: |
-          set -o pipefail
+          set -euo pipefail
+          python harness/input_provenance.py --work work --manifest "$MANIFEST" --command="$TOOL_CMD"
+          echo "input_evidence=verified" >> "$GITHUB_OUTPUT"
           mkdir -p work/out_external
           # World-writable on purpose. The container runs with every capability
           # dropped, so its root has no CAP_DAC_OVERRIDE and cannot write to a
           # directory the runner user owns. Every tool failed with 'Permission
           # denied' on /data/out the first time the hardening ran (PR #19).
           chmod 0777 work/out_external
-          REF_MOUNT=""
-          [ -d work/ref ] && REF_MOUNT="-v $PWD/work/ref:/data/ref:ro"
           rc=0
           bash harness/run_container.sh strhub_external "$RUN_MINUTES" work/log_external.txt \
             $DOCKER_HARDENING $ENTRY \
             -v "$PWD/work/in_external:/data/in:ro" \
             -v "$PWD/work/out_external:/data/out" \
-            $REF_MOUNT \
             toolimg:ci \
             $ENTRY_ARGS "$TOOL_CMD" || rc=$?
           # This leg has one dataset and one attempt. Keep its original exit
@@ -731,7 +511,7 @@ jobs:
 
       - id: io_ext
         name: "Expected IO (external)"
-        if: steps.m.outputs.external_ready == '1'
+        if: steps.runs_ext.outputs.input_evidence == 'verified'
         continue-on-error: true
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
@@ -739,21 +519,16 @@ jobs:
 
       - id: content_ext
         name: "Content (external)"
-        if: steps.m.outputs.external_ready == '1'
+        if: steps.runs_ext.outputs.input_evidence == 'verified'
         continue-on-error: true
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
           SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
-        # The loci this leg was given: a regions BED, or a JSON catalog
-        # (ExpansionHunter's) staged as regions.json.
-        run: |
-          REG=work/in_external/regions.bed
-          [ -f "$REG" ] || REG=work/in_external/regions.json
-          python harness/check_content.py "$MANIFEST" work/out_external --json content_external.json --regions "$REG" --panel "$SUPPORTED_LOCI"
+        run: python harness/check_content.py "$MANIFEST" work/out_external --json content_external.json --panel "$SUPPORTED_LOCI"
 
       # --- README minimum-to-run check (advisory; never gates the badge) ------
       - name: "README check (advisory)"
-        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        if: always()
         continue-on-error: true
         env:
           TOOL_REPO: ${{ steps.m.outputs.repo }}
@@ -770,14 +545,12 @@ jobs:
 
       # --- Assemble the matrix (own + external legs) -------------------------
       - name: Assemble matrix
-        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        if: always()
         env:
-          OWN_READY: ${{ steps.m.outputs.own_ready }}
           EXT_READY: ${{ steps.m.outputs.external_ready }}
           EXAMPLE_READY: ${{ steps.m.outputs.example_ready }}
           INPUT_TYPE: ${{ steps.m.outputs.input_type }}
           DATASET_NAME: ${{ steps.m.outputs.dataset_name }}
-          FIXTURE_SOURCE: ${{ steps.m.outputs.fixture_source }}
         run: |
           python - <<'PY'
           import json, os, pathlib
@@ -788,17 +561,6 @@ jobs:
               except Exception:
                   return None
           legs = []
-          own_io, own_ct = load("io_own.json"), load("content_own.json")
-          fixture_source = os.environ.get("FIXTURE_SOURCE", "strhub")
-          own_label = "Your data" if fixture_source == "tool" else "STRhub fixture"
-          legs.append({
-              "leg": "own", "label": own_label,
-              "available": os.environ.get("OWN_READY") == "1",
-              "io": bool(own_io and own_io.get("passed")),
-              "content": bool(own_ct and own_ct.get("passed")),
-              "passed": bool(own_io and own_io.get("passed")),
-              "fixture_source": fixture_source,
-          })
           ext_io, ext_ct = load("io_external.json"), load("content_external.json")
           legs.append({
               "leg": "external", "label": "External data",
@@ -826,24 +588,21 @@ jobs:
       # --- Assemble attestation (always runs) --------------------------------
       - id: attest
         name: Build attestation + badge
-        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        if: always()
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
           TOOL_REF: ${{ steps.m.outputs.ref }}
-          OWN_READY: ${{ steps.m.outputs.own_ready }}
-          REGIONS_SOURCE: ${{ steps.m.outputs.regions_source }}
           SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
           # Step outcomes come from GitHub, not the manifest, so they are a closed
           # vocabulary (success/failure/cancelled/skipped) rather than author input.
           AVAILABLE_OUTCOME: ${{ steps.available.outcome }}
           INSTALLS_OUTCOME: ${{ steps.installs.outcome }}
-          RUNS_OUTCOME: ${{ steps.runs.outcome }}
-          RUNS_EXT_OUTCOME: ${{ steps.runs_ext.outcome }}
+          RUNS_EXT_OUTCOME: ${{ steps.runs_ext.outputs.input_evidence == 'verified' && steps.runs_ext.outcome || 'skipped' }}
           EXAMPLE_OUTCOME: ${{ steps.runs_example.outcome }}
           # A step of STRhub's own that failed before the gates could run. When
           # one did, the gates below it were skipped and would otherwise read as
           # the tool stopping at "source not available".
-          INFRA_FAILURE: ${{ (steps.propose.outcome == 'failure' && 'the recipe proposal step') || (steps.m.outcome == 'failure' && 'the staging of inputs') || (steps.installs.outcome == 'failure' && steps.installs.outputs.source_evidence != 'verified' && 'the upstream procedure evidence check before Docker') || (steps.ref_dl.outcome == 'failure' && 'the reference genome download') || '' }}
+          INFRA_FAILURE: ${{ steps.m.outputs.input_failure || (steps.propose.outcome == 'failure' && 'the recipe proposal step') || (steps.m.outcome == 'failure' && 'the staging of inputs') || (steps.installs.outcome == 'failure' && steps.installs.outputs.source_evidence != 'verified' && 'the upstream procedure evidence check before Docker') || (steps.runs_ext.outcome == 'failure' && steps.runs_ext.outputs.input_evidence != 'verified' && 'the mounted dataset provenance check') || '' }}
           # The selected primary Dockerfile, or empty when it did not build.
           # A failed install never triggers a fallback environment.
           ENVIRONMENT_BUILT: ${{ steps.installs.outputs.environment }}
@@ -851,7 +610,7 @@ jobs:
           # A trial whose recipe this run derived from the public repository —
           # the only kind of trial that may publish. Same test as the propose
           # step's condition.
-          URL_TRIAL: ${{ github.event.inputs.mode == 'trial' && github.event.inputs.recipe == '' && github.event.inputs.repo != '' }}
+          URL_TRIAL: ${{ github.event.inputs.mode == 'trial' && github.event.inputs.repo != '' }}
           TRIAL_PUBLISH: ${{ github.event.inputs.publish == 'true' && 'true' || 'false' }}
           # A pull request's run is a check, never a publication, whatever it
           # finds — so its PDF must not carry a permalink either.
@@ -861,32 +620,21 @@ jobs:
           # runners share addresses.
           GH_TOKEN: ${{ github.token }}
         run: |
-          # The badge ladder follows the author's BYOR "own" leg when present;
-          # otherwise it rests on the external typed-dataset leg (chosen by
-          # inputs.type), which is where the real data ran for form submissions
-          # that don't supply a fixture.
-          if [ "$OWN_READY" = "1" ]; then
-            LADDER_RUNS="$RUNS_OUTCOME"; LADDER_IO=io_own.json; LADDER_CT=content_own.json
-          else
-            LADDER_RUNS="$RUNS_EXT_OUTCOME"; LADDER_IO=io_external.json; LADDER_CT=content_external.json
-          fi
           python harness/report.py \
             --manifest "$MANIFEST" \
             --procedure-review work/procedure_review.json \
+            --mounted-inputs work/mounted_inputs.json \
             --available "$AVAILABLE_OUTCOME" \
             --installs "$INSTALLS_OUTCOME" \
-            --runs "$LADDER_RUNS" \
-            --io "$LADDER_IO" \
-            --content "$LADDER_CT" \
+            --runs "$RUNS_EXT_OUTCOME" \
+            --io io_external.json \
+            --content content_external.json \
             --matrix matrix.json \
             --readme readme_result.json \
-            --log-own work/log_own.txt \
             --log-external work/log_external.txt \
             --log-build work/log_build.txt \
             --environment-built "$ENVIRONMENT_BUILT" \
             --ref "$TOOL_REF" \
-            --regions-source "$REGIONS_SOURCE" \
-            --regions-validation regions_validation.json \
             --supported-loci "$SUPPORTED_LOCI" \
             --check-upstream \
             --mode "$MODE" \
@@ -907,8 +655,8 @@ jobs:
           # `publishable` is the whole decision in one word, read by the deploy
           # gate and by the PDF (which marks a result that will not be
           # published). harness/publish_gate.py holds the policy: a failure of
-          # the tool publishes like a success; a fault of STRhub's, a trial
-          # handed a recipe, and a URL trial landing on another repository's
+          # the tool publishes like a success; a fault of STRhub's and a URL
+          # trial landing on another repository's
           # card do not. If anything here crashes, `publishable` is never
           # written and the deploy does not run.
           python - <<'PY' >> "$GITHUB_OUTPUT"
@@ -934,11 +682,9 @@ jobs:
           python harness/publish_gate.py --report "$REPORT_JSON" --index published_index.json \
             | tee -a "$GITHUB_OUTPUT"
 
-      # The recipe rides with the report so the web can show what ran and, for
-      # a trial, let the owner publish exactly that. Only for trials: a
-      # published tool's recipe is tools/<slug>/ on main.
-      - name: Attach the recipe to the report (trial)
-        if: always() && env.MODE == 'trial' && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+      # Keep the descriptor and procedure review with the trial artifact.
+      - name: Attach procedure evidence to the trial report
+        if: always() && env.MODE == 'trial'
         env:
           DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
         run: >-
@@ -946,7 +692,7 @@ jobs:
           --procedure-review work/procedure_review.json --source-install-dockerfile work/source-install.Dockerfile
 
       - name: Generate PDF report
-        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        if: always()
         continue-on-error: true
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
@@ -961,14 +707,14 @@ jobs:
       # Render the human-readable summary on the run's "Summary" page (no download
       # needed). $GITHUB_STEP_SUMMARY accepts Markdown.
       - name: Publish summary to run page
-        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        if: always()
         run: |
           for f in reports/*.summary.md; do
             [ -f "$f" ] && cat "$f" >> "$GITHUB_STEP_SUMMARY"
           done
 
       - name: Upload attestation
-        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: ${{ env.MODE == 'trial' && 'trial' || 'attestation' }}-${{ env.TOOL }}
@@ -985,7 +731,7 @@ jobs:
       # and fail the job if it dropped. A tool not yet published is not held to
       # anything; the report is still the artifact.
       - name: "PR check · no regression against the published level"
-        if: github.event_name == 'pull_request' && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure'
+        if: github.event_name == 'pull_request'
         run: |
           python - <<'PY'
           import json, pathlib, sys, urllib.request
@@ -1029,13 +775,8 @@ jobs:
       # disjoint fault classes), so the gate reads it back rather than
       # re-deriving it here.
       #
-      # A trial from a URL publishes on the same terms as a scheduled
-      # re-verification: anyone may start one, and whoever started it, the
-      # result is a fact about a public repository at a commit. What it may
-      # NOT be is a trial handed a recipe by whoever dispatched it — that
-      # recipe could be anything, and publishing it would let a stranger put an
-      # arbitrary image in the catalogue under a real tool's name. Only a
-      # recipe this run derived itself, from the public repository, publishes.
+      # A trial from a URL may publish an attributable result about its pinned
+      # public repository when the caller explicitly requests publication.
       # `publishable` (the attestation step) folds all of that into one word.
       #
       # Publishing is for main only. A dispatch from a test branch must never reach
@@ -1050,7 +791,7 @@ jobs:
       # later it is verified. harness/publish_layout.py holds that rule.
       - id: deploy
         name: Deploy reports to GitHub Pages
-        if: always() && steps.preflight.conclusion != 'failure' && steps.regions_guard.conclusion != 'failure' && steps.attest.outputs.publishable == 'true' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: always() && steps.attest.outputs.publishable == 'true' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
           SLUG: ${{ steps.attest.outputs.slug }}
@@ -1108,7 +849,7 @@ jobs:
       # regardless. This job already holds the write token for gh-pages; the
       # gates themselves ran with none.
       - name: Commit the recipe a published trial ran (trial from URL)
-        if: always() && steps.deploy.outcome == 'success' && github.event.inputs.mode == 'trial' && github.event.inputs.recipe == '' && github.event.inputs.repo != ''
+        if: always() && steps.deploy.outcome == 'success' && github.event.inputs.mode == 'trial' && github.event.inputs.repo != ''
         env:
           GH_TOKEN: ${{ github.token }}
           DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}

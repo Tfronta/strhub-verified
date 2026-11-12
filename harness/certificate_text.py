@@ -189,11 +189,7 @@ STEP1_CANNOT_TELL = (
     "Nothing was executed. That does not mean the tool does not work: what the guide asks for is "
     "missing from the README at this commit. Add it and try the link again on the new commit."
 )
-STEP1_OURS = (
-    "Nothing was executed, and the limitation is ours rather than the documentation's. Nothing "
-    "here is a finding about the tool. A small example file committed to the repository, or a "
-    "slice covering the coordinates this command reads, would let the run happen."
-)
+STEP1_OURS = "The limitation is ours. Nothing here is a finding about the tool."
 
 
 def step1_says(report: dict) -> dict:
@@ -236,7 +232,7 @@ def step1_says(report: dict) -> dict:
     if code != "undetermined":
         return said(code or "none", "", "")
 
-    reason = review.get("reason") or verdict.get("reason") or ""
+    reason = (review.get("reason") if blocker != "ready" else None) or verdict.get("reason") or ""
     if whose == "strhub":
         return said("ours", "STRhub could not attempt the documented run.",
                     " ".join(x for x in (reason, STEP1_OURS) if x))

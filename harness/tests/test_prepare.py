@@ -1,6 +1,4 @@
-"""prepare.py: step outputs are one line each, and a trial recipe is staged
-from the dispatch input instead of tools/<slug>/."""
-import base64
+"""Preparation tests for internally generated descriptors and archived tools."""
 import json
 import pathlib
 import subprocess
@@ -23,66 +21,18 @@ def test_committed_tool_outputs_are_single_line(tmp_path):
     assert all("\n" not in v and "\r" not in v for v in kv.values())
 
 
-def test_trial_recipe_is_materialised_and_regions_staged(tmp_path):
-    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "hipstr"
-    manifest = src.joinpath("manifest.yml").read_text()
-    # A newline smuggled into a manifest value must not become a second key.
-    manifest = manifest.replace('name: hipstr', 'name: "hipstr\\nown_ready=1"')
-    # An uploaded regions file, as the web sends one: give the recipe an explicit
-    # author-provided regions block (this manifest otherwise stages its assets
-    # regions.bed by convention).
-    manifest = manifest.replace(
-        '  type: "illumina-bam-hg38"\n',
-        '  type: "illumina-bam-hg38"\n  regions:\n    path: "tools/hipstr/assets/regions.bed"\n    provided_by: author\n',
-        1)
-    assert "provided_by: author" in manifest
-    recipe = {
-        "manifest_yml": manifest,
-        "dockerfile": src.joinpath("Dockerfile").read_text(),
-        "regions_bed": (ROOT / "datasets" / "illumina-bam-hg38" / "regions" / "hipstr.bed").read_text(),
-    }
-    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["hipstr", "--work", str(tmp_path), "--recipe-b64", b64])
-    assert rc == 0, err
-    assert kv["mode"] == "trial"
-    assert kv["dockerdir"].endswith("recipe/hipstr")
-    assert (tmp_path / "recipe" / "hipstr" / "Dockerfile").is_file()
-    assert kv["regions_source"] == "tool"
-    assert kv["regions_missing"] == "0"
-    assert (tmp_path / "in_external" / "regions.bed").is_file()
-    assert all("\n" not in v for v in kv.values())
-    # No plan B declared: the Installs step must not look for one.
-    assert kv["dockerfile_fallback"] == ""
+def _trial(work, manifest, dockerfile):
+    proposal = work / "proposal"
+    proposal.mkdir(parents=True, exist_ok=True)
+    (proposal / "manifest.yml").write_text(manifest)
+    (proposal / "Dockerfile").write_text(dockerfile)
+    return ["--work", str(work), "--trial"]
 
 
-def test_trial_recipe_with_a_plan_b_stages_the_fallback_dockerfile(tmp_path):
-    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "gangstr"
-    manifest = src.joinpath("manifest.yml").read_text()
-    manifest = manifest.replace("environment:\n", "environment:\n  fallback:\n    dockerfile: Dockerfile.fallback\n    reason: the published image gymreklab/str-toolkit the README points at\n", 1)
-    recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text(),
-              "dockerfile_fallback": "FROM gymreklab/str-toolkit\nENTRYPOINT [\"/bin/bash\", \"-lc\"]\n"}
-    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["gangstr", "--work", str(tmp_path), "--recipe-b64", b64])
-    assert rc == 0, err
-    assert kv["dockerfile_fallback"] == "Dockerfile.fallback"
-    assert (tmp_path / "recipe" / "gangstr" / "Dockerfile.fallback").read_text().startswith("FROM gymreklab/str-toolkit")
-
-
-def test_a_declared_plan_b_that_is_missing_is_a_warning_not_a_silent_nothing(tmp_path):
-    src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "gangstr"
-    manifest = src.joinpath("manifest.yml").read_text()
-    manifest = manifest.replace("environment:\n", "environment:\n  fallback:\n    dockerfile: Dockerfile.fallback\n", 1)
-    recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text()}
-    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["gangstr", "--work", str(tmp_path), "--recipe-b64", b64])
-    assert rc == 0, err
-    assert kv["dockerfile_fallback"] == ""
-    assert "::warning::fallback Dockerfile declared but not found" in err
-
-
-def test_garbage_recipe_stops_the_run(tmp_path):
-    rc, _, err = _run(["x", "--work", str(tmp_path), "--recipe-b64", "!!not-base64"])
-    assert rc != 0 and "::error::" in err
+def test_dispatched_recipe_argument_is_retired(tmp_path):
+    rc, _, err = _run(["example", "--work", str(tmp_path), "--recipe-b64", "payload"])
+    assert rc != 0 and "unrecognized arguments" in err
+    assert not (tmp_path / "proposal").exists()
 
 
 def test_the_tools_own_command_comes_back_out_of_the_wrapper():
@@ -119,13 +69,12 @@ def test_shipped_example_cannot_bypass_absent_installation_evidence(tmp_path):
     src = ROOT / "harness" / "testdata" / "fixtures" / "legacy_tools" / "strsearch"
     manifest = src.joinpath("manifest.yml").read_text()
     manifest += "\nexample:\n  cmd: python3 STRsearch.py -i example/test_data/ -c example/STR.configuration.txt -o out/\n  cwd: /opt/tool\n"
-    recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text()}
-    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
+    args = _trial(tmp_path, manifest, src.joinpath("Dockerfile").read_text())
     proposal = tmp_path / "proposal.json"
     proposal.write_text(json.dumps({
         "procedure": {"may_say_runs": False, "blocker": "loci_outside_panel"}
     }))
-    rc, kv, err = _run(["strsearch", "--work", str(tmp_path), "--recipe-b64", b64, "--proposal", str(proposal)])
+    rc, kv, err = _run(["strsearch", *args, "--proposal", str(proposal)])
     assert rc == 0, err
     assert kv["external_ready"] == "0"
     assert kv["install_ready"] == "0"
@@ -135,7 +84,7 @@ def test_shipped_example_cannot_bypass_absent_installation_evidence(tmp_path):
     proposal.write_text(json.dumps({
         "procedure": {"may_say_runs": False, "blocker": "no_install_procedure"}
     }))
-    rc2, kv2, err2 = _run(["strsearch", "--work", str(tmp_path), "--recipe-b64", b64, "--proposal", str(proposal)])
+    rc2, kv2, err2 = _run(["strsearch", *args, "--proposal", str(proposal)])
     assert rc2 == 0, err2
     assert kv2["install_ready"] == "0"
     assert kv2["example_ready"] == "0"
@@ -151,18 +100,17 @@ def test_forensic_bam_run_keeps_only_its_selected_dataset(tmp_path):
         '  type: "illumina-bam-hg38"\n  regions:\n    library: "hipstr"\n',
         1,
     )
-    recipe = {"manifest_yml": manifest, "dockerfile": src.joinpath("Dockerfile").read_text()}
-    b64 = base64.b64encode(json.dumps(recipe).encode()).decode()
-    rc, kv, err = _run(["hipstr", "--work", str(tmp_path), "--recipe-b64", b64])
+    args = _trial(tmp_path, manifest, src.joinpath("Dockerfile").read_text())
+    rc, kv, err = _run(["hipstr", *args])
     assert rc == 0, err
     assert kv["input_type"] == "illumina-bam-hg38"
-    assert kv["external_ready"] == "0"  # staged input alone is not procedure evidence
+    assert kv["external_ready"] == "0"
     assert not any(k.startswith("med_") for k in kv)
-    assert (tmp_path / "in_external" / "input.bam").is_file()
+    assert not (tmp_path / "in_external").exists()
     assert not (tmp_path / "in_external_med").exists()
 
     # Old callers must fail without modifying the selected procedure.
-    mf_path = tmp_path / "recipe" / "hipstr" / "manifest.yml"
+    mf_path = tmp_path / "proposal" / "manifest.yml"
     before = mf_path.read_bytes()
     rc_prom, _, err_prom = _run(["--promote-medical", str(mf_path), "illumina-bam-hg38-med"])
     assert rc_prom != 0
@@ -170,10 +118,10 @@ def test_forensic_bam_run_keeps_only_its_selected_dataset(tmp_path):
     assert mf_path.read_bytes() == before
 
 
-def test_medical_dataset_selected_before_execution_still_stages(tmp_path):
+def test_archived_medical_manifest_cannot_stage_inputs_without_evidence(tmp_path):
     rc, kv, err = _run(["trgt-hifi-med", "--work", str(tmp_path)])
     assert rc == 0, err
     assert kv["input_type"] == "pacbio-hifi-bam-hg38-med"
     assert kv["external_ready"] == "0"
-    assert (tmp_path / "in_external" / "input.bam").is_file()
+    assert not (tmp_path / "in_external").exists()
     assert not (tmp_path / "in_external_med").exists()

@@ -249,8 +249,9 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = pathlib.Path(tmp)
-        prop_dir = tmp_path / "proposal"
-        prop_dir.mkdir()
+        work_dir = tmp_path / "work"
+        prop_dir = work_dir / "proposal"
+        prop_dir.mkdir(parents=True)
         manifest_path = prop_dir / "manifest.yml"
         dockerfile_path = prop_dir / "Dockerfile"
         manifest_path.write_text(built["manifest_yml"])
@@ -262,17 +263,10 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         proposal_json.write_text(json.dumps(proposal, indent=2))
 
         # --- Step 1: Pre-flight (prepare.py) ---
-        import base64
-        recipe_payload = {"manifest_yml": built["manifest_yml"], "dockerfile": built["dockerfile"]}
-        if built.get("dockerfile_fallback"):
-            recipe_payload["dockerfile_fallback"] = built["dockerfile_fallback"]
-        recipe_b64 = base64.b64encode(json.dumps(recipe_payload).encode()).decode()
-        work_dir = tmp_path / "work"
-        prep_env = {**os.environ, "RECIPE_B64": recipe_b64}
         prep_res = subprocess.run(
             [sys.executable, str(ROOT / "harness" / "prepare.py"), run_slug, "--work", str(work_dir),
-             "--proposal", str(proposal_json)],
-            cwd=str(ROOT), env=prep_env, capture_output=True, text=True, check=True,
+             "--trial", "--proposal", str(proposal_json)],
+            cwd=str(ROOT), capture_output=True, text=True, check=True,
         )
         preflight = _parse_kv_output(prep_res.stdout)
 
@@ -288,8 +282,9 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
 
         avail_flag = "pass"
         installs_flag = "fail"
-        runs_flag = "fail"
-        infra_failure = ""
+        runs_flag = "skipped"
+        example_flag = "skipped"
+        infra_failure = preflight.get("input_failure", "")
         if preflight.get("install_ready") != "1" or (not may_run and preflight.get("example_ready") != "1"):
             log_build.write_text(
                 f"==== STRhub Verified local evaluation ====\n"
@@ -330,48 +325,53 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
                     ]
                     timeout_min = str(preflight.get("timeout") or "20")
                     if preflight.get("external_ready") == "1":
-                        print("[local_trial] [3/3] Running container (--network none) on STRhub reference dataset...",
-                              file=sys.stderr)
-                        out_ext = work_dir / "out_external"
-                        out_ext.mkdir(parents=True, exist_ok=True)
-                        out_ext.chmod(0o777)
-                        run_cmd = [
-                            "bash", str(ROOT / "harness" / "run_container.sh"),
-                            f"{run_slug}_ext", timeout_min, str(log_ext),
-                            *hardening,
-                            "-v", f"{work_dir / 'in_external'}:/data/in:ro",
-                            "-v", f"{out_ext}:/data/out",
-                            img_tag, preflight.get("cmd", built["manifest"]["run"]["cmd"]),
-                        ]
-                        r_res = subprocess.run(run_cmd, cwd=str(ROOT), capture_output=True, text=True)
-                        if r_res.returncode == 0:
-                            runs_flag = "pass"
-                        subprocess.run([
-                            sys.executable, str(ROOT / "harness" / "check_io.py"),
-                            str(manifest_path), str(out_ext), "--json", str(io_json),
-                        ], cwd=str(ROOT), check=False, capture_output=True, text=True)
-                        reg_path = work_dir / "in_external" / "regions.bed"
-                        if not reg_path.is_file():
-                            reg_path = work_dir / "in_external" / "regions.json"
-                        subprocess.run([
-                            sys.executable, str(ROOT / "harness" / "check_content.py"),
-                            str(manifest_path), str(out_ext), "--json", str(content_json),
-                            "--regions", str(reg_path),
-                            "--panel", preflight.get("supported_loci", ""),
-                        ], cwd=str(ROOT), check=False, capture_output=True, text=True)
+                        actual_command = preflight["cmd"]
+                        checked = subprocess.run([
+                            sys.executable, str(ROOT / "harness" / "input_provenance.py"),
+                            "--work", str(work_dir), "--manifest", preflight["manifest"],
+                            f"--command={actual_command}",
+                        ], cwd=str(ROOT), capture_output=True, text=True)
+                        if checked.returncode:
+                            infra_failure = checked.stderr.strip() or "the mounted dataset provenance check"
+                        else:
+                            print("[local_trial] [3/3] Running container (--network none) on STRhub reference dataset...",
+                                  file=sys.stderr)
+                            out_ext = work_dir / "out_external"
+                            out_ext.mkdir(parents=True, exist_ok=True)
+                            out_ext.chmod(0o777)
+                            run_cmd = [
+                                "bash", str(ROOT / "harness" / "run_container.sh"),
+                                f"{run_slug}_ext", timeout_min, str(log_ext),
+                                *hardening,
+                                "-v", f"{work_dir / 'in_external'}:/data/in:ro",
+                                "-v", f"{out_ext}:/data/out",
+                                img_tag, actual_command,
+                            ]
+                            r_res = subprocess.run(run_cmd, cwd=str(ROOT), capture_output=True, text=True)
+                            runs_flag = "pass" if r_res.returncode == 0 else "fail"
+                            subprocess.run([
+                                sys.executable, str(ROOT / "harness" / "check_io.py"),
+                                str(manifest_path), str(out_ext), "--json", str(io_json),
+                            ], cwd=str(ROOT), check=False, capture_output=True, text=True)
+                            subprocess.run([
+                                sys.executable, str(ROOT / "harness" / "check_content.py"),
+                                str(manifest_path), str(out_ext), "--json", str(content_json),
+                                "--panel", preflight.get("supported_loci", ""),
+                            ], cwd=str(ROOT), check=False, capture_output=True, text=True)
                     if preflight.get("example_ready") == "1":
                         print("[local_trial] Running repository's own example (--network none)...", file=sys.stderr)
                         out_ex = work_dir / "out_example"
                         out_ex.mkdir(parents=True, exist_ok=True)
                         out_ex.chmod(0o777)
                         example_json = tmp_path / "example.json"
-                        subprocess.run([
+                        example_result = subprocess.run([
                             "bash", str(ROOT / "harness" / "run_container.sh"),
                             f"{run_slug}_ex", timeout_min, str(log_ex),
                             *hardening,
                             "-v", f"{out_ex}:/data/out",
                             img_tag, preflight.get("example_cmd", ""),
                         ], cwd=str(ROOT), check=False, capture_output=True, text=True)
+                        example_flag = "success" if example_result.returncode == 0 else "failure"
                         subprocess.run([
                             sys.executable, str(ROOT / "harness" / "check_example.py"),
                             str(manifest_path), str(out_ex), "--json", str(example_json),
@@ -393,6 +393,7 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
             sys.executable, str(ROOT / "harness" / "report.py"),
             "--manifest", str(manifest_path),
             "--procedure-review", str(work_dir / "procedure_review.json"),
+            "--mounted-inputs", str(work_dir / "mounted_inputs.json"),
             "--available", avail_flag,
             "--installs", installs_flag,
             "--runs", runs_flag,
@@ -401,9 +402,11 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
             "--matrix", str(tmp_path / "no-matrix.json"),
             "--readme", str(tmp_path / "no-readme.json"),
             "--example", str(example_json),
+            "--example-runs", example_flag,
             "--regions-validation", str(tmp_path / "no-regions.json"),
             "--log-build", str(log_build),
             "--log-external", str(log_ext),
+            "--log-example", str(log_ex),
             "--ref", ref,
             "--mode", "trial",
             "--infra-failure", infra_failure,
@@ -414,6 +417,8 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         subprocess.run([
             sys.executable, str(ROOT / "harness" / "attach_recipe.py"),
             cat_slug, "--dockerdir", str(prop_dir), "--proposal", str(proposal_json),
+            "--procedure-review", str(work_dir / "procedure_review.json"),
+            "--source-install-dockerfile", str(work_dir / "source-install.Dockerfile"),
         ], cwd=str(ROOT), check=True, capture_output=True, text=True)
 
         out_dir.mkdir(parents=True, exist_ok=True)

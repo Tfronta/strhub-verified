@@ -1,5 +1,4 @@
 """No success or failure can authorize a change to the upstream procedure."""
-import base64
 import copy
 import json
 import os
@@ -192,9 +191,12 @@ def test_preparation_recomputes_instead_of_trusting_a_forged_ready_flag(tmp_path
     p["source_documents"] = []
     p["procedure"] = {"may_say_runs": True, "install_ready": True}
     proposal.write_text(json.dumps(p))
-    payload = base64.b64encode(json.dumps({"manifest_yml": yaml.safe_dump(m), "dockerfile": "FROM attacker\n"}).encode()).decode()
+    descriptor = tmp_path / "work/proposal"
+    descriptor.mkdir(parents=True)
+    (descriptor / "manifest.yml").write_text(yaml.safe_dump(m))
+    (descriptor / "Dockerfile").write_text("FROM attacker\n")
     result = subprocess.run([sys.executable, str(ROOT / "harness/prepare.py"), "test", "--work", str(tmp_path / "work"),
-        "--proposal", str(proposal), "--recipe-b64", payload], capture_output=True, text=True)
+        "--proposal", str(proposal), "--trial"], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
     output = dict(line.split("=", 1) for line in result.stdout.splitlines())
     assert all(output[k] == "0" for k in ["install_ready", "procedure_ready", "own_ready", "external_ready", "example_ready"])
@@ -265,16 +267,47 @@ def test_positive_preparation_binds_the_review_to_the_actual_manifest(tmp_path):
     p, m = case()
     proposal = tmp_path / "proposal.json"
     proposal.write_text(json.dumps(p))
-    payload = base64.b64encode(json.dumps({"manifest_yml": yaml.safe_dump(m), "dockerfile": "# descriptor only\n"}).encode()).decode()
+    descriptor = tmp_path / "work/proposal"
+    descriptor.mkdir(parents=True)
+    (descriptor / "manifest.yml").write_text(yaml.safe_dump(m))
+    (descriptor / "Dockerfile").write_text("# descriptor only\n")
+    (descriptor / "assets").mkdir()
+    (descriptor / "assets/regions.bed").write_text("historical tool-specific regions")
     result = subprocess.run([sys.executable, str(ROOT / "harness/prepare.py"), "test", "--work", str(tmp_path / "work"),
-        "--proposal", str(proposal), "--recipe-b64", payload], capture_output=True, text=True)
+        "--proposal", str(proposal), "--trial"], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
     values = dict(line.split("=", 1) for line in result.stdout.splitlines())
     assert values["install_ready"] == values["procedure_ready"] == "1"
+    assert values["external_ready"] == "1"
+    assert {p.name for p in (tmp_path / "work/in_external").iterdir()} == {"input.bam", "input.bam.bai"}
     assert values["cmd"] == m["run"]["cmd"]
     r = json.loads((tmp_path / "work/procedure_review.json").read_text())
     assert r["manifest_sha256"] == fidelity.digest(json.dumps(m, sort_keys=True))
     assert values["starts_cmd"] == ""  # never invent an extra --help command
+
+
+@pytest.mark.parametrize("declared", [
+    {"fixture": "tools/example/assets/input.bam"},
+    {"regions": {"path": "tools/example/assets/regions.bed", "provided_by": "author"}},
+    {"regions": {"repo": "https://github.com/example/tool", "ref": "a" * 40, "path": "regions.bed"}},
+    {"regions": {"library": "hipstr"}},
+])
+def test_a_cited_command_does_not_authorize_a_separately_supplied_file(declared):
+    p, m = case()
+    m["inputs"].update(declared)
+    r = review(p, m)
+    assert r["install_ready"] and not r["may_say_runs"]
+    assert r["blocker"] in {"regions_profile_unsupported", "fixture_profile_unsupported"}
+
+
+@pytest.mark.parametrize("command", [
+    "tool --reads hg19.bam --out result.vcf",
+    "tool --reads x.bam --bam y.bam --out result.vcf",
+    "tool --reads x.bam --ref /data/ref/hg38.fa --out result.vcf",
+    "tool --reads x.bam --catalog /data/in/regions.json --out result.vcf",
+])
+def test_unproven_assembly_or_mount_cannot_feed_an_external_run(command):
+    assert fidelity.rewrite(command, "illumina-bam-hg38")["limitations"]
 
 
 @pytest.mark.parametrize("evidence", ["missing", "invalid", "wrong_manifest", "rejected"])
@@ -305,3 +338,34 @@ def test_report_cannot_promote_green_gates_over_a_missing_or_rejected_review(tmp
     assert report["verdict"]["code"] == "undetermined"
     assert report["verdict"]["basis"] == "strhub"
     assert not report["procedure_review"]["may_say_runs"]
+
+
+@pytest.mark.parametrize("correct_receipt", [True, False])
+def test_report_requires_mount_evidence_from_the_reviewed_procedure(tmp_path, correct_receipt, monkeypatch, capsys):
+    import input_provenance
+    import report as report_module
+
+    p, m = case()
+    reviewed = review(p, m)
+    work = tmp_path / "work"
+    input_provenance.stage(ROOT, work, m["inputs"]["type"])
+    receipt = input_provenance.verify(ROOT, work, m, reviewed, m["run"]["cmd"])
+    if not correct_receipt:
+        receipt["procedure_evidence_sha256"] = "a different review"
+    (tmp_path / "mounted.json").write_text(json.dumps(receipt))
+    (tmp_path / "review.json").write_text(json.dumps(reviewed))
+    (tmp_path / "manifest.yml").write_text(yaml.safe_dump(m))
+    (tmp_path / "io.json").write_text('{"passed": true}')
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(report_module, "ROOT", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["report.py", "--manifest", "manifest.yml", "--available", "pass",
+        "--installs", "pass", "--runs", "pass", "--io", "io.json", "--procedure-review", "review.json",
+        "--mounted-inputs", "mounted.json", "--mode", "trial"])
+    assert report_module.main() == 0
+    result = json.loads(capsys.readouterr().out)
+    if correct_receipt:
+        assert result["mounted_inputs"] == receipt
+        assert result["verdict"]["code"] == "runs"
+    else:
+        assert "mounted_inputs" not in result
+        assert result["verdict"]["code"] == "undetermined"

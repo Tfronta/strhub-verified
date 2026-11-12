@@ -1,8 +1,4 @@
 """Newer upstream releases are found from the catalogue and re-run as trials."""
-import base64
-import json
-
-import retarget_recipe
 import upstream_refresh as ur
 
 VERIFIED = "b2033bfbb5cf55496b776463bdf2993fa763a4be"
@@ -33,22 +29,7 @@ def test_finds_newer_release_once_per_repo_and_skips_current_tools():
     # `other` is verified at the tag that IS the latest tag: nothing to do.
 
 
-def test_retarget_swaps_ref_in_manifest_and_dockerfile_and_keeps_the_slug():
-    r = retarget_recipe.retarget("hipstr", NEW)
-    # The slug is the tool's identity, not the commit's: a newer ref keeps it.
-    assert r["slug"] == "hipstr"
-    manifest = r["recipe"]["manifest_yml"]
-    assert f'ref: "{NEW}"' in manifest and VERIFIED not in manifest
-    assert 'slug: "hipstr"' in manifest
-    assert f"ARG TOOL_REF={NEW}" in r["recipe"]["dockerfile"]
-    # This recipe ships its own regions BED (assets/regions.bed), so retarget
-    # carries it along for the trial rather than leaning on a named library.
-    assert r["recipe"]["regions_bed"]
-    decoded = json.loads(base64.b64decode(r["recipe_b64"]))
-    assert decoded["manifest_yml"] == manifest
-
-
-def test_dispatch_is_a_trial_with_the_retargeted_recipe():
+def test_dispatch_uses_the_new_commit_and_its_own_procedure():
     calls = []
 
     class R:
@@ -64,6 +45,9 @@ def test_dispatch_is_a_trial_with_the_retargeted_recipe():
     assert all(d["dispatched"] for d in done)
     assert calls[0][:4] == ["gh", "workflow", "run", "verify.yml"]
     assert "mode=trial" in calls[0]
-    assert any(a.startswith("tool=hipstr") for a in calls[0])
+    assert len(calls) == 1
+    assert {"tool=trial-hipstr-1111111", f"ref={NEW}", "repo=https://github.com/tfwillems/HipSTR",
+            "ref_label=v0.8", "publish=false"} <= set(calls[0])
+    assert not any(a.startswith("recipe=") for a in calls[0])
     body = ur.issue_body(done)
     assert "hipstr" in body and "v0.8" in body and "trial" in body

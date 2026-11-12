@@ -313,21 +313,17 @@ Un ensayo corre las mismas compuertas que una verificación, pero **no commitea 
 reporte lleva `"mode": "trial"` (el índice del catálogo lo ignora aunque llegara
 a gh-pages). El resultado vive en el artifact `trial-<slug>` del run, 30 días.
 
-Tres formas de disparar uno:
+El ensayo recibe la URL pública y el commit del repositorio. El motor revisa la
+instalación y el comando documentados en ese commit.
 
 ```bash
-# 1. Receta explícita (lo que manda la web): manifest + Dockerfile (+ BED) en base64
-gh workflow run verify.yml -f tool=hipstr-trial -f mode=trial -f recipe="$(base64 < recipe.json)"
-
-# 2. Desde una URL, sin receta: el motor la PROPONE leyendo el repo (detect_recipe + propose_manifest)
 gh workflow run verify.yml -f tool=strsearch-trial -f mode=trial \
   -f repo=https://github.com/AnJingwd/STRsearch -f ref=c70179b3b175adc82a7314409af06900b3861d61
-
-# 3. Localmente, sin CI (mismo harness): ver harness/detect_recipe.py --offline y propose_manifest.py
 ```
 
-`recipe.json` es `{"manifest_yml": "...", "dockerfile": "...", "regions_bed": "..."?}`
-(tope 60 KB; `prepare.py --recipe-b64` lo materializa en `work/recipe/<slug>/`).
+Para revisar localmente, usar `harness/local_trial.py --repo … --ref … --out-dir …`.
+El modo por defecto prepara el informe sin ejecutar Docker. Ver
+[política de ejecución y evidencia](docs/UPSTREAM-FIDELITY.md).
 
 ### Qué se publica (`harness/publish_gate.py`)
 
@@ -335,7 +331,6 @@ Un fallo de la herramienta se publica igual que un éxito: es el dato que buscan
 revisor, el usuario al que no le corre y el dueño. No se publican:
 
 - la corrida de un PR (es un chequeo del motor);
-- un ensayo al que le pasaron la receta (`recipe`);
 - un veredicto que no habla de la herramienta: fuera de alcance, o una falla de
   STRhub (descarga de hg38, rate-limit del registry, propuesta o staging caídos),
   que sale como *Could not be determined* con `basis: strhub` y sin issue para el autor;
@@ -404,89 +399,11 @@ Cada comando lleva el archivo y la línea donde se leyó, y la evidencia cita es
 - **Entrada**: lo que dice el README; si no dice nada, los documentos; si tampoco, lo que toma el comando.
   PacBio HiFi, VCF y señal cruda son tipos sin dataset: el ensayo lo dice en vez de darle lecturas de Illumina.
 
-### Biblioteca de regiones: formato `motif`
+### Biblioteca histórica de regiones
 
-`datasets/<tipo>/regions/motif.bed` (`chrom start end motif`) es el formato de LongTR, straglr, NanoRepeat y
-strkit, que leen el motivo en la columna 4. `ont-bam-hg38` tiene biblioteca propia: los 20 loci CODIS del
-panel Illumina que caen dentro de los slices ONT (`build_regions_library.py --derived-only`, sin genoma).
-
-### Benchmark de recetas
-
-`harness/testdata/benchmark/`: 23 herramientas de STR fijadas a un commit (las 5 del catálogo y 18 que el
-motor no vio al escribirse), con su captura (`snapshot_repo.py --benchmark`) y su verdad de referencia
-(`expected.json`, leída a mano de la documentación, con cita). `python harness/benchmark_recipes.py` da la
-tabla; `harness/tests/test_benchmark.py` no deja bajar ningún total. Si un cambio sube uno, se sube el piso
-en el mismo commit. Línea de base (motor antes de la fase 2, 18 nuevas): install 10, input 12, program 3,
-clean 7, honest 15, viable 0.
-
-### Agente de reparación retirado y ejecución sin reintentos adaptativos
-
-Se retiró `.github/workflows/assist.yml`. La invocación antigua de
-`harness/assist.py` termina con código 2 y una explicación, incluso si hay
-credenciales configuradas. No llama al modelo, no ejecuta ensayos y no abre PRs.
-`harness/assist_report.py` sigue disponible para leer informes históricos y los
-identifica como tales. Los antecedentes se conservan en los informes y en Git.
-
-Cada leg conserva el dataset elegido antes de ejecutar, su salida, log y código
-de salida originales. Ya no se prepara un panel médico alternativo para
-reintentar después de observar un fallo; tampoco existe `--promote-medical`.
-Elegir un dataset médico compatible antes del ensayo sigue siendo posible.
-
-El diagnóstico puede recomendar al autor una corrección documental, pero no la
-aplica ni ejecuta. Una corrección upstream requiere una verificación separada.
-Política y pruebas: [NO-ADAPTIVE-RETRIES.md](docs/NO-ADAPTIVE-RETRIES.md).
-
-### Compuerta "Reproduces own example"
-
-Bloque `example` del manifest: el comando del README, tal cual, corrido dentro
-de la imagen en el clon (`/opt/tool`, o el WORKDIR de la imagen si es del
-repo), con los datos del propio repo. El wrapper (`prepare.example_wrapper`)
-copia a `/data/out` todo lo que el comando creó; `check_example.py` pasa si hay
-salida no vacía (o los `outputs` declarados), y compara con `expected` si se
-declara (informa, nunca falla). Es la pregunta del revisor: ¿funciona el Quick
-Start? No depende de los datos de STRhub y es independiente de la escalera.
-
-### Los cuatro veredictos
-
-`harness/verdict.py` (puro, testeado) pone una frase sobre la escalera, en este
-orden: **Runs** (produjo salida: IO o example), **Out of scope** (GPU, GUI,
-licencia, red, otro SO: declarado o detectado), **Could not be determined**
-(receta propuesta insuficiente: huecos del README, o límites conocidos como
-"BED en formato de la tool"; o fallo corregible con receta propuesta), **Fails**
-(con la causa por compuerta). Va en `<slug>.json` (`verdict`), en el summary y
-en el HTML.
-
-### Re-verificación cuando la tool cambia
-
-Job `upstream` del cron mensual: para cada repo del catálogo publicado pide el
-último release (o tag); si su commit no es el verificado, `retarget_recipe.py`
-re-apunta la receta commiteada y la despacha como **ensayo** (`up_<sha7>_<slug>`),
-y un issue en este repo lo dice (uno solo, se comenta). Nada se publica hasta
-que el dueño confirme.
-
-### Tests del motor
-
-`python -m pytest harness/tests -q` (58 tests) y `python harness/test_validate_bed.py`
-corren en el job `resolve` antes de verificar nada.
-
-### Biblioteca de regiones (BEDs listos)
-
-`datasets/<tipo>/regions/{hipstr,gangstr,strsearch,bed4}.bed`: los loci del panel del
-dataset escritos en cada formato que STRhub sabe generar. Los genera
-`harness/build_regions_library.py` (necesita hg38 local: `--hg38` o `STRHUB_HG38`)
-a partir de `str_candidates.bed` + `loci.bed`; `--check` avisa si están desactualizados.
-Se commitean: una corrida no necesita genoma para usarlos.
-
-- Manifest: `inputs.regions: {library: hipstr}` (o gangstr, strsearch, bed4). Las
-  recetas de HipSTR, GangSTR y STRsearch ya lo usan; los archivos son byte-idénticos a
-  los `assets/regions.bed` a mano que reemplazan.
-- Propuesta automática: `regions_library.format_for_tool` elige el formato por el
-  nombre del programa (HipSTR, GangSTR, STRsearch); si no lo conoce, prueba `bed4` y lo
-  marca como `regions_format_guessed`. Un archivo subido se reconoce por sus columnas
-  (`detect_format`): un HipSTR de 590 loci sigue siendo formato hipstr, y el de 24 loci
-  de la biblioteca lo reemplaza.
-- Formato nuevo: agregar el escritor en `build_regions_library.py`, el detector en
-  `regions_library.py`, regenerar, y `harness/tests/test_regions_library.py` lo cubre.
+Los archivos bajo `datasets/<tipo>/regions/` se conservan para reproducir la
+evidencia histórica. Un ensayo automático solo puede usar los catálogos que el
+comando documentado encuentra dentro del procedimiento original del repositorio.
 
 ### Compuerta Content sin declarar columnas
 

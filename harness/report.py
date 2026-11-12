@@ -930,6 +930,7 @@ def main() -> int:
     ap.add_argument("--starts", default="starts.json", help="check_starts.py output")
     ap.add_argument("--log-starts", default="", help="log of the Starts check")
     ap.add_argument("--procedure-review", default="", help="recomputed pre-execution procedure review")
+    ap.add_argument("--mounted-inputs", default="", help="verified provenance of the external runtime mount")
     ap.add_argument("--recipe-proposal", default="",
                     help="detect_recipe.py output when the recipe was proposed from the "
                          "repository; lets the verdict tell a documentation gap from a failure")
@@ -1371,6 +1372,20 @@ def main() -> int:
     report["procedure_review"] = procedure
     report["procedure_validation"] = {"schema": authorization.SCHEMA, "valid": review_validation.valid,
                                       "reason": review_validation.reason}
+    if args.mounted_inputs and args.runs in ("success", "failure", "pass", "fail"):
+        try:
+            receipt = json.loads(pathlib.Path(args.mounted_inputs).read_bytes())
+            if (receipt.get("schema") != "strhub-mounted-inputs/1" or receipt.get("leg") != "external"
+                    or receipt.get("input_type") != m.get("inputs", {}).get("type")
+                    or not review_validation.valid
+                    or receipt.get("procedure_evidence_sha256") != procedure["evidence_sha256"]):
+                raise ValueError("the mounted inputs do not match the reviewed procedure")
+            report["mounted_inputs"] = receipt
+        except (OSError, ValueError, AttributeError):
+            procedure = authorization.rejection("The external run has no matching mounted-input evidence.")
+            report["procedure_review"] = procedure
+            report["procedure_validation"] = {"schema": authorization.SCHEMA, "valid": False,
+                                              "reason": procedure["reason"]}
     report["verdict"] = verdict_lib.decide(
         gates, diagnostics, report["manual_verification"], proposal, m.get("compatibility"),
         fallback_used=args.environment_built == "fallback",

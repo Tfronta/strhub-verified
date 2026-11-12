@@ -22,12 +22,11 @@ configuration.
 
 Usage:
   python harness/propose_manifest.py proposal.json --slug <slug> \
-      [--submitted-by third_party] [--out-dir work/proposal] [--recipe-b64-out work/recipe.b64]
+      [--submitted-by third_party] [--out-dir work/proposal]
 """
 from __future__ import annotations
 
 import argparse
-import base64
 import json
 import pathlib
 import re
@@ -37,7 +36,6 @@ import yaml
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import datasets as datasets_lib  # noqa: E402
-import regions_library  # noqa: E402
 import _manifest  # noqa: E402
 from prepare import example_wrapper  # noqa: E402
 
@@ -47,13 +45,6 @@ OUTPUT_GLOB = {
     "csv": ("**/*.csv", "csv"),
     "json": ("**/*.json", "json"),
 }
-#: The disease-locus slice of the same sample and platform. A tool whose shipped
-#: catalog genotypes medical repeat loci (ExpansionHunter's 31, TRGT's pathogenic
-#: repeats) has nothing to genotype in the forensic slice; in this one it does.
-MEDICAL_VARIANT = {"illumina-bam-hg38": "illumina-bam-hg38-med",
-                   "pacbio-hifi-bam-hg38": "pacbio-hifi-bam-hg38-med",
-                   "ont-bam-hg38": "ont-bam-hg38-med"}
-
 
 def resolve_placeholders(cmd: str, config_files: list[str], kit: str | None) -> tuple[str, list[str]]:
     """No implicit config selection from a kit name or a repository listing."""
@@ -162,28 +153,9 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     commands = proposal.get("commands") or []
     input_type = (proposal.get("input_type") or {}).get("best")
     out_fmt = (proposal.get("output") or {}).get("format")
-    # The README's first choice of input is not always one STRhub holds data
-    # for: STRspy reads ONT FASTQ or BAM and names FASTQ first, and STRhub has
-    # ONT reads only as hg38 BAM slices. A candidate with data beats the best
-    # guess without any, since the alternative is a run that never starts.
     limitations: list[str] = []
     it = proposal.get("input_type") or {}
     stmts = it.get("statements") or {}
-    input_type_unresolved = input_type if (input_type and not datasets_lib.resolve(input_type)) else None
-    if input_type and not datasets_lib.resolve(input_type):
-        with_data = next((c for c in it.get("candidates", []) if datasets_lib.resolve(c)), None)
-        if with_data:
-            input_type = with_data
-    # Read off the documented command as written, before any path in it is
-    # rewritten to STRhub's mounts: which loci the tool ships decides which
-    # slice of the sample has reads for them.
-    panel_note = None
-    med = medical_panel_for(commands[0]["cmd"] if commands else "", proposal, input_type)
-    if med:
-        panel_note = (f"Panel: the loci file the documented command reads, shipped in the repository, lists "
-                      f"coordinates inside STRhub's medical STR slice and none inside the forensic one; this "
-                      f"plan selects the medical slice of the same sample ({med}).")
-        input_type = med
     # The input caveat quotes what the README says and states what this run
     # did. Nothing in it is inferred: the kinds, the recommendation and the
     # lines come from read_input_statements, and when nothing was there to
@@ -209,9 +181,6 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
                 quote = re.sub(r"[*_`]+", "", rec["text"])[:90]
                 input_note += (f" The author recommends {rec['kind'].upper()} "
                                f"(line {rec['line']}: \"{quote}\").")
-            if input_type_unresolved and input_type_unresolved != input_type:
-                input_note += (f" STRhub holds no reference sample as {input_type_unresolved}, "
-                               "so the other documented kind was used.")
         else:
             input_note = (f"Input: no sentence in the README says what the tool takes; "
                           f"{input_type} is only a guess from mentions; it is not authorization to execute.")
@@ -250,19 +219,11 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
     best = commands[0]["cmd"] if commands else ""
     if input_note:
         caveat_items.append(input_note)
-    if panel_note:
-        caveat_items.append(panel_note)
     if not best:
         limitations.append("no_command")
         run_cmd = "true  # no command found in the README; nothing to run"
     else:
-        all_docs_text = proposal.get("readme_text", "") + "\n" + proposal.get("docs_text", "")
-        lib_fmt = regions_library.format_for_tool(
-            name, best, all_docs_text,
-            proposal.get("shipped_loci_formats"))[0]
-        rewritten, notes = rewrite_for_strhub(best, input_type, proposal.get("config_files"),
-                                              proposal.get("tree_paths"), build_info.get("method"),
-                                              proposal.get("readme_text", ""), lib_fmt)
+        rewritten, notes = rewrite_for_strhub(best, input_type)
         pre = commands[0].get("prerequisite")
         if pre:
             notes.append("Evaluator limitation: a possible prerequisite was discovered but was not automatically chained.")
@@ -281,38 +242,6 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
                                 "rewritten to STRhub's mounts; the capture wrapper is planned only if the procedure review passes.")
     if best and input_type and datasets_lib.resolve(input_type):
         limitations += check_documented_files(run_cmd, proposal, input_type, caveat_items)
-    regions_block = None
-    takes_regions = "/data/in/regions.bed" in run_cmd or "/data/in/regions.json" in run_cmd
-    if takes_regions and datasets_lib.resolve(input_type or "") \
-            and (datasets_lib.resolve(input_type) or {}).get("regions_library"):
-        # The command takes a regions file. Pick the library format the tool is
-        # known to read; failing that, plain BED, flagged so a failed run is
-        # read as "the guess may be wrong", never as the tool's fault.
-        all_docs_text = proposal.get("readme_text", "") + "\n" + proposal.get("docs_text", "")
-        fmt, how = regions_library.format_for_tool(
-            name, best, all_docs_text,
-            proposal.get("shipped_loci_formats"))
-        if fmt is None:
-            fmt, how = "bed4", "fallback"
-            limitations.append("regions_format_guessed")
-        if regions_library.library_path(input_type, fmt) is None:
-            limitations.append("regions_format_unknown")
-        else:
-            regions_block = {"library": fmt}
-            # Whose knowledge picked the layout, said out loud. "The tool is
-            # known to read this format" put STRhub's own lookup table in the
-            # voice of a fact about somebody's software: nobody read the
-            # repository to establish it, which is how the STRspy sentence
-            # happened. The table is a fine basis — it just has to be named.
-            basis = {
-                "tool": f"STRhub records the {fmt} layout for a program of this name",
-                "readme": "the layout the README describes",
-                "fallback": f"STRhub records no layout for this program, so plain "
-                            f"chrom/start/end/name was tried",
-            }[how]
-            caveat_items.append(
-                f"Regions: STRhub's ready-made {fmt} file for the dataset's panel loci ({basis}).")
-
     # --- outputs
     glob, fmt = OUTPUT_GLOB.get(out_fmt or "", ("**/*", "text"))
     outputs = [{"path": glob, "format": fmt, "min_records": 1}]
@@ -330,8 +259,7 @@ def build(proposal: dict, slug: str, submitted_by: str = "third_party",
         "report": {"slug": catalogue_slug(name, input_type)},
         "environment": env,
         "run": {"cmd": run_cmd, "timeout_minutes": 20},
-        "inputs": ({"type": input_type, **({"regions": regions_block} if regions_block else {})}
-                   if input_type else {}),
+        "inputs": {"type": input_type} if input_type else {},
         "outputs": outputs,
     }
     ex = proposal.get("example")
@@ -390,40 +318,6 @@ def _panel_windows(input_type: str) -> list[tuple[str, int, int]]:
         if len(f) >= 3 and not ln.startswith("#"):
             out.append((f[0], int(f[1]), int(f[2])))
     return out
-
-
-def _command_loci(cmd: str, shipped: dict) -> list:
-    """Coordinates of the repository loci files a command names, outright or
-    after a loci flag (the same reading check_documented_files makes)."""
-    coords = []
-    toks = cmd.split()
-    for i, t in enumerate(toks):
-        path = t.strip("'\"").lstrip("./")
-        prev = toks[i - 1] if i else ""
-        if path in shipped:
-            coords += shipped[path]
-        elif LOCI_KEYWORD_FLAG.match(prev) and not t.startswith(("/data/", "-")) and shipped:
-            matching = [sp for sp in shipped if path.lower() in sp.lower()] or list(shipped)
-            coords += [pt for sp in matching for pt in shipped[sp]]
-    return coords
-
-
-def _reaches_panel(coords: list, input_type: str) -> bool:
-    windows = _panel_windows(input_type)
-    return any(c == w[0] and s < w[2] and e > w[1] for c, s, e in coords for w in windows)
-
-
-def medical_panel_for(cmd: str, proposal: dict, input_type: str | None) -> str | None:
-    """The medical slice to run on instead of input_type's forensic one: only
-    when the shipped loci the command genotypes miss the forensic panel and
-    reach the medical one, so a forensic tool is never moved."""
-    med = MEDICAL_VARIANT.get(input_type or "")
-    if not med or not datasets_lib.resolve(med):
-        return None
-    coords = _command_loci(cmd, proposal.get("shipped_loci") or {})
-    if coords and not _reaches_panel(coords, input_type) and _reaches_panel(coords, med):
-        return med
-    return None
 
 
 def check_documented_files(run_cmd: str, proposal: dict, input_type: str,
@@ -493,7 +387,6 @@ def main() -> int:
     ap.add_argument("--ref-label", default="",
                     help="the tag or release the ref was resolved from, shown as the version")
     ap.add_argument("--out-dir", default="", help="also write manifest.yml + Dockerfile here")
-    ap.add_argument("--recipe-b64-out", default="", help="write the base64 recipe (prepare --recipe-b64) here")
     args = ap.parse_args()
     proposal = json.loads(pathlib.Path(args.proposal).read_text())
     r = build(proposal, args.slug, args.submitted_by, args.ref_label)
@@ -510,11 +403,6 @@ def main() -> int:
         (d / "Dockerfile").write_text(r["dockerfile"])
         if r["dockerfile_fallback"]:
             (d / "Dockerfile.fallback").write_text(r["dockerfile_fallback"])
-    if args.recipe_b64_out:
-        recipe = {"manifest_yml": r["manifest_yml"], "dockerfile": r["dockerfile"]}
-        if r["dockerfile_fallback"]:
-            recipe["dockerfile_fallback"] = r["dockerfile_fallback"]
-        pathlib.Path(args.recipe_b64_out).write_text(base64.b64encode(json.dumps(recipe).encode()).decode())
     print(json.dumps({"slug": args.slug, "catalogue_slug": r["manifest"]["report"]["slug"],
                       "limitations": r["limitations"],
                       "example": bool(r["manifest"].get("example")),

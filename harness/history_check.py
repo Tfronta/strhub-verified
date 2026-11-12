@@ -9,13 +9,9 @@ the engine misses what a person found — and both are the thing worth knowing,
 which is why this exists: test_truth.py holds the engine to snapshots, this
 holds it to history. Tanda 4 of docs/PLAN-Version-History.md.
 
-Cases live in history/<slug>.yml (see history/strspy-ont.yml). Two instruments:
-`committed` re-points the recipe under tools/<slug>/ at the commit (a curated
-environment; the run never publishes), `proposed` runs what a new user would
-get, the recipe the engine reads off the repository at that commit (publishes
-on the usual terms, and lands in the tool's history as the commit it is —
-unless the case says `publish: false`, for a commit whose curated result the
-catalogue should keep).
+Cases live in history/<slug>.yml (see history/strspy-ont.yml). `proposed` starts
+a URL trial at the pinned commit. `committed` describes a historical curated
+run. Its saved artifact can be evaluated, but the case never dispatches.
 
 Three steps, so the workflow can wait between them:
 
@@ -38,9 +34,8 @@ import time
 import yaml
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import retarget_recipe  # noqa: E402
-
 WORKFLOW = "verify.yml"
+ARCHIVED = "historical curated procedure retired"
 
 
 # ── Cases ─────────────────────────────────────────────────────────────────────
@@ -82,27 +77,24 @@ def run_tool_input(doc: dict, case: dict) -> str:
 # ── Dispatch and wait ─────────────────────────────────────────────────────────
 
 def dispatch(doc: dict, run=subprocess.run) -> list[dict]:
-    """One trial per case. Returns what was dispatched, with the id the run
+    """One trial per documented case. Returns what was dispatched, with the id the run
     name carries and the artifact it will leave."""
     out = []
     for case in doc["cases"]:
         did = dispatch_id(doc, case)
         tool = run_tool_input(doc, case)
-        cmd = ["gh", "workflow", "run", WORKFLOW, "-f", f"tool={tool}", "-f", "mode=trial",
-               "-f", f"dispatch_id={did}"]
+        entry = {"id": case_id(doc, case), "dispatch_id": did, "tool": tool,
+                 "artifact": f"trial-{tool}", "ref": case["ref"], "run": case["run"]}
         if case["run"] == "committed":
-            r = retarget_recipe.retarget(doc["tool"], case["ref"])
-            cmd += ["-f", f"recipe={r['recipe_b64']}"]
-        else:
-            cmd += ["-f", f"repo={doc['repo']}", "-f", f"ref={case['ref']}"]
-            # A proposed case at a commit the catalogue holds a curated result
-            # for must not replace it: both runs are true, one is the card's.
-            if case.get("publish") is False:
-                cmd += ["-f", "publish=false"]
+            out.append({**entry, "dispatched": False, "skipped": ARCHIVED, "error": ""})
+            continue
+        cmd = ["gh", "workflow", "run", WORKFLOW, "-f", f"tool={tool}", "-f", "mode=trial",
+               "-f", f"dispatch_id={did}", "-f", f"repo={doc['repo']}", "-f", f"ref={case['ref']}"]
+        if case.get("publish") is False:
+            cmd += ["-f", "publish=false"]
         res = run(cmd, capture_output=True, text=True)
         out.append({
-            "id": case_id(doc, case), "dispatch_id": did, "tool": tool,
-            "artifact": f"trial-{tool}", "ref": case["ref"], "run": case["run"],
+            **entry,
             "dispatched": res.returncode == 0,
             "error": (res.stderr or "").strip() if res.returncode else "",
         })
@@ -233,15 +225,19 @@ def evaluate_all(doc: dict, results: pathlib.Path) -> list[dict]:
     out = []
     for case in doc["cases"]:
         report, logs = read_result(results / case_id(doc, case))
-        out.append({"id": case_id(doc, case), **evaluate(case, report, logs)})
+        row = {"id": case_id(doc, case), **evaluate(case, report, logs)}
+        if report is None and case["run"] == "committed":
+            row.update(skipped=ARCHIVED, ok=None, misses=[])
+        out.append(row)
     return out
 
 
 def summary(doc: dict, results: list[dict]) -> str:
     """The table the technical note is written from: commit, what the issues
     say, what the engine found, and whether they agree."""
+    assessed = [r for r in results if not r.get("skipped")]
     lines = [f"## History check · {doc['tool']}", "",
-             f"{doc['repo']} — {sum(r['ok'] for r in results)}/{len(results)} as the issues say.", "",
+             f"{doc['repo']} — {sum(r['ok'] for r in assessed)}/{len(assessed)} assessed cases match the issues.", "",
              "| Commit | What | Instrument | Expected | Observed | Agree |", "|---|---|---|---|---|---|"]
     for r in results:
         exp = ", ".join(f"{k}={v}" for k, v in r["expected"].items()) or "—"
@@ -249,7 +245,7 @@ def summary(doc: dict, results: list[dict]) -> str:
         obs = f"{o['verdict'] or '—'} · {o['level'] or '—'}"
         if o["diagnostics"]:
             obs += " · " + ", ".join(o["diagnostics"])
-        agree = "yes" if r["ok"] else "**no**: " + "; ".join(r["misses"])
+        agree = r.get("skipped") or ("yes" if r["ok"] else "**no**: " + "; ".join(r["misses"]))
         lines.append(f"| `{r['ref'][:7]}` | {r['label']} | {r['run']} | {exp} | {obs} | {agree} |")
     return "\n".join(lines) + "\n"
 
@@ -277,23 +273,28 @@ def main() -> int:
         done = dispatch(doc)
         pathlib.Path(args.out).write_text(json.dumps(done, indent=2))
         for x in done:
+            if x.get("skipped"):
+                print(f"skipped {x['id']}: {x['skipped']}")
+                continue
             print(("started " if x["dispatched"] else "FAILED  ") + x["id"] + (f": {x['error']}" if x["error"] else ""))
-        return 0 if all(x["dispatched"] for x in done) else 1
+        return 0 if all(x["dispatched"] or x.get("skipped") for x in done) else 1
     if args.cmd == "wait":
         dispatched = json.loads(pathlib.Path(args.dispatched).read_text())
         done = wait(dispatched, pathlib.Path(args.results), timeout_s=args.timeout_minutes * 60)
         pathlib.Path(args.dispatched).write_text(json.dumps(done, indent=2))
         for x in done:
+            if x.get("skipped"):
+                continue
             print(f"{x['id']}: {'completed' if x['completed'] else 'NOT finished'}"
                   f"{', artifact downloaded' if x['downloaded'] else ''}{': ' + x['error'] if x.get('error') else ''}")
-        return 0 if all(x["completed"] for x in done) else 1
+        return 0 if all(x["completed"] or x.get("skipped") for x in done) else 1
     doc = load_cases(pathlib.Path(args.cases))
     results = evaluate_all(doc, pathlib.Path(args.results))
     text = summary(doc, results)
     print(text)
     if args.summary:
         pathlib.Path(args.summary).write_text(text)
-    return 0 if all(r["ok"] for r in results) else 1
+    return 0 if all(r["ok"] or r.get("skipped") for r in results) else 1
 
 
 if __name__ == "__main__":

@@ -13,8 +13,8 @@
                 "release_binary_documented": true,
                 "where": "README.md:25; https://github.com/PacificBiosciences/trgt/releases/tag/v5.1.0 (trgt-v5.1.0-x86_64-unknown-linux-gnu.tar.gz); https://api.anaconda.org/package/bioconda/trgt"},
   "input": {"kinds": ["bam"], "platforms": ["pacbio"],
-            "strhub_type": "pacbio-hifi-bam-hg38-med",
-            "revised": "2026-11-02: STRhub now holds a medical STR slice of the same HG002 Revio sample: pacbio-hifi-bam-hg38-med (pacbio_slices/HG002.hifi.medical.bam), the 51 disease-associated STRchive loci ±10 kb. The repeat definitions the repository ships (repeats/pathogenic_repeats.hg38.bed) are disease loci, none forensic, so a faithful run genotypes disease loci: the medical slice, with its trgt.bed staged as /data/in/regions.bed. Before that, 2026-09-29: STRhub now holds PacBio HiFi reads: pacbio-hifi-bam-hg38, a CODIS ±10 kb slice of GIAB's HG002 Revio HiFi BAM (pacbio_slices/HG002.hifi.codis.bam), with a TRGT repeat-definition file of its 20 panel loci (datasets/pacbio-hifi-bam-hg38/regions/trgt.bed, ID/MOTIFS/STRUC layout).", "was_strhub_type": "pacbio-hifi-bam-hg38",
+            "strhub_type": "pacbio-hifi-bam-hg38",
+            "revised": "The automatic proposal preserves the documented input type. A catalog outside the registered panel blocks the trial and does not select another dataset.", "was_strhub_type": "pacbio-hifi-bam-hg38",
             "where": "README.md:5-7; docs/cli.md:35-38; docs/tutorial.md:17-21"},
   "extra_inputs": [
     {"what": "Repeat definition BED in TRGT layout: chrom, start, end and a fourth column 'ID=<unique id>;MOTIFS=<motif[,motif...]>;STRUC=<TR>'. The README points to STRchive, the Adotto catalog and the Broad tandem-repeat-catalog; repeats/pathogenic_repeats.hg38.bed in the repo is deprecated.",

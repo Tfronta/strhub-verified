@@ -62,7 +62,7 @@ def test_install_diagnostics_count_as_diagnostics():
     assert hc.evaluate(case, _report(verdict="fails", level="available", diags=(), install=("build_file_missing",)), {})["ok"]
 
 
-def test_dispatch_uses_the_committed_recipe_or_the_url_by_instrument():
+def test_dispatch_runs_documented_cases_and_skips_archived_recipes():
     calls = []
 
     def run(cmd, **kw):
@@ -71,17 +71,13 @@ def test_dispatch_uses_the_committed_recipe_or_the_url_by_instrument():
 
     done = hc.dispatch(_doc(), run=run)
     assert [d["id"] for d in done] == ["strspy-ont@e069e19-p", "strspy-ont@dafdee7-c"]
-    proposed, committed = calls
+    proposed, = calls
     assert "mode=trial" in proposed and f"repo=https://github.com/unique379r/strspy" in proposed
     assert f"ref={SHA_A}" in proposed and "tool=trial-strspy-e069e19" in proposed
     assert "dispatch_id=hc_e069e19_p_strspy-ont" in proposed
     assert not any(a.startswith("recipe=") for a in proposed)
-    assert "tool=strspy-ont" in committed and any(a.startswith("recipe=") for a in committed)
-    assert not any(a.startswith("repo=") for a in committed)
-    assert done[0]["artifact"] == "trial-trial-strspy-e069e19" and done[1]["artifact"] == "trial-strspy-ont"
-    # The retargeted recipe pins the case's commit, not the recipe's own.
-    recipe = json.loads(__import__("base64").b64decode(next(a for a in committed if a.startswith("recipe="))[7:]))
-    assert SHA_B in recipe["manifest_yml"] and SHA_B in recipe["dockerfile"]
+    assert done[0]["artifact"] == "trial-trial-strspy-e069e19"
+    assert not done[1]["dispatched"] and done[1]["skipped"] == hc.ARCHIVED
 
 
 def test_runs_are_found_by_the_id_in_their_name_and_waited_for(tmp_path):
@@ -127,7 +123,7 @@ def test_the_summary_is_the_table_the_note_is_written_from(tmp_path):
     rows = hc.evaluate_all(doc, results)
     assert [r["ok"] for r in rows] == [True, False]
     text = hc.summary(doc, rows)
-    assert "1/2 as the issues say" in text
+    assert "1/2 assessed cases match the issues" in text
     assert "| `e069e19` | first v2 | proposed |" in text and "| yes |" in text
     assert "**no**: level 'content', expected 'io'" in text
 
@@ -158,4 +154,4 @@ def test_a_proposed_case_can_decline_to_publish():
     hc.dispatch(doc, run=run)
     assert "publish=false" in calls[0]
     assert "publish=false" not in calls[1]          # publishes on the usual terms
-    assert "publish=false" not in calls[2]          # a committed case never publishes anyway
+    assert len(calls) == 2

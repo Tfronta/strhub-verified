@@ -1,30 +1,20 @@
 """Prepare a verify run: read the manifest, resolve the external dataset, and
-stage the input for each matrix leg (own + external).
+stage only the shared dataset admitted by the upstream procedure review.
 
 Centralising this in Python (vs bash in the workflow) keeps it testable and
 keeps the YAML small. It emits GitHub-Actions `key=value` step outputs and
 stages files under <work>/in_own and <work>/in_external.
 
-Legs:
-  own       — the author's BYOR fixture (a path in this repo, OR a remote
-              repo+ref+path fetched from raw.githubusercontent.com).
-  external  — a typed reference dataset from datasets/ matched by inputs.type.
-              Absent/unmatched → external_ready=0 → the leg is reported N/A.
-
 Usage:
-  python harness/prepare.py <tool> --work work [--recipe-b64 <base64 json>]
+  python harness/prepare.py <tool> --work work [--trial --proposal <evidence.json>]
 
-Trial runs (--recipe-b64 / $RECIPE_B64): the recipe is not read from
-tools/<tool>/ but materialised from the dispatch input into <work>/recipe/<tool>/.
-Nothing is committed, so a submitter can try a configuration as many times as it
-takes without each attempt landing on main and on the public catalogue.
+A URL trial reads the evaluator's descriptor from <work>/proposal. Its manifest
+is checked against pinned upstream evidence before any Docker step.
 """
 from __future__ import annotations
 import argparse
-import base64
 import gzip
 import json
-import os
 import pathlib
 import re
 import shutil
@@ -36,6 +26,7 @@ import datasets as datasets_lib  # noqa: E402
 import regions_library  # noqa: E402
 import _manifest  # noqa: E402
 import _paths  # noqa: E402
+import input_provenance  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -106,7 +97,7 @@ def _check_dataset(input_type) -> None:
 
 def preflight(m: dict, tool_dir: pathlib.Path, tool: str, work: pathlib.Path) -> None:
     """All runner-side paths are checked before the first staging effect."""
-    for name in (f"recipe/{tool}", "in_own", "in_external", "ref", "ctx"):
+    for name in ("proposal", "in_own", "in_external", "out_external", "out_example", "ctx"):
         dest = _paths.destination(work, name)
         if dest.is_dir():
             # Includes stale files: urlretrieve/copy2 must not follow a symlink
@@ -337,49 +328,6 @@ def stage_external(input_type, work_in: pathlib.Path) -> tuple[bool, str]:
     return True, rec.get("name", input_type or "")
 
 
-#: Trial recipes are capped well under GitHub's limit on dispatch inputs; the
-#: web refuses larger ones before dispatching, this is the backstop.
-RECIPE_MAX_BYTES = 60_000
-
-
-def materialise_recipe(tool: str, recipe_b64: str, work: pathlib.Path) -> pathlib.Path:
-    """Write a dispatched recipe to <work>/recipe/<tool>/ and return that dir.
-
-    The recipe is a base64 JSON object: {"manifest_yml": str, "dockerfile": str,
-    "dockerfile_fallback": str?, "regions_bed": str?}. It is laid out exactly as
-    tools/<tool>/ would be, so every later step (docker build context, the BED
-    under assets/, the plan-B Dockerfile) works the same for a trial as for a
-    committed tool.
-    """
-    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", tool):
-        raise ValueError("tool must be a single safe directory name")
-    if len(recipe_b64) > RECIPE_MAX_BYTES * 4 // 3 + 4:
-        raise SystemExit(f"::error::trial recipe exceeds {RECIPE_MAX_BYTES} bytes")
-    try:
-        recipe = json.loads(base64.b64decode(recipe_b64, validate=True))
-    except Exception as exc:  # noqa: BLE001
-        raise SystemExit(f"::error::trial recipe is not base64 JSON: {exc}")
-    if not isinstance(recipe, dict) or not recipe.get("manifest_yml") or not recipe.get("dockerfile"):
-        raise SystemExit("::error::trial recipe needs manifest_yml and dockerfile")
-    for key in ("manifest_yml", "dockerfile", "dockerfile_fallback", "regions_bed"):
-        if key in recipe and not isinstance(recipe[key], str):
-            raise ValueError(f"recipe {key} must be text")
-    m = _manifest.loads(recipe["manifest_yml"])
-    d = _paths.destination(work, f"recipe/{tool}")
-    preflight(m, d, tool, work)
-    if d.exists():
-        shutil.rmtree(d)
-    d.mkdir(parents=True)
-    (d / "manifest.yml").write_text(recipe["manifest_yml"])
-    (d / "Dockerfile").write_text(recipe["dockerfile"])
-    if recipe.get("dockerfile_fallback"):
-        (d / "Dockerfile.fallback").write_text(recipe["dockerfile_fallback"])
-    if recipe.get("regions_bed"):
-        (d / "assets").mkdir()
-        (d / "assets" / REGIONS_CANONICAL).write_text(recipe["regions_bed"])
-    return d
-
-
 def example_wrapper(cmd: str, cwd: str) -> str:
     """The README command, wrapped so that whatever it creates ends up under
     /data/out, whatever it was called and wherever it was written.
@@ -473,8 +421,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("tool")
     ap.add_argument("--work", default="work")
-    ap.add_argument("--recipe-b64", default=os.environ.get("RECIPE_B64", ""),
-                    help="trial run: the recipe as base64 JSON instead of tools/<tool>/")
+    ap.add_argument("--trial", action="store_true", help="read the descriptor generated in <work>/proposal")
     ap.add_argument("--proposal", default="",
                     help="path to recipe_proposal.json when the recipe was proposed in this run")
     args = ap.parse_args()
@@ -482,8 +429,8 @@ def main() -> int:
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", args.tool):
         raise ValueError("tool must be a single safe directory name")
     work = pathlib.Path(args.work)
-    if args.recipe_b64.strip():
-        tool_dir = materialise_recipe(args.tool, args.recipe_b64.strip(), work)
+    if args.trial:
+        tool_dir = _paths.destination(work, "proposal")
         mode = "trial"
     else:
         tool_dir = _paths.confined(ROOT, f"tools/{args.tool}")
@@ -492,42 +439,14 @@ def main() -> int:
     m = _manifest.load(str(mf))
     preflight(m, tool_dir, args.tool, work)
     inputs = m.get("inputs", {})
-    fixture = inputs.get("fixture")
     input_type = inputs.get("type")
-    regions = inputs.get("regions")
-
-    # Resolve canonical filename so both legs use identical names.
-    canonical = None
-    if input_type:
-        ds_rec = datasets_lib.resolve(input_type)
-        if ds_rec:
-            canonical = ds_rec.get("canonical_input")
-
-    # The own leg runs only when the author declared a BYOR fixture. Without one
-    # we do NOT fall back to a placeholder fixture (that produced spurious
-    # Content failures on a 2-read dummy); the own leg is simply N/A and the
-    # badge rests on the external typed-dataset leg (chosen by inputs.type).
-    if fixture is None:
-        own_ready = False
-        fixture_source = "none"
-    else:
-        own_ready = stage_own(fixture, work / "in_own", canonical, tool_dir=tool_dir, tool=args.tool)
-        fixture_source = "tool" if isinstance(fixture, dict) else "strhub"
-    external_ready, dataset_name = stage_external(input_type, work / "in_external")
-    # No documented command: the proposal's placeholder is `true`, and running
-    # it "passed" Runs for FDSTools, whose README documents no command at all.
-    # Nothing is run; the legs are N/A and the ladder stops at Installs (the
-    # Starts check still asks the packaged program for --help).
-    if is_placeholder_command(m["run"]["cmd"]):
-        own_ready = False
-        external_ready = False
 
     # Recompute the review against the actual manifest. Cached may_say_runs
     # or an origin label is not authorization to build or run a procedure.
     import authorization
     proposal_data = {}
-    prop_path = pathlib.Path(args.proposal) if args.proposal else (ROOT / "recipe_proposal.json")
-    if prop_path.is_file():
+    prop_path = pathlib.Path(args.proposal) if args.proposal else None
+    if prop_path and prop_path.is_file():
         try:
             proposal_data = json.loads(prop_path.read_text())
             if not isinstance(proposal_data, dict):
@@ -539,66 +458,27 @@ def main() -> int:
     procedure_ready = review["may_say_runs"]
     install_ready = review["install_ready"]
     import fidelity
-    review["manifest_sha256"] = fidelity.digest(json.dumps(m, sort_keys=True))
     work.mkdir(parents=True, exist_ok=True)
     review_path = _paths.destination(work, "procedure_review.json")
     review_path.write_text(json.dumps(review, indent=2) + "\n")
-    if not procedure_ready:
-        own_ready = False
-        external_ready = False
 
-    # Stage tool-specific assets into both legs. A legacy per-tool regions.bed
-    # lives here; an explicit inputs.regions (staged next) overrides it.
-    legs = [work / "in_own", work / "in_external"]
-    assets_dir = tool_dir / "assets"
-    if assets_dir.is_dir():
-        for leg in legs:
-            leg.mkdir(parents=True, exist_ok=True)
-            for f in assets_dir.iterdir():
-                if f.is_file():
-                    shutil.copy2(f, leg / f.name)
+    # Only a shared, registered dataset can enter the runtime mount. The
+    # repository's own example reads its files at the original paths in the image.
+    external_ready = False
+    dataset_name = supported_loci = input_failure = ""
+    if procedure_ready and input_type:
+        try:
+            ds = input_provenance.stage(ROOT, work, input_type)
+            external_ready = True
+            dataset_name = ds["name"]
+            supported_loci = ds.get("supported_loci", "")
+        except (ValueError, OSError, KeyError) as exc:
+            input_failure = f"shared dataset staging could not be verified: {exc}"
+            print(f"::error::{input_failure}", file=sys.stderr)
+            install_ready = procedure_ready = False
 
-    # Regions BED (coordinate-based tools). Precedence over the asset above.
-    # Virtual tools/<slug>/ uploads resolve through an explicit recipe root.
-    # Absolute manifest paths are never used as an internal staging shortcut.
-    regions_source = stage_regions(regions, legs, input_type, tool_dir=tool_dir, tool=args.tool)
-
-    # The manifest names a regions BED and nothing staged one: the path it points
-    # at does not exist in this repo. That is always a STRhub-side fault — the
-    # author's BED reached us (the submit endpoint validated it against the panel
-    # before accepting) and we failed to commit it. It must stop the run rather
-    # than let it continue, because a coordinate-based tool with no BED targets
-    # nothing, fails its gates, and earns a badge that reads as its own defect.
-    regions_missing = 1 if regions is not None and regions_source == "none" else 0
-
-    # Supported-loci panel for this input type — the validator's reference. Emitted
-    # so the workflow can pre-flight the author's BED before any gate runs.
-    supported_loci = ""
-    min_loci = ""
-    if input_type:
-        ds_rec = datasets_lib.resolve(input_type)
-        if ds_rec:
-            supported_loci = ds_rec.get("supported_loci", "") or ""
-            min_loci = str(ds_rec.get("min_loci", "") or "")
-
-    ref_genome_url = ""
-    ref_genome_filename = ""
-    if input_type:
-        ds_rec = datasets_lib.resolve(input_type)
-        if ds_rec and ds_rec.get("reference_genome"):
-            rg = ds_rec["reference_genome"]
-            ref_genome_url = rg.get("url", "")
-            ref_genome_filename = rg.get("filename", "")
-
-    # The tool's own example (reviewer's gate): runs inside the image, in the
-    # clone, so nothing is staged; the wrapper captures what the command creates.
+    example_ready = install_ready and procedure_ready and bool(fidelity.example_citation(proposal_data, m))
     example = m.get("example") or {}
-    example_ready = bool(example.get("cmd"))
-    example_cwd = example.get("cwd") or "/opt/tool"
-    if example_ready:
-        candidates = [c for c in proposal_data.get("commands", []) if c.get("cmd") == example["cmd"]]
-        example_ready = (example_cwd == "." and any(fidelity.cite(proposal_data, c)["verified"] for c in candidates)
-                         and not fidelity.rewrite(example["cmd"], None)["limitations"])
 
     # Legacy fallback metadata is preserved for historical recipes only.
     # The Installs gate builds the selected primary Dockerfile once; it never
@@ -608,12 +488,6 @@ def main() -> int:
         print(f"::warning::fallback Dockerfile declared but not found: {tool_dir / fallback}",
               file=sys.stderr)
         fallback = ""
-
-    if not install_ready or not procedure_ready:
-        example_ready = False
-    if not procedure_ready:
-        ref_genome_url = ""
-        ref_genome_filename = ""
 
     values = {
         "ref": m["source"]["ref"],
@@ -626,7 +500,7 @@ def main() -> int:
         # starts profile must establish it from upstream before executing it.
         "starts_cmd": "",
         "example_ready": "1" if example_ready else "0",
-        "example_cmd": example_wrapper(example.get("cmd", ""), example_cwd) if example_ready else "",
+        "example_cmd": example_wrapper(example["cmd"], example["cwd"]) if example_ready else "",
         "cmd": m["run"]["cmd"],
         "dockerdir": tool_dir.relative_to(ROOT) if tool_dir.is_relative_to(ROOT) else tool_dir,
         "dockerfile": m["environment"]["dockerfile"],
@@ -643,17 +517,11 @@ def main() -> int:
         "repo": m["source"]["repo"],
         "mode": mode,
         "input_type": input_type or "",
-        "own_ready": "1" if own_ready else "0",
+        "own_ready": "0",
         "external_ready": "1" if external_ready else "0",
         "dataset_name": dataset_name,
-        "ref_genome_url": ref_genome_url,
-        "ref_genome_filename": ref_genome_filename,
-        "fixture_source": fixture_source,
-        "regions_source": regions_source,
-        "regions_missing": regions_missing,
-        "regions_declared": (regions.get("path") or regions.get("library") or "") if isinstance(regions, dict) else (regions or ""),
+        "input_failure": input_failure,
         "supported_loci": supported_loci,
-        "min_loci": min_loci,
     }
     # Every value is flattened to one line: this goes to $GITHUB_OUTPUT, where a
     # newline starts a new key. Only `cmd` used to be flattened.

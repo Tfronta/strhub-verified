@@ -7,9 +7,8 @@ nothing looked. This looks, once a month:
 
   1. For every repository in the published catalogue, ask GitHub for the
      latest release (or, failing a release, the latest tag).
-  2. If its commit is not the one verified, re-run the SAME recipe against it
-     as a TRIAL: nothing is published, the owner sees what happened, and the
-     attestation stays about the commit it was made for until they confirm.
+  2. If its commit is not the one verified, start a private URL trial of
+     the procedure documented at the new commit.
   3. Say so where the maintainer will see it (an issue on the engine
      repository, updated rather than duplicated).
 
@@ -31,7 +30,6 @@ import sys
 import urllib.request
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import retarget_recipe  # noqa: E402
 import upstream  # noqa: E402
 
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
@@ -94,29 +92,32 @@ def find_newer(index: dict, token: str | None = None, get=upstream._get) -> list
 
 
 def dispatch_trials(newer: list[dict], workflow: str = "verify.yml", run=subprocess.run) -> list[dict]:
-    """Dispatch one trial per newer release, from the committed recipe. Returns
-    what was dispatched (slug of the trial, or the error)."""
+    """Dispatch one private URL trial per repository and newer commit."""
     done = []
+    trials = {}
     for item in newer:
-        try:
-            r = retarget_recipe.retarget(item["slug"], item["latest_sha"])
-        except SystemExit as exc:  # no committed recipe for a published slug
-            done.append({**item, "dispatched": False, "error": str(exc)})
+        repo = upstream.repo_slug(item["repo"])
+        ref = item["latest_sha"]
+        if not repo or not SHA_RE.fullmatch(ref):
+            done.append({**item, "dispatched": False, "error": "A public GitHub repository and full commit are required."})
             continue
-        dispatch_id = f"up_{item['latest_sha'][:7]}_{item['slug']}"[:60]
-        cmd = ["gh", "workflow", "run", workflow, "-f", f"tool={r['slug']}", "-f", "mode=trial",
-               "-f", f"recipe={r['recipe_b64']}", "-f", f"dispatch_id={dispatch_id}"]
-        res = run(cmd, capture_output=True, text=True)
-        done.append({**item, "trial_slug": r["slug"], "dispatch_id": dispatch_id,
-                     "dispatched": res.returncode == 0,
-                     "error": (res.stderr or "").strip() if res.returncode else ""})
+        key = (repo.lower(), ref)
+        if key not in trials:
+            slug = f"trial-{repo.split('/')[-1].lower()}-{ref[:7]}"
+            dispatch_id = f"up_{ref[:7]}_{item['slug']}"[:60]
+            cmd = ["gh", "workflow", "run", workflow, "-f", f"tool={slug}", "-f", "mode=trial",
+                   "-f", f"repo=https://github.com/{repo}", "-f", f"ref={ref}",
+                   "-f", f"ref_label={item['latest_tag']}", "-f", "publish=false", "-f", f"dispatch_id={dispatch_id}"]
+            res = run(cmd, capture_output=True, text=True)
+            trials[key] = {"trial_slug": slug, "dispatch_id": dispatch_id, "dispatched": res.returncode == 0,
+                           "error": (res.stderr or "").strip() if res.returncode else ""}
+        done.append({**item, **trials[key]})
     return done
 
 
 def issue_body(done: list[dict]) -> str:
     lines = ["Upstream releases newer than the verified commit, found by the monthly check. "
-             "For each, the committed recipe was re-run against the new commit as a **trial**: "
-             "nothing is published until the tool's owner confirms.", "",
+             "Each private trial reads the upstream procedure at the new commit.", "",
              "| Tool | Verified | Newest | Trial |", "|---|---|---|---|"]
     for d in done:
         trial = (f"dispatched as `{d.get('trial_slug')}` (`{d.get('dispatch_id')}`)" if d.get("dispatched")

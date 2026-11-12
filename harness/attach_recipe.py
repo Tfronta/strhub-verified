@@ -1,11 +1,7 @@
-"""Put the recipe a trial ran INTO its report artifact.
+"""Attach the procedure descriptor generated from upstream to the trial artifact.
 
-A trial commits nothing, so the recipe it ran (proposed in CI from the
-repository, or dispatched by the web) exists only in the runner's work dir.
-The web needs it back for two things: to show a reader what was actually run,
-and to let a tool's owner publish exactly the recipe that produced the verdict
-they are looking at, instead of retyping it. So it travels next to the report:
-reports/<slug>.recipe.json.
+The descriptor travels next to the report in reports/<slug>.recipe.json.
+The terminal transcript independently records the actual process invocation.
 
 Usage:  python harness/attach_recipe.py <tool> --dockerdir <dir> [--proposal recipe_proposal.json]
 """
@@ -43,11 +39,6 @@ def main() -> int:
         "manifest_yml": manifest_yml,
         "dockerfile": (d / "Dockerfile").read_text() if (d / "Dockerfile").is_file() else "",
     }
-    if (d / "Dockerfile.fallback").is_file():
-        recipe["dockerfile_fallback"] = (d / "Dockerfile.fallback").read_text()
-    bed = d / "assets" / "regions.bed"
-    if bed.is_file():
-        recipe["regions_bed"] = bed.read_text()
     if args.proposal and pathlib.Path(args.proposal).is_file():
         try:
             recipe["proposal"] = json.loads(pathlib.Path(args.proposal).read_text())

@@ -119,7 +119,6 @@ REGISTER: dict[str, tuple[str, str]] = {
     # each statement was read on (read_input_statements). When nothing was
     # there to read, it says the type was guessed — which the verdict weighs.
     "cbc9c7684db7": ("propose_manifest", "readme"),  # Input: the README documents {kinds} (line N); this run used…
-    "915bef0dcd27": ("propose_manifest", "run"),     # STRhub holds no reference sample as {type}, so the other documented kind was used.
     # The documented command names the file and the tree at the pinned ref does not hold it.
     "99be0d39da1f": ("verdict", "readme"),           # no sentence in the README says what the tool takes as input…
     # A failed build, in plain words. Both rest on the Installs gate: the
