@@ -424,6 +424,8 @@ def main() -> int:
     ap.add_argument("--trial", action="store_true", help="read the descriptor generated in <work>/proposal")
     ap.add_argument("--proposal", default="",
                     help="path to recipe_proposal.json when the recipe was proposed in this run")
+    ap.add_argument("--plan-out", default="",
+                    help="also write the step outputs as JSON: the plan harness/engine runs")
     args = ap.parse_args()
 
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", args.tool):
@@ -526,6 +528,14 @@ def main() -> int:
     # Every value is flattened to one line: this goes to $GITHUB_OUTPUT, where a
     # newline starts a new key. Only `cmd` used to be flattened.
     print("\n".join(f"{k}={_output_value(v)}" for k, v in values.items()))
+    if args.plan_out:
+        # The same values, the same flattening, as one document: what the
+        # engine (harness/engine) runs instead of reading them back off
+        # $GITHUB_OUTPUT one `steps.m.outputs.*` at a time.
+        plan = {"tool": args.tool, **{k: _output_value(v) for k, v in values.items()}}
+        out = pathlib.Path(args.plan_out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(plan, indent=2) + "\n")
     return 0
 
 

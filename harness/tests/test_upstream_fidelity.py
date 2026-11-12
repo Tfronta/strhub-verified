@@ -229,7 +229,10 @@ def test_local_trial_requested_with_docker_does_not_execute_an_unsupported_recip
 
 
 @pytest.mark.parametrize("tamper,expected_builds", [(False, 1), (True, 0)])
-def test_real_install_shell_checks_sources_and_never_repairs_a_failed_build(tmp_path, tamper, expected_builds):
+def test_real_install_gate_checks_sources_and_never_repairs_a_failed_build(tmp_path, tamper, expected_builds, monkeypatch):
+    from engine import stages
+    from engine.executor import Executor
+    from engine.record import StageResult
     p, m = case()
     (tmp_path / "work").mkdir()
     (tmp_path / "work/procedure_review.json").write_text(json.dumps(review(p, m)))
@@ -248,19 +251,24 @@ def test_real_install_shell_checks_sources_and_never_repairs_a_failed_build(tmp_
     docker = bindir / "docker"
     docker.write_text('#!/bin/sh\necho "$*" >> builds.txt\nexit 23\n')
     docker.chmod(0o755)
-    workflow = yaml.safe_load((ROOT / ".github/workflows/verify.yml").read_text())
-    install = next(s for s in workflow["jobs"]["verify"]["steps"] if s.get("id") == "installs")
-    result = subprocess.run(["bash", "-e", "-c", install["run"]], cwd=tmp_path, capture_output=True, text=True,
-        env={**os.environ, "PATH": str(bindir) + os.pathsep + os.environ["PATH"],
-             "TEST_DOCUMENT": "altered\n" if tamper else p["source_documents"][0]["text"],
-             "TEST_DOCKERFILE": DOCKERFILE,
-             "TOOL_REF": p["ref"], "TOOL_REPO": p["repo"], "DOCKER_DIR": "unused",
-             "DOCKER_FILE": "Dockerfile", "DOCKER_FROM_REPO": "Dockerfile", "MANIFEST": str(tmp_path / "manifest.yml"), "GITHUB_OUTPUT": str(tmp_path / "output")})
-    assert result.returncode != 0
+    monkeypatch.setenv("PATH", str(bindir) + os.pathsep + os.environ["PATH"])
+    monkeypatch.setenv("TEST_DOCUMENT", "altered\n" if tamper else p["source_documents"][0]["text"])
+    monkeypatch.setenv("TEST_DOCKERFILE", DOCKERFILE)
+    monkeypatch.setenv("TOOL_REF", p["ref"])
+    ctx = stages.Ctx(plan={"repo": p["repo"], "ref": p["ref"], "install_ready": "1", "dockerdir": "unused",
+                           "dockerfile": "Dockerfile", "dockerfile_from_repo": "Dockerfile",
+                           "installation_profile": "", "manifest": str(tmp_path / "manifest.yml")},
+                     work=pathlib.Path("work"), root=tmp_path, exe=Executor())
+    result = stages.installs(ctx, StageResult(stage="available", status="passed", exit_code=0))
+    assert result.status == "failed"
     calls = (tmp_path / "builds.txt").read_text().splitlines() if (tmp_path / "builds.txt").exists() else []
     assert len(calls) == expected_builds
     assert all("--build-arg" not in call for call in calls)
-    assert "source_evidence=verified" in (tmp_path / "output").read_text() if not tamper else "evidence differs" in result.stderr
+    if not tamper:
+        assert result.outputs["source_evidence"] == "verified"
+    else:
+        assert result.outputs["source_evidence"] == "unverified"
+        assert "evidence differs" in (tmp_path / "work/log_build.txt").read_text()
 
 
 def test_positive_preparation_binds_the_review_to_the_actual_manifest(tmp_path):

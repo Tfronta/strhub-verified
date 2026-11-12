@@ -246,19 +246,6 @@ jobs:
     env:
       TOOL: ${{ matrix.tool }}
       MODE: ${{ github.event.inputs.mode || 'publish' }}
-      # The tool runs the cited upstream command in the documented environment.
-      # The external leg receives only the verified shared dataset and an
-      # output directory. The container gets no network (the manifest's
-      # `runtime_network` compatibility flag routes tools that need one to manual
-      # verification instead), a memory and CPU ceiling, a process cap, and no
-      # capabilities. Unquoted on purpose where it is used: it is a flag list.
-      DOCKER_HARDENING: >-
-        --network none
-        --memory 6g --memory-swap 6g
-        --cpus 2
-        --pids-limit 512
-        --cap-drop ALL
-        --security-opt no-new-privileges
     steps:
       - uses: actions/checkout@v6
         with:
@@ -296,9 +283,9 @@ jobs:
         name: Prepare the procedure and shared dataset
         run: |
           if [ "$MODE" = "trial" ]; then
-            python harness/prepare.py "$TOOL" --work work --trial --proposal recipe_proposal.json >> "$GITHUB_OUTPUT"
+            python harness/prepare.py "$TOOL" --work work --trial --proposal recipe_proposal.json --plan-out work/plan.json >> "$GITHUB_OUTPUT"
           else
-            python harness/prepare.py "$TOOL" --work work >> "$GITHUB_OUTPUT"
+            python harness/prepare.py "$TOOL" --work work --plan-out work/plan.json >> "$GITHUB_OUTPUT"
           fi
 
       # Reading the tool's repository, for the evidence a report rests on: the
@@ -327,263 +314,28 @@ jobs:
           python harness/detect_recipe.py "$TOOL_REPO" "$TOOL_REF" --json repo_read.json \
             || echo "::warning::could not read $TOOL_REPO at $TOOL_REF; the report will say less"
 
-      # --- Gate: Available ----------------------------------------------------
-      - id: available
-        name: "Gate · Available"
+      # --- The gates: harness/engine -----------------------------------------
+      # Available, Installs, Starts, the example leg and its check, the
+      # external leg and its checks, and the matrix, as one Python runner
+      # (harness/engine/stages.py is the port, step for step, of the bash
+      # that used to be here; the checks against the reviewed procedure,
+      # harness/fidelity.py before Docker and harness/input_provenance.py
+      # before the run, run inside it unchanged). The tool runs as a
+      # container built from the one environment the review admits, with
+      # the registered dataset mounted, no network, a memory and CPU
+      # ceiling, a process cap and no capabilities (stages.HARDENING).
+      #
+      # The runner exits 0 whatever the gates found: a failed gate is a result,
+      # written to run_record.json with the exact command, exit status and log.
+      # A non-zero exit here is the runner itself crashing, which the
+      # attestation reports as a fault of STRhub's (INFRA_FAILURE), never as
+      # the tool's. Every file report.py reads lands where it always did:
+      # logs under work/, the check results and matrix.json beside it.
+      - id: engine
+        name: "Gates · Available, Installs, Starts, Example, Runs, IO, Content"
         continue-on-error: true
-        env:
-          TOOL_REPO: ${{ steps.m.outputs.repo }}
-          TOOL_REF: ${{ steps.m.outputs.ref }}
-        run: |
-          git ls-remote -- "$TOOL_REPO" >/dev/null
-          # The repository answering is not enough: the pinned commit has to be
-          # one IT serves, from its own branches or tags. GitHub's API resolves
-          # a SHA that exists only in a fork of the repository, and a report
-          # naming this repository must not attest a commit it does not hold.
-          # Commits and trees only (no blobs), so this stays small.
-          # In the runner's temp dir, never cleaned up by hand: git's background
-          # maintenance can still be writing into it, and a failed `rm` here once
-          # failed the gate and read as the tool's source being unavailable.
-          AV="$RUNNER_TEMP/avail"
-          git init -q "$AV"
-          git -C "$AV" -c gc.auto=0 -c maintenance.auto=false fetch -q --no-auto-gc \
-            --filter=blob:none --tags -- "$TOOL_REPO" '+refs/heads/*:refs/remotes/origin/*'
-          if git -C "$AV" cat-file -e "${TOOL_REF}^{commit}" 2>/dev/null \
-             || git -C "$AV" cat-file -e "origin/${TOOL_REF}^{commit}" 2>/dev/null; then
-            echo "pinned ref $TOOL_REF is in $TOOL_REPO"
-          else
-            echo "::error::the pinned ref $TOOL_REF is not a commit on any branch or tag of $TOOL_REPO"
-            exit 1
-          fi
+        run: python -m harness.engine run --plan work/plan.json --work work --record run_record.json
 
-      # --- Gate: Installs (docker build) -------------------------------------
-      - id: installs
-        name: "Gate · Installs"
-        # Nothing to build from a ref the repository does not hold, or when the
-        # commit states no install procedure at all.
-        if: steps.available.outcome == 'success' && steps.m.outputs.install_ready == '1'
-        continue-on-error: true
-        env:
-          TOOL_REF: ${{ steps.m.outputs.ref }}
-          TOOL_REPO: ${{ steps.m.outputs.repo }}
-          DOCKER_DIR: ${{ steps.m.outputs.dockerdir }}
-          DOCKER_FILE: ${{ steps.m.outputs.dockerfile }}
-          DOCKER_FROM_REPO: ${{ steps.m.outputs.dockerfile_from_repo }}
-          INSTALLATION_PROFILE: ${{ steps.m.outputs.installation_profile }}
-          MANIFEST: ${{ steps.m.outputs.manifest }}
-        run: |
-          # pipefail, or `tee` would swallow docker's exit status and a failed
-          # build would be recorded as a passed gate — the one bug this step
-          # must not have.
-          set -euo pipefail
-          mkdir -p work
-          : > work/log_build.txt
-          echo "source_evidence=unverified" >> "$GITHUB_OUTPUT"
-          [ -n "$DOCKER_FROM_REPO" ] || [ "${INSTALLATION_PROFILE:-}" = 'strhub-source-install/1' ] \
-            || { echo '::error::no proven upstream installation'; exit 1; }
-          # Obtain the immutable source once for either supported profile.
-          NAME=$(basename "${TOOL_REPO%.git}")
-          rm -rf work/ctx && mkdir -p work/ctx
-          SRC="work/ctx/$NAME"
-          git clone -q -- "$TOOL_REPO" "$SRC"
-          git -C "$SRC" checkout -q "$TOOL_REF"
-          want=$(git -C "$SRC" rev-parse "${TOOL_REF}^{commit}")
-          [ "$(git -C "$SRC" rev-parse HEAD)" = "$want" ] \
-            || { echo "::error::checked out $(git -C "$SRC" rev-parse HEAD), not $TOOL_REF"; exit 1; }
-          CONTEXT="$SRC"
-          if [ -n "$DOCKER_FROM_REPO" ]; then
-            DOCKER_DIR="$SRC"; DOCKER_FILE="$DOCKER_FROM_REPO"
-            python harness/_paths.py "$SRC" "$DOCKER_FILE"
-            python harness/fidelity.py --checkout "$SRC" --review work/procedure_review.json --manifest "${MANIFEST:-}"
-          else
-            # Re-derive every command from checked source bytes. Never build a
-            # submitted/generated descriptor or select packages by tool name.
-            DOCKER_DIR="$PWD/work"; DOCKER_FILE='source-install.Dockerfile'
-            python harness/fidelity.py --checkout "$SRC" --review work/procedure_review.json --manifest "${MANIFEST:-}" \
-              --source-install-dockerfile "$DOCKER_DIR/$DOCKER_FILE"
-          fi
-          echo "source_evidence=verified" >> "$GITHUB_OUTPUT"
-          build() {  # $1 Dockerfile, $2 its directory, $3 context
-            bash harness/record_terminal.sh work/log_build.txt docker build \
-              -f "$2/$1" \
-              -t toolimg:ci \
-              "$3"
-          }
-          if build "$DOCKER_FILE" "$DOCKER_DIR" "$CONTEXT"; then
-            echo "environment=primary" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          exit 1
-
-      # --- Starts: the installed program answers --help ----------------------
-      # Outside the ladder, like the example: the one fact a reviewer can use
-      # when the README says nothing runnable. Two minutes, the same isolation.
-      - id: starts
-        name: "Starts (the program answers --help)"
-        if: steps.installs.outcome == 'success' && steps.m.outputs.starts_cmd != ''
-        continue-on-error: true
-        timeout-minutes: 5
-        env:
-          STARTS_CMD: ${{ steps.m.outputs.starts_cmd }}
-          ENTRY: ""
-          ENTRY_ARGS: ""
-        run: |
-          rc=0
-          bash harness/run_container.sh strhub_starts 2 work/log_starts.txt \
-            $DOCKER_HARDENING $ENTRY toolimg:ci $ENTRY_ARGS "$STARTS_CMD" || rc=$?
-          python harness/check_starts.py --rc "$rc" --log work/log_starts.txt --json starts.json
-
-      # --- Leg: the tool's OWN example (the reviewer's gate) ------------------
-      # The README's command on the repository's data, inside the image, with
-      # nothing from STRhub. prepare.py wraps it so that everything it creates
-      # is copied to /data/out; check_example.py decides whether that is the
-      # documented output. Independent of the other legs: a tool whose Quick
-      # Start works has earned that sentence even if our reference data did
-      # not suit it, and vice versa.
-      - id: runs_example
-        name: "Reproduces own example"
-        if: steps.m.outputs.example_ready == '1' && steps.installs.outcome == 'success'
-        continue-on-error: true
-        # A backstop: run_container.sh stops the container at the manifest's
-        # limit and says so in the log; this only catches a hung script.
-        timeout-minutes: ${{ fromJSON(steps.m.outputs.step_timeout) }}
-        env:
-          EXAMPLE_CMD: ${{ steps.m.outputs.example_cmd }}
-          RUN_MINUTES: ${{ steps.m.outputs.timeout }}
-          ENTRY: ""
-          ENTRY_ARGS: ""
-        run: |
-          set -o pipefail
-          mkdir -p work/out_example
-          # World-writable on purpose. The container runs with every capability
-          # dropped, so its root has no CAP_DAC_OVERRIDE and cannot write to a
-          # directory the runner user owns. Every tool failed with 'Permission
-          # denied' on /data/out the first time the hardening ran (PR #19).
-          chmod 0777 work/out_example
-          bash harness/run_container.sh strhub_example "$RUN_MINUTES" work/log_example.txt \
-            $DOCKER_HARDENING $ENTRY \
-            -v "$PWD/work/out_example:/data/out" \
-            toolimg:ci \
-            $ENTRY_ARGS "$EXAMPLE_CMD"
-
-      - id: example
-        name: "Example produced its output"
-        if: steps.m.outputs.example_ready == '1'
-        continue-on-error: true
-        env:
-          MANIFEST: ${{ steps.m.outputs.manifest }}
-        run: python harness/check_example.py "$MANIFEST" work/out_example --json example.json
-
-      # --- Matrix leg: external typed dataset (N/A if no compatible dataset) --
-      - id: runs_ext
-        name: "Runs (external data)"
-        if: steps.m.outputs.external_ready == '1' && steps.installs.outcome == 'success'
-        continue-on-error: true
-        # A backstop: run_container.sh stops the container at the manifest's
-        # limit and says so in the log; this only catches a hung script.
-        timeout-minutes: ${{ fromJSON(steps.m.outputs.step_timeout) }}
-        env:
-          MANIFEST: ${{ steps.m.outputs.manifest }}
-          TOOL_CMD: ${{ steps.m.outputs.cmd }}
-          RUN_MINUTES: ${{ steps.m.outputs.timeout }}
-          ENTRY: ""
-          ENTRY_ARGS: ""
-        run: |
-          set -euo pipefail
-          python harness/input_provenance.py --work work --manifest "$MANIFEST" --command="$TOOL_CMD"
-          echo "input_evidence=verified" >> "$GITHUB_OUTPUT"
-          mkdir -p work/out_external
-          # World-writable on purpose. The container runs with every capability
-          # dropped, so its root has no CAP_DAC_OVERRIDE and cannot write to a
-          # directory the runner user owns. Every tool failed with 'Permission
-          # denied' on /data/out the first time the hardening ran (PR #19).
-          chmod 0777 work/out_external
-          rc=0
-          bash harness/run_container.sh strhub_external "$RUN_MINUTES" work/log_external.txt \
-            $DOCKER_HARDENING $ENTRY \
-            -v "$PWD/work/in_external:/data/in:ro" \
-            -v "$PWD/work/out_external:/data/out" \
-            toolimg:ci \
-            $ENTRY_ARGS "$TOOL_CMD" || rc=$?
-          # This leg has one dataset and one attempt. Keep its original exit
-          # status, output and log, even when installation or execution fails.
-          exit "$rc"
-
-      - id: io_ext
-        name: "Expected IO (external)"
-        if: steps.runs_ext.outputs.input_evidence == 'verified'
-        continue-on-error: true
-        env:
-          MANIFEST: ${{ steps.m.outputs.manifest }}
-        run: python harness/check_io.py "$MANIFEST" work/out_external --json io_external.json
-
-      - id: content_ext
-        name: "Content (external)"
-        if: steps.runs_ext.outputs.input_evidence == 'verified'
-        continue-on-error: true
-        env:
-          MANIFEST: ${{ steps.m.outputs.manifest }}
-          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
-        run: python harness/check_content.py "$MANIFEST" work/out_external --json content_external.json --panel "$SUPPORTED_LOCI"
-
-      # --- README minimum-to-run check (advisory; never gates the badge) ------
-      - name: "README check (advisory)"
-        if: always()
-        continue-on-error: true
-        env:
-          TOOL_REPO: ${{ steps.m.outputs.repo }}
-          TOOL_REF: ${{ steps.m.outputs.ref }}
-        run: |
-          repo="$TOOL_REPO"; ref="$TOOL_REF"
-          slug="${repo#https://github.com/}"; slug="${slug%.git}"
-          rm -f readme.md
-          for name in README.md readme.md README.MD README.rst README.txt README; do
-            if curl -fsSL "https://raw.githubusercontent.com/${slug}/${ref}/${name}" -o readme.md; then break; fi
-          done
-          [ -f readme.md ] || echo -n > readme.md
-          python harness/check_readme.py readme.md --json readme_result.json
-
-      # --- Assemble the matrix (own + external legs) -------------------------
-      - name: Assemble matrix
-        if: always()
-        env:
-          EXT_READY: ${{ steps.m.outputs.external_ready }}
-          EXAMPLE_READY: ${{ steps.m.outputs.example_ready }}
-          INPUT_TYPE: ${{ steps.m.outputs.input_type }}
-          DATASET_NAME: ${{ steps.m.outputs.dataset_name }}
-        run: |
-          python - <<'PY'
-          import json, os, pathlib
-          def load(p):
-              q = pathlib.Path(p)
-              try:
-                  return json.loads(q.read_text()) if q.exists() else None
-              except Exception:
-                  return None
-          legs = []
-          ext_io, ext_ct = load("io_external.json"), load("content_external.json")
-          legs.append({
-              "leg": "external", "label": "External data",
-              "available": os.environ.get("EXT_READY") == "1",
-              "type": os.environ.get("INPUT_TYPE") or None,
-              "dataset": os.environ.get("DATASET_NAME") or None,
-              "io": bool(ext_io and ext_io.get("passed")),
-              "content": bool(ext_ct and ext_ct.get("passed")),
-              "passed": bool(ext_io and ext_io.get("passed")),
-          })
-          ex = load("example.json")
-          legs.append({
-              "leg": "example", "label": "Tool's own example",
-              "available": os.environ.get("EXAMPLE_READY") == "1",
-              "io": bool(ex and ex.get("passed")),
-              "content": None,
-              "passed": bool(ex and ex.get("passed")),
-              "matches_expected": (ex or {}).get("checks", {}).get("matches_expected"),
-              "produced_count": (ex or {}).get("produced_count"),
-          })
-          pathlib.Path("matrix.json").write_text(json.dumps(legs, indent=2))
-          print(json.dumps(legs, indent=2))
-          PY
 
       # --- Assemble attestation (always runs) --------------------------------
       - id: attest
@@ -592,20 +344,12 @@ jobs:
         env:
           MANIFEST: ${{ steps.m.outputs.manifest }}
           TOOL_REF: ${{ steps.m.outputs.ref }}
-          SUPPORTED_LOCI: ${{ steps.m.outputs.supported_loci }}
-          # Step outcomes come from GitHub, not the manifest, so they are a closed
-          # vocabulary (success/failure/cancelled/skipped) rather than author input.
-          AVAILABLE_OUTCOME: ${{ steps.available.outcome }}
-          INSTALLS_OUTCOME: ${{ steps.installs.outcome }}
-          RUNS_EXT_OUTCOME: ${{ steps.runs_ext.outputs.input_evidence == 'verified' && steps.runs_ext.outcome || 'skipped' }}
-          EXAMPLE_OUTCOME: ${{ steps.runs_example.outcome }}
           # A step of STRhub's own that failed before the gates could run. When
           # one did, the gates below it were skipped and would otherwise read as
           # the tool stopping at "source not available".
-          INFRA_FAILURE: ${{ steps.m.outputs.input_failure || (steps.propose.outcome == 'failure' && 'the recipe proposal step') || (steps.m.outcome == 'failure' && 'the staging of inputs') || (steps.installs.outcome == 'failure' && steps.installs.outputs.source_evidence != 'verified' && 'the upstream procedure evidence check before Docker') || (steps.runs_ext.outcome == 'failure' && steps.runs_ext.outputs.input_evidence != 'verified' && 'the mounted dataset provenance check') || '' }}
+          INFRA_FAILURE: ${{ steps.m.outputs.input_failure || (steps.propose.outcome == 'failure' && 'the recipe proposal step') || (steps.m.outcome == 'failure' && 'the staging of inputs') || (steps.engine.outcome == 'failure' && 'the gate runner') || '' }}
           # The selected primary Dockerfile, or empty when it did not build.
           # A failed install never triggers a fallback environment.
-          ENVIRONMENT_BUILT: ${{ steps.installs.outputs.environment }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           # A trial whose recipe this run derived from the public repository —
           # the only kind of trial that may publish. Same test as the propose
@@ -622,26 +366,19 @@ jobs:
         run: |
           python harness/report.py \
             --manifest "$MANIFEST" \
+            --engine-record run_record.json \
             --procedure-review work/procedure_review.json \
             --mounted-inputs work/mounted_inputs.json \
-            --available "$AVAILABLE_OUTCOME" \
-            --installs "$INSTALLS_OUTCOME" \
-            --runs "$RUNS_EXT_OUTCOME" \
-            --io io_external.json \
-            --content content_external.json \
             --matrix matrix.json \
             --readme readme_result.json \
             --log-external work/log_external.txt \
             --log-build work/log_build.txt \
-            --environment-built "$ENVIRONMENT_BUILT" \
             --ref "$TOOL_REF" \
-            --supported-loci "$SUPPORTED_LOCI" \
             --check-upstream \
             --mode "$MODE" \
             --infra-failure "$INFRA_FAILURE" \
             --starts starts.json \
             --log-starts work/log_starts.txt \
-            --example-runs "$EXAMPLE_OUTCOME" \
             --example example.json \
             --log-example work/log_example.txt \
             --recipe-proposal recipe_proposal.json \
@@ -718,7 +455,11 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: ${{ env.MODE == 'trial' && 'trial' || 'attestation' }}-${{ env.TOOL }}
-          path: reports/
+          # The record rides with the report: every gate's exact command, exit
+          # status and log, whatever the verdict.
+          path: |
+            reports/
+            run_record.json
           # A trial's report exists nowhere else, so it is kept the full window a
           # submitter has to come back for it; a published one is on gh-pages.
           retention-days: ${{ env.MODE == 'trial' && 30 || 90 }}

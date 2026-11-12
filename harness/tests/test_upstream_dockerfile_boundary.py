@@ -1,16 +1,15 @@
-"""Execute the real install-step shell with inert git/docker replacements."""
+"""Execute the engine's Installs gate with inert git/docker replacements."""
 import os
 import pathlib
-import subprocess
 
-import yaml
+from engine import stages
+from engine.executor import Executor
+from engine.record import StageResult
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 
-def test_checked_out_dockerfile_symlink_cannot_be_read_or_built(tmp_path):
-    workflow = yaml.safe_load((ROOT / ".github/workflows/verify.yml").read_text())
-    step = next(s for s in workflow["jobs"]["verify"]["steps"] if s.get("id") == "installs")
+def test_checked_out_dockerfile_symlink_cannot_be_read_or_built(tmp_path, monkeypatch, capsys):
     bindir = tmp_path / "bin"
     bindir.mkdir()
     git = bindir / "git"
@@ -27,15 +26,20 @@ def test_checked_out_dockerfile_symlink_cannot_be_read_or_built(tmp_path):
     docker.chmod(0o755)
     (tmp_path / "harness").mkdir()
     (tmp_path / "harness/_paths.py").write_bytes((ROOT / "harness/_paths.py").read_bytes())
+    (tmp_path / "harness/record_terminal.sh").write_bytes((ROOT / "harness/record_terminal.sh").read_bytes())
     sentinel = tmp_path / "private"
     sentinel.write_text("PRIVATE SENTINEL - MUST NOT APPEAR IN LOGS")
-    result = subprocess.run(["bash", "-e", "-c", step["run"]], cwd=tmp_path,
-        env={**os.environ, "PATH": str(bindir) + os.pathsep + os.environ["PATH"],
-             "SENTINEL": str(sentinel), "TOOL_REPO": "https://github.com/example/tool",
-             "TOOL_REF": "a" * 40, "DOCKER_DIR": "recipe", "DOCKER_FILE": "Dockerfile",
-             "DOCKER_FROM_REPO": "Dockerfile", "GITHUB_OUTPUT": str(tmp_path / "outputs")},
-        capture_output=True, text=True)
-    assert result.returncode != 0
-    assert "path escapes allowed root" in result.stderr
-    assert "PRIVATE SENTINEL" not in result.stdout + result.stderr
+    (tmp_path / "work").mkdir()
+    monkeypatch.setenv("PATH", str(bindir) + os.pathsep + os.environ["PATH"])
+    monkeypatch.setenv("SENTINEL", str(sentinel))
+    monkeypatch.setenv("TOOL_REF", "a" * 40)
+    ctx = stages.Ctx(plan={"repo": "https://github.com/example/tool", "ref": "a" * 40, "install_ready": "1",
+                           "dockerdir": "recipe", "dockerfile": "Dockerfile", "dockerfile_from_repo": "Dockerfile",
+                           "installation_profile": "", "manifest": str(tmp_path / "manifest.yml")},
+                     work=pathlib.Path("work"), root=tmp_path, exe=Executor())
+    result = stages.installs(ctx, StageResult(stage="available", status="passed", exit_code=0))
+    out = capsys.readouterr()
+    assert result.status == "failed" and result.outputs["failed_check"] == "_paths.py"
+    assert "path escapes allowed root" in (tmp_path / "work/log_build.txt").read_text()
+    assert "PRIVATE SENTINEL" not in out.out + out.err + (tmp_path / "work/log_build.txt").read_text()
     assert not (tmp_path / "builds.txt").exists()
