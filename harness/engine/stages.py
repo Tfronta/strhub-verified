@@ -51,6 +51,20 @@ class Ctx:
     root: pathlib.Path          # the engine repository; cwd of every command
     exe: Executor
     python: str = sys.executable
+    #: Where the check results and the matrix are written (relative to root,
+    #: or absolute): the repository root in CI, a scratch directory locally.
+    results: pathlib.Path = pathlib.Path(".")
+    #: The image tag and the container-name prefix: fixed in CI, per trial
+    #: locally so two trials on one machine do not share them.
+    image: str = IMAGE
+    container_prefix: str = "strhub"
+
+    def result(self, name: str) -> str:
+        return str(self.results / name)
+
+    def result_abs(self, name: str) -> pathlib.Path:
+        p = self.results / name
+        return p if p.is_absolute() else self.root / p
 
     @property
     def work_abs(self) -> pathlib.Path:
@@ -195,7 +209,7 @@ def installs(ctx: Ctx, available_result: StageResult) -> StageResult:
     # record_terminal.sh keeps the exact argv and the build's output in
     # work/log_build.txt.terminal, and the output alone in work/log_build.txt.
     argv = ["bash", ctx.harness("record_terminal.sh"), str(ctx.work / "log_build.txt"),
-            "docker", "build", "-f", str(docker_dir / docker_file), "-t", IMAGE, str(context)]
+            "docker", "build", "-f", str(docker_dir / docker_file), "-t", ctx.image, str(context)]
     rc = ctx.exe.run(argv, cwd=ctx.root)
     return st.finish(rc, argv, **outputs, **({"environment": "primary"} if rc == 0 else {}))
 
@@ -213,15 +227,17 @@ def starts(ctx: Ctx, installs_result: StageResult) -> StageResult:
         return StageResult.not_run("starts", "no explicit starts command: STRhub does not invent a --help invocation")
     log = ctx.work / "log_starts.txt"
     st = StageResult.start("starts", log)
-    argv = ["bash", ctx.harness("run_container.sh"), "strhub_starts", "2", str(log), *HARDENING, IMAGE, cmd]
+    argv = ["bash", ctx.harness("run_container.sh"), f"{ctx.container_prefix}_starts", "2", str(log),
+            *HARDENING, ctx.image, cmd]
     rc = ctx.exe.run(argv, timeout=STARTS_BACKSTOP_MINUTES * 60, cwd=ctx.root)
-    check = [ctx.python, ctx.harness("check_starts.py"), "--rc", str(rc), "--log", str(log), "--json", "starts.json"]
+    check = [ctx.python, ctx.harness("check_starts.py"), "--rc", str(rc), "--log", str(log),
+             "--json", ctx.result("starts.json")]
     check_rc = ctx.exe.run(check, cwd=ctx.root)
     # The gate is check_starts's judgement of the log (a program that prints
     # its usage and exits 1 still starts), so the stage's status follows it;
     # the container's own exit status stays in the record as it was.
-    judged = _load(ctx.root / "starts.json") or {}
-    st.finish(rc, argv, starts_json="starts.json", check_exit_code=check_rc)
+    judged = _load(ctx.result_abs("starts.json")) or {}
+    st.finish(rc, argv, starts_json=ctx.result("starts.json"), check_exit_code=check_rc)
     if judged.get("applicable"):
         st.status = "passed" if judged.get("passed") else "failed"
     return st
@@ -243,8 +259,8 @@ def _run_leg(ctx: Ctx, name: str, cmd: str, in_dir: pathlib.Path | None,
         in_abs = ctx.root / in_dir if not in_dir.is_absolute() else in_dir
         mounts += ["-v", f"{in_abs}:/data/in:ro"]
     mounts += ["-v", f"{out_abs}:/data/out"]
-    argv = ["bash", ctx.harness("run_container.sh"), f"strhub_{name}", str(ctx.plan["timeout"]), str(log),
-            *HARDENING, *mounts, IMAGE, cmd]
+    argv = ["bash", ctx.harness("run_container.sh"), f"{ctx.container_prefix}_{name}", str(ctx.plan["timeout"]),
+            str(log), *HARDENING, *mounts, ctx.image, cmd]
     # A backstop: run_container.sh stops the container at the manifest's limit
     # and says so in the log; this only catches a hung script.
     rc = ctx.exe.run(argv, timeout=int(ctx.plan["step_timeout"]) * 60, cwd=ctx.root)
@@ -271,8 +287,8 @@ def check_example(ctx: Ctx) -> StageResult:
         return StageResult.not_run("example", "no cited example to reproduce")
     st = StageResult.start("example")
     argv = [ctx.python, ctx.harness("check_example.py"), ctx.manifest, str(ctx.work / "out_example"),
-            "--json", "example.json"]
-    return st.finish(ctx.exe.run(argv, cwd=ctx.root), argv, result="example.json")
+            "--json", ctx.result("example.json")]
+    return st.finish(ctx.exe.run(argv, cwd=ctx.root), argv, result=ctx.result("example.json"))
 
 
 def runs_external(ctx: Ctx, installs_result: StageResult) -> StageResult:
@@ -312,8 +328,8 @@ def check_io(ctx: Ctx, ext: StageResult) -> StageResult:
         return StageResult.not_run("io_external", "the external leg did not run on a verified mount")
     st = StageResult.start("io_external")
     argv = [ctx.python, ctx.harness("check_io.py"), ctx.manifest, str(ctx.work / "out_external"),
-            "--json", "io_external.json"]
-    return st.finish(ctx.exe.run(argv, cwd=ctx.root), argv, result="io_external.json")
+            "--json", ctx.result("io_external.json")]
+    return st.finish(ctx.exe.run(argv, cwd=ctx.root), argv, result=ctx.result("io_external.json"))
 
 
 def check_content(ctx: Ctx, ext: StageResult) -> StageResult:
@@ -322,8 +338,8 @@ def check_content(ctx: Ctx, ext: StageResult) -> StageResult:
         return StageResult.not_run("content_external", "the external leg did not run on a verified mount")
     st = StageResult.start("content_external")
     argv = [ctx.python, ctx.harness("check_content.py"), ctx.manifest, str(ctx.work / "out_external"),
-            "--json", "content_external.json", "--panel", ctx.plan.get("supported_loci", "")]
-    return st.finish(ctx.exe.run(argv, cwd=ctx.root), argv, result="content_external.json")
+            "--json", ctx.result("content_external.json"), "--panel", ctx.plan.get("supported_loci", "")]
+    return st.finish(ctx.exe.run(argv, cwd=ctx.root), argv, result=ctx.result("content_external.json"))
 
 
 # --- The matrix (external + example legs) ------------------------------------
@@ -331,8 +347,7 @@ def check_content(ctx: Ctx, ext: StageResult) -> StageResult:
 def matrix(ctx: Ctx) -> list[dict]:
     """matrix.json: one row per leg, read by report.py."""
     import json
-    root = ctx.root
-    ext_io, ext_ct = _load(root / "io_external.json"), _load(root / "content_external.json")
+    ext_io, ext_ct = _load(ctx.result_abs("io_external.json")), _load(ctx.result_abs("content_external.json"))
     legs = [{
         "leg": "external", "label": "External data",
         "available": ctx.ready("external_ready"),
@@ -342,7 +357,7 @@ def matrix(ctx: Ctx) -> list[dict]:
         "content": bool(ext_ct and ext_ct.get("passed")),
         "passed": bool(ext_io and ext_io.get("passed")),
     }]
-    ex = _load(root / "example.json")
+    ex = _load(ctx.result_abs("example.json"))
     legs.append({
         "leg": "example", "label": "Tool's own example",
         "available": ctx.ready("example_ready"),
@@ -352,6 +367,7 @@ def matrix(ctx: Ctx) -> list[dict]:
         "matches_expected": (ex or {}).get("checks", {}).get("matches_expected"),
         "produced_count": (ex or {}).get("produced_count"),
     })
-    (root / "matrix.json").write_text(json.dumps(legs, indent=2))
+    ctx.result_abs("matrix.json").parent.mkdir(parents=True, exist_ok=True)
+    ctx.result_abs("matrix.json").write_text(json.dumps(legs, indent=2))
     print(json.dumps(legs, indent=2))
     return legs

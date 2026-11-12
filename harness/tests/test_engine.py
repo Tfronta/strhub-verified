@@ -297,3 +297,61 @@ def test_the_cli_writes_the_record(tmp_path, monkeypatch):
     assert rc == 0
     rec = json.loads((tmp_path / "run_record.json").read_text())
     assert rec["outcomes"]["available"] == "failure" and rec["tool"] == "x"
+
+
+def test_results_image_and_container_prefix_are_the_contexts(tmp_path):
+    fake = Fake(tmp_path)
+    rec = runner.run(base_plan(starts_cmd="tool --help"), pathlib.Path("work"), tmp_path, exe=fake,
+                     python=sys.executable, results=tmp_path / "results", image="strhub-trial:x",
+                     container_prefix="trial-x")
+    build = next(c for c in fake.calls if c[1].endswith("record_terminal.sh"))
+    assert build[build.index("-t") + 1] == "strhub-trial:x"
+    names = {c[2] for c in fake.calls if c[0] == "bash" and c[1].endswith("run_container.sh")}
+    assert names == {"trial-x_starts", "trial-x_external"}
+    assert all(c[-2] == "strhub-trial:x" for c in fake.calls if c[0] == "bash" and c[1].endswith("run_container.sh"))
+    io = next(c for c in fake.calls if pathlib.Path(c[1]).stem == "check_io")
+    assert io[io.index("--json") + 1] == str(tmp_path / "results" / "io_external.json")
+    assert (tmp_path / "results" / "matrix.json").is_file() and not (tmp_path / "matrix.json").exists()
+    assert rec["ladder"]["io"] == str(tmp_path / "results" / "io_external.json") and rec["image"] == "strhub-trial:x"
+
+
+def test_a_local_trial_with_docker_runs_the_engine_and_keeps_stdout_for_the_web(tmp_path, monkeypatch, capsys):
+    """local_trial.py --docker runs the same gates CI runs, on a per-trial
+    image and container name, writes run_record.json next to the report, and
+    prints nothing on stdout: that line is strhub-web's."""
+    import yaml
+    import local_trial
+    from procedure_context import context
+    p, m, review = context()
+    m = {**m, "tool": {"name": "Example", "version": "test"}, "report": {"slug": "trial-example"}}
+    _, _, review = context(manifest_fields={"report": {"slug": "trial-example"}, "tool": m["tool"]})
+    sha = "a" * 40
+    monkeypatch.setattr(local_trial, "resolve_ref_git", lambda slug, ref="": (sha, "v1", "given"))
+    monkeypatch.setattr(local_trial.dr, "gather", lambda *a, **k: {"tree_resp": {}, "readme": "", "readme_name": "README.md"})
+    monkeypatch.setattr(local_trial.dr, "detect", lambda *a, **k: dict(p))
+    monkeypatch.setattr(local_trial.pm, "build", lambda proposal, slug, **k: {
+        "manifest": m, "manifest_yml": yaml.safe_dump(m, sort_keys=False), "dockerfile": "# descriptor\n",
+        "limitations": [], "readme_gaps": [], "procedure": review})
+    real_run = local_trial.subprocess.run
+
+    def run(argv, *a, **kw):
+        if argv[:2] == ["docker", "info"]:
+            return subprocess.CompletedProcess(argv, 0, "", "")
+        assert argv[0] not in ("docker", "git"), argv   # only the engine's executor may reach them
+        return real_run(argv, *a, **kw)
+    monkeypatch.setattr(local_trial.subprocess, "run", run)
+    fake = Fake(tmp_path)
+    out_dir = tmp_path / "trial"
+    report = local_trial.build_local_trial("https://github.com/example/tool", sha, "v1", out_dir,
+                                           run_docker=True, exe=fake)
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "[engine] installs: passed" in captured.err and "[local_trial] [2/2]" in captured.err
+    build = next(c for c in fake.calls if c[1].endswith("record_terminal.sh"))
+    assert build[build.index("-t") + 1] == f"strhub-trial:trial-tool-{sha[:7]}"
+    assert {c[2] for c in fake.calls if c[0] == "bash" and c[1].endswith("run_container.sh")} == {f"trial-tool-{sha[:7]}_external"}
+    rec = json.loads((out_dir / "run_record.json").read_text())
+    assert rec["outcomes"]["installs"] == "success" and rec["outcomes"]["runs_external"] == "success"
+    assert report["gates"]["available"] and report["gates"]["installs"] and report["gates"]["runs"]
+    assert (out_dir / "report.json").is_file() and (out_dir / "recipe.json").is_file()
+    assert not (ROOT / "matrix.json").exists() and not (ROOT / "io_external.json").exists()

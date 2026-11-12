@@ -1,6 +1,12 @@
 """Run a trial locally from any GitHub repository URL and write the full
 artifact directory expected by strhub-web (`report.json`, `recipe.json`,
-`summary.md`, `report.html`, `report.pdf`).
+`summary.md`, `report.html`, `report.pdf`, and with --docker the logs,
+terminal transcripts and `run_record.json`).
+
+With --docker the gates are the engine's (harness/engine): the same code CI
+runs, with the same evidence checks before Docker and before the run, on a
+per-trial image tag and container name. Without it nothing is built or run
+and the report says so (local preview mode).
 
 Works for both the 23 benchmark tools and any brand-new public GitHub
 repository (via `detect_recipe.gather` or `git clone --filter=blob:none` when
@@ -13,6 +19,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import os
 import pathlib
@@ -191,16 +198,27 @@ def _parse_kv_output(text: str) -> dict[str, str]:
     return out
 
 
-def upstream_build_command(manifest: dict, review: dict, checkout: pathlib.Path, tag: str) -> list[str]:
-    """Resolve only the cited upstream build; never build the proposed stub."""
+def require_upstream_installation(manifest: dict, review: dict) -> None:
+    """Refuse, before any subprocess, a manifest whose review proves no
+    upstream installation. The engine's Installs gate re-checks the checkout
+    itself (harness/fidelity.py); this is the local pre-check that keeps Git
+    and Docker from starting at all for an unsupported recipe."""
     import fidelity
-    import _paths
     import authorization
     if not authorization.validate(review, manifest).valid:
         raise ValueError("no proven upstream installation for this effective manifest")
     if (not (review.get("installation") or {}).get("ready")
             or review.get("manifest_sha256") != fidelity.digest(json.dumps(manifest, sort_keys=True))):
         raise ValueError("no proven upstream installation for this manifest")
+
+
+def upstream_build_command(manifest: dict, review: dict, checkout: pathlib.Path, tag: str) -> list[str]:
+    """Resolve only the cited upstream build; never build the proposed stub.
+    The one-process equivalent of the engine's Installs gate, for callers
+    that want the build command without running the gates."""
+    import fidelity
+    import _paths
+    require_upstream_installation(manifest, review)
     source = manifest["source"]
     subprocess.run(["git", "clone", "--no-checkout", "--", source["repo"], str(checkout)], check=True, capture_output=True, text=True)
     subprocess.run(["git", "-C", str(checkout), "checkout", "--detach", source["ref"]], check=True, capture_output=True, text=True)
@@ -218,7 +236,7 @@ def upstream_build_command(manifest: dict, review: dict, checkout: pathlib.Path,
 
 
 def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.Path,
-                      prefer_offline: bool = False, run_docker: bool = False) -> dict:
+                      prefer_offline: bool = False, run_docker: bool = False, exe=None) -> dict:
     slug = dr.repo_slug(repo_url)
     token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
     snap = _find_benchmark_snapshot(slug)
@@ -260,10 +278,10 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         proposal_json = tmp_path / "recipe_proposal.json"
         proposal_json.write_text(json.dumps(proposal, indent=2))
 
-        # --- Step 1: Pre-flight (prepare.py) ---
+        # --- Step 1: Pre-flight (prepare.py), which also writes the plan the engine runs ---
         prep_res = subprocess.run(
             [sys.executable, str(ROOT / "harness" / "prepare.py"), run_slug, "--work", str(work_dir),
-             "--trial", "--proposal", str(proposal_json)],
+             "--trial", "--proposal", str(proposal_json), "--plan-out", str(work_dir / "plan.json")],
             cwd=str(ROOT), capture_output=True, text=True, check=True,
         )
         preflight = _parse_kv_output(prep_res.stdout)
@@ -271,19 +289,18 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         proc = json.loads((work_dir / "procedure_review.json").read_text())
         may_run = bool(proc.get("may_say_runs"))
 
-        log_ext = tmp_path / "log_external.txt"
-        log_build = tmp_path / "log_build.txt"
-        log_ex = tmp_path / "log_example.txt"
-        io_json = tmp_path / "io_external.json"
-        content_json = tmp_path / "content_external.json"
-        example_json = tmp_path / "no-example.json"
+        # Where the engine writes: logs under work/ as in CI, check results in
+        # their own directory, never in the repository root.
+        results_dir = tmp_path / "results"
+        results_dir.mkdir()
+        log_build = work_dir / "log_build.txt"
+        log_ext = work_dir / "log_external.txt"
+        log_ex = work_dir / "log_example.txt"
+        record_path = tmp_path / "run_record.json"
 
-        avail_flag = "pass"
-        installs_flag = "fail"
-        runs_flag = "skipped"
-        example_flag = "skipped"
         infra_failure = preflight.get("input_failure", "")
         if preflight.get("install_ready") != "1" or (not may_run and preflight.get("example_ready") != "1"):
+            # No proven procedure: nothing is built or run, and no process starts.
             log_build.write_text(
                 f"==== STRhub Verified local evaluation ====\n"
                 f"Repository: https://github.com/{slug} @ {ref}\n"
@@ -297,83 +314,21 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
                 print(f"[local_trial] {infra_failure}; open Docker Desktop and retry.", file=sys.stderr)
                 log_build.write_text((d_info.stdout or "") + "\n" + (d_info.stderr or ""))
             else:
-                img_tag = f"strhub-trial:{run_slug}"
-                print(f"[local_trial] [1/3] Pre-flight ready (dataset={preflight.get('input_type')}, "
+                from engine import record as engine_record
+                from engine import runner as engine_runner
+                from engine.executor import Executor
+                plan = json.loads((work_dir / "plan.json").read_text())
+                print(f"[local_trial] [1/2] Pre-flight ready (dataset={preflight.get('input_type')}, "
                       f"external_ready={preflight.get('external_ready')}, example_ready={preflight.get('example_ready')})",
                       file=sys.stderr)
-                print(f"[local_trial] [2/3] Building image {img_tag}...", file=sys.stderr)
-                try:
-                    build_cmd = upstream_build_command(built["manifest"], proc, work_dir / "source", img_tag)
-                except (ValueError, OSError, subprocess.CalledProcessError) as exc:
-                    infra_failure = "upstream installation evidence could not be established at the pinned checkout"
-                    b_res = subprocess.CompletedProcess([], 1, "", str(exc))
-                    log_build.write_text(b_res.stderr)
-                else:
-                    b_res = subprocess.run(
-                        ["bash", str(ROOT / "harness" / "record_terminal.sh"), str(log_build), *build_cmd],
-                        cwd=str(ROOT), capture_output=True, text=True,
-                    )
-                if b_res.returncode == 0:
-                    installs_flag = "pass"
-                    hardening = [
-                        "--network", "none",
-                        "--memory", "6g", "--memory-swap", "6g",
-                        "--cpus", "2", "--pids-limit", "512",
-                        "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
-                    ]
-                    timeout_min = str(preflight.get("timeout") or "20")
-                    if preflight.get("external_ready") == "1":
-                        actual_command = preflight["cmd"]
-                        checked = subprocess.run([
-                            sys.executable, str(ROOT / "harness" / "input_provenance.py"),
-                            "--work", str(work_dir), "--manifest", preflight["manifest"],
-                            f"--command={actual_command}",
-                        ], cwd=str(ROOT), capture_output=True, text=True)
-                        if checked.returncode:
-                            infra_failure = checked.stderr.strip() or "the mounted dataset provenance check"
-                        else:
-                            print("[local_trial] [3/3] Running container (--network none) on STRhub reference dataset...",
-                                  file=sys.stderr)
-                            out_ext = work_dir / "out_external"
-                            out_ext.mkdir(parents=True, exist_ok=True)
-                            out_ext.chmod(0o777)
-                            run_cmd = [
-                                "bash", str(ROOT / "harness" / "run_container.sh"),
-                                f"{run_slug}_ext", timeout_min, str(log_ext),
-                                *hardening,
-                                "-v", f"{work_dir / 'in_external'}:/data/in:ro",
-                                "-v", f"{out_ext}:/data/out",
-                                img_tag, actual_command,
-                            ]
-                            r_res = subprocess.run(run_cmd, cwd=str(ROOT), capture_output=True, text=True)
-                            runs_flag = "pass" if r_res.returncode == 0 else "fail"
-                            subprocess.run([
-                                sys.executable, str(ROOT / "harness" / "check_io.py"),
-                                str(manifest_path), str(out_ext), "--json", str(io_json),
-                            ], cwd=str(ROOT), check=False, capture_output=True, text=True)
-                            subprocess.run([
-                                sys.executable, str(ROOT / "harness" / "check_content.py"),
-                                str(manifest_path), str(out_ext), "--json", str(content_json),
-                                "--panel", preflight.get("supported_loci", ""),
-                            ], cwd=str(ROOT), check=False, capture_output=True, text=True)
-                    if preflight.get("example_ready") == "1":
-                        print("[local_trial] Running repository's own example (--network none)...", file=sys.stderr)
-                        out_ex = work_dir / "out_example"
-                        out_ex.mkdir(parents=True, exist_ok=True)
-                        out_ex.chmod(0o777)
-                        example_json = tmp_path / "example.json"
-                        example_result = subprocess.run([
-                            "bash", str(ROOT / "harness" / "run_container.sh"),
-                            f"{run_slug}_ex", timeout_min, str(log_ex),
-                            *hardening,
-                            "-v", f"{out_ex}:/data/out",
-                            img_tag, preflight.get("example_cmd", ""),
-                        ], cwd=str(ROOT), check=False, capture_output=True, text=True)
-                        example_flag = "success" if example_result.returncode == 0 else "failure"
-                        subprocess.run([
-                            sys.executable, str(ROOT / "harness" / "check_example.py"),
-                            str(manifest_path), str(out_ex), "--json", str(example_json),
-                        ], cwd=str(ROOT), check=False, capture_output=True, text=True)
+                print("[local_trial] [2/2] Running the gates (harness/engine): the reviewed build, then the "
+                      "reviewed command on STRhub's dataset, --network none...", file=sys.stderr)
+                # Everything the gates print goes to stderr: stdout is the JSON
+                # line strhub-web reads at the end.
+                with contextlib.redirect_stdout(sys.stderr):
+                    rec = engine_runner.run(plan, work_dir, ROOT, exe=exe or Executor(), results=results_dir,
+                                            image=f"strhub-trial:{run_slug}", container_prefix=run_slug)
+                engine_record.write(rec, record_path)
         else:
             infra_failure = "local preview mode (no container was built or executed on this machine)"
             log_build.write_text(
@@ -392,15 +347,10 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
             "--manifest", str(manifest_path),
             "--procedure-review", str(work_dir / "procedure_review.json"),
             "--mounted-inputs", str(work_dir / "mounted_inputs.json"),
-            "--available", avail_flag,
-            "--installs", installs_flag,
-            "--runs", runs_flag,
-            "--io", str(io_json),
-            "--content", str(content_json),
-            "--matrix", str(tmp_path / "no-matrix.json"),
+            "--matrix", str(results_dir / "matrix.json"),
             "--readme", str(tmp_path / "no-readme.json"),
-            "--example", str(example_json),
-            "--example-runs", example_flag,
+            "--example", str(results_dir / "example.json"),
+            "--starts", str(results_dir / "starts.json"),
             "--regions-validation", str(tmp_path / "no-regions.json"),
             "--log-build", str(log_build),
             "--log-external", str(log_ext),
@@ -410,6 +360,14 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
             "--infra-failure", infra_failure,
             "--recipe-proposal", str(proposal_json),
         ]
+        if record_path.is_file():
+            # The gates ran: outcomes, ladder and any evidence failure come off the record.
+            cmd += ["--engine-record", str(record_path)]
+        else:
+            # Nothing ran. The source is reachable (it was read to propose), the
+            # rest never started.
+            cmd += ["--available", "pass", "--installs", "fail", "--runs", "skipped", "--example-runs", "skipped",
+                    "--io", str(results_dir / "io_external.json"), "--content", str(results_dir / "content_external.json")]
         subprocess.run(cmd, cwd=str(ROOT), check=True, capture_output=True, text=True)
 
         subprocess.run([
@@ -437,6 +395,8 @@ def build_local_trial(repo_url: str, ref: str, ref_label: str, out_dir: pathlib.
         shutil.copy2(reports_dir / f"{cat_slug}.recipe.json", out_dir / "recipe.json")
         shutil.copy2(reports_dir / f"{cat_slug}.summary.md", out_dir / "summary.md")
         shutil.copy2(reports_dir / f"{cat_slug}.html", out_dir / "report.html")
+        if record_path.is_file():
+            shutil.copy2(record_path, out_dir / "run_record.json")
         for leg, log in (("build", log_build), ("external", log_ext), ("example", log_ex)):
             if log.is_file() and log.stat().st_size > 0:
                 shutil.copy2(log, out_dir / f"log-{leg}.txt")

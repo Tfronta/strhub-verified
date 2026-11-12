@@ -326,6 +326,10 @@ gh workflow run verify.yml -f tool=strsearch-trial -f mode=trial \
 ```
 
 Para revisar localmente, usar `harness/local_trial.py --repo … --ref … --out-dir …`.
+Con `--docker` corre las mismas compuertas que CI (`harness/engine`), con imagen y
+nombre de contenedor propios del ensayo, y deja `run_record.json`, los logs y los
+transcripts junto al reporte; sin `--docker` no construye ni ejecuta nada y el
+reporte lo dice (modo preview).
 El modo por defecto prepara el informe sin ejecutar Docker. Ver
 [política de ejecución y evidencia](docs/UPSTREAM-FIDELITY.md).
 

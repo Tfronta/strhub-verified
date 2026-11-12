@@ -33,9 +33,13 @@ def _infra_failure(plan: dict, ins: StageResult, ext: StageResult) -> str:
 
 
 def run(plan: dict, work: pathlib.Path, root: pathlib.Path, exe: Executor | None = None,
-        python: str | None = None) -> dict:
+        python: str | None = None, results: pathlib.Path | None = None, image: str | None = None,
+        container_prefix: str | None = None) -> dict:
     ctx = Ctx(plan=plan, work=pathlib.Path(work), root=pathlib.Path(root), exe=exe or Executor(),
-              **({"python": python} if python else {}))
+              **({"python": python} if python else {}),
+              **({"results": pathlib.Path(results)} if results else {}),
+              **({"image": image} if image else {}),
+              **({"container_prefix": container_prefix} if container_prefix else {}))
     done: list[StageResult] = []
 
     def keep(r: StageResult) -> StageResult:
@@ -58,7 +62,7 @@ def run(plan: dict, work: pathlib.Path, root: pathlib.Path, exe: Executor | None
     # verified never ran, and reads as a skipped step, as it did.
     verified = ext.outputs.get("input_evidence") == "verified"
     ladder = {"leg": "external", "runs": ext.outcome if verified else "skipped",
-              "io": "io_external.json", "content": "content_external.json",
+              "io": ctx.result("io_external.json"), "content": ctx.result("content_external.json"),
               "supported_loci": ctx.plan.get("supported_loci", ""),
               "input_type": ctx.plan.get("input_type", ""), "dataset": ctx.plan.get("dataset_name", "")}
 
@@ -67,7 +71,7 @@ def run(plan: dict, work: pathlib.Path, root: pathlib.Path, exe: Executor | None
         "created": record.now(),
         "tool": ctx.plan.get("tool", ""),
         "mode": ctx.plan.get("mode", ""),
-        "image": stages.IMAGE,
+        "image": ctx.image,
         "hardening": list(stages.HARDENING),
         "plan": dict(ctx.plan),
         "stages": [r.to_dict() for r in done],

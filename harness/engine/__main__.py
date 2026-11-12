@@ -22,10 +22,14 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--work", default="work")
     r.add_argument("--root", default=str(pathlib.Path(__file__).resolve().parents[2]))
     r.add_argument("--record", default="run_record.json")
+    r.add_argument("--results", default=".", help="where the check results and matrix.json are written")
+    r.add_argument("--image", default="", help="image tag to build and run (default toolimg:ci)")
+    r.add_argument("--container-prefix", default="", help="container-name prefix (default strhub)")
     args = ap.parse_args(argv)
 
     plan = json.loads(pathlib.Path(args.plan).read_text())
-    rec = runner.run(plan, pathlib.Path(args.work), pathlib.Path(args.root))
+    rec = runner.run(plan, pathlib.Path(args.work), pathlib.Path(args.root), results=pathlib.Path(args.results),
+                     image=args.image or None, container_prefix=args.container_prefix or None)
     record.write(rec, args.record)
     print(f"[engine] record written to {args.record}")
     return 0
